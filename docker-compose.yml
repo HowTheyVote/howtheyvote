@@ -1,0 +1,13 @@
+version: '3.7'
+
+volumes:
+  env: {}
+
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - env:/root/.cache/pypoetry/virtualenvs
+    stdin_open: true
+    tty: true
