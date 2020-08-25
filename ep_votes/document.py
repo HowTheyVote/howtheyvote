@@ -1,11 +1,11 @@
 import re
-from enum import Enum
+from enum import Enum, auto
 from dataclasses import dataclass
 
 class Type(Enum):
-    A = 1  # report
-    B = 2  # motion for resolution
-    RC = 3 # joint motion for resolution
+    A = auto()  # report
+    B = auto()  # motion for resolution
+    RC = auto() # joint motion for resolution
 
 @dataclass
 class Reference:
