@@ -1,0 +1,35 @@
+name: CI
+
+on: [push]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - uses: actions/checkout@v2
+
+    - name: Cache python packages
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-python-packages
+      with:
+        path: ${{ env.HOME }}/.cache/pypoetry
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.cache-name }}-
+          ${{ runner.os }}-
+
+    - name: Install poetry
+      run: pip install poetry
+
+    - name: Install dependencies
+      run: poetry install
+
+    - name: Test with pytest
+      run: poetry run pytest
