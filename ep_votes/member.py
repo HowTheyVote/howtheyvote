@@ -1,5 +1,17 @@
 import re
+from dataclasses import dataclass
 from unidecode import unidecode
+from .country import Country
+from .group import Group
+
+@dataclass
+class Member:
+    first_name: str
+    last_name: str
+    country: Country
+    group: Group
+    term: int
+    europarl_website_id: int
 
 NAME_AFFIXES = [
     'de', 'del', 'della', 'di', 'du', 'd\'',
