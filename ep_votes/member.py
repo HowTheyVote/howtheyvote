@@ -11,7 +11,6 @@ class Member:
     last_name: str
     country: Country
     group: Group
-    term: int
     europarl_website_id: int
 
 
