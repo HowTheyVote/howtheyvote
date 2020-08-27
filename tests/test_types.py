@@ -71,3 +71,6 @@ def test_member_parse_full_name_special_chars():
     assert Member.parse_full_name("Jörg MEUTHEN") == ("Jörg", "MEUTHEN")
     assert Member.parse_full_name("Leïla CHAIBI") == ("Leïla", "CHAIBI")
     assert Member.parse_full_name("Stéphane SÉJOURNÉ") == ("Stéphane", "SÉJOURNÉ")
+
+def test_member_parse_full_name_aristocratic_title():
+    assert Member.parse_full_name("William (The Earl of) DARTMOUTH") == ("William", "(The Earl of) DARTMOUTH")
