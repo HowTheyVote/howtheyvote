@@ -168,4 +168,7 @@ class Member:
         regex = r"^" + first + r"\s" + last + r"$"
         match = re.search(regex, unidecode(name))
 
-        return match.group("first"), match.group("last")
+        # In order to keep special characters, use the
+        # start/end indices of match groups with the
+        # original name
+        return name[: match.end("first")], name[match.start("last") :]

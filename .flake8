@@ -1,3 +1,4 @@
 [flake8]
 select = BLK,C,E,F,W
+ignore = E203
 max-line-length = 88

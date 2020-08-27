@@ -36,7 +36,7 @@ def test_member_parse_full_name():
 
 
 def test_member_parse_full_name_multiple_first_names():
-    assert Member.parse_full_name("Marek Paweł BALT") == ("Marek Pawel", "BALT")
+    assert Member.parse_full_name("Marek Paweł BALT") == ("Marek Paweł", "BALT")
     assert Member.parse_full_name("Anna-Michelle ASIMAKOPOULOU") == (
         "Anna-Michelle",
         "ASIMAKOPOULOU",
@@ -46,9 +46,9 @@ def test_member_parse_full_name_multiple_first_names():
 def test_member_parse_full_name_multiple_last_names():
     assert Member.parse_full_name("Pablo ARIAS ECHEVERRÍA") == (
         "Pablo",
-        "ARIAS ECHEVERRIA",
+        "ARIAS ECHEVERRÍA",
     )
-    assert Member.parse_full_name("Attila ARA-KOVÁCS") == ("Attila", "ARA-KOVACS")
+    assert Member.parse_full_name("Attila ARA-KOVÁCS") == ("Attila", "ARA-KOVÁCS")
 
 
 def test_member_parse_full_name_middle_initial():
@@ -63,12 +63,11 @@ def test_member_parse_full_name_special_affixes():
     )
     assert Member.parse_full_name("Rosa d'AMATO") == ("Rosa", "d'AMATO")
     assert Member.parse_full_name("Peter van DALEN") == ("Peter", "van DALEN")
-    assert Member.parse_full_name("Sophia in 't VELD") == ("Sophia", "in 't VELD")
     assert Member.parse_full_name("Ursula von der LEYEN") == ("Ursula", "von der LEYEN")
-    assert Member.parse_full_name("Sophie in ’t VELD") == ("Sophie", "in 't VELD")
+    assert Member.parse_full_name("Sophie in ’t VELD") == ("Sophie", "in ’t VELD")
 
 
 def test_member_parse_full_name_special_chars():
-    assert Member.parse_full_name("Jörg MEUTHEN") == ("Jorg", "MEUTHEN")
-    assert Member.parse_full_name("Leïla CHAIBI") == ("Leila", "CHAIBI")
-    assert Member.parse_full_name("Stéphane SÉJOURNÉ") == ("Stephane", "SEJOURNE")
+    assert Member.parse_full_name("Jörg MEUTHEN") == ("Jörg", "MEUTHEN")
+    assert Member.parse_full_name("Leïla CHAIBI") == ("Leïla", "CHAIBI")
+    assert Member.parse_full_name("Stéphane SÉJOURNÉ") == ("Stéphane", "SÉJOURNÉ")
