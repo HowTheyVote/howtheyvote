@@ -56,7 +56,7 @@ class MembersXMLScraper:
 
 
 class MemberInfoHTMLScraper:
-    PROFILE_BASE_URL = "europarl.europa.eu/meps/en"
+    PROFILE_BASE_URL = "https://europarl.europa.eu/meps/en"
 
     def __init__(self, member: Member):
         self._member = member

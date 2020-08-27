@@ -59,7 +59,7 @@ def test_member_info_html_scraper_run(member_info_html_scraper):
 
 
 def test_member_info_html_scraper_profile_url(member_info_html_scraper):
-    expected = "europarl.europa.eu/meps/en/124834/NAME/history/9"
+    expected = "https://europarl.europa.eu/meps/en/124834/NAME/history/9"
     assert member_info_html_scraper._profile_url(term=9) == expected
 
 
