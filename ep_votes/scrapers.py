@@ -1,7 +1,9 @@
 from xml.etree import ElementTree
+from bs4 import BeautifulSoup
 import requests
 from io import StringIO
-from .types import Member
+from datetime import date
+from .types import Member, Country
 
 
 class MembersXMLScraper:
@@ -48,13 +50,66 @@ class MembersXMLScraper:
         return [self._get_member(tag, term) for tag in tags]
 
     def _get_member(self, tag: ElementTree, term):
-        full_name = tag.find("fullName").text
-        first_name, last_name = Member.parse_full_name(full_name)
         europarl_website_id = int(tag.find("id").text)
 
-        return Member(
+        return Member(europarl_website_id=europarl_website_id, terms={term})
+
+
+class MemberInfoHTMLScraper:
+    PROFILE_BASE_URL = "europarl.europa.eu/meps/en"
+
+    def __init__(self, member: Member):
+        self._member = member
+
+    def run(self):
+        self._download()
+
+        first_name, last_name = Member.parse_full_name(self._full_name())
+
+        member = Member(
+            europarl_website_id=self._member.europarl_website_id,
+            terms=set(self._member.terms),
             first_name=first_name,
             last_name=last_name,
-            europarl_website_id=europarl_website_id,
-            terms={term},
+            date_of_birth=self._date_of_birth(),
+            country=self._country(),
         )
+
+        return member
+
+    def _download(self):
+        self._terms = {}
+
+        for term in self._member.terms:
+            raw = self._download_term(term)
+            self._terms[term] = BeautifulSoup(raw, "lxml")
+
+    def _download_term(self, term):
+        return requests.get(self._profile_url(term)).text
+
+    def _profile_url(self, term):
+        web_id = self._member.europarl_website_id
+        return f"{self.PROFILE_BASE_URL}/{web_id}/NAME/history/{term}"
+
+    def _latest_term(self):
+        return self._terms[max(self._member.terms)]
+
+    def _full_name(self):
+        html = self._latest_term()
+        return html.select("#presentationmep div.erpl_title-h1")[0].text.strip()
+
+    def _date_of_birth(self):
+        raw = self._latest_term().select("#birthDate")[0].text.strip()
+
+        year = int(raw[6:])
+        month = int(raw[3:5])
+        day = int(raw[:2])
+
+        return date(year, month, day)
+
+    def _country(self):
+        html = self._latest_term()
+        raw = html.select("#presentationmep div.erpl_title-h3")[0].text
+        country = raw.split("-")[0].strip()
+
+        return Country.from_str(country)

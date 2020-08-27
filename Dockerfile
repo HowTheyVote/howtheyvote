@@ -4,6 +4,8 @@ RUN apk --update add \
     build-base \
     libressl-dev \
     libffi-dev \
+    libxml2-dev \
+    libxslt-dev \
     python3-dev \
     bash \
     less \
