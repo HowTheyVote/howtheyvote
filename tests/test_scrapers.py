@@ -2,9 +2,7 @@ from pytest import fixture
 from unittest.mock import patch
 from pathlib import Path
 from ep_votes.scrapers import MembersXMLScraper
-from ep_votes.member import Member
-from ep_votes.group import Group
-from ep_votes.country import Country
+from ep_votes.types import Member, Group, Country
 
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 

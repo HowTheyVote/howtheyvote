@@ -1,9 +1,7 @@
 from xml.etree import ElementTree
 import requests
 from io import StringIO
-from .member import Member, parse_name
-from .group import Group
-from .country import Country
+from .types import Member, Group, Country
 
 
 class MembersXMLScraper:
@@ -28,7 +26,7 @@ class MembersXMLScraper:
 
     def _get_member(self, subtree: ElementTree):
         full_name = subtree.find("fullName").text
-        first_name, last_name = parse_name(full_name)
+        first_name, last_name = Member.parse_full_name(full_name)
         country = Country.from_str(subtree.find("country").text)
         group = Group.from_str(subtree.find("politicalGroup").text)
         europarl_website_id = int(subtree.find("id").text)
