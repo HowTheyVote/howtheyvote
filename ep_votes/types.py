@@ -2,6 +2,7 @@ import re
 from enum import Enum, auto
 from dataclasses import dataclass
 from unidecode import unidecode
+from typing import Set
 
 COUNTRY_NAMES = {
     "Austria": "AT",
@@ -155,9 +156,10 @@ NAME_AFFIXES = [
 class Member:
     first_name: str
     last_name: str
-    country: Country
-    group: Group
     europarl_website_id: int
+    terms: Set[int]
+    country: Country = None
+    group: Group = None
 
     @staticmethod
     def parse_full_name(name):
