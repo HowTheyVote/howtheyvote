@@ -2,7 +2,7 @@ import re
 from enum import Enum, auto
 from dataclasses import dataclass
 from unidecode import unidecode
-from typing import Set, Optional, Tuple
+from typing import Set, Optional, Tuple, List
 from datetime import date
 
 COUNTRY_NAMES = {
@@ -99,6 +99,9 @@ class Group(Enum):
 
     @classmethod
     def from_str(cls, name: str) -> "Group":
+        if name in cls.__members__:
+            return cls[name]
+
         return cls[GROUP_NAMES[name]]
 
 
@@ -190,3 +193,25 @@ class GroupMembership:
     term: int
     start_date: Optional[date] = None
     end_date: Optional[date] = None
+
+
+class Position(Enum):
+    FOR = auto()
+    AGAINST = auto()
+    ABSTENTION = auto()
+
+
+@dataclass
+class Voting:
+    doceo_member_id: int
+    name: str
+    position: Position
+
+
+@dataclass
+class Vote:
+    doceo_vote_id: int
+    date: date
+    description: Optional[str]
+    reference: Optional[DocReference]
+    votings: List[Voting]

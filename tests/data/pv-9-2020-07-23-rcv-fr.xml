@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PV.RollCallVoteResults xmlns:chart="http://openoffice.org/2000/chart" xmlns:dr3d="http://openoffice.org/2000/dr3d" xmlns:draw="http://openoffice.org/2000/drawing" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:form="http://openoffice.org/2000/form" xmlns:ino="http://namespaces.softwareag.com/tamino/response2" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:number="http://openoffice.org/2000/datastyle" xmlns:office="http://openoffice.org/2000/office" xmlns:script="http://openoffice.org/2000/script" xmlns:style="http://openoffice.org/2000/style" xmlns:svg="http://www.w3.org/2000/svg" xmlns:table="http://openoffice.org/2000/table" xmlns:text="http://openoffice.org/2000/text" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xql="http://metalab.unc.edu/xql/" Sitting.Identifier="1602" Sitting.Date="2020-07-23" EP.Reference="P9_PV(2020)07-23" EP.Number="PE 656.397" Document.Language="XL">
+    <RollCallVoteResults.Titles>
+        <RollCallVoteResults.Title.Text Language="BG">ПРОТОКОЛ<text:line-break />Резултат от поименни гласувания - Приложение 2</RollCallVoteResults.Title.Text>
+    </RollCallVoteResults.Titles>
+    <RollCallVote.Result Identifier="116365" Date="2020-07-23 12:49:32">
+        <RollCallVote.Description.Text>
+            <a href="#reds:iPlRe/B-9-2020-0229" data-rel="reds" redmap-uri="/reds:iPlRe/B-9-2020-0229">B9-0229/2020</a> - § 1/1
+        </RollCallVote.Description.Text>
+        <Result.For Number="676">
+            <Result.PoliticalGroup.List Identifier="ECR">
+                <PoliticalGroup.Member.Name MepId="7244">Aguilar</PoliticalGroup.Member.Name>
+            </Result.PoliticalGroup.List>
+        </Result.For>
+        <Result.Against Number="1">
+            <Result.PoliticalGroup.List Identifier="ID">
+                <PoliticalGroup.Member.Name MepId="6630">de Graaff</PoliticalGroup.Member.Name>
+            </Result.PoliticalGroup.List>
+        </Result.Against>
+        <Result.Abstention Number="4">
+            <Result.PoliticalGroup.List Identifier="NI">
+                <PoliticalGroup.Member.Name MepId="6836">Kolakušić</PoliticalGroup.Member.Name>
+            </Result.PoliticalGroup.List>
+        </Result.Abstention>
+    </RollCallVote.Result>
+</PV.RollCallVoteResults>

@@ -15,6 +15,10 @@ def test_group_from_str():
     assert Group.from_str("Group of the Greens/European Free Alliance") == Group.GREENS
 
 
+def test_group_from_str_short():
+    assert Group.from_str("GREENS") == Group.GREENS
+
+
 def test_doc_reference_from_str():
     ref = DocReference(type=Type.B, term=9, number=154, year=2019)
     assert DocReference.from_str("B9-0154/2019") == ref

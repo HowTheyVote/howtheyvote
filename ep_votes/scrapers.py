@@ -5,9 +5,19 @@ from io import StringIO
 from datetime import date, datetime
 from typing import Set, Dict, Any, List, Optional
 from abc import abstractmethod
-from .types import Member, Country, Group, GroupMembership
+from itertools import chain
+from .types import (
+    Member,
+    Country,
+    Group,
+    GroupMembership,
+    Position,
+    Voting,
+    Vote,
+    DocReference,
+)
 
-ResourceKey = int
+ResourceKey = Any
 ResourceUrls = Dict[ResourceKey, str]
 LoadedResources = Dict[ResourceKey, str]
 ParsedResources = Dict[ResourceKey, Any]
@@ -72,7 +82,7 @@ class MembersScraper(Scraper):
         europarl_website_id = int(tag.findtext("id", ""))
         return Member(europarl_website_id=europarl_website_id, terms={term})
 
-    def _parse_resource(self, resource: str) -> Any:
+    def _parse_resource(self, resource: str) -> ElementTree.ElementTree:
         fd = StringIO(resource)
         return ElementTree.parse(fd)
 
@@ -168,3 +178,76 @@ class MemberInfoScraper(Scraper):
         group = group.split(" - Member")[0]
 
         return Group.from_str(group)
+
+
+class VoteResultsScraper(Scraper):
+    BASE_URL = "https://europarl.europa.eu/doceo/document"
+
+    def __init__(self, date: date, term: int):
+        self.date = date
+        self.term = term
+
+    def _resource_urls(self) -> ResourceUrls:
+        date = self.date.strftime("%Y-%m-%d")
+        file = f"PV-{self.term}-{date}-RCV_FR.xml"
+
+        return {self.date: f"{self.BASE_URL}/{file}"}
+
+    def _parse_resource(self, resource: str) -> BeautifulSoup:
+        return BeautifulSoup(resource, "lxml-xml")
+
+    def _extract_information(self) -> List[Vote]:
+        doc = next(iter(self._resources.values()))
+        tags = doc.find_all("RollCallVote.Result")
+
+        return [self._result(tag) for tag in tags]
+
+    def _result(self, tag: BeautifulSoup) -> Vote:
+        desc_tag = tag.find("RollCallVote.Description.Text")
+
+        return Vote(
+            doceo_vote_id=int(tag["Identifier"]),
+            date=datetime.fromisoformat(tag.get("Date")),
+            description=self._description(desc_tag),
+            reference=self._reference(desc_tag),
+            votings=self._votings(tag),
+        )
+
+    def _description(self, tag: BeautifulSoup) -> str:
+        texts = tag.find_all(text=True, recursive=False)
+        texts = [text.strip() for text in texts if text.strip()]
+        text = "".join(texts)
+
+        if text.startswith("- "):
+            return text[len("- ") :]
+
+        return text
+
+    def _reference(self, tag: BeautifulSoup) -> Optional[DocReference]:
+        ref_tag = tag.find("a")
+
+        if ref_tag is None:
+            return None
+
+        return DocReference.from_str(ref_tag.text)
+
+    def _votings(self, tag: BeautifulSoup) -> List[Voting]:
+        results = {
+            Position.FOR: tag.find("Result.For"),
+            Position.AGAINST: tag.find("Result.Against"),
+            Position.ABSTENTION: tag.find("Result.Abstention"),
+        }
+
+        votings = [self._votings_by_position(v, k) for k, v in results.items()]
+        return list(chain.from_iterable(votings))
+
+    def _votings_by_position(
+        self, tag: BeautifulSoup, position: Position
+    ) -> List[Voting]:
+        member_tags = tag.find_all("PoliticalGroup.Member.Name")
+        return [self._voting(tag, position) for tag in member_tags]
+
+    def _voting(self, tag: BeautifulSoup, position: Position) -> Voting:
+        return Voting(
+            doceo_member_id=int(tag.get("MepId")), name=tag.text, position=position
+        )

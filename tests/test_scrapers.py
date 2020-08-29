@@ -1,10 +1,20 @@
 import pytest
 from requests_mock import ANY
 from pathlib import Path
-from datetime import date
+from datetime import date, datetime
 from bs4 import BeautifulSoup
-from ep_votes.scrapers import MembersScraper, MemberInfoScraper
-from ep_votes.types import Member, Country, Group, GroupMembership
+from ep_votes.scrapers import MembersScraper, MemberInfoScraper, VoteResultsScraper
+from ep_votes.types import (
+    Member,
+    Country,
+    Group,
+    GroupMembership,
+    Position,
+    Voting,
+    Vote,
+    DocReference,
+    Type,
+)
 
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 
@@ -19,6 +29,7 @@ def mock_response(req, context):
         "/meps/en/124834/NAME/history/9": "sonneborn_term_9.html",
         "/meps/en/124831/NAME/history/8": "adinolfi_term_8.html",
         "/meps/en/124831/NAME/history/9": "adinolfi_term_9.html",
+        "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
     }
 
     file = MOCK_RESPONSES[url]
@@ -69,7 +80,7 @@ def test_member_info_scraper_run(mock_request):
     assert scraper.run() == expected
 
 
-def test_member_info_scraper_profile_url(mock_request):
+def test_member_info_scraper_profile_url():
     scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
     expected = {
         8: "https://europarl.europa.eu/meps/en/124834/NAME/history/8",
@@ -134,3 +145,62 @@ def test_member_info_scraper_parse_group(mock_request):
 
     assert scraper._parse_group(tags[0]) == Group.RENEW
     assert scraper._parse_group(tags[1]) == Group.NI
+
+
+def test_vote_results_scraper_run(mock_request):
+    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
+
+    votings = [
+        Voting(doceo_member_id=7244, name="Aguilar", position=Position.FOR),
+        Voting(doceo_member_id=6630, name="de Graaff", position=Position.AGAINST),
+        Voting(doceo_member_id=6836, name="Kolakušić", position=Position.ABSTENTION),
+    ]
+
+    vote = [
+        Vote(
+            doceo_vote_id=116365,
+            date=datetime(2020, 7, 23, 12, 49, 32),
+            description="§ 1/1",
+            reference=DocReference(type=Type.B, term=9, number=229, year=2020),
+            votings=votings,
+        )
+    ]
+
+    assert scraper.run() == vote
+
+
+def test_vote_results_scraper_resource_urls():
+    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
+    url = "https://europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml"
+    expected = {date(2020, 7, 23): url}
+
+    assert scraper._resource_urls() == expected
+
+
+@pytest.fixture
+def description_tags():
+    descriptions = [
+        '<Tag><a href="" data-rel="" redmap-uri="">B9-0229/2020</a> - § 1/1</Tag>',
+        "<Tag>Ordre du jour de mardi - demande du groupe GUE/NGL</Tag>",
+    ]
+
+    return [BeautifulSoup(desc, "lxml-xml").Tag for desc in descriptions]
+
+
+def test_vote_results_scraper_description(description_tags):
+    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
+
+    assert scraper._description(description_tags[0]) == "§ 1/1"
+    assert (
+        scraper._description(description_tags[1])
+        == "Ordre du jour de mardi - demande du groupe GUE/NGL"
+    )
+
+
+def test_vote_results_scraper_reference(description_tags):
+    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
+
+    assert scraper._reference(description_tags[0]) == DocReference.from_str(
+        "B9-0229/2020"
+    )
+    assert scraper._reference(description_tags[1]) is None
