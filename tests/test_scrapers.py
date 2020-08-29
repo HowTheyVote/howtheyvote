@@ -2,8 +2,9 @@ import pytest
 from requests_mock import ANY
 from pathlib import Path
 from datetime import date
+from math import inf
 from ep_votes.scrapers import MembersScraper, MemberInfoScraper
-from ep_votes.types import Member, Country
+from ep_votes.types import Member, Country, Group, GroupMembership
 
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 
@@ -100,3 +101,22 @@ def test_member_info_scraper_country(mock_request):
     scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
     scraper._load_resources()
     assert scraper._country() == Country.DE
+
+
+def test_member_info_scraper_group_memberships(mock_request):
+    scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
+    scraper._load_resources()
+
+    expected = [
+        GroupMembership(
+            group=Group.NI,
+            term=8,
+            start_date=date(2014, 7, 1),
+            end_date=date(2019, 7, 1),
+        ),
+        GroupMembership(
+            group=Group.NI, term=9, start_date=date(2019, 7, 2), end_date=inf
+        ),
+    ]
+
+    assert scraper._group_memberships() == expected

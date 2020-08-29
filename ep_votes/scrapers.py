@@ -2,10 +2,10 @@ from xml.etree import ElementTree
 from bs4 import BeautifulSoup
 import requests
 from io import StringIO
-from datetime import date
-from typing import Set, Union, Dict, Any
+from datetime import date, datetime
+from typing import Set, Union, Dict, Any, List
 from abc import abstractmethod
-from .types import Member, Country
+from .types import Member, Country, Group, GroupMembership
 
 ResourceUrls = Union[Dict[str, str], Dict[int, str]]
 LoadedResources = Union[Dict[str, str], Dict[int, str]]
@@ -13,7 +13,7 @@ ParsedResources = Union[Dict[str, Any], Dict[int, str]]
 
 
 class Scraper:
-    _parsed: ParsedResources = {}
+    _resources: ParsedResources = {}
 
     def run(self) -> Any:
         self._load_resources()
@@ -122,11 +122,7 @@ class MemberInfoScraper(Scraper):
             return
 
         raw = raw[0].text.strip()
-        year = int(raw[6:])
-        month = int(raw[3:5])
-        day = int(raw[:2])
-
-        return date(year, month, day)
+        return datetime.strptime(raw, "%d-%m-%Y").date()
 
     def _country(self) -> Country:
         html = self._latest_term()
@@ -134,3 +130,34 @@ class MemberInfoScraper(Scraper):
         country = raw.split("-")[0].strip()
 
         return Country.from_str(country)
+
+    def _group_memberships(self) -> List[GroupMembership]:
+        memberships = []
+
+        for term, html in self._resources.items():
+            items = html.select("#status .erpl_meps-status:first-child ul li")
+            memberships.extend([self._group_membership(item, term) for item in items])
+
+        return memberships
+
+    def _group_membership(self, tag: BeautifulSoup, term: int) -> GroupMembership:
+        date_range = tag.find("strong").text
+        group = tag.find(text=True, recursive=False).split(" : ")[1]
+        group = Group.from_str(group)
+
+        membership = GroupMembership(group=group, term=term)
+
+        if "..." in date_range:
+            start = date_range.split(" ...")[0]
+            start = datetime.strptime(start, "%d-%m-%Y").date()
+
+            membership.start_date = start
+            return membership
+
+        date_range = date_range.split(" / ")
+        start, end = [datetime.strptime(d, "%d-%m-%Y").date() for d in date_range]
+
+        membership.start_date = start
+        membership.end_date = end
+
+        return membership

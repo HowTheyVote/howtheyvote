@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from unidecode import unidecode
 from typing import Set
 from datetime import date
+from math import inf
 
 COUNTRY_NAMES = {
     "Austria": "AT",
@@ -177,3 +178,11 @@ class Member:
         # start/end indices of match groups with the
         # original name
         return name[: match.end("first")], name[match.start("last") :]
+
+
+@dataclass
+class GroupMembership:
+    group: Group
+    term: int
+    start_date: date = inf
+    end_date: date = inf
