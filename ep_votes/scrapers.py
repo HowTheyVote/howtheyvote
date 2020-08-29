@@ -3,13 +3,14 @@ from bs4 import BeautifulSoup
 import requests
 from io import StringIO
 from datetime import date, datetime
-from typing import Set, Union, Dict, Any, List
+from typing import Set, Dict, Any, List, Optional
 from abc import abstractmethod
 from .types import Member, Country, Group, GroupMembership
 
-ResourceUrls = Union[Dict[str, str], Dict[int, str]]
-LoadedResources = Union[Dict[str, str], Dict[int, str]]
-ParsedResources = Union[Dict[str, Any], Dict[int, str]]
+ResourceKey = int
+ResourceUrls = Dict[ResourceKey, str]
+LoadedResources = Dict[ResourceKey, str]
+ParsedResources = Dict[ResourceKey, Any]
 
 
 class Scraper:
@@ -41,11 +42,11 @@ class Scraper:
 
 
 class MembersScraper(Scraper):
-    TERMS = [8, 9]
-    DIRECTORY_BASE_URL = "https://europarl.europa.eu/meps/en/directory/xml"
+    TERMS: List[int] = [8, 9]
+    DIRECTORY_BASE_URL: str = "https://europarl.europa.eu/meps/en/directory/xml"
 
-    def _extract_information(self) -> Dict:
-        self._members = {}
+    def _extract_information(self) -> List[Member]:
+        self._members: Dict[int, Member] = {}
 
         for term in self.TERMS:
             for member in self._get_members(term):
@@ -53,7 +54,7 @@ class MembersScraper(Scraper):
 
         return list(self._members.values())
 
-    def _add_member(self, member):
+    def _add_member(self, member: Member) -> None:
         web_id = member.europarl_website_id
 
         if web_id not in self._members:
@@ -63,12 +64,12 @@ class MembersScraper(Scraper):
         terms = self._members[web_id].terms | member.terms
         self._members[web_id].terms = terms
 
-    def _get_members(self, term):
+    def _get_members(self, term: int) -> List[Member]:
         tags = self._resources[term].findall("mep")
         return [self._get_member(tag, term) for tag in tags]
 
-    def _get_member(self, tag: ElementTree, term):
-        europarl_website_id = int(tag.find("id").text)
+    def _get_member(self, tag: ElementTree.Element, term: int) -> Member:
+        europarl_website_id = int(tag.findtext("id", ""))
         return Member(europarl_website_id=europarl_website_id, terms={term})
 
     def _parse_resource(self, resource: str) -> Any:
@@ -115,11 +116,11 @@ class MemberInfoScraper(Scraper):
         html = self._latest_term()
         return html.select("#presentationmep div.erpl_title-h1")[0].text.strip()
 
-    def _date_of_birth(self) -> date:
+    def _date_of_birth(self) -> Optional[date]:
         raw = self._latest_term().select("#birthDate")
 
         if not raw:
-            return
+            return None
 
         raw = raw[0].text.strip()
         return datetime.strptime(raw, "%d-%m-%Y").date()

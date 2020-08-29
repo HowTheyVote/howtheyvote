@@ -32,7 +32,10 @@ jobs:
       run: poetry install
 
     - name: Lint with flake8
-      run: poetry run flake8
+      run: make lint
+
+    - name: Check types with mypy
+      run: make types
 
     - name: Test with pytest
-      run: poetry run pytest
+      run: make tests

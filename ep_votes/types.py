@@ -2,9 +2,8 @@ import re
 from enum import Enum, auto
 from dataclasses import dataclass
 from unidecode import unidecode
-from typing import Set
+from typing import Set, Optional, Tuple
 from datetime import date
-from math import inf
 
 COUNTRY_NAMES = {
     "Austria": "AT",
@@ -69,9 +68,9 @@ class Country(Enum):
     SI = auto()
     SK = auto()
 
-    @staticmethod
-    def from_str(name):
-        return Country[COUNTRY_NAMES[name]]
+    @classmethod
+    def from_str(cls, name: str) -> "Country":
+        return cls[COUNTRY_NAMES[name]]
 
 
 GROUP_NAMES = {
@@ -98,9 +97,9 @@ class Group(Enum):
     NI = auto()
     EFDD = auto()
 
-    @staticmethod
-    def from_str(name):
-        return Group[GROUP_NAMES[name]]
+    @classmethod
+    def from_str(cls, name: str) -> "Group":
+        return cls[GROUP_NAMES[name]]
 
 
 class Type(Enum):
@@ -116,22 +115,22 @@ class DocReference:
     number: int
     year: int
 
-    @staticmethod
-    def from_str(ref):
+    @classmethod
+    def from_str(cls, ref: str) -> "DocReference":
         regex = r"^(A|B|RC)(?:-B)?(\d{1,2})-(\d{4})\/(\d{4})$"
         match = re.search(regex, ref)
 
         if not match:
             raise ValueError("Unrecognized document reference format")
 
-        return DocReference(
+        return cls(
             type=Type[match.group(1)],
             term=int(match.group(2)),
             number=int(match.group(3)),
             year=int(match.group(4)),
         )
 
-    def url(self):
+    def url(self) -> str:
         BASE = "https://www.europarl.europa.eu/doceo/document"
         path = f"/{self.type.name}-{self.term}-{self.year:04}-{self.number:04}_EN.html"
         return BASE + path
@@ -160,14 +159,14 @@ NAME_AFFIXES = [
 class Member:
     europarl_website_id: int
     terms: Set[int]
-    first_name: str = None
-    last_name: str = None
-    country: Country = None
-    group: Group = None
-    date_of_birth: date = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    country: Optional[Country] = None
+    group: Optional[Group] = None
+    date_of_birth: Optional[date] = None
 
     @staticmethod
-    def parse_full_name(name):
+    def parse_full_name(name: str) -> Tuple[Optional[str], Optional[str]]:
         first = r"(?P<first>[A-Za-z\-\'\s\.]+?)"
         affix = r"(?:\s|" + "|".join(NAME_AFFIXES) + r")*"
         aristocratic_title = r"(?:\(.*\)\s)?"
@@ -175,6 +174,9 @@ class Member:
 
         regex = r"^" + first + r"\s" + last + r"$"
         match = re.search(regex, unidecode(name))
+
+        if match is None:
+            return (None, None)
 
         # In order to keep special characters, use the
         # start/end indices of match groups with the
@@ -186,5 +188,5 @@ class Member:
 class GroupMembership:
     group: Group
     term: int
-    start_date: date = inf
-    end_date: date = inf
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None

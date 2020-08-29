@@ -9,6 +9,7 @@ RUN apk --update add \
     python3-dev \
     bash \
     less \
+    make \
     git
 
 RUN pip3 install poetry

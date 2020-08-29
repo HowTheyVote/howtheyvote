@@ -2,7 +2,6 @@ import pytest
 from requests_mock import ANY
 from pathlib import Path
 from datetime import date
-from math import inf
 from bs4 import BeautifulSoup
 from ep_votes.scrapers import MembersScraper, MemberInfoScraper
 from ep_votes.types import Member, Country, Group, GroupMembership
@@ -116,7 +115,7 @@ def test_member_info_scraper_group_memberships(mock_request):
             end_date=date(2019, 7, 1),
         ),
         GroupMembership(
-            group=Group.NI, term=9, start_date=date(2019, 7, 2), end_date=inf
+            group=Group.NI, term=9, start_date=date(2019, 7, 2), end_date=None
         ),
     ]
 
