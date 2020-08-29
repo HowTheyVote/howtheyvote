@@ -45,9 +45,12 @@ def test_members_scraper_run(mock_request):
 
 def test_members_scraper_term_url():
     scraper = MembersScraper()
-    expected = "https://europarl.europa.eu/meps/en/directory/xml/?leg=9"
+    expected = {
+        8: "https://europarl.europa.eu/meps/en/directory/xml/?leg=8",
+        9: "https://europarl.europa.eu/meps/en/directory/xml/?leg=9",
+    }
 
-    assert scraper._term_url(term=9) == expected
+    assert scraper._resource_urls() == expected
 
 
 def test_member_info_scraper_run(mock_request):
@@ -67,30 +70,33 @@ def test_member_info_scraper_run(mock_request):
 
 def test_member_info_scraper_profile_url(mock_request):
     scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
-    expected = "https://europarl.europa.eu/meps/en/124834/NAME/history/9"
+    expected = {
+        8: "https://europarl.europa.eu/meps/en/124834/NAME/history/8",
+        9: "https://europarl.europa.eu/meps/en/124834/NAME/history/9",
+    }
 
-    assert scraper._profile_url(term=9) == expected
+    assert scraper._resource_urls() == expected
 
 
 def test_member_info_scraper_full_name(mock_request):
     scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
-    scraper._load()
+    scraper._load_resources()
     assert scraper._full_name() == "Martin SONNEBORN"
 
 
 def test_member_info_scraper_date_of_birth(mock_request):
     scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
-    scraper._load()
+    scraper._load_resources()
     assert scraper._date_of_birth() == date(1965, 5, 15)
 
 
 def test_member_info_scraper_date_of_birth_without(mock_request):
     scraper = MemberInfoScraper(europarl_website_id=124831, terms={8, 9})
-    scraper._load()
+    scraper._load_resources()
     assert scraper._date_of_birth() is None
 
 
 def test_member_info_scraper_country(mock_request):
     scraper = MemberInfoScraper(europarl_website_id=124834, terms={8, 9})
-    scraper._load()
+    scraper._load_resources()
     assert scraper._country() == Country.DE
