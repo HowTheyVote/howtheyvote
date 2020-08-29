@@ -3,6 +3,7 @@ from requests_mock import ANY
 from pathlib import Path
 from datetime import date
 from math import inf
+from bs4 import BeautifulSoup
 from ep_votes.scrapers import MembersScraper, MemberInfoScraper
 from ep_votes.types import Member, Country, Group, GroupMembership
 
@@ -120,3 +121,17 @@ def test_member_info_scraper_group_memberships(mock_request):
     ]
 
     assert scraper._group_memberships() == expected
+
+
+def test_member_info_scraper_parse_group(mock_request):
+    scraper = MemberInfoScraper(europarl_website_id=123, terms={})
+
+    tags = [
+        "<strong>02-07-2019 ...</strong> : Renew Europe Group - Member",
+        "<strong>02-07-2019 ...</strong> : Non-attached Members",
+    ]
+
+    tags = [BeautifulSoup(tag, "lxml") for tag in tags]
+
+    assert scraper._parse_group(tags[0]) == Group.RENEW
+    assert scraper._parse_group(tags[1]) == Group.NI

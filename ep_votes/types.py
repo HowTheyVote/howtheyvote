@@ -83,6 +83,7 @@ GROUP_NAMES = {
     "Group of the Greens/European Free Alliance": "GREENS",
     "Renew Europe Group": "RENEW",
     "Group of the European United Left - Nordic Green Left": "GUE",
+    "Europe of Freedom and Direct Democracy Group": "EFDD",
 }
 
 
@@ -95,6 +96,7 @@ class Group(Enum):
     ECR = auto()
     ID = auto()
     NI = auto()
+    EFDD = auto()
 
     @staticmethod
     def from_str(name):

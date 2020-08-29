@@ -161,3 +161,9 @@ class MemberInfoScraper(Scraper):
         membership.end_date = end
 
         return membership
+
+    def _parse_group(self, tag: BeautifulSoup) -> Group:
+        group = tag.find_all(text=True)[-1].split(" : ")[1]
+        group = group.split(" - Member")[0]
+
+        return Group.from_str(group)
