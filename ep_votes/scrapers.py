@@ -1,7 +1,5 @@
-from xml.etree import ElementTree
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import requests
-from io import StringIO
 from datetime import date, datetime
 from typing import Set, Dict, Any, List, Optional
 from abc import abstractmethod
@@ -75,16 +73,15 @@ class MembersScraper(Scraper):
         self._members[web_id].terms = terms
 
     def _get_members(self, term: int) -> List[Member]:
-        tags = self._resources[term].findall("mep")
+        tags = self._resources[term].find_all("mep")
         return [self._get_member(tag, term) for tag in tags]
 
-    def _get_member(self, tag: ElementTree.Element, term: int) -> Member:
-        europarl_website_id = int(tag.findtext("id", ""))
+    def _get_member(self, tag: Tag, term: int) -> Member:
+        europarl_website_id = int(tag.find("id").text)
         return Member(europarl_website_id=europarl_website_id, terms={term})
 
-    def _parse_resource(self, resource: str) -> ElementTree.ElementTree:
-        fd = StringIO(resource)
-        return ElementTree.parse(fd)
+    def _parse_resource(self, resource: str) -> BeautifulSoup:
+        return BeautifulSoup(resource, "lxml-xml")
 
     def _resource_urls(self) -> ResourceUrls:
         base = self.DIRECTORY_BASE_URL
@@ -202,7 +199,7 @@ class VoteResultsScraper(Scraper):
 
         return [self._result(tag) for tag in tags]
 
-    def _result(self, tag: BeautifulSoup) -> Vote:
+    def _result(self, tag: Tag) -> Vote:
         desc_tag = tag.find("RollCallVote.Description.Text")
 
         return Vote(
@@ -213,7 +210,7 @@ class VoteResultsScraper(Scraper):
             votings=self._votings(tag),
         )
 
-    def _description(self, tag: BeautifulSoup) -> str:
+    def _description(self, tag: Tag) -> str:
         texts = tag.find_all(text=True, recursive=False)
         texts = [text.strip() for text in texts if text.strip()]
         text = "".join(texts)
@@ -223,7 +220,7 @@ class VoteResultsScraper(Scraper):
 
         return text
 
-    def _reference(self, tag: BeautifulSoup) -> Optional[DocReference]:
+    def _reference(self, tag: Tag) -> Optional[DocReference]:
         ref_tag = tag.find("a")
 
         if ref_tag is None:
@@ -231,7 +228,7 @@ class VoteResultsScraper(Scraper):
 
         return DocReference.from_str(ref_tag.text)
 
-    def _votings(self, tag: BeautifulSoup) -> List[Voting]:
+    def _votings(self, tag: Tag) -> List[Voting]:
         results = {
             Position.FOR: tag.find("Result.For"),
             Position.AGAINST: tag.find("Result.Against"),
@@ -241,13 +238,10 @@ class VoteResultsScraper(Scraper):
         votings = [self._votings_by_position(v, k) for k, v in results.items()]
         return list(chain.from_iterable(votings))
 
-    def _votings_by_position(
-        self, tag: BeautifulSoup, position: Position
-    ) -> List[Voting]:
+    def _votings_by_position(self, tag: Tag, position: Position) -> List[Voting]:
         member_tags = tag.find_all("PoliticalGroup.Member.Name")
         return [self._voting(tag, position) for tag in member_tags]
 
     def _voting(self, tag: BeautifulSoup, position: Position) -> Voting:
-        return Voting(
-            doceo_member_id=int(tag.get("MepId")), name=tag.text, position=position
-        )
+        doceo_id = int(tag.get("MepId"))
+        return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
