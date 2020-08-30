@@ -160,8 +160,8 @@ NAME_AFFIXES = [
 
 @dataclass
 class Member:
-    europarl_website_id: int
-    terms: Set[int]
+    web_id: int
+    terms: Optional[Set[int]] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     country: Optional[Country] = None
@@ -212,6 +212,6 @@ class Voting:
 class Vote:
     doceo_vote_id: int
     date: date
-    description: Optional[str]
-    reference: Optional[DocReference]
     votings: List[Voting]
+    description: Optional[str] = None
+    reference: Optional[DocReference] = None
