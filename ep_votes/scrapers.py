@@ -3,7 +3,7 @@ import requests
 from datetime import date, datetime
 from typing import Any, List, Optional, Tuple
 from abc import abstractmethod
-from .types import (
+from .models import (
     Member,
     Country,
     Group,

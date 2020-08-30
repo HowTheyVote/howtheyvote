@@ -9,7 +9,7 @@ from ep_votes.scrapers import (
     MemberGroupsScraper,
     VoteResultsScraper,
 )
-from ep_votes.types import (
+from ep_votes.models import (
     Member,
     Country,
     Group,
@@ -18,7 +18,7 @@ from ep_votes.types import (
     Voting,
     Vote,
     DocReference,
-    Type,
+    DocType,
 )
 
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -139,7 +139,7 @@ def test_vote_results_scraper_run(mock_request):
             doceo_vote_id=116365,
             date=datetime(2020, 7, 23, 12, 49, 32),
             description="§ 1/1",
-            reference=DocReference(type=Type.B, term=9, number=229, year=2020),
+            reference=DocReference(type=DocType.B, term=9, number=229, year=2020),
             votings=votings,
         )
     ]

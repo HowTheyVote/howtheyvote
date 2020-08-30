@@ -105,7 +105,7 @@ class Group(Enum):
         return cls[GROUP_NAMES[name]]
 
 
-class Type(Enum):
+class DocType(Enum):
     A = auto()  # report
     B = auto()  # motion for resolution
     RC = auto()  # joint motion for resolution
@@ -113,7 +113,7 @@ class Type(Enum):
 
 @dataclass
 class DocReference:
-    type: Type
+    type: DocType
     term: int
     number: int
     year: int
@@ -127,7 +127,7 @@ class DocReference:
             raise ValueError("Unrecognized document reference format")
 
         return cls(
-            type=Type[match.group(1)],
+            type=DocType[match.group(1)],
             term=int(match.group(2)),
             number=int(match.group(3)),
             year=int(match.group(4)),

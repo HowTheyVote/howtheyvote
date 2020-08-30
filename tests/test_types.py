@@ -1,5 +1,5 @@
 import pytest
-from ep_votes.types import Country, Group, DocReference, Type, Member
+from ep_votes.models import Country, Group, DocReference, DocType, Member
 
 
 def test_country_from_str():
@@ -20,7 +20,7 @@ def test_group_from_str_short():
 
 
 def test_doc_reference_from_str():
-    ref = DocReference(type=Type.B, term=9, number=154, year=2019)
+    ref = DocReference(type=DocType.B, term=9, number=154, year=2019)
     assert DocReference.from_str("B9-0154/2019") == ref
 
 
@@ -30,7 +30,7 @@ def test_doc_reference_from_str_malformed():
 
 
 def test_doc_reference_url():
-    ref = DocReference(type=Type.B, term=9, number=154, year=2019)
+    ref = DocReference(type=DocType.B, term=9, number=154, year=2019)
     expected = "https://www.europarl.europa.eu/doceo/document/B-9-2019-0154_EN.html"
     assert ref.url() == expected
 
