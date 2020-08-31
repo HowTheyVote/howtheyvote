@@ -119,8 +119,8 @@ class MemberGroupsScraper(Scraper):
 
     def _group(self, tag: Tag) -> Group:
         text = "".join(tag.find_all(text=True, recursive=False))
-        text = text.split(" : ")[1]
-        text = text.split(" - Member")[0]
+        text = text.removeprefix(" : ")
+        text = text.removesuffix(" - Member")
 
         return Group.from_str(text)
 
@@ -172,10 +172,7 @@ class VoteResultsScraper(Scraper):
 
         texts = desc_tag.find_all(text=True, recursive=False)
         texts = [text.strip() for text in texts if text.strip()]
-        text = "".join(texts)
-
-        if text.startswith("- "):
-            return text[len("- ") :]
+        text = "".join(texts).removeprefix("- ")
 
         return text
 

@@ -1,4 +1,4 @@
-FROM python:3.8.5-alpine3.12
+FROM python:3.9.0rc1-alpine3.12
 
 RUN apk --update add \
     build-base \
@@ -9,8 +9,7 @@ RUN apk --update add \
     python3-dev \
     bash \
     less \
-    make \
-    git
+    make
 
 RUN pip3 install poetry
 
