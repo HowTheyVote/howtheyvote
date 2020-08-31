@@ -1,14 +1,22 @@
 version: '3.7'
 
 volumes:
-  env: {}
+  scrapers-virtualenvs: {}
 
 services:
   scrapers:
-    build:
-      context: ./scrapers
+    build: ./scrapers
     volumes:
       - ./scrapers:/app
-      - env:/root/.cache/pypoetry/virtualenvs
+      - scrapers-virtualenvs:/root/.cache/pypoetry/virtualenvs
+    stdin_open: true
+    tty: true
+
+  app:
+    build: ./app
+    volumes:
+      - ./app:/app
+    ports:
+      - '8000:8000'
     stdin_open: true
     tty: true
