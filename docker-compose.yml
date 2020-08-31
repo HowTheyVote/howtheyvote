@@ -4,10 +4,11 @@ volumes:
   env: {}
 
 services:
-  app:
-    build: .
+  scrapers:
+    build:
+      context: ./scrapers
     volumes:
-      - .:/app
+      - ./scrapers:/app
       - env:/root/.cache/pypoetry/virtualenvs
     stdin_open: true
     tty: true

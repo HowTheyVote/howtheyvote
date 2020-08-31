@@ -3,8 +3,12 @@ name: CI
 on: [push]
 
 jobs:
-  ci:
+  ci-scrapers:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: scrapers
 
     steps:
     - name: Set up Python 3.8
