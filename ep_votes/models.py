@@ -133,10 +133,11 @@ class DocReference:
             year=int(match.group(4)),
         )
 
-    def url(self) -> str:
-        BASE = "https://www.europarl.europa.eu/doceo/document"
-        path = f"/{self.type.name}-{self.term}-{self.year:04}-{self.number:04}_EN.html"
-        return BASE + path
+
+@dataclass
+class Doc:
+    title: str
+    reference: DocReference
 
 
 NAME_AFFIXES = [

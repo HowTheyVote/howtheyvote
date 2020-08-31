@@ -8,6 +8,7 @@ from ep_votes.scrapers import (
     MemberInfoScraper,
     MemberGroupsScraper,
     VoteResultsScraper,
+    DocumentScraper,
 )
 from ep_votes.models import (
     Member,
@@ -17,6 +18,7 @@ from ep_votes.models import (
     Position,
     Voting,
     Vote,
+    Doc,
     DocReference,
     DocType,
 )
@@ -37,6 +39,7 @@ def mock_response(req, context):
         "/meps/en/124831/NAME/history/8": "adinolfi_term_8.html",
         "/meps/en/124831/NAME/history/9": "adinolfi_term_9.html",
         "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
+        "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
     }
 
     file = MOCK_RESPONSES[url]
@@ -184,3 +187,14 @@ def test_vote_results_scraper_reference(description_tags):
 
     assert scraper._reference(description_tags[0]) == expected[0]
     assert scraper._reference(description_tags[1]) == expected[1]
+
+
+def test_document_scraper_run(mock_request):
+    ref = DocReference(type=DocType.B, number=220, year=2020, term=9)
+    title = "MOTION FOR A RESOLUTION on the EU’s public health strategy post-COVID-19"
+
+    scraper = DocumentScraper(reference=ref)
+
+    expected = Doc(reference=ref, title=title)
+
+    assert scraper.run() == expected

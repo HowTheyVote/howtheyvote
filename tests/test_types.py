@@ -29,12 +29,6 @@ def test_doc_reference_from_str_malformed():
         DocReference.from_str("XYZ")
 
 
-def test_doc_reference_url():
-    ref = DocReference(type=DocType.B, term=9, number=154, year=2019)
-    expected = "https://www.europarl.europa.eu/doceo/document/B-9-2019-0154_EN.html"
-    assert ref.url() == expected
-
-
 def test_member_parse_full_name():
     assert Member.parse_full_name("Katarina BARLEY") == ("Katarina", "BARLEY")
 

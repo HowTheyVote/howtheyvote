@@ -9,6 +9,7 @@ from ep_votes.scrapers import (
     MemberInfoScraper,
     MemberGroupsScraper,
     VoteResultsScraper,
+    DocumentScraper,
 )
 
 date_type = click.DateTime(formats=["%Y-%m-%d"])
@@ -82,10 +83,20 @@ def vote_results(term: int, date: click.DateTime) -> None:
     click.echo(to_json(votes))
 
 
+@click.command()
+@click.option("--reference", type=str, required=True, help="Reference of the document")
+def document(reference: str) -> None:
+    scraper = DocumentScraper(reference=reference)
+    data = scraper.run()
+
+    click.echo(to_json(data))
+
+
 cli.add_command(members)
 cli.add_command(member_info)
 cli.add_command(member_groups)
 cli.add_command(vote_results)
+cli.add_command(document)
 
 
 if __name__ == "__main__":

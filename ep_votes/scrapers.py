@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup, Tag
 import requests
 from datetime import date, datetime
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Union
 from abc import abstractmethod
 from .models import (
     Member,
@@ -11,6 +11,7 @@ from .models import (
     Position,
     Voting,
     Vote,
+    Doc,
     DocReference,
 )
 
@@ -207,3 +208,25 @@ class VoteResultsScraper(Scraper):
     def _voting(self, tag: BeautifulSoup, position: Position) -> Voting:
         doceo_id = int(tag.get("MepId"))
         return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
+
+
+class DocumentScraper(Scraper):
+    BASE_URL = "https://europarl.europa.eu/doceo/document"
+
+    def __init__(self, reference: Union[DocReference, str]):
+        if isinstance(reference, str):
+            reference = DocReference.from_str(reference)
+
+        self.reference = reference
+
+    def _url(self) -> str:
+        ref = self.reference
+        file = f"{ref.type.name}-{ref.term}-{ref.year:04}-{ref.number:04}_EN.html"
+        return f"{self.BASE_URL}/{file}"
+
+    def _extract_data(self) -> Doc:
+        return Doc(reference=self.reference, title=self._title(),)
+
+    def _title(self) -> str:
+        tag = self._resource.find("title")
+        return tag.text.strip()
