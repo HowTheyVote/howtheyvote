@@ -1,7 +1,7 @@
 import click
 from functools import wraps
-from ep_votes.helpers import to_json
-from ep_votes.scrapers import (
+from .helpers import to_json
+from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,

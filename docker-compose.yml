@@ -6,6 +6,7 @@ volumes:
 services:
   scrapers:
     build: ./scrapers
+    command: poetry run python -m ep_votes.api
     volumes:
       - ./scrapers:/app
       - scrapers_virtualenvs:/root/.cache/pypoetry/virtualenvs
@@ -16,9 +17,18 @@ services:
 
   app:
     build: ./app
+    command: php artisan serve --host 0.0.0.0
     volumes:
       - ./app:/app
     ports:
       - '8000:8000'
+    environment:
+      - APP_NAME=epvotes
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/app/database/database.sqlite
+      - LOG_CHANNEL=stack
     stdin_open: true
     tty: true

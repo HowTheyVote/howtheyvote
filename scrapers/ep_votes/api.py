@@ -1,10 +1,10 @@
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
-from ep_votes.helpers import to_json
 from functools import wraps
 import datetime
-from ep_votes.models import DocReference
-from ep_votes.scrapers import (
+from .helpers import to_json
+from .models import DocReference
+from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
