@@ -1,6 +1,9 @@
 import click
+import datetime
 from functools import wraps
+from typing import Callable, Any, List
 from .helpers import to_json
+from .models import Member, GroupMembership, Vote, Doc
 from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
@@ -11,10 +14,13 @@ from .scrapers import (
 
 date_type = click.DateTime(formats=["%Y-%m-%d"])
 
+SimpleHandler = Callable[..., Any]
+Handler = Callable[..., None]
 
-def json(handler):
+
+def json(handler: SimpleHandler) -> Handler:
     @wraps(handler)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> None:
         res = handler(*args, **kwargs)
         click.echo(to_json(res))
 
@@ -22,21 +28,21 @@ def json(handler):
 
 
 @click.group()
-def cli():
+def cli() -> None:
     pass
 
 
 @click.command()
 @click.option("--term", type=int, required=True, help="Parliamentary term")
 @json
-def members(term: int):
+def members(term: int) -> List[Member]:
     return MembersScraper(term=term).run()
 
 
 @click.command()
 @click.option("--web-id", type=int, required=True, help="Member’s ID on the EP website")
 @json
-def member_info(web_id: int):
+def member_info(web_id: int) -> Member:
     return MemberInfoScraper(web_id=web_id).run()
 
 
@@ -44,7 +50,7 @@ def member_info(web_id: int):
 @click.option("--web-id", type=int, required=True, help="Member’s ID on the EP website")
 @click.option("--term", type=int, required=True, help="Parliamentary term")
 @json
-def member_groups(web_id: int, term: int):
+def member_groups(web_id: int, term: int) -> List[GroupMembership]:
     return MemberGroupsScraper(web_id=web_id, term=term).run()
 
 
@@ -54,14 +60,14 @@ def member_groups(web_id: int, term: int):
     "--date", type=date_type, required=True, help="Date of parliamentary sessions"
 )
 @json
-def vote_results(term: int, date: click.DateTime):
-    return VoteResultsScraper(date=date, term=term).run()
+def vote_results(term: int, date: datetime.datetime) -> List[Vote]:
+    return VoteResultsScraper(date=date.date(), term=term).run()
 
 
 @click.command()
 @click.option("--reference", type=str, required=True, help="Reference of the document")
 @json
-def document(reference: str):
+def document(reference: str) -> Doc:
     return DocumentScraper(reference=reference).run()
 
 

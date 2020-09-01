@@ -1,9 +1,10 @@
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
+from typing import Callable, Dict, Tuple, List, Union, Any
 from functools import wraps
 import datetime
 from .helpers import to_json
-from .models import DocReference
+from .models import Member, DocReference, GroupMembership, Vote, Doc
 from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
@@ -13,9 +14,14 @@ from .scrapers import (
 )
 
 
-def json_response(handler):
+SimpleResponse = Union[Dict, Tuple[Dict, int]]
+SimpleHandler = Callable[..., SimpleResponse]
+Handler = Callable[..., Response]
+
+
+def json_response(handler: SimpleHandler) -> Handler:
     @wraps(handler)
-    def wrapper(*args, **kwds):
+    def wrapper(*args: Any, **kwds: Any) -> Response:
         res = handler(*args, **kwds)
 
         if isinstance(res, tuple):
@@ -29,18 +35,18 @@ def json_response(handler):
     return wrapper
 
 
-def not_found():
+def not_found() -> SimpleResponse:
     return {"message": "Scraper not found"}, 404
 
 
-def args_missing(args):
-    args = ", ".join(args)
-    body = {"message": f"Missing required arguments: {args}"}
+def args_missing(args: List[str]) -> SimpleResponse:
+    missing = ", ".join(args)
+    body = {"message": f"Missing required arguments: {missing}"}
     return body, 400
 
 
-def args(required):
-    def call(handler, req):
+def args(required: Dict[str, Callable]) -> Callable[..., SimpleHandler]:
+    def call(handler: SimpleHandler, req: Request) -> SimpleResponse:
         args = {}
         missing = [x for x in required if not req.args.get(x)]
 
@@ -52,9 +58,9 @@ def args(required):
 
         return handler(**args)
 
-    def decorator(handler):
+    def decorator(handler: SimpleHandler) -> SimpleHandler:
         @wraps(handler)
-        def wrapper(request):
+        def wrapper(request: Request) -> SimpleResponse:
             return call(handler, request)
 
         return wrapper
@@ -63,27 +69,27 @@ def args(required):
 
 
 @args({"term": int})
-def members(term: int):
+def members(term: int) -> List[Member]:
     return MembersScraper(term).run()
 
 
 @args({"web_id": int})
-def member_info(web_id: int):
+def member_info(web_id: int) -> Member:
     return MemberInfoScraper(web_id=web_id).run()
 
 
 @args({"web_id": int, "term": int})
-def member_groups(web_id: int, term: int) -> None:
+def member_groups(web_id: int, term: int) -> List[GroupMembership]:
     return MemberGroupsScraper(web_id=web_id, term=term).run()
 
 
 @args({"date": datetime.date.fromisoformat, "term": int})
-def vote_results(date: datetime.date, term: int) -> None:
+def vote_results(date: datetime.date, term: int) -> List[Vote]:
     return VoteResultsScraper(date=date, term=term).run()
 
 
 @args({"reference": DocReference.from_str})
-def document(reference: DocReference) -> None:
+def document(reference: DocReference) -> Doc:
     return DocumentScraper(reference=reference).run()
 
 
@@ -98,7 +104,7 @@ ROUTE_HANDLERS = [
 
 @Request.application
 @json_response
-def application(req):
+def application(req: Request) -> SimpleResponse:
     routes = {handler.__name__: handler for handler in ROUTE_HANDLERS}
     route = req.path.removeprefix("/")
 
