@@ -223,7 +223,7 @@ class DocumentScraper(Scraper):
         return f"{self.BASE_URL}/{file}"
 
     def _extract_data(self) -> Doc:
-        return Doc(reference=self.reference, title=self._title(),)
+        return Doc(reference=self.reference, title=self._title())
 
     def _title(self) -> str:
         tag = self._resource.find("title")
