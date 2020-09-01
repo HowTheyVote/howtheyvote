@@ -1,9 +1,6 @@
 import click
-import json
-from dataclasses import is_dataclass, asdict
-from typing import Any
-from datetime import date
-from enum import Enum
+from functools import wraps
+from ep_votes.helpers import to_json
 from ep_votes.scrapers import (
     MembersScraper,
     MemberInfoScraper,
@@ -15,27 +12,13 @@ from ep_votes.scrapers import (
 date_type = click.DateTime(formats=["%Y-%m-%d"])
 
 
-class EPVotesEncoder(json.JSONEncoder):
-    DATE_FORMAT = "%Y-%m-%d"
+def json(handler):
+    @wraps(handler)
+    def wrapper(*args, **kwargs):
+        res = handler(*args, **kwargs)
+        click.echo(to_json(res))
 
-    def default(self, obj):
-        if isinstance(obj, date):
-            return obj.strftime(self.DATE_FORMAT)
-
-        if isinstance(obj, set):
-            return list(obj)
-
-        if isinstance(obj, Enum):
-            return obj.name
-
-        if is_dataclass(obj):
-            return asdict(obj)
-
-        return super(EPVotesEncoder, self).default(obj)
-
-
-def to_json(data: Any, indent=None):
-    return json.dumps(data, cls=EPVotesEncoder, indent=2)
+    return wrapper
 
 
 @click.group()
@@ -45,30 +28,24 @@ def cli():
 
 @click.command()
 @click.option("--term", type=int, required=True, help="Parliamentary term")
-def members(term: int) -> None:
-    scraper = MembersScraper(term=term)
-    members = scraper.run()
-
-    click.echo(to_json(members))
+@json
+def members(term: int):
+    return MembersScraper(term=term).run()
 
 
 @click.command()
 @click.option("--web-id", type=int, required=True, help="Member’s ID on the EP website")
-def member_info(web_id: int) -> None:
-    scraper = MemberInfoScraper(web_id=web_id)
-    member = scraper.run()
-
-    click.echo(to_json(member))
+@json
+def member_info(web_id: int):
+    return MemberInfoScraper(web_id=web_id).run()
 
 
 @click.command()
 @click.option("--web-id", type=int, required=True, help="Member’s ID on the EP website")
 @click.option("--term", type=int, required=True, help="Parliamentary term")
-def member_groups(web_id: int, term: int) -> None:
-    scraper = MemberGroupsScraper(web_id=web_id, term=term)
-    groups = scraper.run()
-
-    click.echo(to_json(groups))
+@json
+def member_groups(web_id: int, term: int):
+    return MemberGroupsScraper(web_id=web_id, term=term).run()
 
 
 @click.command()
@@ -76,20 +53,16 @@ def member_groups(web_id: int, term: int) -> None:
 @click.option(
     "--date", type=date_type, required=True, help="Date of parliamentary sessions"
 )
-def vote_results(term: int, date: click.DateTime) -> None:
-    scraper = VoteResultsScraper(date=date, term=term)
-    votes = scraper.run()
-
-    click.echo(to_json(votes))
+@json
+def vote_results(term: int, date: click.DateTime):
+    return VoteResultsScraper(date=date, term=term).run()
 
 
 @click.command()
 @click.option("--reference", type=str, required=True, help="Reference of the document")
-def document(reference: str) -> None:
-    scraper = DocumentScraper(reference=reference)
-    data = scraper.run()
-
-    click.echo(to_json(data))
+@json
+def document(reference: str):
+    return DocumentScraper(reference=reference).run()
 
 
 cli.add_command(members)
