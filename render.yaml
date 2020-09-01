@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: scrapers
+    env: docker
+    region: frankfurt
+    autoDeploy: false
+    dockerfilePath: ./scrapers/Dockerfile
+    dockerContext: ./scrapers
+    dockerCommand: poetry run python -m ep_votes.api

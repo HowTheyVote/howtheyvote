@@ -1,5 +1,6 @@
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
+import os
 from typing import Callable, Dict, Tuple, List, Union, Any
 from functools import wraps
 import datetime
@@ -115,4 +116,6 @@ def application(req: Request) -> SimpleResponse:
 
 
 if __name__ == "__main__":
-    run_simple("0.0.0.0", 5000, application)
+    host = os.environ.get("APP_HOST", "0.0.0.0")
+    port = int(os.environ.get("APP_PORT", 80))
+    run_simple(host, port, application)
