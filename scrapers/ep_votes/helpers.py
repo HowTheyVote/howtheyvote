@@ -26,3 +26,17 @@ class EPVotesEncoder(json.JSONEncoder):
 
 def to_json(data: Any, indent: Optional[int] = None) -> str:
     return json.dumps(data, cls=EPVotesEncoder, indent=2)
+
+
+def removeprefix(string: str, prefix: str) -> str:
+    if string.startswith(prefix):
+        return string[len(prefix) :]
+
+    return string[:]
+
+
+def removesuffix(string: str, suffix: str) -> str:
+    if string.endswith(suffix):
+        return string[: -len(suffix)]
+
+    return string[:]

@@ -3,6 +3,7 @@ import requests
 from datetime import date, datetime
 from typing import Any, List, Optional, Tuple, Union
 from abc import abstractmethod
+from .helpers import removeprefix, removesuffix
 from .models import (
     Member,
     Country,
@@ -119,8 +120,8 @@ class MemberGroupsScraper(Scraper):
 
     def _group(self, tag: Tag) -> Group:
         text = "".join(tag.find_all(text=True, recursive=False))
-        text = text.removeprefix(" : ")
-        text = text.removesuffix(" - Member")
+        text = removeprefix(text, " : ")
+        text = removesuffix(text, " - Member")
 
         return Group.from_str(text)
 
@@ -172,7 +173,7 @@ class VoteResultsScraper(Scraper):
 
         texts = desc_tag.find_all(text=True, recursive=False)
         texts = [text.strip() for text in texts if text.strip()]
-        text = "".join(texts).removeprefix("- ")
+        text = removeprefix("".join(texts), "- ")
 
         return text
 

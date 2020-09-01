@@ -3,7 +3,7 @@ from werkzeug.serving import run_simple
 from typing import Callable, Dict, Tuple, List, Union, Any
 from functools import wraps
 import datetime
-from .helpers import to_json
+from .helpers import to_json, removeprefix
 from .models import Member, DocReference, GroupMembership, Vote, Doc
 from .scrapers import (
     MembersScraper,
@@ -106,7 +106,7 @@ ROUTE_HANDLERS = [
 @json_response
 def application(req: Request) -> SimpleResponse:
     routes = {handler.__name__: handler for handler in ROUTE_HANDLERS}
-    route = req.path.removeprefix("/")
+    route = removeprefix(req.path, "/")
 
     if route not in routes:
         return not_found()
