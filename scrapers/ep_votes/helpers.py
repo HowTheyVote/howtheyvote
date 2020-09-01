@@ -1,8 +1,9 @@
 import json
 from datetime import date
 from enum import Enum
-from dataclasses import is_dataclass, asdict
+from dataclasses import is_dataclass
 from typing import Any, Optional
+from .models import Member, Voting
 
 
 class EPVotesEncoder(json.JSONEncoder):
@@ -18,14 +19,27 @@ class EPVotesEncoder(json.JSONEncoder):
         if isinstance(obj, Enum):
             return obj.name
 
+        if isinstance(obj, Member):
+            return [
+                obj.web_id,
+                obj.terms,
+                obj.first_name,
+                obj.last_name,
+                obj.country,
+                obj.group,
+            ]
+
+        if isinstance(obj, Voting):
+            return [obj.doceo_member_id, obj.name, obj.position]
+
         if is_dataclass(obj):
-            return asdict(obj)
+            return obj.__dict__
 
         return super(EPVotesEncoder, self).default(obj)
 
 
 def to_json(data: Any, indent: Optional[int] = None) -> str:
-    return json.dumps(data, cls=EPVotesEncoder, indent=2)
+    return json.dumps(data, cls=EPVotesEncoder, indent=indent)
 
 
 def removeprefix(string: str, prefix: str) -> str:

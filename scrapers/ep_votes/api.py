@@ -22,8 +22,9 @@ Handler = Callable[..., Response]
 
 def json_response(handler: SimpleHandler) -> Handler:
     @wraps(handler)
-    def wrapper(*args: Any, **kwds: Any) -> Response:
-        res = handler(*args, **kwds)
+    def wrapper(request: Request, *args: Any, **kwds: Any) -> Response:
+        res = handler(request, *args, **kwds)
+        indent = 2 if "pretty" in request.args else None
 
         if isinstance(res, tuple):
             body, status = res
@@ -31,7 +32,9 @@ def json_response(handler: SimpleHandler) -> Handler:
             body = res
             status = 200
 
-        return Response(to_json(body), status=status, content_type="application/json")
+        return Response(
+            to_json(body, indent=indent), status=status, content_type="application/json"
+        )
 
     return wrapper
 
