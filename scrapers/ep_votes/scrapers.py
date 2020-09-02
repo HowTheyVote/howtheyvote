@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup, Tag
 import requests
 from datetime import date, datetime
 from typing import Any, List, Optional, Tuple, Union
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from .helpers import removeprefix, removesuffix
 from .models import (
     Member,
@@ -17,8 +17,12 @@ from .models import (
 )
 
 
-class Scraper:
+class Scraper(ABC):
     BS_PARSER = "lxml"
+
+    @abstractmethod
+    def __init__(self, *args: Any, **kwds: Any):
+        pass
 
     def run(self) -> Any:
         self._load()

@@ -1,12 +1,22 @@
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 import os
-from typing import Callable, Dict, Tuple, List, Union, Any
+from typing import (
+    Callable,
+    Dict,
+    Tuple,
+    List,
+    Union,
+    Any,
+    Type,
+)
+from typing_extensions import TypedDict
 from functools import wraps
 import datetime
-from .helpers import to_json, removeprefix
-from .models import Member, DocReference, GroupMembership, Vote, Doc
+from .helpers import to_json, removeprefix, removesuffix
+from .models import DocReference
 from .scrapers import (
+    Scraper,
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
@@ -43,24 +53,24 @@ def not_found() -> SimpleResponse:
     return {"message": "Scraper not found"}, 404
 
 
-def args_missing(args: List[str]) -> SimpleResponse:
-    missing = ", ".join(args)
+def params_missing(params: List[str]) -> SimpleResponse:
+    missing = ", ".join(params)
     body = {"message": f"Missing required arguments: {missing}"}
     return body, 400
 
 
-def args(required: Dict[str, Callable]) -> Callable[..., SimpleHandler]:
+def require_params(required: Dict[str, Callable]) -> Callable[..., SimpleHandler]:
     def call(handler: SimpleHandler, req: Request) -> SimpleResponse:
-        args = {}
+        params = {}
         missing = [x for x in required if not req.args.get(x)]
 
         if len(missing) > 0:
-            return args_missing(missing)
+            return params_missing(missing)
 
         for key, type in required.items():
-            args[key] = req.args.get(key, type=type)
+            params[key] = req.args.get(key, type=type)
 
-        return handler(**args)
+        return handler(**params)
 
     def decorator(handler: SimpleHandler) -> SimpleHandler:
         @wraps(handler)
@@ -72,50 +82,54 @@ def args(required: Dict[str, Callable]) -> Callable[..., SimpleHandler]:
     return decorator
 
 
-@args({"term": int})
-def members(term: int) -> List[Member]:
-    return MembersScraper(term).run()
+Route = TypedDict(
+    "Route",
+    {
+        "scraper": Type[Scraper],
+        "params": Dict[str, Callable[..., Any]],
+    },
+)
 
-
-@args({"web_id": int})
-def member_info(web_id: int) -> Member:
-    return MemberInfoScraper(web_id=web_id).run()
-
-
-@args({"web_id": int, "term": int})
-def member_groups(web_id: int, term: int) -> List[GroupMembership]:
-    return MemberGroupsScraper(web_id=web_id, term=term).run()
-
-
-@args({"date": datetime.date.fromisoformat, "term": int})
-def vote_results(date: datetime.date, term: int) -> List[Vote]:
-    return VoteResultsScraper(date=date, term=term).run()
-
-
-@args({"reference": DocReference.from_str})
-def document(reference: DocReference) -> Doc:
-    return DocumentScraper(reference=reference).run()
-
-
-ROUTE_HANDLERS = [
-    members,
-    member_info,
-    member_groups,
-    vote_results,
-    document,
-]
+ROUTES: Dict[str, Route] = {
+    "members": {
+        "scraper": MembersScraper,
+        "params": {"term": int},
+    },
+    "member_info": {
+        "scraper": MemberInfoScraper,
+        "params": {"web_id": int},
+    },
+    "member_groups": {
+        "scraper": MemberGroupsScraper,
+        "params": {"web_id": int, "term": int},
+    },
+    "vote_results": {
+        "scraper": VoteResultsScraper,
+        "params": {"date": datetime.date.fromisoformat, "term": int},
+    },
+    "documents": {
+        "scraper": DocumentScraper,
+        "params": {"reference": DocReference.from_str},
+    },
+}
 
 
 @Request.application
 @json_response
 def application(req: Request) -> SimpleResponse:
-    routes = {handler.__name__: handler for handler in ROUTE_HANDLERS}
-    route = removeprefix(req.path, "/")
+    path = removesuffix(removeprefix(req.path, "/"), "/")
 
-    if route not in routes:
+    if path not in ROUTES:
         return not_found()
 
-    return routes[route](req)
+    scraper = ROUTES[path]["scraper"]
+    params = ROUTES[path]["params"]
+    args_decorator = require_params(params)
+
+    def handler(**args: Any) -> SimpleResponse:
+        return scraper(**args).run()
+
+    return args_decorator(handler)(req)
 
 
 if __name__ == "__main__":
