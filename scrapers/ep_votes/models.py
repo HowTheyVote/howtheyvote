@@ -2,7 +2,7 @@ import re
 from enum import Enum, auto
 from dataclasses import dataclass
 from unidecode import unidecode
-from typing import Set, Optional, Tuple, List
+from typing import Optional, Tuple, List
 from datetime import date
 
 COUNTRY_NAMES = {
@@ -140,6 +140,12 @@ class Doc:
     reference: DocReference
 
 
+@dataclass
+class Member:
+    web_id: int
+    terms: List[int]
+
+
 NAME_AFFIXES = [
     "de",
     "del",
@@ -160,14 +166,11 @@ NAME_AFFIXES = [
 
 
 @dataclass
-class Member:
-    web_id: int
-    terms: Optional[Set[int]] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    country: Optional[Country] = None
-    group: Optional[Group] = None
-    date_of_birth: Optional[date] = None
+class MemberInfo:
+    first_name: Optional[str]
+    last_name: Optional[str]
+    country: Country
+    date_of_birth: Optional[date]
 
     @staticmethod
     def parse_full_name(name: str) -> Tuple[Optional[str], Optional[str]]:

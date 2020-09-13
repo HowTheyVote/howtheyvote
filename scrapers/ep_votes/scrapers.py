@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from .helpers import removeprefix, removesuffix
 from .models import (
     Member,
+    MemberInfo,
     Country,
     Group,
     GroupMembership,
@@ -58,7 +59,7 @@ class MembersScraper(Scraper):
 
     def _member(self, tag: Tag) -> Member:
         web_id = int(tag.find("id").text)
-        return Member(web_id=web_id, terms={self.term})
+        return Member(web_id=web_id, terms=[self.term])
 
 
 class MemberInfoScraper(Scraper):
@@ -70,11 +71,10 @@ class MemberInfoScraper(Scraper):
     def _url(self) -> str:
         return f"{self.BASE_URL}/{self.web_id}/NAME/home"
 
-    def _extract_data(self) -> Member:
+    def _extract_data(self) -> MemberInfo:
         first, last = self._name()
 
-        return Member(
-            web_id=self.web_id,
+        return MemberInfo(
             first_name=first,
             last_name=last,
             date_of_birth=self._date_of_birth(),
@@ -84,7 +84,7 @@ class MemberInfoScraper(Scraper):
     def _name(self) -> Tuple[Optional[str], Optional[str]]:
         tag = self._resource.select_one("#presentationmep div.erpl_title-h1")
         full = tag.text.strip()
-        return Member.parse_full_name(full)
+        return MemberInfo.parse_full_name(full)
 
     def _date_of_birth(self) -> Optional[date]:
         tag = self._resource.select_one("#birthDate")
