@@ -16,4 +16,9 @@ class Member extends Model
     protected $dates = [
         'date_of_birth',
     ];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 }
