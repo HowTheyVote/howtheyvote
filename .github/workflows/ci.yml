@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  ci-scrapers:
+  scrapers:
     runs-on: ubuntu-latest
 
     defaults:
@@ -43,3 +43,33 @@ jobs:
 
     - name: Test with pytest
       run: make tests
+
+  app:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache php packages
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-php-packages
+      with:
+        path: ./vendor
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.cache-name }}-
+          ${{ runner.os }}-
+
+    - name: Install dependencies
+      run: composer install
+
+    - name: Check code style with PHP CS Fixer
+      run: composer cs
+
+    - name: Test with pest
+      run: composer test
