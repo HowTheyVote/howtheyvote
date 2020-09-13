@@ -4,3 +4,7 @@ updates:
     directory: "/scrapers"
     schedule:
       interval: "daily"
+  - package-ecosystem: "composer"
+    directory: "/app"
+    schedule:
+      interval: "daily"
