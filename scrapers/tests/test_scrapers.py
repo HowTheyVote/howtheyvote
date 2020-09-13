@@ -201,6 +201,6 @@ def test_document_scraper_run(mock_request):
 
     scraper = DocumentScraper(reference=ref)
 
-    expected = Doc(reference=ref, title=title)
+    expected = Doc(title=title)
 
     assert scraper.run() == expected
