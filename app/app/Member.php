@@ -12,4 +12,8 @@ class Member extends Model
         'last_name',
         'date_of_birth',
     ];
+
+    protected $dates = [
+        'date_of_birth',
+    ];
 }
