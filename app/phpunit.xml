@@ -27,5 +27,8 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
+
+        <server name="SCRAPERS_HOST" value="localhost"/>
+        <server name="SCRAPERS_PORT" value="5000"/>
     </php>
 </phpunit>
