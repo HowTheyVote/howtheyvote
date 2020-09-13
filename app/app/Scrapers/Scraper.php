@@ -2,6 +2,7 @@
 
 namespace App\Scrapers;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
 use Spatie\Url\Url;
@@ -14,6 +15,8 @@ class Scraper
     public array $params = [];
 
     public array $data = [];
+
+    public static string $model;
 
     public function __construct(array $params = []) {
         $this->params = $params;
@@ -39,5 +42,22 @@ class Scraper
         }
 
         return (string) $url;
+    }
+
+    public function asModel(): object
+    {
+        return self::convertDataToModel($this->data);
+    }
+
+    public function asCollection(): Collection
+    {
+        return collect($this->data)->map(function ($data) {
+            return self::convertDataToModel($data);
+        });
+    }
+
+    protected static function convertDataToModel(array $data): object
+    {
+        return new self::$model($data);
     }
 }
