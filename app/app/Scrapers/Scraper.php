@@ -21,10 +21,12 @@ class Scraper
         $this->params = $params;
     }
 
-    public function run(): void
+    public function run(): self
     {
         $response = Http::get($this->url());
         $this->data = $response->json();
+
+        return $this;
     }
 
     public function url(): string
