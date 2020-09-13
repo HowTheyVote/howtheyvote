@@ -137,7 +137,6 @@ class DocReference:
 @dataclass
 class Doc:
     title: str
-    reference: DocReference
 
 
 @dataclass
