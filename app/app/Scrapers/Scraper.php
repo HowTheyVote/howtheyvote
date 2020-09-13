@@ -4,13 +4,11 @@ namespace App\Scrapers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\Response;
 use Spatie\Url\Url;
-use Spatie\Url\QueryParameterBag;
 
 class Scraper
 {
-    static public string $route = '';
+    public static string $route = '';
 
     public array $params = [];
 
@@ -18,7 +16,8 @@ class Scraper
 
     public static string $model;
 
-    public function __construct(array $params = []) {
+    public function __construct(array $params = [])
+    {
         $this->params = $params;
     }
 
@@ -37,7 +36,7 @@ class Scraper
             ->withPort(config('scrapers.port'))
             ->withPath(self::$route);
 
-        foreach($this->params as $key => $value) {
+        foreach ($this->params as $key => $value) {
             $url = $url->withQueryParameter($key, $value);
         }
 

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Collection;
-use App\Scrapers\Scraper;
 use App\Member;
+use App\Scrapers\Scraper;
+use Illuminate\Support\Collection;
 
 uses(Tests\TestCase::class);
 
