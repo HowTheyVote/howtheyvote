@@ -119,13 +119,19 @@ def test_member_groups_scraper_group(mock_request):
 
     tags = [
         "<strong>02-07-2019 ...</strong> : Renew Europe Group - Member",
+        "<strong>02-07-2019 ...</strong> : Group of the European People's Party (Christian Democrats) - Chair",  # noqa: E501
+        "<strong>02-07-2019 ...</strong> : Group of the European United Left - Nordic Green Left - Co-Chair",  # noqa: E501
+        "<strong>02-07-2019 ...</strong> : Group of the Greens/European Free Alliance - Vice-Chair",  # noqa: E501
         "<strong>02-07-2019 ...</strong> : Non-attached Members",
     ]
 
     tags = [BeautifulSoup(tag, "lxml").body for tag in tags]
 
     assert scraper._group(tags[0]) == Group.RENEW
-    assert scraper._group(tags[1]) == Group.NI
+    assert scraper._group(tags[1]) == Group.EPP
+    assert scraper._group(tags[2]) == Group.GUE
+    assert scraper._group(tags[3]) == Group.GREENS
+    assert scraper._group(tags[4]) == Group.NI
 
 
 def test_vote_results_scraper_run(mock_request):
