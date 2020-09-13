@@ -12,6 +12,7 @@ from ep_votes.scrapers import (
 )
 from ep_votes.models import (
     Member,
+    MemberInfo,
     Country,
     Group,
     GroupMembership,
@@ -58,8 +59,8 @@ def test_members_scraper_run(mock_request):
     scraper = MembersScraper(term=9)
 
     expected = [
-        Member(terms={9}, web_id=1),
-        Member(terms={9}, web_id=2),
+        Member(terms=[9], web_id=1),
+        Member(terms=[9], web_id=2),
     ]
 
     assert scraper.run() == expected
@@ -68,8 +69,7 @@ def test_members_scraper_run(mock_request):
 def test_member_info_scraper_run(mock_request):
     scraper = MemberInfoScraper(web_id=124834)
 
-    expected = Member(
-        web_id=124834,
+    expected = MemberInfo(
         first_name="Martin",
         last_name="SONNEBORN",
         date_of_birth=date(1965, 5, 15),

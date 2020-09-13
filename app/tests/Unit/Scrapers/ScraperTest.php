@@ -53,12 +53,7 @@ it('fetches data', function () {
 
     $expected = [
         'web_id' => 12345,
-        'first_name' => null,
-        'last_name' => null,
-        'date_of_birth' => null,
         'terms' => [9],
-        'country' => null,
-        'group' => null,
     ];
 
     Http::assertSentCount(1);
