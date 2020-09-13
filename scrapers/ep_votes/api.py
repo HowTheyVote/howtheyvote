@@ -107,7 +107,7 @@ ROUTES: Dict[str, Route] = {
         "scraper": VoteResultsScraper,
         "params": {"date": datetime.date.fromisoformat, "term": int},
     },
-    "documents": {
+    "document": {
         "scraper": DocumentScraper,
         "params": {"reference": DocReference.from_str},
     },
