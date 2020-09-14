@@ -14,7 +14,7 @@ class ScrapeAndSaveMemberInfoAction
         $this->scrapeAction = $scrapeAction;
     }
 
-    public function execute(int $webId): Member
+    public function execute(int $webId): void
     {
         $member = Member::whereWebId($webId)->first();
 
@@ -22,7 +22,5 @@ class ScrapeAndSaveMemberInfoAction
         $data['country_id'] = Country::whereCode($data['country'])->first()->id;
 
         $member->update($data);
-
-        return $member;
     }
 }

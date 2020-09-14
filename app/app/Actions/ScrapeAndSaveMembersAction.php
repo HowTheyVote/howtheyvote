@@ -4,7 +4,6 @@ namespace App\Actions;
 
 use App\Member;
 use App\Term;
-use Illuminate\Support\Collection;
 
 class ScrapeAndSaveMembersAction
 {
@@ -15,16 +14,16 @@ class ScrapeAndSaveMembersAction
         $this->scrapeAction = $scrapeAction;
     }
 
-    public function execute(int $term): Collection
+    public function execute(int $term): void
     {
         $response = $this->scrapeAction->execute('members', ['term' => $term]);
 
-        return collect($response)->each(function ($data) {
-            return $this->createOrMergeMember($data);
-        });
+        foreach ($response as $data) {
+            $this->createOrMergeMember($data);
+        }
     }
 
-    protected function createOrMergeMember(array $data): bool
+    protected function createOrMergeMember(array $data): Member
     {
         $member = Member::whereWebId($data['web_id'])->first();
         $terms = Term::whereIn('number', $data['terms'])->get();
@@ -33,6 +32,8 @@ class ScrapeAndSaveMembersAction
             $member = Member::create(['web_id' => $data['web_id']]);
         }
 
-        return $member->mergeTerms($terms)->save();
+        $member->mergeTerms($terms)->save();
+
+        return $member;
     }
 }

@@ -14,7 +14,7 @@ beforeEach(function () {
     Term::factory(['number' => 9])->create();
 });
 
-it('fetches and creates new member records', function () {
+it('creates new member records', function () {
     $this->action->execute(9);
 
     Http::assertSentCount(1);
@@ -25,7 +25,7 @@ it('fetches and creates new member records', function () {
     expect($termNumbers)->toEqualCanonicalizing([9]);
 });
 
-it('fetches and merges terms with existing records', function () {
+it('merges terms with existing member records', function () {
     $member = Member::factory(['web_id' => 12345])
         ->has(Term::factory(['number' => 8]))
         ->create();

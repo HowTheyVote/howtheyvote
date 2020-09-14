@@ -31,6 +31,11 @@ class Member extends Model
         return $this->belongsToMany(Term::class);
     }
 
+    public function groupMemberships()
+    {
+        return $this->hasMany(GroupMembership::class);
+    }
+
     public function mergeTerms($newTerms): self
     {
         $this->terms()->sync($newTerms->pluck('id'), false);

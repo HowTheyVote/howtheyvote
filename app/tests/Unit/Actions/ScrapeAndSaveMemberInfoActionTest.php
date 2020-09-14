@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
-it('fetches and updates member data', function () {
+it('updates member data', function () {
     $this->action = $this->app->make(ScrapeAndSaveMemberInfoAction::class);
     Http::fakeJsonFromFile('*/member_info?web_id=12345', 'member_info.json');
 

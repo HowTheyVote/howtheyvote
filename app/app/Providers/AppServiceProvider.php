@@ -35,13 +35,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Http::macro('fakeJsonFromFile', function (string $url, string $fixture) {
-            $body = File::get(base_path("tests/data/{$fixture}"));
-            $response = Http::response($body, 200, [
+        Http::macro('jsonResponseFromFile', function (string $path) {
+            $body = File::get(base_path("tests/data/{$path}"));
+
+            return Http::response($body, 200, [
                 'content-type' => 'application/json',
             ]);
+        });
 
-            return Http::stubUrl($url, $response);
+        Http::macro('fakeJsonFromFile', function (string $url, string $fixture) {
+            return Http::fake([
+                $url => Http::jsonResponseFromFile($fixture),
+            ]);
+        });
+
+        Http::macro('fakeJsonSequenceFromFile', function (string $url, array $fixtures) {
+            $responses = collect($fixtures)->map(function ($fixture) {
+                return Http::jsonResponseFromFile($fixture);
+            })->all();
+
+            return Http::fake([
+                $url => Http::sequence($responses),
+            ]);
         });
     }
 }

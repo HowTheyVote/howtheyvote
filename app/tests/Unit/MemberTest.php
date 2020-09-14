@@ -1,5 +1,6 @@
 <?php
 
+use App\GroupMembership;
 use App\Member;
 use App\Term;
 use Illuminate\Database\QueryException;
@@ -12,6 +13,15 @@ it('ensures `web_id` is unique', function () {
         ['web_id' => 12345],
         ['web_id' => 12345],
     ]);
+})->throws(QueryException::class);
+
+it('is associated with a single group per start date', function () {
+    $member = Member::factory()->create();
+
+    GroupMembership::factory([
+        'member_id' => $member->id,
+        'start_date' => '2020-01-01',
+    ])->count(2)->create();
 })->throws(QueryException::class);
 
 it('converts date_of_birth to date object', function () {
