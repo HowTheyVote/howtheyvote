@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Actions\ScrapeAction;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +16,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(ScrapeAction::class, function () {
+            return new ScrapeAction(
+                config('scrapers.host'),
+                config('scrapers.port')
+            );
+        });
     }
 
     /**
@@ -23,6 +31,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Http::macro('fakeJsonFromFile', function (string $url, string $fixture) {
+            $body = File::get(base_path("tests/data/{$fixture}"));
+            $response = Http::response($body, 200, [
+                'content-type' => 'application/json',
+            ]);
+
+            return Http::stubUrl($url, $response);
+        });
     }
 }
