@@ -76,8 +76,5 @@ jobs:
     - name: Check code style with PHP CS Fixer
       run: composer cs
 
-    - name: Run migrations
-      run: php artisan migrate
-
     - name: Test with pest
       run: composer test
