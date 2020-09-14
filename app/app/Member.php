@@ -14,6 +14,7 @@ class Member extends Model
         'first_name',
         'last_name',
         'date_of_birth',
+        'country_id',
     ];
 
     protected $dates = [

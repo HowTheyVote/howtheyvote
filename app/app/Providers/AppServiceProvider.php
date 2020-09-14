@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(ScrapeAndSaveMembersAction::class);
+        $this->app->bind(ScrapeAndSaveMemberInfoAction::class);
     }
 
     /**
