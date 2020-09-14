@@ -2,9 +2,17 @@
 
 use App\Member;
 use App\Term;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
+
+it('ensures `web_id` is unique', function () {
+    Member::factory()->createMany([
+        ['web_id' => 12345],
+        ['web_id' => 12345],
+    ]);
+})->throws(QueryException::class);
 
 it('converts date_of_birth to date object', function () {
     $member = new Member([
