@@ -23,7 +23,7 @@ class ScrapeAction
         return Http::get($url)->json();
     }
 
-    public function url(string $route, array $params = []): string
+    protected function url(string $route, array $params = []): string
     {
         $url = new Url;
         $url = $url

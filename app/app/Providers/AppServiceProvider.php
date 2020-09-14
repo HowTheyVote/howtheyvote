@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\ScrapeAction;
+use App\Actions\ScrapeAndSaveMembersAction;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
                 config('scrapers.port')
             );
         });
+
+        $this->app->bind(ScrapeAndSaveMembersAction::class);
     }
 
     /**
