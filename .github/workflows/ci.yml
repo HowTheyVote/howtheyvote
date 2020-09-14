@@ -51,6 +51,11 @@ jobs:
       run:
         working-directory: app
 
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ':memory:'
+
     steps:
     - uses: actions/checkout@v2
 
@@ -70,6 +75,9 @@ jobs:
 
     - name: Check code style with PHP CS Fixer
       run: composer cs
+
+    - name: Run migrations
+      run: php artisan migrate
 
     - name: Test with pest
       run: composer test
