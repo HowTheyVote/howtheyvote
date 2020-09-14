@@ -21,4 +21,9 @@ class Member extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function terms()
+    {
+        return $this->belongsToMany(Term::class);
+    }
 }

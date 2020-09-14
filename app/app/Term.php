@@ -11,4 +11,9 @@ class Term extends Model
     protected $fillable = [
         'number',
     ];
+
+    public function members()
+    {
+        return $this->belongsToMany(Term::class);
+    }
 }
