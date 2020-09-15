@@ -11,7 +11,6 @@ unidecode = "^1.1.1"
 flake8-black = "^0.2.1"
 beautifulsoup4 = "^4.9.1"
 lxml = "^4.5.2"
-click = "^7.1.2"
 werkzeug = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
