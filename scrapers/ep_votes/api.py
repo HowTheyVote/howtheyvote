@@ -14,14 +14,14 @@ from typing_extensions import TypedDict
 from functools import wraps
 import datetime
 from .helpers import to_json, removeprefix, removesuffix
-from .models import DocReference
+from .models import DocType
 from .scrapers import (
     Scraper,
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
     VoteResultsScraper,
-    DocumentScraper,
+    DocumentInfoScraper,
 )
 
 
@@ -107,9 +107,14 @@ ROUTES: Dict[str, Route] = {
         "scraper": VoteResultsScraper,
         "params": {"date": datetime.date.fromisoformat, "term": int},
     },
-    "document": {
-        "scraper": DocumentScraper,
-        "params": {"reference": DocReference.from_str},
+    "document_info": {
+        "scraper": DocumentInfoScraper,
+        "params": {
+            "type": lambda x: DocType[x],
+            "term": int,
+            "number": int,
+            "year": int,
+        },
     },
 }
 
