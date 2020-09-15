@@ -16,13 +16,11 @@ class ScrapeAndSaveMemberGroupsAction
         $this->scrapeAction = $scrapeAction;
     }
 
-    public function execute(int $webId, int $term): void
+    public function execute(Member $member, Term $term): void
     {
-        $member = Member::whereWebId($webId)->first();
-
         $response = $this->scrapeAction->execute('member_groups', [
-            'web_id' => $webId,
-            'term' => $term,
+            'web_id' => $member->web_id,
+            'term' => $term->number,
         ]);
 
         foreach ($response as $data) {
@@ -30,10 +28,9 @@ class ScrapeAndSaveMemberGroupsAction
         }
     }
 
-    public function createOrUpdateMembership(Member $member, int $term, array $data): GroupMembership
+    public function createOrUpdateMembership(Member $member, Term $term, array $data): GroupMembership
     {
         $group = Group::whereCode($data['group'])->first();
-        $term = Term::whereNumber($term)->first();
 
         $data = [
             'member_id' => $member->id,

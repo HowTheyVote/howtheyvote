@@ -14,9 +14,11 @@ class ScrapeAndSaveMembersAction
         $this->scrapeAction = $scrapeAction;
     }
 
-    public function execute(int $term): void
+    public function execute(Term $term): void
     {
-        $response = $this->scrapeAction->execute('members', ['term' => $term]);
+        $response = $this->scrapeAction->execute('members', [
+            'term' => $term->number,
+        ]);
 
         foreach ($response as $data) {
             $this->createOrMergeMember($data);

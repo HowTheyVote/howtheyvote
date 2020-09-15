@@ -20,7 +20,7 @@ beforeEach(function () {
 it('creates new group membership records', function () {
     Http::fakeJsonFromFile('*/member_groups?web_id=12345&term=8', 'member_groups.json');
 
-    $this->action->execute(12345, 8);
+    $this->action->execute($this->member, $this->term);
 
     $memberships = $this->member->groupMemberships();
 
@@ -42,7 +42,7 @@ it('updates existing group membership records', function () {
         'end_date' => null,
     ])->create();
 
-    $this->action->execute(12345, 8);
+    $this->action->execute($this->member, $this->term);
 
     $memberships = $this->member->groupMemberships();
 

@@ -15,7 +15,7 @@ it('updates member data', function () {
     $member = Member::factory(['web_id' => 12345])->create();
     $country = Country::factory(['code' => 'UK'])->create();
 
-    $this->action->execute(12345);
+    $this->action->execute($member);
 
     $attributes = $member->fresh()->getAttributes();
     $attributes = Arr::except($attributes, [

@@ -14,11 +14,12 @@ class ScrapeAndSaveMemberInfoAction
         $this->scrapeAction = $scrapeAction;
     }
 
-    public function execute(int $webId): void
+    public function execute(Member $member): void
     {
-        $member = Member::whereWebId($webId)->first();
+        $data = $this->scrapeAction->execute('member_info', [
+            'web_id' => $member->web_id,
+        ]);
 
-        $data = $this->scrapeAction->execute('member_info', ['web_id' => $webId]);
         $data['country_id'] = Country::whereCode($data['country'])->first()->id;
 
         $member->update($data);
