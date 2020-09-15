@@ -2,6 +2,7 @@
 
 use App\Actions\ScrapeAndSaveMemberGroupsAction;
 use App\Group;
+use App\GroupMembership;
 use App\Member;
 use App\Term;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,25 +27,24 @@ it('creates new group membership records', function () {
     expect($memberships->count())->toEqual(1);
     expect($memberships->first()->group->id)->toEqual($this->group->id);
     expect($memberships->first()->term->id)->toEqual($this->term->id);
-
     expect($memberships->first()->start_date)->toEqual('2014-07-02');
     expect($memberships->first()->end_date)->toBeNull();
 });
 
 it('updates existing group membership records', function () {
-    Http::fakeJsonSequenceFromFile(
-        '*/member_groups?web_id=12345&term=8',
-        ['member_groups.json', 'member_groups-2.json']
-    );
+    Http::fakeJsonFromFile('*/member_groups?web_id=12345&term=8', 'member_groups-2.json');
+
+    GroupMembership::factory([
+        'member_id' => $this->member->id,
+        'group_id' => $this->group->id,
+        'term_id' => $this->term->id,
+        'start_date' => '2014-07-02',
+        'end_date' => null,
+    ])->create();
 
     $this->action->execute(12345, 8);
 
     $memberships = $this->member->groupMemberships();
-
-    expect($memberships->count())->toEqual(1);
-    expect($memberships->first()->end_date)->toBeNull();
-
-    $this->action->execute(12345, 8);
 
     expect($memberships->count())->toEqual(1);
     expect($memberships->first()->start_date)->toEqual('2014-07-02');

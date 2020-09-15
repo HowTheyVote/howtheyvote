@@ -48,15 +48,5 @@ class AppServiceProvider extends ServiceProvider
                 $url => Http::jsonResponseFromFile($fixture),
             ]);
         });
-
-        Http::macro('fakeJsonSequenceFromFile', function (string $url, array $fixtures) {
-            $responses = collect($fixtures)->map(function ($fixture) {
-                return Http::jsonResponseFromFile($fixture);
-            })->all();
-
-            return Http::fake([
-                $url => Http::sequence($responses),
-            ]);
-        });
     }
 }
