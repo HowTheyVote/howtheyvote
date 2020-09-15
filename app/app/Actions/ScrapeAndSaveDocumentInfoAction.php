@@ -15,7 +15,7 @@ class ScrapeAndSaveDocumentInfoAction
 
     public function execute(Document $document): void
     {
-        $data = $this->scrapeAction->execute('document', [
+        $data = $this->scrapeAction->execute('document_info', [
             'type' => $document->type,
             'term' => $document->term->number,
             'number' => $document->number,

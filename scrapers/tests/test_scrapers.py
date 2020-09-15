@@ -8,7 +8,7 @@ from ep_votes.scrapers import (
     MemberInfoScraper,
     MemberGroupsScraper,
     VoteResultsScraper,
-    DocumentScraper,
+    DocumentInfoScraper,
 )
 from ep_votes.models import (
     Member,
@@ -196,10 +196,14 @@ def test_vote_results_scraper_reference(description_tags):
 
 
 def test_document_scraper_run(mock_request):
-    ref = DocReference(type=DocType.B, number=220, year=2020, term=9)
     title = "MOTION FOR A RESOLUTION on the EU’s public health strategy post-COVID-19"
 
-    scraper = DocumentScraper(reference=ref)
+    scraper = DocumentInfoScraper(
+        type=DocType.B,
+        term=9,
+        number=220,
+        year=2020,
+    )
 
     expected = Doc(title=title)
 

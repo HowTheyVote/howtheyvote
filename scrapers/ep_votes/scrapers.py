@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup, Tag
 import requests
 from datetime import date, datetime
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple
 from abc import ABC, abstractmethod
 from .helpers import removeprefix, removesuffix
 from .models import (
@@ -14,6 +14,7 @@ from .models import (
     Voting,
     Vote,
     Doc,
+    DocType,
     DocReference,
 )
 
@@ -215,18 +216,17 @@ class VoteResultsScraper(Scraper):
         return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
 
 
-class DocumentScraper(Scraper):
+class DocumentInfoScraper(Scraper):
     BASE_URL = "https://europarl.europa.eu/doceo/document"
 
-    def __init__(self, reference: Union[DocReference, str]):
-        if isinstance(reference, str):
-            reference = DocReference.from_str(reference)
-
-        self.reference = reference
+    def __init__(self, type: DocType, term: int, year: int, number: int):
+        self.type = type
+        self.term = term
+        self.year = year
+        self.number = number
 
     def _url(self) -> str:
-        ref = self.reference
-        file = f"{ref.type.name}-{ref.term}-{ref.year:04}-{ref.number:04}_EN.html"
+        file = f"{self.type.name}-{self.term}-{self.year:04}-{self.number:04}_EN.html"
         return f"{self.BASE_URL}/{file}"
 
     def _extract_data(self) -> Doc:

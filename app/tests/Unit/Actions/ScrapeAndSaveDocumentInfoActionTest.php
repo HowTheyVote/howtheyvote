@@ -18,8 +18,8 @@ it('updates document data', function () {
         'year' => 2019,
     ])->create();
 
-    $url = '*/document?type=B&term=9&number=159&year=2019';
-    Http::fakeJsonFromFile($url, 'document.json');
+    $url = '*/document_info?type=B&term=9&number=159&year=2019';
+    Http::fakeJsonFromFile($url, 'document_info.json');
 
     $this->action->execute($this->document);
 
