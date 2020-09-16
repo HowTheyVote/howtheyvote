@@ -9,6 +9,12 @@
             "number": 154,
             "year": 2019
         },
-        "votings": []
+        "votings": [
+            {
+                "doceo_member_id": 12345,
+                "name": "Doe",
+                "position": "FOR"
+            }
+        ]
     }
 ]

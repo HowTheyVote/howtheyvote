@@ -19,7 +19,7 @@ class CreateVotesTable extends Migration
             $table->foreignId('document_id')->nullable()->constrained();
             $table->unsignedSmallInteger('doceo_vote_id')->unique();
             $table->date('date');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

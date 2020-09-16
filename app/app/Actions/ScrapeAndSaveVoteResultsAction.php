@@ -35,11 +35,14 @@ class ScrapeAndSaveVoteResultsAction
     {
         $document = $this->findOrCreateDocument($data['reference']);
 
-        $vote = Vote::create([
+        $vote = Vote::firstOrCreate([
             'doceo_vote_id' => $data['doceo_vote_id'],
-            'date' => $date,
-            'description' => $data['description'],
             'term_id' => $term->id,
+            'date' => $date,
+        ]);
+
+        $vote->update([
+            'description' => $data['description'],
             'document_id' => $document->id,
         ]);
 

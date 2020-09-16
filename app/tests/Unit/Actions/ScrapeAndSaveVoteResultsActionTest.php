@@ -16,15 +16,11 @@ beforeEach(function () {
     $this->action = $this->app->make(ScrapeAndSaveVoteResultsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     $this->date = new Carbon('2019-10-24');
-    $this->member = Member::factory([
-        'first_name' => 'Jane',
-        'last_name' => 'Doe',
-    ])->create();
-
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
 });
 
 it('creates new vote record including relations', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
+
     $this->action->execute($this->term, $this->date);
 
     expect(Vote::count())->toEqual(1);
@@ -47,6 +43,8 @@ it('creates new vote record including relations', function () {
 });
 
 it('creates new related document records', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
+
     $this->action->execute($this->term, $this->date);
 
     expect(Document::count())->toEqual(1);
@@ -67,13 +65,15 @@ it('creates new related document records', function () {
 });
 
 it('finds and relates existing document record', function () {
-    $document = Document::create([
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
+
+    $document = Document::factory([
         'type' => DocumentTypeEnum::B(),
         'term_id' => $this->term->id,
         'number' => 154,
         'year' => 2019,
         'title' => 'MOTION FOR A RESOLUTION on search and rescue in the Mediterranean',
-    ]);
+    ])->create();
 
     $this->action->execute($this->term, $this->date);
 
@@ -81,14 +81,67 @@ it('finds and relates existing document record', function () {
     expect(Vote::first()->document_id)->toEqual($document->id);
 });
 
-it('finds and relates members', function () {
+it('updates existing vote record inlcuding relations', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
+
+    $vote = Vote::factory([
+        'doceo_vote_id' => 109619,
+        'date' => $this->date,
+        'term_id' => $this->term->id,
+        'description' => 'Old Description',
+        'document_id' => null,
+    ])->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Vote::count())->toEqual(1);
+    expect(Document::count())->toEqual(1);
+    expect($vote->fresh()->document)->toBeInstanceOf(Document::class);
+});
+
+it('finds and relates members with position', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+
+    $member = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->create();
+
     $this->action->execute($this->term, $this->date);
 
     $vote = Vote::first();
 
-    expect($this->member->votes()->count())->toEqual(1);
+    expect($member->votes()->count())->toEqual(1);
     expect($vote->members()->count())->toEqual(1);
 
-    $position = $this->member->votes()->first()->pivot->position;
+    $position = $member->votes()->first()->pivot->position;
     expect($position)->toEqual(VotePositionEnum::FOR());
+});
+
+it('updates related members', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+
+    $vote = Vote::factory([
+        'doceo_vote_id' => 109619,
+        'date' => $this->date,
+        'term_id' => $this->term->id,
+    ])->create();
+
+    $member = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->create();
+
+    $vote->members()->attach($member, [
+        'position' => VotePositionEnum::AGAINST(),
+    ]);
+
+    $this->action->execute($this->term, $this->date);
+
+    expect($vote->members()->count())->toEqual(1);
+
+    $position = $vote->members()->first()->pivot->position;
+    $expected = VotePositionEnum::FOR();
+
+    expect($position)->toEqual($expected);
 });
