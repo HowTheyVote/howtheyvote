@@ -5,7 +5,9 @@ namespace Database\Factories;
 use App\Group;
 use App\GroupMembership;
 use App\Member;
+use App\Term;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 class GroupMembershipFactory extends Factory
 {
@@ -26,8 +28,17 @@ class GroupMembershipFactory extends Factory
         return [
             'group_id' => Group::factory(),
             'member_id' => Member::factory(),
+            'term_id' => Term::factory(),
             'start_date' => $this->faker->dateTimeThisDecade(),
             'end_date' => $this->faker->dateTimeThisDecade(),
         ];
+    }
+
+    public function activeAt(Carbon $date)
+    {
+        return $this->state([
+            'start_date' => $date,
+            'end_date' => $date,
+        ]);
     }
 }

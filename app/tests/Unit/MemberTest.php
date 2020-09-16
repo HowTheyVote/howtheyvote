@@ -5,6 +5,7 @@ use App\Member;
 use App\Term;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -50,4 +51,25 @@ it('merges terms', function () {
 
     expect($result)->toBe($member);
     expect($termNumbers)->toEqual([8, 9, 10]);
+});
+
+it('filters active members for given date', function () {
+    $date = new Carbon('2020-01-02');
+    $before = new Carbon('2020-01-01');
+    $after = new Carbon('2020-01-03');
+
+    Member::factory()
+        ->has(GroupMembership::factory()->activeAt($before))
+        ->create();
+
+    Member::factory()
+        ->has(GroupMembership::factory()->activeAt($after))
+        ->create();
+
+    $active = Member::factory()
+        ->has(GroupMembership::factory()->activeAt($date))
+        ->create();
+
+    expect(Member::activeAt($date)->count())->toEqual(1);
+    expect(Member::activeAt($date)->first()->is($active))->toBeTrue();
 });
