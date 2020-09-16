@@ -129,6 +129,7 @@ class MemberGroupsScraper(Scraper):
         text = removesuffix(text, " - Chair")
         text = removesuffix(text, " - Co-Chair")
         text = removesuffix(text, " - Vice-Chair")
+        text = removesuffix(text, " - Member of the Bureau")
         text = removesuffix(text, " - Member")
 
         return Group.from_str(text)
