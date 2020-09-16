@@ -18,3 +18,14 @@ it('filters active memberships for given date', function () {
     expect(GroupMembership::activeAt($date)->count())->toEqual(1);
     expect(GroupMembership::activeAt($date)->first()->is($active))->toBeTrue();
 });
+
+it('filters ongoing active memberships for given date', function () {
+    $date = new Carbon('2020-01-01');
+
+    GroupMembership::factory([
+        'start_date' => $date,
+        'end_date' => null,
+    ])->create();
+
+    expect(GroupMembership::activeAt($date)->count())->toEqual(1);
+});

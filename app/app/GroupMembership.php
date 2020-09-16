@@ -37,7 +37,15 @@ class GroupMembership extends Model
     public function scopeActiveAt(Builder $query, Carbon $date)
     {
         return $query
-            ->whereDate('start_date', '<=', $date)
-            ->whereDate('end_date', '>=', $date);
+            ->where(function ($query) use ($date) {
+                return $query
+                    ->whereDate('start_date', '<=', $date)
+                    ->whereDate('end_date', '>=', $date);
+            })
+            ->orWhere(function ($query) use ($date) {
+                return $query
+                    ->whereDate('start_date', '<=', $date)
+                    ->whereNull('end_date');
+            });
     }
 }
