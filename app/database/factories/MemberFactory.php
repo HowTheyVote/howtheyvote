@@ -3,8 +3,10 @@
 namespace Database\Factories;
 
 use App\Country;
+use App\GroupMembership;
 use App\Member;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 class MemberFactory extends Factory
 {
@@ -29,5 +31,10 @@ class MemberFactory extends Factory
             'date_of_birth' => $this->faker->dateTimeThisCentury(),
             'country_id' => Country::factory(),
         ];
+    }
+
+    public function activeAt(Carbon $date)
+    {
+        return $this->has(GroupMembership::factory()->activeAt($date));
     }
 }

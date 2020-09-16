@@ -58,17 +58,9 @@ it('filters active members for given date', function () {
     $before = new Carbon('2020-01-01');
     $after = new Carbon('2020-01-03');
 
-    Member::factory()
-        ->has(GroupMembership::factory()->activeAt($before))
-        ->create();
-
-    Member::factory()
-        ->has(GroupMembership::factory()->activeAt($after))
-        ->create();
-
-    $active = Member::factory()
-        ->has(GroupMembership::factory()->activeAt($date))
-        ->create();
+    Member::factory()->activeAt($before)->create();
+    Member::factory()->activeAt($after)->create();
+    $active = Member::factory()->activeAt($date)->create();
 
     expect(Member::activeAt($date)->count())->toEqual(1);
     expect(Member::activeAt($date)->first()->is($active))->toBeTrue();
