@@ -38,7 +38,7 @@ class Member extends Model
 
     public function mergeTerms($newTerms): self
     {
-        $this->terms()->sync($newTerms->pluck('id'), false);
+        $this->terms()->syncWithoutDetaching($newTerms->pluck('id'));
 
         return $this;
     }
