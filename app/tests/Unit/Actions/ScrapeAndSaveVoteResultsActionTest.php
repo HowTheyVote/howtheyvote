@@ -166,3 +166,39 @@ it('ignores inactive members', function () {
     expect($vote->members()->count())->toEqual(1);
     expect($vote->members()->first()->id)->toEqual($activeMember->id);
 });
+
+it('finds members by first and last name if ambigous', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-3.json');
+
+    $jane = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->activeAt($this->date)->create();
+
+    $john = Member::factory([
+        'first_name' => 'John',
+        'last_name' => 'Doe',
+    ])->activeAt($this->date)->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Vote::count())->toEqual(1);
+
+    $members = Vote::first()->members();
+
+    $positionJane = (clone $members)
+        ->whereFirstName('Jane')
+        ->first()
+        ->pivot
+        ->position;
+
+    $positionJohn = (clone $members)
+        ->whereFirstName('John')
+        ->first()
+        ->pivot
+        ->position;
+
+    expect($members->count())->toEqual(2);
+    expect($positionJane)->toEqual(VotePositionEnum::FOR());
+    expect($positionJohn)->toEqual(VotePositionEnum::AGAINST());
+});

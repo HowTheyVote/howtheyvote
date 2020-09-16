@@ -77,8 +77,23 @@ class ScrapeAndSaveVoteResultsAction
 
     protected function findMember(Carbon $date, array $voting): Member
     {
-        return Member::activeAt($date)
+        $activeMembers = Member::activeAt($date);
+
+        // The official vote results provided by the parliament
+        // only contain member's last names. Only if the last name
+        // is ambiguous (i.e. there are two members with the same
+        // last name active in parliament at the same time), the
+        // respective first and last names are listed.
+        $member = (clone $activeMembers)
             ->whereLastName($voting['name'])
+            ->first();
+
+        if ($member) {
+            return $member;
+        }
+
+        return (clone $activeMembers)
+            ->whereRaw('first_name || " " || last_name = ?', [$voting['name']])
             ->first();
     }
 }
