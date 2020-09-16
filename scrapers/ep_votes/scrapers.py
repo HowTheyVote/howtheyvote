@@ -126,11 +126,22 @@ class MemberGroupsScraper(Scraper):
     def _group(self, tag: Tag) -> Group:
         text = "".join(tag.find_all(text=True, recursive=False))
         text = removeprefix(text, " : ")
-        text = removesuffix(text, " - Chair")
-        text = removesuffix(text, " - Co-Chair")
-        text = removesuffix(text, " - Vice-Chair")
-        text = removesuffix(text, " - Member of the Bureau")
-        text = removesuffix(text, " - Member")
+
+        positions = [
+            "President",
+            "Co-President",
+            "Chair",
+            "Co-Chair",
+            "Vice-Chair",
+            "First Vice-Chair",
+            "Member of the Bureau",
+            "Treasurer",
+            "Co-treasurer",
+            "Member",
+        ]
+
+        for pos in positions:
+            text = removesuffix(text, f" - {pos}")
 
         return Group.from_str(text)
 
