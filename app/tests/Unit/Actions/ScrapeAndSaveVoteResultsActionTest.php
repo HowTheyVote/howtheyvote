@@ -105,7 +105,7 @@ it('finds and relates members with position', function () {
     $member = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'Doe',
-    ])->create();
+    ])->activeAt($this->date)->create();
 
     $this->action->execute($this->term, $this->date);
 
@@ -130,7 +130,7 @@ it('updates related members', function () {
     $member = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'Doe',
-    ])->create();
+    ])->activeAt($this->date)->create();
 
     $vote->members()->attach($member, [
         'position' => VotePositionEnum::AGAINST(),
@@ -144,4 +144,25 @@ it('updates related members', function () {
     $expected = VotePositionEnum::FOR();
 
     expect($position)->toEqual($expected);
+});
+
+it('ignores inactive members', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+
+    $inactiveMember = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->create();
+
+    $activeMember = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->activeAt($this->date)->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    $vote = Vote::first();
+
+    expect($vote->members()->count())->toEqual(1);
+    expect($vote->members()->first()->id)->toEqual($activeMember->id);
 });

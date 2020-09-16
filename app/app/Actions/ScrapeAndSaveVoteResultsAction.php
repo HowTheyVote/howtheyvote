@@ -46,7 +46,7 @@ class ScrapeAndSaveVoteResultsAction
             'document_id' => $document->id,
         ]);
 
-        $this->createOrUpdateVotings($vote, $data['votings']);
+        $this->createOrUpdateVotings($date, $vote, $data['votings']);
 
         return $vote;
     }
@@ -63,15 +63,22 @@ class ScrapeAndSaveVoteResultsAction
         ]);
     }
 
-    protected function createOrUpdateVotings(Vote $vote, array $votings): void
+    protected function createOrUpdateVotings(Carbon $date, Vote $vote, array $votings): void
     {
-        $members = collect($votings)->map(function ($voting) {
-            $member = Member::whereLastName($voting['name'])->first();
+        $members = collect($votings)->map(function ($voting) use ($date) {
+            $member = $this->findMember($date, $voting);
             $position = VotePositionEnum::make($voting['position']);
 
             return [$member->id, ['position' => $position]];
         })->toAssoc();
 
         $vote->members()->sync($members);
+    }
+
+    protected function findMember(Carbon $date, array $voting): Member
+    {
+        return Member::activeAt($date)
+            ->whereLastName($voting['name'])
+            ->first();
     }
 }
