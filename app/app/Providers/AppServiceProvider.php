@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Actions\ScrapeAction;
 use App\Actions\ScrapeAndSaveMembersAction;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -57,6 +58,15 @@ class AppServiceProvider extends ServiceProvider
                 $query->bindings,
                 $query->time
             );
+        });
+
+        Collection::macro('toAssoc', function () {
+            return $this->reduce(function ($assoc, $keyValuePair) {
+                [$key, $value] = $keyValuePair;
+                $assoc[$key] = $value;
+
+                return $assoc;
+            }, new static);
         });
     }
 }

@@ -43,7 +43,7 @@ class ScrapeAndSaveVoteResultsAction
             'document_id' => $document->id,
         ]);
 
-        $this->createVotings($vote, $data['votings']);
+        $this->createOrUpdateVotings($vote, $data['votings']);
 
         return $vote;
     }
@@ -60,19 +60,14 @@ class ScrapeAndSaveVoteResultsAction
         ]);
     }
 
-    protected function createVotings(Vote $vote, array $votings): void
+    protected function createOrUpdateVotings(Vote $vote, array $votings): void
     {
-        $members = [];
+        $members = collect($votings)->map(function ($voting) {
+            $member = Member::whereLastName($voting['name'])->first();
+            $position = VotePositionEnum::make($voting['position']);
 
-        foreach ($votings as $data) {
-            $memberId = Member::where([
-                'last_name' => $data['name'],
-            ])->first()->id;
-
-            $members[$memberId] = [
-                'position' => VotePositionEnum::make($data['position']),
-            ];
-        }
+            return [$member->id, ['position' => $position]];
+        })->toAssoc();
 
         $vote->members()->sync($members);
     }

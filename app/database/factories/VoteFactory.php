@@ -24,7 +24,7 @@ class VoteFactory extends Factory
     {
         return [
             'doceo_vote_id' => $this->faker->numberBetween(0, 999999),
-            'date' => $this->faker->dateThisCentury(),
+            'date' => $this->faker->dateTimeThisCentury(),
             'description' => '§ 1/2',
             'document_id' => Document::factory(),
         ];
