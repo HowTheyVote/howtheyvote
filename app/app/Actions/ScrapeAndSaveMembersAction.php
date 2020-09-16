@@ -27,12 +27,10 @@ class ScrapeAndSaveMembersAction
 
     protected function createOrMergeMember(array $data): Member
     {
-        $member = Member::whereWebId($data['web_id'])->first();
-        $terms = Term::whereIn('number', $data['terms'])->get();
-
-        if (! $member) {
-            $member = Member::create(['web_id' => $data['web_id']]);
-        }
+        $terms = Term::whereIn('number', $data['terms'])->first();
+        $member = Member::firstOrCreate([
+            'web_id' => $data['web_id'],
+        ]);
 
         $member->mergeTerms($terms)->save();
 
