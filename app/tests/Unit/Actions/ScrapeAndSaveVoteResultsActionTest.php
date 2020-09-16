@@ -202,3 +202,12 @@ it('finds members by first and last name if ambigous', function () {
     expect($positionJane)->toEqual(VotePositionEnum::FOR());
     expect($positionJohn)->toEqual(VotePositionEnum::AGAINST());
 });
+
+it('finds members using case-insensitive comparisons', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+    Member::factory(['last_name' => 'DOE'])->activeAt($this->date)->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Vote::first()->members()->first()->last_name)->toEqual('DOE');
+});

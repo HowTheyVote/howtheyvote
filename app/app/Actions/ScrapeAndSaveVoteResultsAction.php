@@ -9,6 +9,7 @@ use App\Member;
 use App\Term;
 use App\Vote;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class ScrapeAndSaveVoteResultsAction
 {
@@ -78,6 +79,7 @@ class ScrapeAndSaveVoteResultsAction
     protected function findMember(Carbon $date, array $voting): Member
     {
         $activeMembers = Member::activeAt($date);
+        $name = Str::lower($voting['name']);
 
         // The official vote results provided by the parliament
         // only contain member's last names. Only if the last name
@@ -85,15 +87,17 @@ class ScrapeAndSaveVoteResultsAction
         // last name active in parliament at the same time), the
         // respective first and last names are listed.
         $member = (clone $activeMembers)
-            ->whereLastName($voting['name'])
+            ->whereRaw('lower("members"."last_name") = ?', $name)
             ->first();
 
         if ($member) {
             return $member;
         }
 
+        $predicate = 'lower("members"."first_name") || " " || lower("members"."last_name") = ?';
+
         return (clone $activeMembers)
-            ->whereRaw('first_name || " " || last_name = ?', [$voting['name']])
+            ->whereRaw($predicate, $name)
             ->first();
     }
 }
