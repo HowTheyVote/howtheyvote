@@ -2,8 +2,10 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class GroupMembership extends Model
 {
@@ -30,5 +32,12 @@ class GroupMembership extends Model
     public function term()
     {
         return $this->belongsTo(Term::class);
+    }
+
+    public function scopeActiveAt(Builder $query, Carbon $date)
+    {
+        return $query
+            ->whereDate('start_date', '<=', $date)
+            ->whereDate('end_date', '>=', $date);
     }
 }

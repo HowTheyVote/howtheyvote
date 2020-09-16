@@ -56,9 +56,7 @@ class Member extends Model
         // always a member of at least one group. Even independent members
         // are technically a member of the NI (non-incrits) group.
         return $query->whereHas('groupMemberships', function (Builder $query) use ($date) {
-            return $query
-                ->whereDate('start_date', '<=', $date)
-                ->whereDate('end_date', '>=', $date);
+            return $query->activeAt($date);
         });
     }
 }

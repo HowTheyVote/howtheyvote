@@ -58,6 +58,7 @@ it('filters active members for given date', function () {
     $before = new Carbon('2020-01-01');
     $after = new Carbon('2020-01-03');
 
+    Member::factory()->create();
     Member::factory()->activeAt($before)->create();
     Member::factory()->activeAt($after)->create();
     $active = Member::factory()->activeAt($date)->create();
