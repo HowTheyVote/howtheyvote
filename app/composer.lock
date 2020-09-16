@@ -6148,16 +6148,16 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v0.3.3",
+            "version": "v0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "be7fe41179262fd91491856845b4b41c939099ab"
+                "reference": "1567923cda9a764fb4155798ce9a6d74f4b6c84b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/be7fe41179262fd91491856845b4b41c939099ab",
-                "reference": "be7fe41179262fd91491856845b4b41c939099ab",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/1567923cda9a764fb4155798ce9a6d74f4b6c84b",
+                "reference": "1567923cda9a764fb4155798ce9a6d74f4b6c84b",
                 "shasum": ""
             },
             "require": {
@@ -6235,7 +6235,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-09-13T13:16:38+00:00"
+            "time": "2020-09-15T19:57:50+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
