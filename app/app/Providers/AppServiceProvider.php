@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Actions\ScrapeAction;
 use App\Actions\ScrapeAndSaveMembersAction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -47,6 +49,14 @@ class AppServiceProvider extends ServiceProvider
             return Http::fake([
                 $url => Http::jsonResponseFromFile($fixture),
             ]);
+        });
+
+        DB::listen(function ($query) {
+            Log::info(
+                $query->sql,
+                $query->bindings,
+                $query->time
+            );
         });
     }
 }

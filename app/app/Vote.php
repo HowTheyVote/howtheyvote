@@ -26,4 +26,9 @@ class Vote extends Model
     {
         return $this->belongsTo(Document::class);
     }
+
+    public function members()
+    {
+        return $this->belongsToMany(Member::class)->withPivot('position');
+    }
 }

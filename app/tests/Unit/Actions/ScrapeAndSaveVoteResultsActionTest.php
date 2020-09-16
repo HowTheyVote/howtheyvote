@@ -3,6 +3,8 @@
 use App\Actions\ScrapeAndSaveVoteResultsAction;
 use App\Document;
 use App\Enums\DocumentTypeEnum;
+use App\Enums\VotePositionEnum;
+use App\Member;
 use App\Term;
 use App\Vote;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,6 +16,10 @@ beforeEach(function () {
     $this->action = $this->app->make(ScrapeAndSaveVoteResultsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     $this->date = new Carbon('2019-10-24');
+    $this->member = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->create();
 
     Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
 });
@@ -73,4 +79,16 @@ it('finds and relates existing document record', function () {
 
     expect(Document::count())->toEqual(1);
     expect(Vote::first()->document_id)->toEqual($document->id);
+});
+
+it('finds and relates members', function () {
+    $this->action->execute($this->term, $this->date);
+
+    $vote = Vote::first();
+
+    expect($this->member->votes()->count())->toEqual(1);
+    expect($vote->members()->count())->toEqual(1);
+
+    $position = $this->member->votes()->first()->pivot->position;
+    expect($position)->toEqual(VotePositionEnum::FOR());
 });

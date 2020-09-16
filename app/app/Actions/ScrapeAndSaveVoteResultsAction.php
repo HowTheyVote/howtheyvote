@@ -4,6 +4,8 @@ namespace App\Actions;
 
 use App\Document;
 use App\Enums\DocumentTypeEnum;
+use App\Enums\VotePositionEnum;
+use App\Member;
 use App\Term;
 use App\Vote;
 use Illuminate\Support\Carbon;
@@ -41,6 +43,8 @@ class ScrapeAndSaveVoteResultsAction
             'document_id' => $document->id,
         ]);
 
+        $this->createVotings($vote, $data['votings']);
+
         return $vote;
     }
 
@@ -54,5 +58,22 @@ class ScrapeAndSaveVoteResultsAction
             'number' => $data['number'],
             'year' => $data['year'],
         ]);
+    }
+
+    protected function createVotings(Vote $vote, array $votings): void
+    {
+        $members = [];
+
+        foreach ($votings as $data) {
+            $memberId = Member::where([
+                'last_name' => $data['name'],
+            ])->first()->id;
+
+            $members[$memberId] = [
+                'position' => VotePositionEnum::make($data['position']),
+            ];
+        }
+
+        $vote->members()->sync($members);
     }
 }
