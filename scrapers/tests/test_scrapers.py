@@ -143,7 +143,7 @@ def test_vote_results_scraper_run(mock_request):
         Voting(doceo_member_id=6836, name="Kolakušić", position=Position.ABSTENTION),
     ]
 
-    vote = [
+    votes = [
         Vote(
             doceo_vote_id=116365,
             date=datetime(2020, 7, 23, 12, 49, 32),
@@ -153,7 +153,7 @@ def test_vote_results_scraper_run(mock_request):
         )
     ]
 
-    assert scraper.run() == vote
+    assert scraper.run() == votes
 
 
 @pytest.fixture
