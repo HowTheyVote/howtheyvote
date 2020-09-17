@@ -81,6 +81,15 @@ it('finds and relates existing document record', function () {
     expect(Vote::first()->document_id)->toEqual($document->id);
 });
 
+it('handles votes without document reference', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-5.json');
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Document::count())->toEqual(0);
+    expect(Vote::first()->document_id)->toBeNull();
+});
+
 it('updates existing vote record inlcuding relations', function () {
     Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
 

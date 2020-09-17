@@ -43,7 +43,7 @@ class ScrapeAndSaveVoteResultsAction
 
         $vote->update([
             'description' => $data['description'],
-            'document_id' => $document->id,
+            'document_id' => $document->id ?? null,
         ]);
 
         $this->createOrUpdateVotings($date, $vote, $data['votings']);
@@ -51,8 +51,12 @@ class ScrapeAndSaveVoteResultsAction
         return $vote;
     }
 
-    protected function findOrCreateDocument(array $data): Document
+    protected function findOrCreateDocument(?array $data): ?Document
     {
+        if (! $data) {
+            return null;
+        }
+
         $term = Term::whereNumber($data['term'])->first();
 
         return Document::firstOrCreate([
