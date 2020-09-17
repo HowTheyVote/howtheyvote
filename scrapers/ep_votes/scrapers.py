@@ -231,6 +231,9 @@ class VoteResultsScraper(Scraper):
         }
 
         for position, child in results.items():
+            if not child:
+                continue
+
             votings.extend(self._votings_by_position(child, position))
 
         return votings

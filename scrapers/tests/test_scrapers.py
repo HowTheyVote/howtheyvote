@@ -40,6 +40,7 @@ def mock_response(req, context):
         "/meps/en/124831/NAME/history/8": "adinolfi_term_8.html",
         "/meps/en/124831/NAME/history/9": "adinolfi_term_9.html",
         "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
+        "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
     }
 
@@ -160,6 +161,19 @@ def test_vote_results_scraper_run(mock_request):
     ]
 
     assert scraper.run() == votes
+
+
+def test_vote_results_scraper_run_positions_missing(mock_request):
+    scraper = VoteResultsScraper(term=9, date=date(2019, 10, 22))
+
+    votings = [
+        Voting(doceo_member_id=5602, name="Ždanoka", position=Position.FOR),
+        Voting(doceo_member_id=6752, name="Mobarik", position=Position.ABSTENTION),
+    ]
+
+    votes = scraper.run()
+
+    assert votes[0].votings == votings
 
 
 @pytest.fixture

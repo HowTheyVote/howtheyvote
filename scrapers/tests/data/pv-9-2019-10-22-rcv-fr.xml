@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE PV.RollCallVoteResults SYSTEM "http://www2.europarl.ep.ec/pv/RCV.dtd">
+<PV.RollCallVoteResults xmlns:chart="http://openoffice.org/2000/chart" xmlns:dr3d="http://openoffice.org/2000/dr3d" xmlns:draw="http://openoffice.org/2000/drawing" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:form="http://openoffice.org/2000/form" xmlns:ino="http://namespaces.softwareag.com/tamino/response2" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:number="http://openoffice.org/2000/datastyle" xmlns:office="http://openoffice.org/2000/office" xmlns:script="http://openoffice.org/2000/script" xmlns:style="http://openoffice.org/2000/style" xmlns:svg="http://www.w3.org/2000/svg" xmlns:table="http://openoffice.org/2000/table" xmlns:text="http://openoffice.org/2000/text" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xql="http://metalab.unc.edu/xql/" Sitting.Identifier="1324" Sitting.Date="2019-10-22" EP.Reference="P9_PV(2019)10-22" EP.Number="PE 643.301" Document.Language="XL">
+   <RollCallVoteResults.Titles>
+      <RollCallVoteResults.Title.Text Language="BG">
+         ПРОТОКОЛ
+         <text:line-break />
+         Резултат от поименни гласувания - Приложение 2
+      </RollCallVoteResults.Title.Text>
+   </RollCallVoteResults.Titles>
+   <RollCallVote.Result Identifier="108942" Date="2019-10-22 12:35:26">
+      <RollCallVote.Description.Text>
+         Proposition de règlement (
+         <a href="#reds:iEcCom/COM-2019-0396" data-rel="reds" redmap-uri="/reds:iEcCom/COM-2019-0396">COM(2019)0396</a>
+         - C9-0108/2019-
+         <a href="#reds:DirContProc/COD-2019-0179" data-rel="reds" redmap-uri="/reds:DirContProc/COD-2019-0179">2019/0179(COD)</a>
+         )
+      </RollCallVote.Description.Text>
+      <Result.For Number="618">
+         <Result.PoliticalGroup.List Identifier="Verts/ALE">
+            <PoliticalGroup.Member.Name MepId="5602">Ždanoka</PoliticalGroup.Member.Name>
+         </Result.PoliticalGroup.List>
+      </Result.For>
+      <Result.Abstention Number="6">
+         <Result.PoliticalGroup.List Identifier="ECR">
+            <PoliticalGroup.Member.Name MepId="6752">Mobarik</PoliticalGroup.Member.Name>
+         </Result.PoliticalGroup.List>
+      </Result.Abstention>
+   </RollCallVote.Result>
+</PV.RollCallVoteResults>
