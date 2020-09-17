@@ -67,12 +67,22 @@ it('filters active members for given date', function () {
     expect(Member::activeAt($date)->first()->is($active))->toBeTrue();
 });
 
+it('normalizes names', function () {
+    expect(Member::normalizeName('ALL UPPERCASE'))->toEqual('all uppercase');
+    expect(Member::normalizeName('ÄÖÜäöü'))->toEqual('äöüäöü');
+    expect(Member::normalizeName('removes-dashes'))->toEqual('removes dashes');
+    expect(Member::normalizeName('Nienaß'))->toEqual('nienass');
+});
+
 it('automatically updates normalized name columns', function () {
     $member = Member::factory([
         'first_name' => 'ALL',
         'last_name' => 'UPPERCASE',
     ])->create();
 
-    expect($member->first_name_lower)->toEqual('all');
-    expect($member->last_name_lower)->toEqual('uppercase');
+    $first = $member->first_name_normalized;
+    $last = $member->last_name_normalized;
+
+    expect($first)->toEqual(Member::normalizeName($member->first_name));
+    expect($last)->toEqual(Member::normalizeName($member->last_name));
 });

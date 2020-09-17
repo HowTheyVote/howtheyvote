@@ -27,8 +27,8 @@ it('updates member data', function () {
         'web_id' => 12345,
         'first_name' => 'Jane',
         'last_name' => 'Doe',
-        'first_name_lower' => 'jane',
-        'last_name_lower' => 'doe',
+        'first_name_normalized' => 'jane',
+        'last_name_normalized' => 'doe',
         'country' => CountryEnum::GB(),
         'date_of_birth' => '1975-01-01 00:00:00',
     ]);

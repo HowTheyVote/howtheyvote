@@ -16,6 +16,8 @@ class Member extends Model
         'web_id',
         'first_name',
         'last_name',
+        'first_name_normalized',
+        'last_name_normalized',
         'date_of_birth',
         'country_id',
     ];
@@ -44,18 +46,30 @@ class Member extends Model
         return $this->belongsToMany(Vote::class)->withPivot('position');
     }
 
+    public static function normalizeName(string $name): string
+    {
+        $name = Str::lower($name);
+
+        $replacements = [
+            '-' => ' ',
+            'ß' => 'ss',
+        ];
+
+        return strtr($name, $replacements);
+    }
+
     public function setFirstNameAttribute($name)
     {
         $this->attributes['first_name'] = $name;
 
-        return $this->first_name_lower = Str::lower($name);
+        return $this->first_name_normalized = static::normalizeName($name);
     }
 
     public function setLastNameAttribute($name)
     {
         $this->attributes['last_name'] = $name;
 
-        return $this->last_name_lower = Str::lower($name);
+        return $this->last_name_normalized = static::normalizeName($name);
     }
 
     public function mergeTerms($newTerms): self
