@@ -66,3 +66,13 @@ it('filters active members for given date', function () {
     expect(Member::activeAt($date)->count())->toEqual(1);
     expect(Member::activeAt($date)->first()->is($active))->toBeTrue();
 });
+
+it('automatically updates normalized name columns', function () {
+    $member = Member::factory([
+        'first_name' => 'ALL',
+        'last_name' => 'UPPERCASE',
+    ])->create();
+
+    expect($member->first_name_lower)->toEqual('all');
+    expect($member->last_name_lower)->toEqual('uppercase');
+});

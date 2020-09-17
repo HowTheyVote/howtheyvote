@@ -87,14 +87,14 @@ class ScrapeAndSaveVoteResultsAction
         // last name active in parliament at the same time), the
         // respective first and last names are listed.
         $member = (clone $activeMembers)
-            ->whereRaw('lower("members"."last_name") = ?', $name)
+            ->whereLastNameLower($name)
             ->first();
 
         if ($member) {
             return $member;
         }
 
-        $predicate = 'lower("members"."first_name") || " " || lower("members"."last_name") = ?';
+        $predicate = 'lower("members"."first_name_lower") || " " || lower("members"."last_name_lower") = ?';
 
         return (clone $activeMembers)
             ->whereRaw($predicate, $name)

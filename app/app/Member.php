@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Member extends Model
 {
@@ -41,6 +42,20 @@ class Member extends Model
     public function votes()
     {
         return $this->belongsToMany(Vote::class)->withPivot('position');
+    }
+
+    public function setFirstNameAttribute($name)
+    {
+        $this->attributes['first_name'] = $name;
+
+        return $this->first_name_lower = Str::lower($name);
+    }
+
+    public function setLastNameAttribute($name)
+    {
+        $this->attributes['last_name'] = $name;
+
+        return $this->last_name_lower = Str::lower($name);
     }
 
     public function mergeTerms($newTerms): self

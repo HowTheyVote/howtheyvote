@@ -211,3 +211,12 @@ it('finds members using case-insensitive comparisons', function () {
 
     expect(Vote::first()->members()->first()->last_name)->toEqual('DOE');
 });
+
+it('finds members with special characters in name', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-4.json');
+    Member::factory(['last_name' => 'DOÉ'])->activeAt($this->date)->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Vote::first()->members()->first()->last_name)->toEqual('DOÉ');
+});
