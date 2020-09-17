@@ -189,21 +189,37 @@ class VoteResultsScraper(Scraper):
         return datetime.fromisoformat(tag.get("Date"))
 
     def _description(self, tag: Tag) -> str:
+        ref_tag = self._reference_tag(tag)
         desc_tag = tag.find("RollCallVote.Description.Text")
 
-        texts = desc_tag.find_all(text=True, recursive=False)
-        texts = [text.strip() for text in texts if text.strip()]
-        text = removeprefix("".join(texts), "- ")
+        text = desc_tag.text
 
-        return text
+        if ref_tag:
+            text = text.replace(ref_tag.text, " ")
+
+        return removeprefix(text.strip(), "- ")
 
     def _reference(self, tag: Tag) -> Optional[DocReference]:
+        ref_tag = self._reference_tag(tag)
+
+        if not ref_tag:
+            return None
+
+        return DocReference.from_str(ref_tag.text)
+
+    def _reference_tag(self, tag: Tag) -> Optional[BeautifulSoup]:
         ref_tag = tag.find("RollCallVote.Description.Text").find("a")
 
         if ref_tag is None:
             return None
 
-        return DocReference.from_str(ref_tag.text)
+        redmap_uri = ref_tag["redmap-uri"]
+        allowed = ["/reds:iPlRe", "/reds:iPlRp"]
+
+        if not any(redmap_uri.startswith(prefix) for prefix in allowed):
+            return None
+
+        return ref_tag
 
     def _votings(self, tag: Tag) -> List[Voting]:
         votings = []

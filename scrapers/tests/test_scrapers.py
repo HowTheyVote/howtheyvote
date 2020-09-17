@@ -165,14 +165,37 @@ def test_vote_results_scraper_run(mock_request):
 @pytest.fixture
 def description_tags():
     descriptions = [
-        (
+        (  # Handles resolution references (iPlRe)
             "<RollCallVote.Description.Text>"
-            "<a>B9-0229/2020</a> - § 1/1"
+            '<a redmap-uri="/reds:iPlRe/B-9-2019-0029">B9-0229/2020</a> - § 1/1'
             "</RollCallVote.Description.Text>"
         ),
         (
+            # Handles report references (iPlRp)
+            "<RollCallVote.Description.Text>"
+            '<a redmap-uri="/reds:iPlRp/A-9-2019-0017">A9-0017/2019</a> - '
+            "Monika Hohlmeier et Eider Gardiazabal Rubial - Am 49"
+            "</RollCallVote.Description.Text>"
+        ),
+        (  # Handles descriptions without document references
             "<RollCallVote.Description.Text>"
             "Ordre du jour de mardi - demande du groupe GUE/NGL"
+            "</RollCallVote.Description.Text>"
+        ),
+        (  # Ignore references to non-plenary documents
+            "<RollCallVote.Description.Text>"
+            "Proposition de règlement "
+            "("
+            '<a redmap-uri="/reds:iEcCom/COM-2019-0396">COM(2019)0396</a>'
+            "- C9-0108/2019-"
+            '<a redmap-uri="/reds:DirContProc/COD-2019-0179">2019/0179(COD)</a>'
+            ")"
+            "</RollCallVote.Description.Text>"
+        ),
+        (  # Removes additional whitespace
+            "<RollCallVote.Description.Text>"
+            '<a redmap-uri="/reds:iPlRp/A-9-2019-0020">A9-0020/2019</a>'
+            "-    Younous Omarjee - Vote unique"
             "</RollCallVote.Description.Text>"
         ),
     ]
@@ -185,20 +208,31 @@ def test_vote_results_scraper_description(description_tags):
 
     expected = [
         "§ 1/1",
+        "Monika Hohlmeier et Eider Gardiazabal Rubial - Am 49",
         "Ordre du jour de mardi - demande du groupe GUE/NGL",
+        "Proposition de règlement (COM(2019)0396- C9-0108/2019-2019/0179(COD))",
+        "Younous Omarjee - Vote unique",
     ]
 
     assert scraper._description(description_tags[0]) == expected[0]
     assert scraper._description(description_tags[1]) == expected[1]
+    assert scraper._description(description_tags[2]) == expected[2]
 
 
 def test_vote_results_scraper_reference(description_tags):
     scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
 
-    expected = [DocReference.from_str("B9-0229/2020"), None]
+    expected = [
+        DocReference.from_str("B9-0229/2020"),
+        DocReference.from_str("A9-0017/2019"),
+        None,
+        None,
+        DocReference.from_str("A9-0020/2019"),
+    ]
 
     assert scraper._reference(description_tags[0]) == expected[0]
     assert scraper._reference(description_tags[1]) == expected[1]
+    assert scraper._reference(description_tags[2]) == expected[2]
 
 
 def test_document_scraper_run(mock_request):
