@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Country;
+use App\Enums\CountryEnum;
 use App\GroupMembership;
 use App\Member;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,7 +29,7 @@ class MemberFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'date_of_birth' => $this->faker->dateTimeThisCentury(),
-            'country_id' => Country::factory(),
+            'country' => CountryEnum::GB(),
         ];
     }
 

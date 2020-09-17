@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Country;
+use App\Enums\CountryEnum;
 use App\Member;
 
 class ScrapeAndSaveMemberInfoAction
@@ -20,7 +20,7 @@ class ScrapeAndSaveMemberInfoAction
             'web_id' => $member->web_id,
         ]);
 
-        $data['country_id'] = Country::whereCode($data['country'])->first()->id;
+        $data['country'] = CountryEnum::make($data['country']);
 
         $member->update($data);
     }

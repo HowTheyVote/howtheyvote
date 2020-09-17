@@ -19,6 +19,7 @@ class CreateMembersTable extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->date('date_of_birth')->nullable();
+            $table->char('country', 2)->nullable();
             $table->timestamps();
         });
     }

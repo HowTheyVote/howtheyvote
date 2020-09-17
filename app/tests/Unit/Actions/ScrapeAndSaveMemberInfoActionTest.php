@@ -1,7 +1,7 @@
 <?php
 
 use App\Actions\ScrapeAndSaveMemberInfoAction;
-use App\Country;
+use App\Enums\CountryEnum;
 use App\Member;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
@@ -13,7 +13,6 @@ it('updates member data', function () {
     Http::fakeJsonFromFile('*/member_info?web_id=12345', 'member_info.json');
 
     $member = Member::factory(['web_id' => 12345])->create();
-    $country = Country::factory(['code' => 'UK'])->create();
 
     $this->action->execute($member);
 
@@ -30,7 +29,7 @@ it('updates member data', function () {
         'last_name' => 'Doe',
         'first_name_lower' => 'jane',
         'last_name_lower' => 'doe',
-        'country_id' => $country->id,
+        'country' => CountryEnum::GB(),
         'date_of_birth' => '1975-01-01 00:00:00',
     ]);
 });
