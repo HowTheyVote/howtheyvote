@@ -12,12 +12,12 @@
         "votings": [
             {
                 "doceo_member_id": 12345,
-                "name": "Jane Doe",
+                "name": "Doe Jane",
                 "position": "FOR"
             },
             {
                 "doceo_member_id": 67890,
-                "name": "John Doe",
+                "name": "Doe John",
                 "position": "AGAINST"
             }
         ]

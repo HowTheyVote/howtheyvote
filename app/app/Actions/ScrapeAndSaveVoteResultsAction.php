@@ -94,7 +94,7 @@ class ScrapeAndSaveVoteResultsAction
             return $member;
         }
 
-        $predicate = 'lower("members"."first_name_lower") || " " || lower("members"."last_name_lower") = ?';
+        $predicate = 'lower("members"."last_name_lower") || " " || lower("members"."first_name_lower") = ?';
 
         return (clone $activeMembers)
             ->whereRaw($predicate, $name)

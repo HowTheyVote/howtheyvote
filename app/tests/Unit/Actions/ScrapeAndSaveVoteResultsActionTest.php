@@ -167,7 +167,7 @@ it('ignores inactive members', function () {
     expect($vote->members()->first()->id)->toEqual($activeMember->id);
 });
 
-it('finds members by first and last name if ambigous', function () {
+it('finds members by first and last name if ambiguous', function () {
     Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-3.json');
 
     $jane = Member::factory([
