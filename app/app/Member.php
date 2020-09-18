@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class Member extends Model
@@ -79,7 +78,7 @@ class Member extends Model
         return $this;
     }
 
-    public function scopeActiveAt(Builder $query, Carbon $date)
+    public function scopeActiveAt(Builder $query, \DateTime $date)
     {
         // While members are active members of parliament, they are
         // always a member of at least one group. Even independent members

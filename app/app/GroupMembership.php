@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 class GroupMembership extends Model
 {
@@ -34,7 +33,7 @@ class GroupMembership extends Model
         return $this->belongsTo(Term::class);
     }
 
-    public function scopeActiveAt(Builder $query, Carbon $date)
+    public function scopeActiveAt(Builder $query, \DateTime $date)
     {
         return $query
             ->where(function ($query) use ($date) {

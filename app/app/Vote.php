@@ -15,6 +15,15 @@ class Vote extends Model
         'description',
         'term_id',
         'document_id',
+        'stats',
+    ];
+
+    protected $dates = [
+        'date',
+    ];
+
+    protected $casts = [
+        'stats' => 'array',
     ];
 
     public function term()

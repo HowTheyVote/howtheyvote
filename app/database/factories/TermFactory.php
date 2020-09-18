@@ -22,7 +22,7 @@ class TermFactory extends Factory
     public function definition()
     {
         return [
-            'number' => $this->faker->unique()->numberBetween(1, 20),
+            'number' => $this->faker->unique()->numberBetween(1, 100),
         ];
     }
 }

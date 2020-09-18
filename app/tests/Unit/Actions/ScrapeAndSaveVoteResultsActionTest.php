@@ -30,6 +30,7 @@ it('creates new vote record including relations', function () {
         'updated_at',
         'id',
         'document_id',
+        'stats',
     ]);
 
     expect($vote)->toEqual([
