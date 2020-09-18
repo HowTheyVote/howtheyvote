@@ -9,6 +9,7 @@ use App\Member;
 use App\Term;
 use App\Vote;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class ScrapeAndSaveVoteResultsAction
 {
@@ -46,7 +47,10 @@ class ScrapeAndSaveVoteResultsAction
             'document_id' => $document->id ?? null,
         ]);
 
-        $this->createOrUpdateVotings($date, $vote, $data['votings']);
+        // Preload a list of all active members on the day
+        $members = $this->buildMembersLookup($date);
+
+        $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
 
         return $vote;
     }
@@ -67,21 +71,28 @@ class ScrapeAndSaveVoteResultsAction
         ]);
     }
 
-    protected function createOrUpdateVotings(Carbon $date, Vote $vote, array $votings): void
-    {
-        $members = collect($votings)->map(function ($voting) use ($date) {
-            $member = $this->findMember($date, $voting);
+    protected function createOrUpdateVotings(
+        Collection $members,
+        Carbon $date,
+        Vote $vote,
+        array $votings
+    ): void {
+        $memberVotes = [];
+
+        foreach ($votings as $voting) {
+            $member = $this->findMember($members, $date, $voting);
             $position = VotePositionEnum::make($voting['position']);
 
-            return [$member->id, ['position' => $position]];
-        })->toAssoc();
+            $memberVotes[$member->id] = [
+                'position' => $position,
+            ];
+        }
 
-        $vote->members()->sync($members);
+        $vote->members()->sync($memberVotes);
     }
 
-    protected function findMember(Carbon $date, array $voting): Member
+    protected function findMember(Collection $members, Carbon $date, array $voting): Member
     {
-        $activeMembers = Member::activeAt($date);
         $name = Member::normalizeName($voting['name']);
 
         // The official vote results provided by the parliament
@@ -89,18 +100,25 @@ class ScrapeAndSaveVoteResultsAction
         // is ambiguous (i.e. there are two members with the same
         // last name active in parliament at the same time), the
         // respective first and last names are listed.
-        $member = (clone $activeMembers)
-            ->whereLastNameNormalized($name)
-            ->first();
+        $member = $members->first(function ($member) use ($name) {
+            return $member->last_name_normalized == $name;
+        });
 
         if ($member) {
             return $member;
         }
 
-        $predicate = 'lower("members"."last_name_normalized") || " " || lower("members"."first_name_normalized") = ?';
+        return $members->first(function ($member) use ($name) {
+            $fullName = "{$member->last_name_normalized} {$member->first_name_normalized}";
 
-        return (clone $activeMembers)
-            ->whereRaw($predicate, $name)
-            ->first();
+            return $fullName == $name;
+        });
+    }
+
+    protected function buildMembersLookup(Carbon $date): Collection
+    {
+        return Member::activeAt($date)
+            ->select('id', 'first_name_normalized', 'last_name_normalized')
+            ->get();
     }
 }
