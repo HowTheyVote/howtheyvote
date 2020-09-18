@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\CompileVoteStatsAction;
+use App\Group;
 use App\Member;
 use App\Vote;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -83,5 +84,46 @@ it('compiles stats per country', function () {
         'FOR' => 2,
         'AGAINST' => 0,
         'ABSTENTION' => 0,
+    ]);
+});
+
+it('compiles stats per group', function () {
+    $greens = Group::factory(['code' => 'GREENS'])->create();
+    $epp = Group::factory(['code' => 'EPP'])->create();
+
+    $greensFor = Member::factory()
+        ->activeAt($this->date, $greens)
+        ->count(1);
+
+    $eppAgainst = Member::factory()
+        ->activeAt($this->date, $epp)
+        ->count(2);
+
+    $vote = Vote::factory()
+        ->withDate($this->date)
+        ->withMembers('FOR', $greensFor)
+        ->withMembers('AGAINST', $eppAgainst)
+        ->create();
+
+    $this->action->execute($vote);
+
+    $stats = $vote->fresh()->stats['by_group'];
+
+    expect($stats[$greens->id])->toEqual([
+        'voted' => 1,
+        'by_position' => [
+            'FOR' => 1,
+            'AGAINST' => 0,
+            'ABSTENTION' => 0,
+        ],
+    ]);
+
+    expect($stats[$epp->id])->toEqual([
+        'voted' => 2,
+        'by_position' => [
+            'FOR' => 0,
+            'AGAINST' => 2,
+            'ABSTENTION' => 0,
+        ],
     ]);
 });
