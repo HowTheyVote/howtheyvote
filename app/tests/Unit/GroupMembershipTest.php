@@ -11,12 +11,22 @@ it('filters active memberships for given date', function () {
     $before = new Carbon('2020-01-01');
     $after = new Carbon('2020-01-03');
 
-    GroupMembership::factory()->activeAt($before)->create();
-    GroupMembership::factory()->activeAt($after)->create();
-    $active = GroupMembership::factory()->activeAt($date)->create();
+    GroupMembership::factory()
+        ->withDate($before)
+        ->create();
 
-    expect(GroupMembership::activeAt($date)->count())->toEqual(1);
-    expect(GroupMembership::activeAt($date)->first()->is($active))->toBeTrue();
+    GroupMembership::factory()
+        ->withDate($after)
+        ->create();
+
+    $active = GroupMembership::factory()
+        ->withDate($date)
+        ->create();
+
+    $memberships = GroupMembership::activeAt($date);
+
+    expect($memberships->count())->toEqual(1);
+    expect($memberships->first()->is($active))->toBeTrue();
 });
 
 it('filters ongoing active memberships for given date', function () {

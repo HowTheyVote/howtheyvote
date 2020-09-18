@@ -4,10 +4,10 @@ namespace Database\Factories;
 
 use App\Document;
 use App\Enums\VotePositionEnum;
-use App\Member;
 use App\Term;
 use App\Vote;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 class VoteFactory extends Factory
 {
@@ -34,38 +34,22 @@ class VoteFactory extends Factory
         ];
     }
 
-    public function withFor(int $count = 1)
+    public function withDate(Carbon $date)
     {
-        $position = VotePositionEnum::FOR();
-
-        return $this->withPosition($position, $count);
+        return $this->state([
+            'date' => $date,
+        ]);
     }
 
-    public function withAgainst(int $count = 1)
+    public function withMembers(string $position, MemberFactory $factory)
     {
-        $position = VotePositionEnum::AGAINST();
+        $position = VotePositionEnum::make($position);
 
-        return $this->withPosition($position, $count);
-    }
-
-    public function withAbstention(int $count = 1)
-    {
-        $position = VotePositionEnum::ABSTENTION();
-
-        return $this->withPosition($position, $count);
-    }
-
-    public function withPosition(VotePositionEnum $position, int $count = 1)
-    {
-        return $this->afterCreating(function (Vote $vote) use ($position, $count) {
-            $members = Member::factory()
-                ->activeAt($vote->date)
-                ->count($count)
+        return $this->afterCreating(function (Vote $vote) use ($position, $factory) {
+            $members = $factory
                 ->create()
                 ->map(function ($member) use ($position) {
-                    return [$member->id, [
-                        'position' => $position,
-                    ]];
+                    return [$member->id, ['position' => $position]];
                 })
                 ->toAssoc();
 

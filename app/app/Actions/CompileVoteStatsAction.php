@@ -3,7 +3,6 @@
 namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
-use App\Member;
 use App\Vote;
 use Illuminate\Support\Facades\DB;
 
@@ -12,22 +11,33 @@ class CompileVoteStatsAction
     public function execute(Vote $vote): void
     {
         $stats = [
-            'voted' => $this->voted($vote),
-            'active' => $this->active($vote),
+            'voted' => $vote->members()->count(),
             'by_position' => $this->byPosition($vote),
+            'by_country' => $this->byCountry($vote),
         ];
 
         $vote->update(['stats' => $stats]);
     }
 
-    protected function voted(Vote $vote): int
+    protected function byCountry(Vote $vote): array
     {
-        return $vote->members()->count();
-    }
+        $defaults = collect(VotePositionEnum::getValues())
+            ->map(fn ($position) => [$position, 0])
+            ->toAssoc();
 
-    protected function active(Vote $vote): int
-    {
-        return Member::activeAt($vote->date)->count();
+        return $vote->members()
+            ->select('position', 'country', DB::raw('count(*) as count'))
+            ->groupBy('country', 'position')
+            ->get()
+            ->groupBy('country')
+            ->map(function ($group) use ($defaults) {
+                $positions = $group
+                    ->map(fn ($row) => [$row->position, $row->count])
+                    ->toAssoc();
+
+                return $defaults->merge($positions);
+            })
+            ->toArray();
     }
 
     protected function byPosition(Vote $vote): array

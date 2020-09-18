@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\CountryEnum;
+use App\Group;
 use App\GroupMembership;
 use App\Member;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -33,8 +34,17 @@ class MemberFactory extends Factory
         ];
     }
 
-    public function activeAt(Carbon $date)
+    public function country(string $code)
     {
-        return $this->has(GroupMembership::factory()->activeAt($date));
+        return $this->state(['country' => $code]);
+    }
+
+    public function activeAt(Carbon $date, ?Group $group = null)
+    {
+        $membership = GroupMembership::factory()
+            ->withDate($date)
+            ->withGroup($group);
+
+        return $this->has($membership);
     }
 }

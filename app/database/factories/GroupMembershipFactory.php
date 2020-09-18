@@ -34,11 +34,22 @@ class GroupMembershipFactory extends Factory
         ];
     }
 
-    public function activeAt(Carbon $date)
+    public function withDate(Carbon $date)
     {
         return $this->state([
             'start_date' => $date,
             'end_date' => $date,
+        ]);
+    }
+
+    public function withGroup(?Group $group)
+    {
+        if (! $group) {
+            return $this;
+        }
+
+        return $this->state([
+            'group_id' => $group->id,
         ]);
     }
 }
