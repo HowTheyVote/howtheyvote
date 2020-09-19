@@ -92,8 +92,12 @@ class ScrapeAndSaveVoteResultsAction extends Action
         $memberVotes = [];
 
         foreach ($votings as $voting) {
-            $member = $this->findMember($members, $date, $voting);
-            $position = VotePositionEnum::make($voting['position']);
+            // To reduce response size, votings are encoded
+            // as two-element arrays
+            $name = $voting[0];
+            $position = VotePositionEnum::make($voting[1]);
+
+            $member = $this->findMember($members, $date, $name);
 
             $memberVotes[$member->id] = [
                 'position' => $position,
@@ -104,9 +108,9 @@ class ScrapeAndSaveVoteResultsAction extends Action
         $vote->members()->attach($memberVotes);
     }
 
-    protected function findMember(Collection $members, Carbon $date, array $voting): Member
+    protected function findMember(Collection $members, Carbon $date, string $name): Member
     {
-        $name = Member::normalizeName($voting['name']);
+        $name = Member::normalizeName($name);
 
         // The official vote results provided by the parliament
         // only contain member's last names. Only if the last name

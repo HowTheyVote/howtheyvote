@@ -10,16 +10,8 @@
             "year": 2019
         },
         "votings": [
-            {
-                "doceo_member_id": 12345,
-                "name": "Doe Jane",
-                "position": "FOR"
-            },
-            {
-                "doceo_member_id": 67890,
-                "name": "Doe John",
-                "position": "AGAINST"
-            }
+            [ "Doe Jane", "FOR" ],
+            [ "Doe John", "AGAINST" ]
         ]
     }
 ]

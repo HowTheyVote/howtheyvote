@@ -3,6 +3,7 @@ from datetime import date
 from enum import Enum
 from dataclasses import is_dataclass
 from typing import Any, Optional
+from .models import Voting
 
 
 class EPVotesEncoder(json.JSONEncoder):
@@ -17,6 +18,9 @@ class EPVotesEncoder(json.JSONEncoder):
 
         if isinstance(obj, Enum):
             return obj.name
+
+        if isinstance(obj, Voting):
+            return [obj.name, obj.position]
 
         if is_dataclass(obj):
             return obj.__dict__

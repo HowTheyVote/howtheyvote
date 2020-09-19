@@ -10,11 +10,7 @@
             "year": 2019
         },
         "votings": [
-            {
-                "doceo_member_id": 12345,
-                "name": "Doé",
-                "position": "FOR"
-            }
+            [ "Doé", "FOR" ]
         ]
     }
 ]
