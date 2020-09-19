@@ -23,7 +23,7 @@ class CompileVoteStatsAction extends Action
     {
         $this->log("Compiling group stats for vote {$vote->id}");
 
-        $defaults = collect(VotePositionEnum::getValues())
+        $defaults = collect(VotePositionEnum::toArray())
             ->map(fn ($position) => [$position, 0])
             ->toAssoc();
 
@@ -31,10 +31,10 @@ class CompileVoteStatsAction extends Action
             ->select('position', 'country', DB::raw('count(*) as count'))
             ->groupBy('country', 'position')
             ->get()
-            ->groupBy('country')
+            ->groupBy(fn ($row) => $row->country->label)
             ->map(function ($group) use ($defaults) {
                 $positions = $group
-                    ->map(fn ($row) => [$row->position, $row->count])
+                    ->map(fn ($row) => [$row->pivot->position->label, $row->count])
                     ->toAssoc();
 
                 return $defaults->merge($positions);
@@ -46,7 +46,7 @@ class CompileVoteStatsAction extends Action
     {
         $this->log("Compiling general stats for vote {$vote->id}");
 
-        $defaults = collect(VotePositionEnum::getValues())
+        $defaults = collect(VotePositionEnum::toArray())
             ->map(fn ($position) => [$position, 0])
             ->toAssoc();
 
@@ -54,7 +54,7 @@ class CompileVoteStatsAction extends Action
             ->groupBy('position')
             ->select('position', DB::raw('count(*) as count'))
             ->get()
-            ->map(fn ($row) => [$row->position, $row->count])
+            ->map(fn ($row) => [$row->pivot->position->label, $row->count])
             ->toAssoc();
 
         return $defaults

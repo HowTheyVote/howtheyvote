@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\CountryEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,17 +19,16 @@ class Member extends Model
         'first_name_normalized',
         'last_name_normalized',
         'date_of_birth',
-        'country_id',
+        'country',
     ];
 
     protected $dates = [
         'date_of_birth',
     ];
 
-    public function country()
-    {
-        return $this->belongsTo(Country::class);
-    }
+    protected $casts = [
+        'country' => CountryEnum::class.':nullable',
+    ];
 
     public function terms()
     {
@@ -42,7 +42,9 @@ class Member extends Model
 
     public function votes()
     {
-        return $this->belongsToMany(Vote::class)->withPivot('position');
+        return $this->belongsToMany(Vote::class)
+            ->using(MemberVote::class)
+            ->withPivot('position');
     }
 
     public static function normalizeName(string $name): string

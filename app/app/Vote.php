@@ -38,6 +38,8 @@ class Vote extends Model
 
     public function members()
     {
-        return $this->belongsToMany(Member::class)->withPivot('position');
+        return $this->belongsToMany(Member::class)
+            ->using(MemberVote::class)
+            ->withPivot('position');
     }
 }

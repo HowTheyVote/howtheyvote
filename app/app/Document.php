@@ -2,14 +2,13 @@
 
 namespace App;
 
+use App\Enums\DocumentTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Enum\Laravel\HasEnums;
 
 class Document extends Model
 {
     use HasFactory;
-    use HasEnums;
 
     public $timestamps = false;
 
@@ -21,8 +20,8 @@ class Document extends Model
         'title',
     ];
 
-    protected $enums = [
-        'type',
+    protected $casts = [
+        'type' => DocumentTypeEnum::class,
     ];
 
     public function term()

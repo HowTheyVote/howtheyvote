@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-use Spatie\Enum\Enum;
+use Spatie\Enum\Laravel\Enum;
 
 /**
  * @method static self A()
@@ -11,12 +11,4 @@ use Spatie\Enum\Enum;
  */
 class DocumentTypeEnum extends Enum
 {
-    protected static function values(): array
-    {
-        return [
-            'A' => 0,
-            'B' => 1,
-            'RC' => 2,
-        ];
-    }
 }
