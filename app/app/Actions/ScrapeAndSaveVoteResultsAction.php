@@ -88,7 +88,8 @@ class ScrapeAndSaveVoteResultsAction
             ];
         }
 
-        $vote->members()->sync($memberVotes);
+        $vote->members()->detach();
+        $vote->members()->attach($memberVotes);
     }
 
     protected function findMember(Collection $members, Carbon $date, array $voting): Member
