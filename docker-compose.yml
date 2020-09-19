@@ -19,7 +19,7 @@ services:
 
   app:
     build: ./app
-    depends_on: [scrapers]
+    depends_on: [scrapers, mariadb]
     command: php artisan serve --host 0.0.0.0
     volumes:
       - ./app:/app
@@ -30,10 +30,28 @@ services:
       - APP_ENV=local
       - APP_DEBUG=true
       - APP_URL=http://localhost
-      - DB_CONNECTION=sqlite
-      - DB_DATABASE=/app/database/database.sqlite
+      - DB_CONNECTION=mysql
+      - DB_HOST=mariadb
+      - DB_DATABASE=laravel
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=laravel
       - LOG_CHANNEL=stack
       - SCRAPERS_HOST=scrapers
       - SCRAPERS_PORT=5000
     stdin_open: true
     tty: true
+
+  mariadb:
+    image: mariadb:10.5.5
+    volumes:
+      - ./mariadb/storage:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=laravel
+      - MYSQL_PASSWORD=laravel
+      - MYSQL_ROOT_PASSWORD=laravel
+    stdin_open: true
+    tty: true
+    restart: always

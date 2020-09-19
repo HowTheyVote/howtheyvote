@@ -10,9 +10,11 @@ RUN apk --update add \
     composer
 
 RUN docker-php-ext-install \
-	bcmath \
-	ctype \
-	zip
+    bcmath \
+    ctype \
+    zip \
+    mysqli \
+    pdo_mysql
 
 RUN composer global require laravel/installer
 RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> ~/.bashrc
