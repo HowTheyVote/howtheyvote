@@ -27,6 +27,9 @@ class ScrapeAndSaveVoteResultsAction extends Action
             'date' => $date->toDateString(),
         ]);
 
+        // Preload a list of all active members on the day
+        $members = $this->buildMembersLookup($date);
+
         $total = count($response);
 
         foreach ($response as $key => $data) {
@@ -36,14 +39,18 @@ class ScrapeAndSaveVoteResultsAction extends Action
                 'doceo_vote_id' => $data['doceo_vote_id'],
             ]);
 
-            $this->createOrUpdateVote($term, $date, $data);
+            $this->createOrUpdateVote($members, $term, $date, $data);
         }
 
         $this->log("Imported {$total} votes for {$date}");
     }
 
-    protected function createOrUpdateVote(Term $term, Carbon $date, array $data): Vote
-    {
+    protected function createOrUpdateVote(
+        Collection $members,
+        Term $term,
+        Carbon $date,
+        array $data
+    ): Vote {
         $document = $this->findOrCreateDocument($data['reference']);
 
         $vote = Vote::firstOrCreate([
@@ -56,9 +63,6 @@ class ScrapeAndSaveVoteResultsAction extends Action
             'description' => $data['description'],
             'document_id' => $document->id ?? null,
         ]);
-
-        // Preload a list of all active members on the day
-        $members = $this->buildMembersLookup($date);
 
         $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
 
