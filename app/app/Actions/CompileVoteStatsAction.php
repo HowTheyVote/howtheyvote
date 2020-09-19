@@ -6,7 +6,7 @@ use App\Enums\VotePositionEnum;
 use App\Vote;
 use Illuminate\Support\Facades\DB;
 
-class CompileVoteStatsAction
+class CompileVoteStatsAction extends Action
 {
     public function execute(Vote $vote): void
     {
@@ -21,6 +21,8 @@ class CompileVoteStatsAction
 
     protected function byCountry(Vote $vote): array
     {
+        $this->log("Compiling group stats for vote {$vote->id}");
+
         $defaults = collect(VotePositionEnum::getValues())
             ->map(fn ($position) => [$position, 0])
             ->toAssoc();
@@ -42,6 +44,8 @@ class CompileVoteStatsAction
 
     protected function byPosition(Vote $vote): array
     {
+        $this->log("Compiling general stats for vote {$vote->id}");
+
         $defaults = collect(VotePositionEnum::getValues())
             ->map(fn ($position) => [$position, 0])
             ->toAssoc();

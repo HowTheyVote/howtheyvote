@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Member;
 use App\Term;
 
-class ScrapeAndSaveMembersAction
+class ScrapeAndSaveMembersAction extends Action
 {
     private $scrapeAction;
 
@@ -20,7 +20,12 @@ class ScrapeAndSaveMembersAction
             'term' => $term->number,
         ]);
 
-        foreach ($response as $data) {
+        $total = count($response);
+
+        foreach ($response as $key => $data) {
+            $current = $key + 1;
+            $this->log("Importing member {$current} of {$total}", $data);
+
             $this->createOrMergeMember($data);
         }
     }

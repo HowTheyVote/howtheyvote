@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Enums\CountryEnum;
 use App\Member;
 
-class ScrapeAndSaveMemberInfoAction
+class ScrapeAndSaveMemberInfoAction extends Action
 {
     private $scrapeAction;
 
@@ -19,6 +19,8 @@ class ScrapeAndSaveMemberInfoAction
         $data = $this->scrapeAction->execute('member_info', [
             'web_id' => $member->web_id,
         ]);
+
+        $this->log('Importing member info', $data);
 
         $data['country'] = CountryEnum::make($data['country']);
 

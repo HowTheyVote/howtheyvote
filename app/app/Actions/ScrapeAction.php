@@ -5,7 +5,7 @@ namespace App\Actions;
 use Illuminate\Support\Facades\Http;
 use Spatie\Url\Url;
 
-class ScrapeAction
+class ScrapeAction extends Action
 {
     private $host;
     private $port;
@@ -19,6 +19,8 @@ class ScrapeAction
     public function execute(string $route, array $params): array
     {
         $url = $this->url($route, $params);
+
+        $this->log("Fetching {$url}");
 
         return Http::get($url)->json();
     }

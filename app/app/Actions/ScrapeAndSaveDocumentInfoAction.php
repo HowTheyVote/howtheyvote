@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Document;
 
-class ScrapeAndSaveDocumentInfoAction
+class ScrapeAndSaveDocumentInfoAction extends Action
 {
     private $scrapeAction;
 
@@ -21,6 +21,11 @@ class ScrapeAndSaveDocumentInfoAction
             'number' => $document->number,
             'year' => $document->year,
         ]);
+
+        $this->log('Importing document info', array_merge(
+            $document->toArray(),
+            ['title' => $data['title']]
+        ));
 
         $document->update([
             'title' => $data['title'],

@@ -7,7 +7,7 @@ use App\GroupMembership;
 use App\Member;
 use App\Term;
 
-class ScrapeAndSaveMemberGroupsAction
+class ScrapeAndSaveMemberGroupsAction extends Action
 {
     private $scrapeAction;
 
@@ -23,7 +23,12 @@ class ScrapeAndSaveMemberGroupsAction
             'term' => $term->number,
         ]);
 
-        foreach ($response as $data) {
+        $total = count($response);
+
+        foreach ($response as $key => $data) {
+            $current = $key + 1;
+            $this->log("Importing group membership {$key} of {$total}", $data);
+
             $this->createOrUpdateMembership($member, $term, $data);
         }
     }

@@ -11,7 +11,7 @@ use App\Vote;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class ScrapeAndSaveVoteResultsAction
+class ScrapeAndSaveVoteResultsAction extends Action
 {
     private $scrapeAction;
 
@@ -27,9 +27,19 @@ class ScrapeAndSaveVoteResultsAction
             'date' => $date->toDateString(),
         ]);
 
-        foreach ($response as $data) {
+        $total = count($response);
+
+        foreach ($response as $key => $data) {
+            $current = $key + 1;
+
+            $this->log("Importing vote {$current} of {$total}", [
+                'doceo_vote_id' => $data['doceo_vote_id'],
+            ]);
+
             $this->createOrUpdateVote($term, $date, $data);
         }
+
+        $this->log("Imported {$total} votes for {$date}");
     }
 
     protected function createOrUpdateVote(Term $term, Carbon $date, array $data): Vote
@@ -60,6 +70,8 @@ class ScrapeAndSaveVoteResultsAction
         if (! $data) {
             return null;
         }
+
+        $this->log('Importing document', $data);
 
         $term = Term::whereNumber($data['term'])->first();
 
@@ -118,6 +130,8 @@ class ScrapeAndSaveVoteResultsAction
 
     protected function buildMembersLookup(Carbon $date): Collection
     {
+        $this->log('Building members lookup');
+
         return Member::activeAt($date)
             ->select('id', 'first_name_normalized', 'last_name_normalized')
             ->get();
