@@ -15,7 +15,7 @@ class CreateDocumentsTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('type');
+            $table->char('type', 2);
             $table->foreignId('term_id')->constrained();
             $table->unsignedSmallInteger('number');
             $table->year('year');

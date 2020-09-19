@@ -16,7 +16,7 @@ class CreateMemberVoteTable extends Migration
         Schema::create('member_vote', function (Blueprint $table) {
             $table->foreignId('member_id')->constrained();
             $table->foreignId('vote_id')->constrained();
-            $table->unsignedTinyInteger('position');
+            $table->string('position', 16);
 
             $table->unique(['member_id', 'vote_id']);
         });
