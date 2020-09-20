@@ -28,7 +28,7 @@ class ScrapeAndSaveVoteResultsAction extends Action
         ]);
 
         // Preload a list of all active members on the day
-        $members = $this->buildMembersLookup($date);
+        $members = $this->buildMembersLookup($term, $date);
 
         $total = count($response);
 
@@ -136,11 +136,11 @@ class ScrapeAndSaveVoteResultsAction extends Action
         });
     }
 
-    protected function buildMembersLookup(Carbon $date): Collection
+    protected function buildMembersLookup(Term $term, Carbon $date): Collection
     {
         $this->log('Building members lookup');
 
-        return Member::activeAt($date)
+        return Member::activeAt($date, $term)
             ->select('id', 'first_name_normalized', 'last_name_normalized')
             ->get();
     }

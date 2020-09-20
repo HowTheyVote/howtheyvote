@@ -80,13 +80,13 @@ class Member extends Model
         return $this;
     }
 
-    public function scopeActiveAt(Builder $query, \DateTime $date)
+    public function scopeActiveAt(Builder $query, \DateTime $date, Term $term = null)
     {
         // While members are active members of parliament, they are
         // always a member of at least one group. Even independent members
         // are technically a member of the NI (non-incrits) group.
-        return $query->whereHas('groupMemberships', function (Builder $query) use ($date) {
-            return $query->activeAt($date);
+        return $query->whereHas('groupMemberships', function (Builder $query) use ($date, $term) {
+            return $query->activeAt($date, $term);
         });
     }
 }

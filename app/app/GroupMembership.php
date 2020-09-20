@@ -33,9 +33,9 @@ class GroupMembership extends Model
         return $this->belongsTo(Term::class);
     }
 
-    public function scopeActiveAt(Builder $query, \DateTime $date)
+    public function scopeActiveAt(Builder $query, \DateTime $date, Term $term = null)
     {
-        return $query
+        $query = $query
             ->where(function ($query) use ($date) {
                 return $query
                     ->whereDate('start_date', '<=', $date)
@@ -46,5 +46,11 @@ class GroupMembership extends Model
                     ->whereDate('start_date', '<=', $date)
                     ->whereNull('end_date');
             });
+
+        if ($term) {
+            $query->where('term_id', $term);
+        }
+
+        return $query;
     }
 }
