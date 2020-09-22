@@ -2601,16 +2601,16 @@
         },
         {
             "name": "spatie/laravel-enum",
-            "version": "2.0.0-rc.4",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-enum.git",
-                "reference": "026e04d9ea8c1fa85db4c8dbf88f44aad8cc75ae"
+                "reference": "f3ab0e695d5a9daa5c76b722e9434dae513136eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/026e04d9ea8c1fa85db4c8dbf88f44aad8cc75ae",
-                "reference": "026e04d9ea8c1fa85db4c8dbf88f44aad8cc75ae",
+                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/f3ab0e695d5a9daa5c76b722e9434dae513136eb",
+                "reference": "f3ab0e695d5a9daa5c76b722e9434dae513136eb",
                 "shasum": ""
             },
             "require": {
@@ -2630,7 +2630,8 @@
             "require-dev": {
                 "fzaninotto/faker": "^1.9.1",
                 "orchestra/testbench": "^5.0 || ^6.0",
-                "phpunit/phpunit": "^9.3"
+                "phpunit/phpunit": "^9.3",
+                "vimeo/psalm": "^3.12"
             },
             "suggest": {
                 "fzaninotto/faker": "^1.9.1"
@@ -2684,7 +2685,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-09-17T09:40:57+00:00"
+            "time": "2020-09-21T10:48:23+00:00"
         },
         {
             "name": "spatie/macroable",
