@@ -6157,16 +6157,16 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v0.3.5",
+            "version": "v0.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "5b083e4eb13f7bda5eef7b41a3efd275abe3373a"
+                "reference": "4855987ba8f218f04e1bde7e84b68d7d0d7e73b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/5b083e4eb13f7bda5eef7b41a3efd275abe3373a",
-                "reference": "5b083e4eb13f7bda5eef7b41a3efd275abe3373a",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/4855987ba8f218f04e1bde7e84b68d7d0d7e73b9",
+                "reference": "4855987ba8f218f04e1bde7e84b68d7d0d7e73b9",
                 "shasum": ""
             },
             "require": {
@@ -6175,7 +6175,7 @@
                 "pestphp/pest-plugin-coverage": "^0.3",
                 "pestphp/pest-plugin-init": "^0.3",
                 "php": "^7.3 || ^8.0",
-                "phpunit/phpunit": "9.3.7 || 9.3.8 || 9.3.9 || 9.3.10"
+                "phpunit/phpunit": ">= 9.3.7 <= 9.3.11"
             },
             "require-dev": {
                 "illuminate/console": "^7.16.1",
@@ -6244,7 +6244,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-09-16T09:35:43+00:00"
+            "time": "2020-09-30T12:03:23+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
@@ -6390,16 +6390,16 @@
         },
         {
             "name": "pestphp/pest-plugin-init",
-            "version": "v0.3.0",
+            "version": "v0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest-plugin-init.git",
-                "reference": "06482f1c7ccf92c9ed855efcb7e594399628710a"
+                "reference": "7406643b47835b6c6da709b11da89b0844b8d163"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest-plugin-init/zipball/06482f1c7ccf92c9ed855efcb7e594399628710a",
-                "reference": "06482f1c7ccf92c9ed855efcb7e594399628710a",
+                "url": "https://api.github.com/repos/pestphp/pest-plugin-init/zipball/7406643b47835b6c6da709b11da89b0844b8d163",
+                "reference": "7406643b47835b6c6da709b11da89b0844b8d163",
                 "shasum": ""
             },
             "require": {
@@ -6458,7 +6458,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-08-27T20:08:38+00:00"
+            "time": "2020-09-27T12:48:43+00:00"
         },
         {
             "name": "pestphp/pest-plugin-laravel",
@@ -7704,23 +7704,23 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "5.1.2",
+            "version": "5.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "0a757cab9d5b7ef49a619f1143e6c9c1bc0fe9d2"
+                "reference": "388b6ced16caa751030f6a69e588299fa09200ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/0a757cab9d5b7ef49a619f1143e6c9c1bc0fe9d2",
-                "reference": "0a757cab9d5b7ef49a619f1143e6c9c1bc0fe9d2",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/388b6ced16caa751030f6a69e588299fa09200ac",
+                "reference": "388b6ced16caa751030f6a69e588299fa09200ac",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.3 || ^8.0"
+                "php": ">=7.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9.0"
+                "phpunit/phpunit": "^9.3"
             },
             "suggest": {
                 "ext-posix": "*"
@@ -7728,7 +7728,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0-dev"
+                    "dev-master": "5.1-dev"
                 }
             },
             "autoload": {
@@ -7759,7 +7759,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-06-26T12:07:24+00:00"
+            "time": "2020-09-28T05:52:38+00:00"
         },
         {
             "name": "sebastian/exporter",
