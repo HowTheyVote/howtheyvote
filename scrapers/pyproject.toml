@@ -9,7 +9,7 @@ python = "^3.8"
 requests = "^2.24.0"
 unidecode = "^1.1.1"
 flake8-black = "^0.2.1"
-beautifulsoup4 = "^4.9.1"
+beautifulsoup4 = "^4.9.3"
 lxml = "^4.5.2"
 werkzeug = "^1.0.1"
 
