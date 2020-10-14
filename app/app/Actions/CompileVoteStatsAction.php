@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
+use App\GroupMembership;
 use App\Vote;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ class CompileVoteStatsAction extends Action
             'voted' => $vote->members()->count(),
             'by_position' => $this->byPosition($vote),
             'by_country' => $this->byCountry($vote),
+            'by_group' => $this->byGroup($vote),
         ];
 
         $vote->update(['stats' => $stats]);
@@ -33,7 +35,32 @@ class CompileVoteStatsAction extends Action
             ->groupBy('country', 'position')
             ->get()
             ->groupBy(fn ($row) => $row->country->label)
-            ->map(fn ($rows) => $this->formatPositions($rows))
+            ->map(function ($rows) {
+                return [
+                    'voted' => $rows->pluck('count')->sum(),
+                    'by_position' => $this->formatPositions($rows),
+                ];
+            })->toArray();
+    }
+
+    protected function byGroup(Vote $vote): array
+    {
+        $groups = GroupMembership::activeAt($vote->date);
+
+        return $vote->members()
+            ->joinSub($groups, 'g', function ($join) {
+                $join->on('g.member_id', '=', 'members.id');
+            })
+            ->select('position', 'group_id', DB::raw('count(*) as count'))
+            ->groupBy('position', 'group_id')
+            ->get()
+            ->groupBy('group_id')
+            ->map(function ($rows) {
+                return [
+                    'voted' => $rows->pluck('count')->sum(),
+                    'by_position' => $this->formatPositions($rows),
+                ];
+            })
             ->toArray();
     }
 
@@ -56,7 +83,7 @@ class CompileVoteStatsAction extends Action
             ->toAssoc();
 
         $positions = $rows
-            ->map(fn ($row) => [$row->pivot->position->label, $row->count])
+            ->map(fn ($row) => [$row->pivot->position->label, intval($row->count)])
             ->toAssoc();
 
         return $defaults->merge($positions);

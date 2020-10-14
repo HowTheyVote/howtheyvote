@@ -75,15 +75,21 @@ it('compiles stats per country', function () {
     $stats = $vote->fresh()->stats['by_country'];
 
     expect($stats['DE'])->toEqual([
-        'FOR' => 1,
-        'AGAINST' => 1,
-        'ABSTENTION' => 0,
+        'voted' => 2,
+        'by_position' => [
+            'FOR' => 1,
+            'AGAINST' => 1,
+            'ABSTENTION' => 0,
+        ],
     ]);
 
     expect($stats['FR'])->toEqual([
-        'FOR' => 2,
-        'AGAINST' => 0,
-        'ABSTENTION' => 0,
+        'voted' => 2,
+        'by_position' => [
+            'FOR' => 2,
+            'AGAINST' => 0,
+            'ABSTENTION' => 0,
+        ],
     ]);
 });
 
