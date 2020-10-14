@@ -26,10 +26,6 @@ class CompileVoteStatsAction extends Action
     {
         $this->log("Compiling group stats for vote {$vote->id}");
 
-        $defaults = collect(VotePositionEnum::toArray())
-            ->map(fn ($position) => [$position, 0])
-            ->toAssoc();
-
         return $vote->members()
             ->select('position', 'country', DB::raw('count(*) as count'))
             ->groupBy('country', 'position')
