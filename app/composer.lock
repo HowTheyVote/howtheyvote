@@ -2535,21 +2535,21 @@
         },
         {
             "name": "spatie/enum",
-            "version": "3.1.1",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/enum.git",
-                "reference": "f26ac524e80f20a97236a478a262fb3a02b580cb"
+                "reference": "f7d7354ea9cb1920e8eac56b75c9e8b82ddedf4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/enum/zipball/f26ac524e80f20a97236a478a262fb3a02b580cb",
-                "reference": "f26ac524e80f20a97236a478a262fb3a02b580cb",
+                "url": "https://api.github.com/repos/spatie/enum/zipball/f7d7354ea9cb1920e8eac56b75c9e8b82ddedf4d",
+                "reference": "f7d7354ea9cb1920e8eac56b75c9e8b82ddedf4d",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.4"
+                "php": "^7.4|^8.0"
             },
             "require-dev": {
                 "larapack/dd": "^1.1",
@@ -2597,20 +2597,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-08-28T10:50:26+00:00"
+            "time": "2020-10-08T11:41:01+00:00"
         },
         {
             "name": "spatie/laravel-enum",
-            "version": "2.0.0-rc.4",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-enum.git",
-                "reference": "026e04d9ea8c1fa85db4c8dbf88f44aad8cc75ae"
+                "reference": "e290a4b16931226148c925118f01ef35d7bccd68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/026e04d9ea8c1fa85db4c8dbf88f44aad8cc75ae",
-                "reference": "026e04d9ea8c1fa85db4c8dbf88f44aad8cc75ae",
+                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/e290a4b16931226148c925118f01ef35d7bccd68",
+                "reference": "e290a4b16931226148c925118f01ef35d7bccd68",
                 "shasum": ""
             },
             "require": {
@@ -2630,7 +2630,8 @@
             "require-dev": {
                 "fzaninotto/faker": "^1.9.1",
                 "orchestra/testbench": "^5.0 || ^6.0",
-                "phpunit/phpunit": "^9.3"
+                "phpunit/phpunit": "^9.3",
+                "vimeo/psalm": "^3.12"
             },
             "suggest": {
                 "fzaninotto/faker": "^1.9.1"
@@ -2684,7 +2685,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-09-17T09:40:57+00:00"
+            "time": "2020-10-03T19:00:33+00:00"
         },
         {
             "name": "spatie/macroable",
@@ -2844,16 +2845,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.1.5",
+            "version": "v5.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "186f395b256065ba9b890c0a4e48a91d598fa2cf"
+                "reference": "ae789a8a2ad189ce7e8216942cdb9b77319f5eb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/186f395b256065ba9b890c0a4e48a91d598fa2cf",
-                "reference": "186f395b256065ba9b890c0a4e48a91d598fa2cf",
+                "url": "https://api.github.com/repos/symfony/console/zipball/ae789a8a2ad189ce7e8216942cdb9b77319f5eb8",
+                "reference": "ae789a8a2ad189ce7e8216942cdb9b77319f5eb8",
                 "shasum": ""
             },
             "require": {
@@ -2933,7 +2934,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-02T07:07:40+00:00"
+            "time": "2020-10-07T15:23:00+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -4641,16 +4642,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.1.5",
+            "version": "v5.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "0de4cc1e18bb596226c06a82e2e7e9bc6001a63a"
+                "reference": "4a9afe9d07bac506f75bcee8ed3ce76da5a9343e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/0de4cc1e18bb596226c06a82e2e7e9bc6001a63a",
-                "reference": "0de4cc1e18bb596226c06a82e2e7e9bc6001a63a",
+                "url": "https://api.github.com/repos/symfony/string/zipball/4a9afe9d07bac506f75bcee8ed3ce76da5a9343e",
+                "reference": "4a9afe9d07bac506f75bcee8ed3ce76da5a9343e",
                 "shasum": ""
             },
             "require": {
@@ -4722,7 +4723,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-17T07:48:54+00:00"
+            "time": "2020-09-15T12:23:47+00:00"
         },
         {
             "name": "symfony/translation",
