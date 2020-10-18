@@ -3,7 +3,6 @@
 namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
-use App\GroupMembership;
 use App\Member;
 use App\Vote;
 use Illuminate\Support\Collection;
@@ -62,12 +61,8 @@ class CompileVoteStatsAction extends Action
     {
         $this->log("Compiling group stats for vote {$vote->id}");
 
-        $groups = GroupMembership::activeAt($vote->date);
-
         $active = Member::activeAt($vote->date)
-            ->joinSub($groups, 'g', function ($join) {
-                $join->on('g.member_id', '=', 'members.id');
-            })
+            ->withGroupMembershipAt($vote->date)
             ->select('group_id', DB::raw('count(*) as count'))
             ->groupBy('group_id')
             ->get()
@@ -75,9 +70,7 @@ class CompileVoteStatsAction extends Action
             ->toAssoc();
 
         $byPosition = $vote->members()
-            ->joinSub($groups, 'g', function ($join) {
-                $join->on('g.member_id', '=', 'members.id');
-            })
+            ->withGroupMembershipAt($vote->date)
             ->select('position', 'group_id', DB::raw('count(*) as count'))
             ->groupBy('position', 'group_id')
             ->get()

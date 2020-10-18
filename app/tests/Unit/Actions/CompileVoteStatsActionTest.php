@@ -105,7 +105,6 @@ it('compiles stats per group', function () {
     $epp = Group::factory(['code' => 'EPP'])->create();
 
     $greensFor = Member::factory()
-        ->activeAt((clone $this->date)->subDay(), $epp)
         ->activeAt($this->date, $greens)
         ->count(1);
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Group;
 use App\GroupMembership;
 use App\Member;
 use App\Term;
@@ -85,4 +86,25 @@ it('automatically updates normalized name columns', function () {
 
     expect($first)->toEqual(Member::normalizeName($member->first_name));
     expect($last)->toEqual(Member::normalizeName($member->last_name));
+});
+
+it('loads with group membership at date', function () {
+    $greens = Group::factory(['code' => 'GREENS'])->create();
+    $epp = Group::factory(['code' => 'EPP'])->create();
+
+    $member = Member::factory()
+        ->activeAt(Carbon::yesterday(), $greens)
+        ->activeAt(Carbon::today(), $epp)
+        ->create();
+
+    $yesterday = Member::withGroupMembershipAt(Carbon::yesterday())->first();
+    $today = Member::withGroupMembershipAt(Carbon::today())->first();
+    $tomorrow = Member::withGroupMembershipAt(Carbon::tomorrow())->first();
+
+    expect($yesterday->group_id)->toEqual($greens->id);
+    expect($today->group_id)->toEqual($epp->id);
+
+    // As the member’s not active tomorrow, they don’t have an
+    // associated group for that day
+    expect($tomorrow->group_id)->toBeNull();
 });
