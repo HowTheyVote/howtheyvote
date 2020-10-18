@@ -24,7 +24,7 @@ class CompileVoteStatsAction extends Action
 
     protected function byCountry(Vote $vote): array
     {
-        $this->log("Compiling group stats for vote {$vote->id}");
+        $this->log("Compiling country stats for vote {$vote->id}");
 
         return $vote->members()
             ->select('position', 'country', DB::raw('count(*) as count'))
@@ -41,6 +41,8 @@ class CompileVoteStatsAction extends Action
 
     protected function byGroup(Vote $vote): array
     {
+        $this->log("Compiling group stats for vote {$vote->id}");
+
         $groups = GroupMembership::activeAt($vote->date);
 
         return $vote->members()
