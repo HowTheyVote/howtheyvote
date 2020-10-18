@@ -36,24 +36,26 @@ class CompileVoteStatsAction extends Action
             ->groupBy('country')
             ->get()
             ->map(fn ($row) => [$row->country->label, $row->count])
-            ->toAssoc()
-            ->map(fn ($count) => ['active' => $count])
-            ->toArray();
+            ->toAssoc();
 
-        $voted = $vote->members()
+        $byPosition = $vote->members()
             ->select('position', 'country', DB::raw('count(*) as count'))
             ->groupBy('country', 'position')
             ->get()
             ->groupBy(fn ($row) => $row->country->label)
-            ->map(function ($rows) {
-                return [
-                    'voted' => $rows->pluck('count')->sum(),
-                    'by_position' => $this->formatPositions($rows),
-                ];
-            })
-            ->toArray();
+            ->map(fn ($rows) => $this->formatPositions($rows));
 
-        return array_replace_recursive($active, $voted);
+        $voted = $byPosition->map(function ($counts) {
+            return array_sum($counts->toArray());
+        });
+
+        $stats = $this->mergeStats([
+            'active' => $active,
+            'voted' => $voted,
+            'by_position' => $byPosition,
+        ]);
+
+        return $stats;
     }
 
     protected function byGroup(Vote $vote): array
@@ -70,11 +72,9 @@ class CompileVoteStatsAction extends Action
             ->groupBy('group_id')
             ->get()
             ->map(fn ($row) => [$row->group_id, $row->count])
-            ->toAssoc()
-            ->map(fn ($count) => ['active' => $count])
-            ->toArray();
+            ->toAssoc();
 
-        $voted = $vote->members()
+        $byPosition = $vote->members()
             ->joinSub($groups, 'g', function ($join) {
                 $join->on('g.member_id', '=', 'members.id');
             })
@@ -82,15 +82,17 @@ class CompileVoteStatsAction extends Action
             ->groupBy('position', 'group_id')
             ->get()
             ->groupBy('group_id')
-            ->map(function ($rows) {
-                return [
-                    'voted' => $rows->pluck('count')->sum(),
-                    'by_position' => $this->formatPositions($rows),
-                ];
-            })
-            ->toArray();
+            ->map(fn ($rows) => $this->formatPositions($rows));
 
-        return array_replace_recursive($active, $voted);
+        $voted = $byPosition->map(function ($counts) {
+            return array_sum($counts->toArray());
+        });
+
+        return $this->mergeStats([
+            'active' => $active,
+            'by_position' => $byPosition,
+            'voted' => $voted,
+        ]);
     }
 
     protected function byPosition(Vote $vote): array
@@ -116,5 +118,14 @@ class CompileVoteStatsAction extends Action
             ->toAssoc();
 
         return $defaults->merge($positions);
+    }
+
+    protected function mergeStats(array $stats): array
+    {
+        $stats = collect($stats)->map(function ($stat, $key) {
+            return $stat->map(fn ($item) => [$key => $item]);
+        });
+
+        return array_replace_recursive(...$stats->values()->toArray());
     }
 }
