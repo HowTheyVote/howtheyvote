@@ -39,7 +39,7 @@ it('compiles general stats', function () {
     $stats = $vote->fresh()->stats;
 
     expect($stats['voted'])->toEqual(6);
-
+    expect($stats['active'])->toEqual(6);
     expect($stats['by_position'])->toEqual([
         'FOR' => 3,
         'AGAINST' => 2,
@@ -63,6 +63,11 @@ it('compiles stats per country', function () {
         ->activeAt($this->date)
         ->count(2);
 
+    $frWithoutVote = Member::factory()
+        ->country('FR')
+        ->activeAt($this->date)
+        ->create();
+
     $vote = Vote::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $deFor)
@@ -76,6 +81,7 @@ it('compiles stats per country', function () {
 
     expect($stats['DE'])->toEqual([
         'voted' => 2,
+        'active' => 2,
         'by_position' => [
             'FOR' => 1,
             'AGAINST' => 1,
@@ -85,6 +91,7 @@ it('compiles stats per country', function () {
 
     expect($stats['FR'])->toEqual([
         'voted' => 2,
+        'active' => 3,
         'by_position' => [
             'FOR' => 2,
             'AGAINST' => 0,
@@ -106,6 +113,10 @@ it('compiles stats per group', function () {
         ->activeAt($this->date, $epp)
         ->count(2);
 
+    $eppWithoutVotge = Member::factory()
+        ->activeAt($this->date, $epp)
+        ->create();
+
     $vote = Vote::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $greensFor)
@@ -118,6 +129,7 @@ it('compiles stats per group', function () {
 
     expect($stats[$greens->id])->toEqual([
         'voted' => 1,
+        'active' => 1,
         'by_position' => [
             'FOR' => 1,
             'AGAINST' => 0,
@@ -127,6 +139,7 @@ it('compiles stats per group', function () {
 
     expect($stats[$epp->id])->toEqual([
         'voted' => 2,
+        'active' => 3,
         'by_position' => [
             'FOR' => 0,
             'AGAINST' => 2,
