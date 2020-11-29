@@ -47,6 +47,10 @@ services:
       - ./mariadb/storage:/var/lib/mysql
     ports:
       - '3306:3306'
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
     environment:
       - MYSQL_DATABASE=laravel
       - MYSQL_USER=laravel
