@@ -10,7 +10,7 @@ requests = "^2.25.0"
 unidecode = "^1.1.1"
 flake8-black = "^0.2.1"
 beautifulsoup4 = "^4.9.3"
-lxml = "^4.6.1"
+lxml = "^4.6.2"
 werkzeug = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
