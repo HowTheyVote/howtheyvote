@@ -6194,16 +6194,16 @@
         },
         {
             "name": "pestphp/pest",
-            "version": "v0.3.9",
+            "version": "v0.3.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pestphp/pest.git",
-                "reference": "c3616edbc876df024e8cc9fc7f2a421802a185d3"
+                "reference": "b79ba5098b7fd9faf026d48f8cfd935da9bd17aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pestphp/pest/zipball/c3616edbc876df024e8cc9fc7f2a421802a185d3",
-                "reference": "c3616edbc876df024e8cc9fc7f2a421802a185d3",
+                "url": "https://api.github.com/repos/pestphp/pest/zipball/b79ba5098b7fd9faf026d48f8cfd935da9bd17aa",
+                "reference": "b79ba5098b7fd9faf026d48f8cfd935da9bd17aa",
                 "shasum": ""
             },
             "require": {
@@ -6212,11 +6212,12 @@
                 "pestphp/pest-plugin-coverage": "^0.3",
                 "pestphp/pest-plugin-init": "^0.3",
                 "php": "^7.3 || ^8.0",
-                "phpunit/phpunit": ">= 9.3.7 <= 9.4.1"
+                "phpunit/phpunit": ">= 9.3.7 <= 9.4.3"
             },
             "require-dev": {
                 "illuminate/console": "^7.16.1",
                 "illuminate/support": "^7.16.1",
+                "laravel/dusk": "^6.9.0",
                 "mockery/mockery": "^1.4.1",
                 "pestphp/pest-dev-tools": "dev-master"
             },
@@ -6281,7 +6282,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-10-13T09:56:33+00:00"
+            "time": "2020-11-28T17:55:22+00:00"
         },
         {
             "name": "pestphp/pest-plugin",
