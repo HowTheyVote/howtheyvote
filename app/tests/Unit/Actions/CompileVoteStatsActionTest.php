@@ -112,7 +112,7 @@ it('compiles stats per group', function () {
         ->activeAt($this->date, $epp)
         ->count(2);
 
-    $eppWithoutVotge = Member::factory()
+    $eppWithoutVote = Member::factory()
         ->activeAt($this->date, $epp)
         ->create();
 
