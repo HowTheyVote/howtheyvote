@@ -1,11 +1,15 @@
 <?php
 
+use App\Actions\CompileVoteStatsAction;
 use App\Actions\ScrapeAndSaveMemberGroupsAction;
 use App\Actions\ScrapeAndSaveMemberInfoAction;
 use App\Actions\ScrapeAndSaveMembersAction;
+use App\Actions\ScrapeAndSaveVoteResultsAction;
 use App\Member;
 use App\Term;
+use App\Vote;
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -48,3 +52,13 @@ Artisan::command('scrape:members-groups {term}', function (int $term, ScrapeAndS
         $action->execute($member, $term);
     }
 })->describe('Scrape and save group info for all saved members for the given term.');
+
+Artisan::command('scrape:vote-results {term} {date}', function (int $term, string $date, ScrapeAndSaveVoteResultsAction $action, CompileVoteStatsAction $statsAction) {
+    $term = Term::whereNumber($term)->first();
+    $date = Carbon::parse($date);
+    $action->execute($term, $date);
+
+    foreach (Vote::whereDate('date', '=', $date->toDateString())->get() as $vote) {
+        $statsAction->execute($vote);
+    }
+})->describe('Scrape and save all votes with compiled stats for the given date in in the given term.');
