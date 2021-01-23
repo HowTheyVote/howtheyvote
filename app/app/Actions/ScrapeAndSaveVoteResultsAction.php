@@ -14,10 +14,12 @@ use Illuminate\Support\Collection;
 class ScrapeAndSaveVoteResultsAction extends Action
 {
     private $scrapeAction;
+    private $documentInfoAction;
 
-    public function __construct(ScrapeAction $scrapeAction)
+    public function __construct(ScrapeAction $scrapeAction, ScrapeAndSaveDocumentInfoAction $documentInfoAction)
     {
         $this->scrapeAction = $scrapeAction;
+        $this->documentInfoAction = $documentInfoAction;
     }
 
     public function execute(Term $term, Carbon $date): void
@@ -79,12 +81,18 @@ class ScrapeAndSaveVoteResultsAction extends Action
 
         $term = Term::whereNumber($data['term'])->first();
 
-        return Document::firstOrCreate([
+        $document = Document::firstOrCreate([
             'type' => DocumentTypeEnum::make($data['type']),
             'term_id' => $term->id,
             'number' => $data['number'],
             'year' => $data['year'],
         ]);
+
+        if ($document->wasRecentlyCreated) {
+            $this->documentInfoAction->execute($document);
+        }
+
+        return $document;
     }
 
     protected function createOrUpdateVotings(

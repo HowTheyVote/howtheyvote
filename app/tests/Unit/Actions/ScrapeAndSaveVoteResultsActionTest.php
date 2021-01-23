@@ -13,6 +13,9 @@ use Illuminate\Support\Carbon;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
+    //TODO: use dep injection to mock ScrapeAndSaveDocumentInfoAction
+    Http::fakeJsonFromFile('*/document_info?type=B&term=9&number=154&year=2019', 'document_info.json');
+
     $this->action = $this->app->make(ScrapeAndSaveVoteResultsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     $this->date = new Carbon('2019-10-24');
@@ -43,7 +46,7 @@ it('creates new vote record including relations', function () {
     expect(Vote::first()->document)->not()->toBeNull();
 });
 
-it('creates new related document records', function () {
+it('creates new related document record with document infos', function () {
     Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
 
     $this->action->execute($this->term, $this->date);
@@ -61,7 +64,7 @@ it('creates new related document records', function () {
         'term_id' => $this->term->id,
         'number' => 154,
         'year' => 2019,
-        'title' => null,
+        'title' => 'MOTION FOR A RESOLUTION on search and rescue in the Mediterranean',
     ]);
 });
 
