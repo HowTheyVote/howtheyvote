@@ -57,6 +57,11 @@ jobs:
       DB_DATABASE: ':memory:'
 
     steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+
     - uses: actions/checkout@v2
 
     - name: Cache php packages
