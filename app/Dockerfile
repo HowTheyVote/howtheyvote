@@ -1,13 +1,17 @@
-FROM php:8.0.1-alpine3.12
+FROM php:8-alpine3.12
 
 RUN apk --update add \
     build-base \
+    autoconf \
     libressl-dev \
     libzip-dev \
     bash \
     less \
     make \
     composer
+
+RUN pecl install pcov && docker-php-ext-enable pcov
+RUN docker-php-ext-enable pcov
 
 RUN docker-php-ext-install \
     bcmath \

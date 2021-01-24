@@ -66,6 +66,7 @@
             "@php artisan key:generate --ansi"
         ],
         "test": "pest --no-interaction",
+        "cov": "pest --no-interaction --coverage",
         "cs": "php-cs-fixer fix --dry-run",
         "cs-fix": "php-cs-fixer fix"
     }
