@@ -90,9 +90,9 @@ class Member extends Model
         });
     }
 
-    public function scopeWithGroupMembershipAt(Builder $query, \DateTime $date, Term $term = null)
+    public function scopeWithGroupMembershipAt(Builder $query, \DateTime $date)
     {
-        $groups = GroupMembership::activeAt($date, $term);
+        $groups = GroupMembership::activeAt($date);
 
         return $query->leftJoinSub($groups, 'group_memberships', function ($join) {
             $join->on('group_memberships.member_id', '=', 'members.id');

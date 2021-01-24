@@ -1,7 +1,6 @@
 <?php
 
 use App\GroupMembership;
-use App\Term;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
@@ -39,28 +38,4 @@ it('filters ongoing active memberships for given date', function () {
     ])->create();
 
     expect(GroupMembership::activeAt($date)->count())->toEqual(1);
-});
-
-it('filters active memberships for given date and term', function () {
-    $date = new Carbon('2020-01-01');
-
-    $firstTerm = Term::factory(['number' => 8])->create();
-    $secondTerm = Term::factory(['number' => 9])->create();
-
-    $active = GroupMembership::factory([
-        'term_id' => $firstTerm,
-        'start_date' => $date,
-        'end_date' => null,
-    ])->create();
-
-    GroupMembership::factory([
-        'term_id' => $secondTerm,
-        'start_date' => $date,
-        'end_date' => null,
-    ])->create();
-
-    $memberships = GroupMembership::activeAt($date, $firstTerm);
-
-    expect($memberships->count())->toEqual(1);
-    expect($memberships->first()->is($active))->toBeTrue();
 });

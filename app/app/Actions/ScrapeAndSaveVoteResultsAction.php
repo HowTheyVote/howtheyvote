@@ -30,7 +30,7 @@ class ScrapeAndSaveVoteResultsAction extends Action
         ]);
 
         // Preload a list of all active members on the day
-        $members = $this->buildMembersLookup($term, $date);
+        $members = $this->buildMembersLookup($date);
 
         $total = count($response);
 
@@ -53,7 +53,7 @@ class ScrapeAndSaveVoteResultsAction extends Action
         Carbon $date,
         array $data
     ): Vote {
-        $document = $this->findOrCreateDocument($data['reference']);
+        $document = $this->findOrCreateDocument($term, $data['reference']);
 
         $vote = Vote::firstOrCreate([
             'doceo_vote_id' => $data['doceo_vote_id'],
@@ -71,15 +71,13 @@ class ScrapeAndSaveVoteResultsAction extends Action
         return $vote;
     }
 
-    protected function findOrCreateDocument(?array $data): ?Document
+    protected function findOrCreateDocument(Term $term, ?array $data): ?Document
     {
         if (! $data) {
             return null;
         }
 
         $this->log('Importing document', $data);
-
-        $term = Term::whereNumber($data['term'])->first();
 
         $document = Document::firstOrCreate([
             'type' => DocumentTypeEnum::make($data['type']),
@@ -144,11 +142,11 @@ class ScrapeAndSaveVoteResultsAction extends Action
         });
     }
 
-    protected function buildMembersLookup(Term $term, Carbon $date): Collection
+    protected function buildMembersLookup(Carbon $date): Collection
     {
         $this->log('Building members lookup');
 
-        return Member::activeAt($date, $term)
+        return Member::activeAt($date)
             ->select('id', 'first_name_normalized', 'last_name_normalized')
             ->get();
     }

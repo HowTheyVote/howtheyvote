@@ -33,7 +33,7 @@ class GroupMembership extends Model
         return $this->belongsTo(Term::class);
     }
 
-    public function scopeActiveAt(Builder $query, \DateTime $date, ?Term $term = null)
+    public function scopeActiveAt(Builder $query, \DateTime $date)
     {
         // Wrapping the where conditions in a closure logically groups
         // them using parentheses. It’s not strictly necessary in this
@@ -52,10 +52,6 @@ class GroupMembership extends Model
                         ->whereNull('end_date');
                 });
         });
-
-        if ($term) {
-            $query->where('term_id', $term->id);
-        }
 
         return $query;
     }
