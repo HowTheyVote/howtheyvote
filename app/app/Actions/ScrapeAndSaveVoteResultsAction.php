@@ -41,7 +41,9 @@ class ScrapeAndSaveVoteResultsAction extends Action
                 'doceo_vote_id' => $data['doceo_vote_id'],
             ]);
 
-            $this->createOrUpdateVote($members, $term, $date, $data);
+            $document = $this->findOrCreateDocument($term, $data['reference']);
+            $vote = $this->createOrUpdateVote($members, $term, $date, $document, $data);
+            $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
         }
 
         $this->log("Imported {$total} votes for {$date}");
@@ -51,10 +53,9 @@ class ScrapeAndSaveVoteResultsAction extends Action
         Collection $members,
         Term $term,
         Carbon $date,
+        ?Document $document,
         array $data
     ): Vote {
-        $document = $this->findOrCreateDocument($term, $data['reference']);
-
         $vote = Vote::firstOrCreate([
             'doceo_vote_id' => $data['doceo_vote_id'],
             'term_id' => $term->id,
@@ -65,8 +66,6 @@ class ScrapeAndSaveVoteResultsAction extends Action
             'description' => $data['description'],
             'document_id' => $document->id ?? null,
         ]);
-
-        $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
 
         return $vote;
     }
