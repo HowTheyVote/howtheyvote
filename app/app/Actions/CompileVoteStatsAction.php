@@ -37,7 +37,13 @@ class CompileVoteStatsAction extends Action
             ->map(fn ($row) => [$row->country->label, $row->count])
             ->toAssoc();
 
+        // We're using `getQuery` to get the underlying query builder
+        // for the relation. For some reason, Eloquent always selects
+        // the pivot columns for a relation query. This will however
+        // cause an SQL syntax error, as they aren't included in the
+        // group by statement.
         $byPosition = $vote->members()
+            ->getQuery()
             ->select('position', 'country', DB::raw('count(*) as count'))
             ->groupBy('country', 'position')
             ->get()
@@ -69,7 +75,10 @@ class CompileVoteStatsAction extends Action
             ->map(fn ($row) => [$row->group_id, $row->count])
             ->toAssoc();
 
+        // See comment in `byCountry` for an explanation why we're
+        // using `getQuery`.
         $byPosition = $vote->members()
+            ->getQuery()
             ->withGroupMembershipAt($vote->date)
             ->select('position', 'group_id', DB::raw('count(*) as count'))
             ->groupBy('position', 'group_id')
@@ -92,7 +101,10 @@ class CompileVoteStatsAction extends Action
     {
         $this->log("Compiling general stats for vote {$vote->id}");
 
+        // See comment in `byCountry` for an explanation why we're
+        // using `getQuery`.
         $rows = $vote->members()
+            ->getQuery()
             ->groupBy('position')
             ->select('position', DB::raw('count(*) as count'))
             ->get();
@@ -107,7 +119,16 @@ class CompileVoteStatsAction extends Action
             ->toAssoc();
 
         $positions = $rows
-            ->map(fn ($row) => [$row->pivot->position->label, intval($row->count)])
+            ->map(function ($row) {
+                // We're explicitly casting to integer here as the in-
+                // memory SQLite database used in test will always return
+                // string values (ignoring the column type).
+                // See comment App\Casts\EnumCast for additional explanation.
+                return [
+                    VotePositionEnum::make((int) $row->position)->label,
+                    intval($row->count),
+                ];
+            })
             ->toAssoc();
 
         return $defaults->merge($positions);
