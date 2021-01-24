@@ -27,7 +27,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
 
-Artisan::command('scrape:members {term}', function (int $term, ScrapeAndSaveMembersAction $action) {
+Artisan::command('scrape:members {term}', function (
+    int $term,
+    ScrapeAndSaveMembersAction $action
+) {
     $term = Term::whereNumber($term)->first();
     $action->execute($term);
 })->describe('Scrape and save all members (without info) for a given term.');
@@ -42,23 +45,37 @@ Artisan::command('scrape:members-info', function (ScrapeAndSaveMemberInfoAction 
     }
 })->describe('Scrape and save info for all saved members.');
 
-Artisan::command('scrape:members-groups {term}', function (int $term, ScrapeAndSaveMemberGroupsAction $action) {
+Artisan::command('scrape:members-groups {term}', function (
+    int $term,
+    ScrapeAndSaveMemberGroupsAction $action
+) {
     $term = Term::whereNumber($term)->first();
     $allMembers = Member::all();
     $membersCount = $allMembers->count();
 
     foreach ($allMembers as $index => $member) {
-        $this->info('Scraping groups for member: '.($index + 1)."/{$membersCount}");
+        $this->info('Scraping groups for member '.($index + 1)."/{$membersCount}");
         $action->execute($member, $term);
     }
 })->describe('Scrape and save group info for all saved members for the given term.');
 
-Artisan::command('scrape:vote-results {term} {date}', function (int $term, string $date, ScrapeAndSaveVoteResultsAction $action, CompileVoteStatsAction $statsAction) {
+Artisan::command('scrape:vote-results {term} {date}', function (
+    int $term,
+    string $date,
+    ScrapeAndSaveVoteResultsAction $action,
+    CompileVoteStatsAction $statsAction
+) {
     $term = Term::whereNumber($term)->first();
     $date = Carbon::parse($date);
+
+    $this->info("Scraping vote results for {$date}");
     $action->execute($term, $date);
 
-    foreach (Vote::whereDate('date', '=', $date->toDateString())->get() as $vote) {
+    $votes = Vote::whereDate('date', '=', $date->toDateString())->get();
+    $votesCount = $votes->count();
+
+    foreach ($votes as $index => $vote) {
+        $this->info('Compiling for vote '.($index + 1)."/{$votesCount}");
         $statsAction->execute($vote);
     }
-})->describe('Scrape and save all votes with compiled stats for the given date in in the given term.');
+})->describe('Scrape and save all votes with compiled stats for the given date and term.');
