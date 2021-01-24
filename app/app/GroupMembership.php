@@ -33,22 +33,28 @@ class GroupMembership extends Model
         return $this->belongsTo(Term::class);
     }
 
-    public function scopeActiveAt(Builder $query, \DateTime $date, Term $term = null)
+    public function scopeActiveAt(Builder $query, \DateTime $date, ?Term $term = null)
     {
-        $query = $query
-            ->where(function ($query) use ($date) {
-                return $query
-                    ->whereDate('start_date', '<=', $date)
-                    ->whereDate('end_date', '>=', $date);
-            })
-            ->orWhere(function ($query) use ($date) {
-                return $query
-                    ->whereDate('start_date', '<=', $date)
-                    ->whereNull('end_date');
-            });
+        // Wrapping the where conditions in a closure logically groups
+        // them using parentheses. It’s not strictly necessary in this
+        // case, but makes the query a little more robust.
+        // https://laravel.com/docs/8.x/queries#logical-grouping
+        $query->where(function ($query) use ($date) {
+            $query
+                ->where(function ($query) use ($date) {
+                    $query
+                        ->whereDate('start_date', '<=', $date)
+                        ->whereDate('end_date', '>=', $date);
+                })
+                ->orWhere(function ($query) use ($date) {
+                    $query
+                        ->whereDate('start_date', '<=', $date)
+                        ->whereNull('end_date');
+                });
+        });
 
         if ($term) {
-            $query->where('term_id', $term);
+            $query->where('term_id', $term->id);
         }
 
         return $query;
