@@ -32,6 +32,8 @@ Artisan::command('scrape:members {term}', function (
     ScrapeAndSaveMembersAction $action
 ) {
     $term = Term::whereNumber($term)->first();
+    $this->info("Scraping list of members for term {$term}");
+
     $action->execute($term);
 })->describe('Scrape and save all members (without info) for a given term.');
 
@@ -40,9 +42,13 @@ Artisan::command('scrape:members-info', function (ScrapeAndSaveMemberInfoAction 
     $membersCount = $allMembers->count();
 
     foreach ($allMembers as $index => $member) {
-        $this->info('Scraping info for member: '.($index + 1)."/{$membersCount}");
+        $progress = ($index + 1).'/'.$membersCount;
+        $this->output->write("\r<info>Scraping info for member: {$progress}</info>");
+
         $action->execute($member);
     }
+
+    $this->output->writeln('');
 })->describe('Scrape and save info for all saved members.');
 
 Artisan::command('scrape:members-groups {term}', function (
@@ -54,9 +60,13 @@ Artisan::command('scrape:members-groups {term}', function (
     $membersCount = $allMembers->count();
 
     foreach ($allMembers as $index => $member) {
-        $this->info('Scraping groups for member '.($index + 1)."/{$membersCount}");
+        $progress = ($index + 1).'/'.$membersCount;
+        $this->output->write("\r<info>Scraping groups for member {$progress}</info>");
+
         $action->execute($member, $term);
     }
+
+    $this->output->writeln('');
 })->describe('Scrape and save group info for all saved members for the given term.');
 
 Artisan::command('scrape:vote-results {term} {date}', function (
@@ -75,7 +85,11 @@ Artisan::command('scrape:vote-results {term} {date}', function (
     $votesCount = $votes->count();
 
     foreach ($votes as $index => $vote) {
-        $this->info('Compiling for vote '.($index + 1)."/{$votesCount}");
+        $progress = ($index + 1).'/'.$votesCount;
+        $this->output->write("\r<info>Compiling stats for vote {$progress}</info>");
+
         $statsAction->execute($vote);
     }
+
+    $this->output->writeln('');
 })->describe('Scrape and save all votes with compiled stats for the given date and term.');
