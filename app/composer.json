@@ -65,8 +65,8 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "test": "pest --no-interaction",
-        "cov": "pest --no-interaction --coverage",
+        "test": "pest --no-interaction --coverage",
+        "cov": "pest --no-interaction --coverage-html=./coverage-report",
         "cs": "php-cs-fixer fix --dry-run",
         "cs-fix": "php-cs-fixer fix"
     }
