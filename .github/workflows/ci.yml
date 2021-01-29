@@ -60,7 +60,8 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8'
+        coverage: pcov
 
     - uses: actions/checkout@v2
 
@@ -82,4 +83,10 @@ jobs:
       run: composer cs
 
     - name: Test with pest
-      run: composer test
+      run: composer test-with-coverage
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: ${{ github.workspace }}/app/coverage-report

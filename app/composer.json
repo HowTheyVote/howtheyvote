@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2.5",
+        "php": "^8",
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^2.0",
@@ -66,7 +66,7 @@
             "@php artisan key:generate --ansi"
         ],
         "test": "pest --no-interaction --coverage",
-        "cov": "pest --no-interaction --coverage-html=./coverage-report",
+        "test-with-coverage": "pest --no-interaction --coverage-html=./coverage-report",
         "cs": "php-cs-fixer fix --dry-run",
         "cs-fix": "php-cs-fixer fix"
     }
