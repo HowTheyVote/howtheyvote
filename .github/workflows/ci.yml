@@ -85,6 +85,10 @@ jobs:
     - name: Test with pest
       run: composer test-with-coverage
 
+    - name: Generate slug from branch
+      id: generate-slug
+      run: echo "::set-output SLUG=${GITHUB_REF/\//_}"
+
     - name: Deploy coverage report to Netlify
       id: deploy-coverage
       uses: netlify/actions/cli@master
@@ -92,7 +96,7 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
-        args: deploy --dir=./app/coverage-report --alias=${{ github.ref/\//- }}
+        args: deploy --dir=./app/coverage-report --alias=${{ steps.generate-slug.outputs.SLUG }}
 
     - name: Debug
       run: echo ${{ steps.deploy-coverage.outputs.NETLIFY_URL }}
