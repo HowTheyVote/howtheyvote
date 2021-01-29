@@ -87,7 +87,7 @@ jobs:
 
     - name: Generate slug from branch
       id: generate-slug
-      run: echo "::set-output SLUG=${GITHUB_REF/\//_}"
+      run: echo "::set-output SLUG=${GITHUB_REF//\//-}"
 
     - name: Deploy coverage report to Netlify
       id: deploy-coverage
