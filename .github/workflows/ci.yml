@@ -85,12 +85,6 @@ jobs:
     - name: Test with pest
       run: composer test-with-coverage
 
-    - name: Upload coverage report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage-report
-        path: ${{ github.workspace }}/app/coverage-report
-
     - name: Deploy coverage report to Netlify
       id: deploy-coverage
       uses: netlify/actions/cli@master
@@ -98,7 +92,7 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
-        args: deploy --dir=./app/coverage-report
+        args: deploy --dir=./app/coverage-report --alias=${{ github.ref/\//- }}
 
     - name: Debug
       run: echo ${{ steps.deploy-coverage.outputs.NETLIFY_URL }}
