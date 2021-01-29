@@ -92,12 +92,13 @@ jobs:
         path: ${{ github.workspace }}/app/coverage-report
 
     - name: Deploy coverage report to Netlify
+      id: deploy-coverage
       uses: netlify/actions/cli@master
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
       with:
-        args: deploy --dir=./app/coverage-report --alias=${{ github.ref }}
+        args: deploy --dir=./app/coverage-report
 
     - name: Debug
-      run: env
+      run: echo ${{ steps.deploy-coverage.outputs.NETLIFY_URL }}
