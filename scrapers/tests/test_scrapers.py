@@ -293,3 +293,51 @@ def test_procedure_scraper_run(mock_request):
     )
 
     assert scraper.run() == expected
+
+
+@pytest.fixture
+def procedure_title_tags():
+    descriptions = [
+        (  # Handles leading/trailing white space
+            "<title>"
+            "<![CDATA[ Search and rescue in the Mediterranean (SAR) ]]>"
+            "</title>"
+        ),
+        (
+            # Handles line breaks
+            "<title>"
+            "<![CDATA[ Decision to raise no objections to the draft Commission\n"
+            "regulation amending Regulation (EC) No 1126/2008 adopting certain\n"
+            "international accounting standards in accordance with Regulation\n"
+            "(EC) No 1606/2002 of the European Parliament and of the Council as\n"
+            "regards International Accounting Standard 39, International\n"
+            "Financial Reporting Standards 7 and 9 ]]>"
+            "</title>"
+        ),
+    ]
+
+    return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
+
+
+def test_procedure_scraper_title(procedure_title_tags):
+    scraper = ProcedureScraper(
+        type=DocType.B,
+        term=9,
+        year=2019,
+        number=154,
+    )
+
+    expected = [
+        "Search and rescue in the Mediterranean (SAR)",
+        (
+            "Decision to raise no objections to the draft Commission "
+            "regulation amending Regulation (EC) No 1126/2008 adopting certain "
+            "international accounting standards in accordance with Regulation "
+            "(EC) No 1606/2002 of the European Parliament and of the Council as "
+            "regards International Accounting Standard 39, International "
+            "Financial Reporting Standards 7 and 9"
+        ),
+    ]
+
+    assert scraper._title(procedure_title_tags[0]) == expected[0]
+    assert scraper._title(procedure_title_tags[1]) == expected[1]

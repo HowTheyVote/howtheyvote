@@ -285,12 +285,16 @@ class ProcedureScraper(Scraper):
         return f"{self.BASE_URL}{document}"
 
     def _extract_data(self) -> Procedure:
-        return Procedure(title=self._title(), reference=self._reference())
+        item_tag = self._resource.find("item")
+        title_tag = item_tag.find("title")
+        reference_tag = item_tag.find("reference")
 
-    def _title(self) -> str:
-        tag = self._resource.find("item").find("title")
-        return tag.text.strip()
+        return Procedure(
+            title=self._title(title_tag), reference=self._reference(reference_tag)
+        )
 
-    def _reference(self) -> ProcedureReference:
-        reference = self._resource.find("item").find("reference").text.strip()
-        return ProcedureReference.from_str(reference)
+    def _title(self, tag: Tag) -> str:
+        return tag.text.strip().replace("\n", " ")
+
+    def _reference(self, tag: Tag) -> ProcedureReference:
+        return ProcedureReference.from_str(tag.text.strip())
