@@ -16,6 +16,8 @@ from .models import (
     Doc,
     DocType,
     DocReference,
+    Procedure,
+    ProcedureReference,
 )
 
 
@@ -266,3 +268,29 @@ class DocumentInfoScraper(Scraper):
     def _title(self) -> str:
         tag = self._resource.find("title")
         return tag.text.strip()
+
+
+class ProcedureScraper(Scraper):
+    BS_PARSER = "lxml-xml"
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-"  # noqa: E501
+
+    def __init__(self, type: DocType, term: int, year: int, number: int):
+        self.type = type
+        self.term = term
+        self.year = year
+        self.number = number
+
+    def _url(self) -> str:
+        document = f"{self.type.name}{self.term}-{self.number:04}/{self.year:04}"
+        return f"{self.BASE_URL}{document}"
+
+    def _extract_data(self) -> Procedure:
+        return Procedure(title=self._title(), reference=self._reference())
+
+    def _title(self) -> str:
+        tag = self._resource.find("item").find("title")
+        return tag.text.strip()
+
+    def _reference(self) -> ProcedureReference:
+        reference = self._resource.find("item").find("reference").text.strip()
+        return ProcedureReference.from_str(reference)

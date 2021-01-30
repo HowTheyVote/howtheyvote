@@ -22,6 +22,7 @@ from .scrapers import (
     MemberGroupsScraper,
     VoteResultsScraper,
     DocumentInfoScraper,
+    ProcedureScraper,
 )
 
 
@@ -109,6 +110,15 @@ ROUTES: Dict[str, Route] = {
     },
     "document_info": {
         "scraper": DocumentInfoScraper,
+        "params": {
+            "type": lambda x: DocType[x],
+            "term": int,
+            "number": int,
+            "year": int,
+        },
+    },
+    "procedure": {
+        "scraper": ProcedureScraper,
         "params": {
             "type": lambda x: DocType[x],
             "term": int,
