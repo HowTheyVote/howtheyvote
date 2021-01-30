@@ -1,5 +1,13 @@
 import pytest
-from ep_votes.models import Country, Group, DocReference, DocType, MemberInfo
+from ep_votes.models import (
+    Country,
+    Group,
+    DocReference,
+    DocType,
+    MemberInfo,
+    ProcedureReference,
+    ProcedureType,
+)
 
 
 def test_country_from_str():
@@ -25,6 +33,16 @@ def test_doc_reference_from_str():
 
 
 def test_doc_reference_from_str_malformed():
+    with pytest.raises(ValueError):
+        DocReference.from_str("XYZ")
+
+
+def test_procedure_reference_from_str():
+    ref = ProcedureReference(type=ProcedureType.RSP, year=2019, number=2755)
+    assert ProcedureReference.from_str("2019/2755(RSP)") == ref
+
+
+def test_procedure_reference_from_str_malformed():
     with pytest.raises(ValueError):
         DocReference.from_str("XYZ")
 

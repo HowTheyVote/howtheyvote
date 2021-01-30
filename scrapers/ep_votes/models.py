@@ -219,3 +219,54 @@ class Vote:
     votings: List[Voting]
     description: Optional[str] = None
     reference: Optional[DocReference] = None
+
+
+class ProcedureType(Enum):
+    CUD = auto()
+    CNS = auto()
+    APP = auto()
+    BUD = auto()
+    DEC = auto()
+    BUI = auto()
+    NLE = auto()
+    AVC = auto()
+    SYN = auto()
+    INL = auto()
+    INI = auto()
+    RSP = auto()
+    DCE = auto()
+    COS = auto()
+    REG = auto()
+    IMM = auto()
+    RSO = auto()
+    INS = auto()
+    ACI = auto()
+    DEA = auto()
+    RPS = auto()
+
+
+@dataclass
+class ProcedureReference:
+    type: ProcedureType
+    number: int
+    year: int
+
+    @classmethod
+    def from_str(cls, ref: str) -> "ProcedureReference":
+        regex = r"^(\d{4})\/(\d{4})\(([A-Z]{3})\)$"
+        match = re.search(regex, ref)
+
+        if not match:
+            raise ValueError("Unrecognized procedure reference format")
+
+        return cls(
+            year=int(match.group(1)),
+            number=int(match.group(2)),
+            type=ProcedureType[match.group(3)],
+        )
+
+
+@dataclass
+class Procedure:
+    title: str
+    reference: ProcedureReference

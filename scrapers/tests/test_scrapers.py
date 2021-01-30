@@ -9,6 +9,7 @@ from ep_votes.scrapers import (
     MemberGroupsScraper,
     VoteResultsScraper,
     DocumentInfoScraper,
+    ProcedureScraper,
 )
 from ep_votes.models import (
     Member,
@@ -22,13 +23,18 @@ from ep_votes.models import (
     Doc,
     DocReference,
     DocType,
+    Procedure,
+    ProcedureReference,
+    ProcedureType,
 )
 
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 
 
 def mock_response(req, context):
-    url = req.url.replace("https://europarl.europa.eu", "")
+    url = req.url
+    url = url.replace("https://europarl.europa.eu", "")
+    url = url.replace("https://oeil.secure.europarl.europa.eu", "")
 
     MOCK_RESPONSES = {
         "/meps/en/directory/xml/?leg=8": "directory_term_8.xml",
@@ -42,6 +48,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
+        "/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-B9-0154/2019": "procedure-b9-0154-2019.xml",  # noqa: E501
     }
 
     file = MOCK_RESPONSES[url]
@@ -260,5 +267,29 @@ def test_document_scraper_run(mock_request):
     )
 
     expected = Doc(title=title)
+
+    assert scraper.run() == expected
+
+
+def test_procedure_scraper_run(mock_request):
+    title = "Search and rescue in the Mediterranean (SAR)"
+
+    scraper = ProcedureScraper(
+        type=DocType.B,
+        term=9,
+        year=2019,
+        number=154,
+    )
+
+    expected_reference = ProcedureReference(
+        type=ProcedureType.RSP,
+        year=2019,
+        number=2755,
+    )
+
+    expected = Procedure(
+        title=title,
+        reference=expected_reference,
+    )
 
     assert scraper.run() == expected
