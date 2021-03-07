@@ -1,0 +1,38 @@
+name: Scrapers
+
+on: [push]
+
+defaults:
+  run:
+    working-directory: scrapers
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-python
+      
+    - name: Lint with flake8
+      run: make lint
+
+  types:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-python
+
+    - name: Check types with mypy
+      run: make types
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-python
+
+    - name: Test with pytest
+      run: make tests

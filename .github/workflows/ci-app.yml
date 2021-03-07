@@ -1,0 +1,34 @@
+name: App
+
+on: [push]
+
+defaults:
+  run:
+    working-directory: app
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-php
+
+    - name: Check code style with PHP CS Fixer
+      run: composer cs
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-php
+    
+    - name: Test with pest
+      run: composer test-with-coverage
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: ${{ github.workspace }}/app/coverage-report

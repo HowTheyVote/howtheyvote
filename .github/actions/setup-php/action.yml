@@ -1,0 +1,24 @@
+name: Setup PHP
+description: Setup project and install dependencies using Composer
+runs:
+  using: composite
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8'
+        coverage: pcov
+
+    - name: Cache php packages
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-php-packages
+      with:
+        path: ./vendor
+        key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ env.cache-name }}-
+          ${{ runner.os }}-
+
+    - name: Install dependencies
+      run: composer install
