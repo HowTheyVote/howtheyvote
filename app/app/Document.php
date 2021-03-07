@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Enums\DocumentTypeEnum;
-use App\Procedure;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

@@ -5,6 +5,7 @@ use App\Document;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\VotePositionEnum;
 use App\Member;
+use App\Procedure;
 use App\Term;
 use App\Vote;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,6 +53,7 @@ it('creates new related document record with document infos', function () {
     $this->action->execute($this->term, $this->date);
 
     expect(Document::count())->toEqual(1);
+    expect(Procedure::count())->toEqual(1);
 
     $document = Arr::except(Document::first()->getAttributes(), [
         'created_at',
@@ -65,6 +67,7 @@ it('creates new related document record with document infos', function () {
         'number' => 154,
         'year' => 2019,
         'title' => 'MOTION FOR A RESOLUTION on search and rescue in the Mediterranean',
+        'procedure_id' => Procedure::first()->id,
     ]);
 });
 
