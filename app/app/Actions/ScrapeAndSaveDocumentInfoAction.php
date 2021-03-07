@@ -8,9 +8,10 @@ class ScrapeAndSaveDocumentInfoAction extends Action
 {
     private $scrapeAction;
 
-    public function __construct(ScrapeAction $scrapeAction)
+    public function __construct(ScrapeAction $scrapeAction, ScrapeAndSaveProcedureAction $scrapeProcedureAction)
     {
         $this->scrapeAction = $scrapeAction;
+        $this->scrapeProcedureAction = $scrapeProcedureAction;
     }
 
     public function execute(Document $document): void
@@ -24,11 +25,18 @@ class ScrapeAndSaveDocumentInfoAction extends Action
 
         $this->log('Importing document info', array_merge(
             $document->toArray(),
-            ['title' => $data['title']]
+            ['title' => $data['title']],
         ));
+
+        $procedure = $document->procedure()->first();
+
+        if (! $procedure) {
+            $procedure = $this->scrapeProcedureAction->execute($document);
+        }
 
         $document->update([
             'title' => $data['title'],
+            'procedure_id' => $procedure->id,
         ]);
     }
 }
