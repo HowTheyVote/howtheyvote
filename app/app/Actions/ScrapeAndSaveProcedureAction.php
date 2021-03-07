@@ -16,6 +16,12 @@ class ScrapeAndSaveProcedureAction extends Action
 
     public function execute(Document $document): Procedure
     {
+        if ($document->procedure()->first()) {
+            $this->log('Returning existing procedure for', $document->toArray());
+
+            return $document->procedure;
+        }
+
         $data = $this->scrapeAction->execute('procedure', [
             'type' => $document->type->label,
             'term' => $document->term->number,
