@@ -19,8 +19,8 @@ class ScrapeAndSaveProcedureAction extends Action
         $data = $this->scrapeAction->execute('procedure', [
             'type' => $document->type->label,
             'term' => $document->term->number,
-            'year' => $document->year,
             'number' => $document->number,
+            'year' => $document->year,
         ]);
 
         $this->log('Creating procedure', $data);

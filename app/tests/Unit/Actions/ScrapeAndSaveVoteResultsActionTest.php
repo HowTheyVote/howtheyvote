@@ -16,6 +16,7 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     //TODO: use dep injection to mock ScrapeAndSaveDocumentInfoAction
     Http::fakeJsonFromFile('*/document_info?type=B&term=9&number=154&year=2019', 'document_info.json');
+    Http::fakeJsonFromFile('*/procedure?type=B&term=9&number=154&year=2019', 'procedure.json');
 
     $this->action = $this->app->make(ScrapeAndSaveVoteResultsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
