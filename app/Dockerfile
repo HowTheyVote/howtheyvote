@@ -8,7 +8,9 @@ RUN apk --update add \
     bash \
     less \
     make \
-    composer
+    composer \
+    graphviz \
+    ttf-freefont
 
 RUN pecl install pcov && docker-php-ext-enable pcov
 RUN docker-php-ext-enable pcov

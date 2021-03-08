@@ -7,6 +7,12 @@
         "laravel"
     ],
     "license": "MIT",
+    "repositories": [
+	    {
+		    "type": "vcs",
+		    "url": "https://github.com/ep-votes/laravel-er-diagram-generator"
+	    }
+    ],
     "require": {
         "php": "^8",
         "doctrine/dbal": "^3.0",
@@ -26,7 +32,8 @@
         "nunomaduro/collision": "^5.0",
         "pestphp/pest": "^0.3.2",
         "pestphp/pest-plugin-laravel": "^0.3.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+	"beyondcode/laravel-er-diagram-generator": "dev-master"
     },
     "config": {
         "optimize-autoloader": true,
