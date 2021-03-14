@@ -1,24 +1,11 @@
 import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 from dotenv import load_dotenv
-from werkzeug.wrappers import Request, Response
-from werkzeug.serving import run_simple
-import os
-from typing import (
-    Callable,
-    Dict,
-    Tuple,
-    List,
-    Union,
-    Any,
-    Type,
-)
-from typing_extensions import TypedDict
-from functools import wraps
 import datetime
-from .helpers import to_json, removeprefix, removesuffix
+from flask import Flask, Response, request
+from .helpers import to_json
 from .models import DocType
 from .scrapers import (
-    Scraper,
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
@@ -28,130 +15,116 @@ from .scrapers import (
 )
 
 load_dotenv()
-sentry_sdk.init()
+sentry_sdk.init(integrations=[FlaskIntegration()])
 
-SimpleResponse = Union[Dict, Tuple[Dict, int]]
-SimpleHandler = Callable[..., SimpleResponse]
-Handler = Callable[..., Response]
+app = Flask(__name__)
 
 
-def json_response(handler: SimpleHandler) -> Handler:
-    @wraps(handler)
-    def wrapper(request: Request, *args: Any, **kwds: Any) -> Response:
-        res = handler(request, *args, **kwds)
-        indent = 2 if "pretty" in request.args else None
+@app.route("/members")
+def members() -> Response:
+    term = request.args.get("term", type=int)
 
-        if isinstance(res, tuple):
-            body, status = res
-        else:
-            body = res
-            status = 200
-
+    if term is None:
         return Response(
-            to_json(body, indent=indent), status=status, content_type="application/json"
+            response=to_json({"message": "Missing required paramters"}),
+            status=400,
+            content_type="application/json",
         )
 
-    return wrapper
+    scraper = MembersScraper(term=term)
+    data = scraper.run()
+
+    return Response(response=to_json(data), status=200, content_type="application/json")
 
 
-def not_found() -> SimpleResponse:
-    return {"message": "Scraper not found"}, 404
+@app.route("/member_info")
+def member_info() -> Response:
+    web_id = request.args.get("web_id", type=int)
+
+    if web_id is None:
+        return Response(
+            response=to_json({"message": "Missing required paramters"}),
+            status=400,
+            content_type="application/json",
+        )
+
+    scraper = MemberInfoScraper(web_id=web_id)
+    data = scraper.run()
+
+    return Response(response=to_json(data), status=200, content_type="application/json")
 
 
-def params_missing(params: List[str]) -> SimpleResponse:
-    missing = ", ".join(params)
-    body = {"message": f"Missing required arguments: {missing}"}
-    return body, 400
+@app.route("/member_groups")
+def member_groups() -> Response:
+    web_id = request.args.get("web_id", type=int)
+    term = request.args.get("term", type=int)
+
+    if term is None or web_id is None:
+        return Response(
+            response=to_json({"message": "Missing required paramters"}),
+            status=400,
+            content_type="application/json",
+        )
+
+    scraper = MemberGroupsScraper(term=term, web_id=web_id)
+    data = scraper.run()
+
+    return Response(response=to_json(data), status=200, content_type="application/json")
 
 
-def require_params(required: Dict[str, Callable]) -> Callable[..., SimpleHandler]:
-    def call(handler: SimpleHandler, req: Request) -> SimpleResponse:
-        params = {}
-        missing = [x for x in required if not req.args.get(x)]
+@app.route("/vote_results")
+def vote_results() -> Response:
+    term = request.args.get("term", type=int)
+    date = request.args.get("date", type=datetime.date.fromisoformat)
 
-        if len(missing) > 0:
-            return params_missing(missing)
+    if term is None or date is None:
+        return Response(
+            response=to_json({"message": "Missing required paramters"}),
+            status=400,
+            content_type="application/json",
+        )
 
-        for key, type in required.items():
-            params[key] = req.args.get(key, type=type)
+    scraper = VoteResultsScraper(term=term, date=date)
+    data = scraper.run()
 
-        return handler(**params)
-
-    def decorator(handler: SimpleHandler) -> SimpleHandler:
-        @wraps(handler)
-        def wrapper(request: Request) -> SimpleResponse:
-            return call(handler, request)
-
-        return wrapper
-
-    return decorator
+    return Response(response=to_json(data), status=200, content_type="application/json")
 
 
-Route = TypedDict(
-    "Route",
-    {
-        "scraper": Type[Scraper],
-        "params": Dict[str, Callable[..., Any]],
-    },
-)
+@app.route("/document_info")
+def document_info() -> Response:
+    type = request.args.get("type", type=lambda x: DocType[x])
+    term = request.args.get("term", type=int)
+    year = request.args.get("year", type=int)
+    number = request.args.get("number", type=int)
 
-ROUTES: Dict[str, Route] = {
-    "members": {
-        "scraper": MembersScraper,
-        "params": {"term": int},
-    },
-    "member_info": {
-        "scraper": MemberInfoScraper,
-        "params": {"web_id": int},
-    },
-    "member_groups": {
-        "scraper": MemberGroupsScraper,
-        "params": {"web_id": int, "term": int},
-    },
-    "vote_results": {
-        "scraper": VoteResultsScraper,
-        "params": {"date": datetime.date.fromisoformat, "term": int},
-    },
-    "document_info": {
-        "scraper": DocumentInfoScraper,
-        "params": {
-            "type": lambda x: DocType[x],
-            "term": int,
-            "number": int,
-            "year": int,
-        },
-    },
-    "procedure": {
-        "scraper": ProcedureScraper,
-        "params": {
-            "type": lambda x: DocType[x],
-            "term": int,
-            "number": int,
-            "year": int,
-        },
-    },
-}
+    if type is None or term is None or year is None or number is None:
+        return Response(
+            response=to_json({"message": "Missing required paramters"}),
+            status=400,
+            content_type="application/json",
+        )
+
+    scraper = DocumentInfoScraper(type=type, term=term, year=year, number=number)
+    data = scraper.run()
+
+    return Response(response=to_json(data), status=200, content_type="application/json")
 
 
-@Request.application
-@json_response
-def application(req: Request) -> SimpleResponse:
-    path = removesuffix(removeprefix(req.path, "/"), "/")
+@app.route("/procedure")
+def procedure() -> Response:
+    type = request.args.get("type", type=lambda x: DocType[x])
+    term = request.args.get("term", type=int)
+    year = request.args.get("year", type=int)
+    number = request.args.get("number", type=int)
 
-    if path not in ROUTES:
-        return not_found()
+    if type is None or term is None or year is None or number is None:
+        return Response(
+            response=to_json({"message": "Missing required paramters"}),
+            status=400,
+            content_type="application/json",
+        )
 
-    scraper = ROUTES[path]["scraper"]
-    params = ROUTES[path]["params"]
-    args_decorator = require_params(params)
+    scraper = ProcedureScraper(type=type, term=term, year=year, number=number)
+    data = scraper.run()
 
-    def handler(**args: Any) -> SimpleResponse:
-        return scraper(**args).run()
-
-    return args_decorator(handler)(req)
-
-
-if __name__ == "__main__":
-    host = os.environ.get("APP_HOST", "0.0.0.0")
-    port = int(os.environ.get("APP_PORT", 80))
-    run_simple(host, port, application)
+    return Response(response=to_json(data), status=200, content_type="application/json")
