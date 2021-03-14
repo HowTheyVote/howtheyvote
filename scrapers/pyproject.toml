@@ -12,6 +12,8 @@ flake8-black = "^0.2.1"
 beautifulsoup4 = "^4.9.3"
 lxml = "^4.6.2"
 werkzeug = "^1.0.1"
+sentry-sdk = "^1.0.0"
+python-dotenv = "^0.15.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"

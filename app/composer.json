@@ -15,6 +15,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
+        "sentry/sentry-laravel": "^2.4",
         "spatie/laravel-enum": "^2",
         "spatie/url": "^1.3"
     },
