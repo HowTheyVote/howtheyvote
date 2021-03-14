@@ -1,3 +1,5 @@
+import sentry_sdk
+from dotenv import load_dotenv
 from werkzeug.wrappers import Request, Response
 from werkzeug.serving import run_simple
 import os
@@ -25,6 +27,8 @@ from .scrapers import (
     ProcedureScraper,
 )
 
+load_dotenv()
+sentry_sdk.init()
 
 SimpleResponse = Union[Dict, Tuple[Dict, int]]
 SimpleHandler = Callable[..., SimpleResponse]
