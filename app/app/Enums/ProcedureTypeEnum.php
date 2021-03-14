@@ -3,7 +3,7 @@
 namespace App\Enums;
 
 /**
- * @method static self CUD()
+ * @method static self COD()
  * @method static self CNS()
  * @method static self APP()
  * @method static self BUD()
