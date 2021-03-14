@@ -253,7 +253,7 @@ class ProcedureReference:
 
     @classmethod
     def from_str(cls, ref: str) -> "ProcedureReference":
-        regex = r"^(\d{4})\/(\d{4})\(([A-Z]{3})\)$"
+        regex = r"^(\d{4})\/(\d{4})\(([A-Z]{3})\)"
         match = re.search(regex, ref)
 
         if not match:

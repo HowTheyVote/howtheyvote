@@ -42,6 +42,17 @@ def test_procedure_reference_from_str():
     assert ProcedureReference.from_str("2019/2755(RSP)") == ref
 
 
+def test_procedure_reference_from_str_with_additional_info():
+    ref = ProcedureReference(type=ProcedureType.NLE, year=2019, number=2755)
+    assert ProcedureReference.from_str("2019/2755(NLE)*") == ref
+    assert ProcedureReference.from_str("2019/2755(NLE)**") == ref
+    assert ProcedureReference.from_str("2019/2755(NLE)***") == ref
+    assert ProcedureReference.from_str("2019/2755(NLE) ***") == ref
+
+    ref = ProcedureReference(type=ProcedureType.COD, year=2020, number=139)
+    assert ProcedureReference.from_str("2020/0139(COD)***I") == ref
+
+
 def test_procedure_reference_from_str_malformed():
     with pytest.raises(ValueError):
         DocReference.from_str("XYZ")
