@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Enums\CountryEnum;
 use App\Member;
 
-class ScrapeAndSaveMemberInfoAction extends Action
+class ScrapeMemberInfoAction extends Action
 {
     private $scrapeAction;
 

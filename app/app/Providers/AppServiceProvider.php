@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Actions\ScrapeAction;
-use App\Actions\ScrapeAndSaveDocumentInfoAction;
-use App\Actions\ScrapeAndSaveMemberGroupsAction;
-use App\Actions\ScrapeAndSaveMemberInfoAction;
-use App\Actions\ScrapeAndSaveMembersAction;
-use App\Actions\ScrapeAndSaveVoteResultsAction;
+use App\Actions\ScrapeDocumentInfoAction;
+use App\Actions\ScrapeMemberGroupsAction;
+use App\Actions\ScrapeMemberInfoAction;
+use App\Actions\ScrapeMembersAction;
+use App\Actions\ScrapeVoteResultsAction;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -31,11 +31,11 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind(ScrapeAndSaveMembersAction::class);
-        $this->app->bind(ScrapeAndSaveMemberInfoAction::class);
-        $this->app->bind(ScrapeAndSaveMemberGroupsAction::class);
-        $this->app->bind(ScrapeAndSaveDocumentInfoAction::class);
-        $this->app->bind(ScrapeAndSaveVoteResultsAction::class);
+        $this->app->bind(ScrapeMembersAction::class);
+        $this->app->bind(ScrapeMemberInfoAction::class);
+        $this->app->bind(ScrapeMemberGroupsAction::class);
+        $this->app->bind(ScrapeDocumentInfoAction::class);
+        $this->app->bind(ScrapeVoteResultsAction::class);
 
         $this->app->bind(CompileVoteStatsAction::class);
     }

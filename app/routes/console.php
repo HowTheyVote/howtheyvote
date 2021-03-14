@@ -1,10 +1,10 @@
 <?php
 
 use App\Actions\CompileVoteStatsAction;
-use App\Actions\ScrapeAndSaveMemberGroupsAction;
-use App\Actions\ScrapeAndSaveMemberInfoAction;
-use App\Actions\ScrapeAndSaveMembersAction;
-use App\Actions\ScrapeAndSaveVoteResultsAction;
+use App\Actions\ScrapeMemberGroupsAction;
+use App\Actions\ScrapeMemberInfoAction;
+use App\Actions\ScrapeMembersAction;
+use App\Actions\ScrapeVoteResultsAction;
 use App\Member;
 use App\Term;
 use App\Vote;
@@ -29,7 +29,7 @@ Artisan::command('inspire', function () {
 
 Artisan::command('scrape:members {term}', function (
     int $term,
-    ScrapeAndSaveMembersAction $action
+    ScrapeMembersAction $action
 ) {
     $term = Term::whereNumber($term)->first();
     $this->info("Scraping list of members for term {$term}");
@@ -37,7 +37,7 @@ Artisan::command('scrape:members {term}', function (
     $action->execute($term);
 })->describe('Scrape and save all members (without info) for a given term.');
 
-Artisan::command('scrape:members-info', function (ScrapeAndSaveMemberInfoAction $action) {
+Artisan::command('scrape:members-info', function (ScrapeMemberInfoAction $action) {
     $allMembers = Member::all();
     $membersCount = $allMembers->count();
 
@@ -53,7 +53,7 @@ Artisan::command('scrape:members-info', function (ScrapeAndSaveMemberInfoAction 
 
 Artisan::command('scrape:members-groups {term}', function (
     int $term,
-    ScrapeAndSaveMemberGroupsAction $action
+    ScrapeMemberGroupsAction $action
 ) {
     $term = Term::whereNumber($term)->first();
     $allMembers = Member::all();
@@ -72,7 +72,7 @@ Artisan::command('scrape:members-groups {term}', function (
 Artisan::command('scrape:vote-results {term} {date}', function (
     int $term,
     string $date,
-    ScrapeAndSaveVoteResultsAction $action,
+    ScrapeVoteResultsAction $action,
     CompileVoteStatsAction $statsAction
 ) {
     $term = Term::whereNumber($term)->first();

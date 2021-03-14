@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\ScrapeAndSaveMemberGroupsAction;
+use App\Actions\ScrapeMemberGroupsAction;
 use App\Group;
 use App\GroupMembership;
 use App\Member;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->action = $this->app->make(ScrapeAndSaveMemberGroupsAction::class);
+    $this->action = $this->app->make(ScrapeMemberGroupsAction::class);
 
     $this->member = Member::factory(['web_id' => 12345])->create();
     $this->group = Group::factory(['code' => 'GREENS'])->create();

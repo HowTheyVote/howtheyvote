@@ -7,7 +7,7 @@ use App\GroupMembership;
 use App\Member;
 use App\Term;
 
-class ScrapeAndSaveMemberGroupsAction extends Action
+class ScrapeMemberGroupsAction extends Action
 {
     private $scrapeAction;
 
