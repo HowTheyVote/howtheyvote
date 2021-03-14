@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\ScrapeAndSaveDocumentInfoAction;
+use App\Actions\ScrapeDocumentInfoAction;
 use App\Document;
 use App\Enums\DocumentTypeEnum;
 use App\Procedure;
@@ -23,7 +23,7 @@ beforeEach(function () {
 });
 
 it('updates document data', function () {
-    $this->action = $this->app->make(ScrapeAndSaveDocumentInfoAction::class);
+    $this->action = $this->app->make(ScrapeDocumentInfoAction::class);
     $this->action->execute($this->document);
 
     $title = $this->document->fresh()->title;
@@ -33,7 +33,7 @@ it('updates document data', function () {
 });
 
 it('creates related procedure record', function () {
-    $this->action = $this->app->make(ScrapeAndSaveDocumentInfoAction::class);
+    $this->action = $this->app->make(ScrapeDocumentInfoAction::class);
     $this->action->execute($this->document);
 
     expect(Procedure::count())->toEqual(1);

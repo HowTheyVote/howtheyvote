@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\ScrapeAndSaveMemberInfoAction;
+use App\Actions\ScrapeMemberInfoAction;
 use App\Enums\CountryEnum;
 use App\Member;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 it('updates member data', function () {
-    $this->action = $this->app->make(ScrapeAndSaveMemberInfoAction::class);
+    $this->action = $this->app->make(ScrapeMemberInfoAction::class);
     Http::fakeJsonFromFile('*/member_info?web_id=12345', 'member_info.json');
 
     $member = Member::factory(['web_id' => 12345])->create();

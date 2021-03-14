@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\ScrapeAndSaveVoteResultsAction;
+use App\Actions\ScrapeVoteResultsAction;
 use App\Document;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\VotePositionEnum;
@@ -14,11 +14,11 @@ use Illuminate\Support\Carbon;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    //TODO: use dep injection to mock ScrapeAndSaveDocumentInfoAction
+    //TODO: use dep injection to mock ScrapeDocumentInfoAction
     Http::fakeJsonFromFile('*/document_info?type=B&term=9&number=154&year=2019', 'document_info.json');
     Http::fakeJsonFromFile('*/procedure?type=B&term=9&number=154&year=2019', 'procedure.json');
 
-    $this->action = $this->app->make(ScrapeAndSaveVoteResultsAction::class);
+    $this->action = $this->app->make(ScrapeVoteResultsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     $this->date = new Carbon('2019-10-24');
 });

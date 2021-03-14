@@ -4,11 +4,11 @@ namespace App\Actions;
 
 use App\Document;
 
-class ScrapeAndSaveDocumentInfoAction extends Action
+class ScrapeDocumentInfoAction extends Action
 {
     private $scrapeAction;
 
-    public function __construct(ScrapeAction $scrapeAction, ScrapeAndSaveProcedureAction $scrapeProcedureAction)
+    public function __construct(ScrapeAction $scrapeAction, ScrapeProcedureAction $scrapeProcedureAction)
     {
         $this->scrapeAction = $scrapeAction;
         $this->scrapeProcedureAction = $scrapeProcedureAction;

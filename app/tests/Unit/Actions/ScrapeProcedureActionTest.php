@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\ScrapeAndSaveProcedureAction;
+use App\Actions\ScrapeProcedureAction;
 use App\Document;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\ProcedureTypeEnum;
@@ -23,7 +23,7 @@ beforeEach(function () {
 });
 
 it('scrapes the procedure for a document', function () {
-    $this->action = $this->app->make(ScrapeAndSaveProcedureAction::class);
+    $this->action = $this->app->make(ScrapeProcedureAction::class);
     $procedure = $this->action->execute($this->document);
 
     $expected = [
@@ -47,7 +47,7 @@ it('does not create duplicates of an already existing procedure', function () {
 
     $this->document->update(['procedure_id' => $existingProcedure->id]);
 
-    $this->action = $this->app->make(ScrapeAndSaveProcedureAction::class);
+    $this->action = $this->app->make(ScrapeProcedureAction::class);
     $procedure = $this->action->execute($this->document);
 
     expect($procedure->id)->toEqual($existingProcedure->id);

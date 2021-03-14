@@ -11,12 +11,12 @@ use App\Vote;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class ScrapeAndSaveVoteResultsAction extends Action
+class ScrapeVoteResultsAction extends Action
 {
     private $scrapeAction;
     private $documentInfoAction;
 
-    public function __construct(ScrapeAction $scrapeAction, ScrapeAndSaveDocumentInfoAction $documentInfoAction)
+    public function __construct(ScrapeAction $scrapeAction, ScrapeDocumentInfoAction $documentInfoAction)
     {
         $this->scrapeAction = $scrapeAction;
         $this->documentInfoAction = $documentInfoAction;

@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Document;
 use App\Procedure;
 
-class ScrapeAndSaveProcedureAction extends Action
+class ScrapeProcedureAction extends Action
 {
     private $scrapeAction;
 

@@ -5,7 +5,7 @@ namespace App\Actions;
 use App\Member;
 use App\Term;
 
-class ScrapeAndSaveMembersAction extends Action
+class ScrapeMembersAction extends Action
 {
     private $scrapeAction;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\ScrapeAndSaveMembersAction;
+use App\Actions\ScrapeMembersAction;
 use App\Member;
 use App\Term;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -8,7 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->action = $this->app->make(ScrapeAndSaveMembersAction::class);
+    $this->action = $this->app->make(ScrapeMembersAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     Http::fakeJsonFromFile('*/members?term=9', 'members.json');
 });
