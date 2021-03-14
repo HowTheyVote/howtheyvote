@@ -27,7 +27,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
 
-Artisan::command('scrape:members {term}', function (
+Artisan::command('scrape:members {--term=}', function (
     int $term,
     ScrapeAndSaveMembersAction $action
 ) {
@@ -51,7 +51,7 @@ Artisan::command('scrape:members-info', function (ScrapeAndSaveMemberInfoAction 
     $this->output->writeln('');
 })->describe('Scrape and save info for all saved members.');
 
-Artisan::command('scrape:members-groups {term}', function (
+Artisan::command('scrape:members-groups {--term=}', function (
     int $term,
     ScrapeAndSaveMemberGroupsAction $action
 ) {
@@ -69,7 +69,7 @@ Artisan::command('scrape:members-groups {term}', function (
     $this->output->writeln('');
 })->describe('Scrape and save group info for all saved members for the given term.');
 
-Artisan::command('scrape:vote-results {term} {date}', function (
+Artisan::command('scrape:vote-results {--term=} {--date=}', function (
     int $term,
     string $date,
     ScrapeAndSaveVoteResultsAction $action,
