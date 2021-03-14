@@ -222,7 +222,7 @@ class Vote:
 
 
 class ProcedureType(Enum):
-    CUD = auto()
+    COD = auto()
     CNS = auto()
     APP = auto()
     BUD = auto()
