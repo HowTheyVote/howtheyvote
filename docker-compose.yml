@@ -6,13 +6,14 @@ volumes:
 services:
   scrapers:
     build: ./scrapers
-    command: poetry run python -m ep_votes.api
+    command: poetry run python -m flask run --host=0.0.0.0
     volumes:
       - ./scrapers:/app
       - scrapers_virtualenvs:/root/.cache/pypoetry/virtualenvs
     ports:
       - '5000:5000'
     environment:
+      - FLASK_APP=ep_votes/api.py
       - APP_PORT=5000
     stdin_open: true
     tty: true
