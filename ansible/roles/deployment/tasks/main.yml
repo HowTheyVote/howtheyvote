@@ -1,0 +1,51 @@
+---
+- name: Clone Repository
+  git:
+    repo: https://github.com/ep-votes/epvotes.git
+    dest: "{{ epvotes.install_dir }}"
+    version: "{{ epvotes.version }}"
+  notify:
+    - Restart scrapers service
+
+- name: Set Python version
+  shell:
+    cmd: "{{ poetry_executable }} env use python3.8"
+    chdir: "{{ epvotes.install_dir }}/scrapers"
+
+- name: Install poetry dependencies
+  shell:
+    cmd: "{{ poetry_executable }} install"
+    chdir: "{{ epvotes.install_dir }}/scrapers"
+
+- name: Create env file for scrapers
+  template:
+    src: epvotes/scrapers/.env.j2
+    dest: "{{ epvotes.install_dir }}/scrapers/.env"
+
+- name: Copy scrapers service configuration
+  notify: 
+    - Reread scrapers service
+  template:
+    src: etc/services.d/epvotes-scrapers.ini.j2
+    dest: "{{ ansible_facts.env.HOME }}/etc/services.d/epvotes-scrapers.ini"
+
+- name: Install composer dependencies
+  shell:
+    cmd: "composer install"
+    chdir: "{{ epvotes.install_dir }}/app"
+
+- name: Create env file for app
+  template:
+    src: epvotes/app/.env.j2
+    dest: "{{ epvotes.install_dir }}/app/.env"
+
+- name: Run migrations
+  shell:
+    cmd: "php artisan migrate --force"
+    chdir: "{{ epvotes.install_dir }}/app"
+
+- name: Setup webserver document root
+  file:
+    state: link
+    dest: "/var/www/virtual/{{ uberspace_user }}/html"
+    src: "{{ epvotes.install_dir }}/app/public"

@@ -1,0 +1,7 @@
+---
+php_version: 8.0
+python_version: 3.8
+poetry_executable: "{{ ansible_facts.env.HOME }}/.poetry/bin/poetry"
+epvotes:
+  version: main
+  install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
