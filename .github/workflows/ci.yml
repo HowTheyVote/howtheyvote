@@ -1,5 +1,4 @@
 name: CI
-
 on: [push]
 
 jobs:
@@ -90,3 +89,36 @@ jobs:
       with:
         name: coverage-report
         path: ${{ github.workspace }}/app/coverage-report
+
+  deploy:
+    needs: [app, scrapers]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ansible
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          mkdir ~/.ssh
+          echo "${{ secrets.EPVPROD_PUBLIC}}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Install Ansible
+        run: pip3 install ansible
+
+      - name: Install Ansible collection
+        run: ansible-galaxy collection install community.general
+
+      - name: Create Ansible Vault password file
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > ansible-vault.pass
+
+      - name: Run Ansible playbook
+        run: ansible-playbook site.yml -i ./hosts --vault-password-file ansible-vault.pass 
+
+      - name: Delete secret files
+        run: rm ansible-vault.pass && rm ~/.ssh/id_rsa
