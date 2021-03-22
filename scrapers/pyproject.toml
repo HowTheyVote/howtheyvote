@@ -10,7 +10,7 @@ requests = "^2.25.1"
 unidecode = "^1.2.0"
 flake8-black = "^0.2.1"
 beautifulsoup4 = "^4.9.3"
-lxml = "^4.6.2"
+lxml = "^4.6.3"
 werkzeug = "^1.0.1"
 sentry-sdk = {extras = ["flask"], version = "^1.0.0"}
 python-dotenv = "^0.15.0"
