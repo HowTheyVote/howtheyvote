@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/scrapers"
     schedule:
-      interval: "daily"
+      interval: "weekly"
   - package-ecosystem: "docker"
     directory: "/scrapers"
     schedule:
@@ -11,7 +11,7 @@ updates:
   - package-ecosystem: "composer"
     directory: "/app"
     schedule:
-      interval: "daily"
+      interval: "weekly"
   - package-ecosystem: "docker"
     directory: "/app"
     schedule:
