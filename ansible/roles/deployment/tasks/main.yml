@@ -66,3 +66,9 @@
   shell:
     cmd: php artisan up
     chdir: "{{ epvotes.install_dir }}/app"
+
+- name: Enable Laravel Scheduler
+  cron:
+    name: Laravel Scheduler
+    minute: "*"
+    job: "cd {{ epvotes.install_dir }}/app && php artisan schedule:run >> /dev/null 2>&1"

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $date = Carbon::today()->toDateString();
+        $schedule->command("scrape:vote-results --term=9 --date {$date}")->dailyAt('21:00');
+        $schedule->command('scrape:members --term=9')->weeklyOn(0, '18:00');
+        $schedule->command('scrape:members-info --term=9')->weeklyOn(0, '19:00');
+        $schedule->command('scrape:members-groups --term=9')->weeklyOn(0, '20:00');
     }
 
     /**
