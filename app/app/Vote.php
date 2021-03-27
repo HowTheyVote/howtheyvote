@@ -42,4 +42,17 @@ class Vote extends Model
             ->using(MemberVote::class)
             ->withPivot('position');
     }
+
+    public function getDisplayTitleAttribute(): ?string
+    {
+        if ($procedureTitle = $this->document?->procedure?->title) {
+            return $procedureTitle;
+        }
+
+        if ($documentTitle = $this->document?->title) {
+            return $documentTitle;
+        }
+
+        return $this->description;
+    }
 }
