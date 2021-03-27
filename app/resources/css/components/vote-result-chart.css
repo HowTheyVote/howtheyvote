@@ -1,0 +1,47 @@
+.vote-result-chart {
+    display: flex;
+}
+
+.vote-result-chart__bar {
+    width: calc(var(--ratio) * 100%);
+    padding: .75rem 0;
+    color: white;
+    text-align: center;
+}
+
+.vote-result-chart__bar::before {
+    display: block;
+}
+
+.vote-result-chart__bar--for {
+   background: green;
+}
+
+.vote-result-chart__bar--for::before {
+    content: '🔼';
+}
+
+.vote-result-chart__bar--against {
+    background: red;
+}
+
+.vote-result-chart__bar--against::before {
+    content: '🔽';
+}
+
+ .vote-result-chart__bar--abstention {
+    background: blue;
+}
+
+.vote-result-chart__bar--abstention::before {
+    content: '▶️';
+}
+
+ .vote-result-chart__bar--absent {
+    background: gray;
+}
+
+.vote-result-chart__bar--absent::before {
+    content: 'N';
+}
+
