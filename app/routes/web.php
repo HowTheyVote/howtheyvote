@@ -18,4 +18,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/votes/{vote}/share-picture', [VotesController::class, 'sharePicture']);
+Route::get('/votes/{vote}/share-picture', [VotesController::class, 'sharePicture'])->name('vote.share-picture');
