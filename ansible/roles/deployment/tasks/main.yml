@@ -1,4 +1,16 @@
 ---
+
+- name: Check if this is the first install
+  stat:
+    path: "{{ epvotes.install_dir }}/app/artisan"
+  register: artisan_command
+
+- name: Enable Laravel maintenance mode
+  shell:
+    cmd: php artisan down --render="errors::503"
+    chdir: "{{ epvotes.install_dir }}/app"
+  when: artisan_command.stat.exists
+
 - name: Clone Repository
   git:
     repo: https://github.com/ep-votes/epvotes.git
@@ -23,7 +35,7 @@
     dest: "{{ epvotes.install_dir }}/scrapers/.env"
 
 - name: Copy scrapers service configuration
-  notify: 
+  notify:
     - Reread scrapers service
   template:
     src: etc/services.d/epvotes-scrapers.ini.j2
@@ -49,3 +61,8 @@
     state: link
     dest: "/var/www/virtual/{{ uberspace_user }}/html"
     src: "{{ epvotes.install_dir }}/app/public"
+
+- name: Disable Laravel maintenance mode
+  shell:
+    cmd: php artisan up
+    chdir: "{{ epvotes.install_dir }}/app"
