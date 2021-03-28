@@ -3,25 +3,19 @@
 <div class="vote-result-chart">
     <x-vote-result-chart-bar
         :value="$stats['by_position']['FOR']"
-        :total="$stats['active']"
+        :total="$stats['voted']"
         style="for"
     />
 
     <x-vote-result-chart-bar
         :value="$stats['by_position']['AGAINST']"
-        :total="$stats['active']"
+        :total="$stats['voted']"
         style="against"
     />
 
     <x-vote-result-chart-bar
         :value="$stats['by_position']['ABSTENTION']"
-        :total="$stats['active']"
+        :total="$stats['voted']"
         style="abstention"
-    />
-
-    <x-vote-result-chart-bar
-        :value="$stats['active'] - $stats['voted']"
-        :total="$stats['active']"
-        style="absent"
     />
 </div>
