@@ -20,6 +20,8 @@ RUN docker-php-ext-install \
     mysqli \
     pdo_mysql
 
+RUN apk add nodejs npm
+
 RUN composer global require laravel/installer
 RUN echo "PATH=$PATH:~/.composer/vendor/bin" >> ~/.bashrc
 
