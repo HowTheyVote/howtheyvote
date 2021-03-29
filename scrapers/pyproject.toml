@@ -13,7 +13,7 @@ beautifulsoup4 = "^4.9.3"
 lxml = "^4.6.3"
 werkzeug = "^1.0.1"
 sentry-sdk = {extras = ["flask"], version = "^1.0.0"}
-python-dotenv = "^0.15.0"
+python-dotenv = "^0.16.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
