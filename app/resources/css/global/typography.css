@@ -1,0 +1,44 @@
+.alpha,
+.beta,
+.gamma {
+    font-family: var(--font-family-heading);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--blue-darker);
+}
+
+.alpha {
+    font-size: var(--text-xl);
+}
+
+.beta {
+    font-size: var(--text-lg);
+}
+
+.gamma {
+    font-size: var(--text-size);
+}
+
+strong {
+    font-weight: 600;
+}
+
+.text--sm {
+    font-size: var(--text-sm);
+}
+
+.text--xs {
+    font-size: var(--text-xs);
+}
+
+.text--green {
+    color: var(--green-dark);
+}
+
+.text--red {
+    color: var(--red-dark);
+}
+
+.text--blue {
+    color: var(--blue-dark);
+}
