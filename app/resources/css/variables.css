@@ -1,0 +1,50 @@
+:root {
+    --text-size: 1.125rem;
+    --line-height: 1.5;
+
+    --text-scale-ratio: 1.25;
+    --text-xs: calc(1 / var(--text-scale-ratio) / var(--text-scale-ratio) * var(--text-size));
+    --text-sm: calc(1 / var(--text-scale-ratio) * var(--text-size));
+    --text-lg: calc(var(--text-scale-ratio) * var(--text-size));
+    --text-xl: calc(var(--text-scale-ratio) * var(--text-scale-ratio) * var(--text-size));
+
+    --space: calc(var(--line-height) * var(--text-size));
+    --space-xxs: calc(0.25 * var(--space));
+    --space-xs:  calc(0.5 * var(--space));
+    --space-sm:  calc(0.75 * var(--space));
+    --space-lg:  calc(1.5 * var(--space));
+    --space-xl:  calc(2 * var(--space));
+    --space-xxl: calc(3 * var(--space));
+
+    --font-family: IBM Plex Sans, system-ui;
+    --font-family-condensed: IBM Plex Sans Condensed, system-ui;
+    --font-family-heading: var(--font-family-condensed);
+
+    --green-h: 170;
+    --green-s: 90%;
+    --green-l: 32.5%;
+    --green: hsl(var(--green-h), var(--green-s), var(--green-l));
+    --green-dark: hsl(var(--green-h), var(--green-s), calc(var(--green-l) - 10%));
+
+    --green-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M -2 2 l 3 -3 M -1 11 l 11 -11 M 8 12 l 3 -3' stroke='rgba(255, 255, 255, .2)' stroke-width='1'/%3E%3C/svg%3E%0A");
+
+    --red-h: 365;
+    --red-s: 100%;
+    --red-l: 40%;
+    --red: hsl(var(--red-h), var(--red-s), var(--red-l));
+    --red-dark: hsl(var(--red-h), var(--red-s), calc(var(--red-l) - 10%));
+
+    --red-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M -2 2 l 3 -3 M -1 11 l 11 -11 M 8 12 l 3 -3' stroke='rgba(255, 255, 255, .2)' stroke-width='1' transform='scale(1, -1) translate(0, -10)'/%3E%3C/svg%3E%0A");
+
+    --blue-h: 203;
+    --blue-s: 100%;
+    --blue-l: 35%;
+    --blue: hsl(var(--blue-h), var(--blue-s), var(--blue-l));
+    --blue-dark: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 10%));
+    --blue-darker: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 20%));
+
+    --gray: #E4E9EF;
+    --gray-light: #F8F9FA;
+
+    --color-text: #333;
+}

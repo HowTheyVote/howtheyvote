@@ -1,9 +1,5 @@
-@import './components/vote-result-chart.css';
+@import './variables.css';
 
-* {
-    box-sizing: border-box;
-}
+@import './global/base.css';
+@import './global/typography.css';
 
-body {
-    font-family: system-ui;
-}
