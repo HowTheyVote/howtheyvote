@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ComponentAttributeBag;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -53,6 +54,17 @@ class AppServiceProvider extends ServiceProvider
 
                 return $assoc;
             }, new static);
+        });
+
+        ComponentAttributeBag::macro('bem', function (string $base, ?string $modifiers) {
+            if (! $modifiers) {
+                return $this;
+            }
+
+            $modifiers = explode(' ', $modifiers);
+            $classes = array_map(fn ($modifier) => "{$base}--{$modifier}", $modifiers);
+
+            return $this->class([$base, ...$classes]);
         });
     }
 }
