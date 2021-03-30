@@ -1,7 +1,7 @@
 @props([
     'value' => 0,
     'total' => 0,
-    'style' => null,
+    'position' => null,
 ])
 
 @php
@@ -10,12 +10,14 @@
 @endphp
 
 <div
-    class="vote-result-chart__bar vote-result-chart__bar--{{ $style }}"
+    {{ $attributes->bem('vote-result-chart__bar', $position) }}
     style="--ratio: {{ $ratio}}"
 >
-    {{ $value }}
+    @if ($percentage >= 10)
+        <x-thumb :modifiers="$position" />
+    @endif
 
-    @if ($percentage > 5)
-        / {{ $percentage }}%
+    @if ($percentage >= 5)
+        {{ $percentage }}%
     @endif
 </div>

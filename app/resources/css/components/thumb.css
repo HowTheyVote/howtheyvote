@@ -1,0 +1,14 @@
+.thumb {
+    fill: currentColor;
+    width: 1em;
+    height: 1em;
+    vertical-align: -10%;
+}
+
+.thumb--against {
+    transform: scale(1, -1);
+}
+
+.thumb--abstention {
+    transform: rotate(90deg) scale(-1, 1);
+}

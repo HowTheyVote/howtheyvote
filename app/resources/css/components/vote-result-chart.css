@@ -1,47 +1,30 @@
 .vote-result-chart {
     display: flex;
+    gap: 1px;
+    border-radius: 2px;
+    overflow: hidden;
 }
 
 .vote-result-chart__bar {
     width: calc(var(--ratio) * 100%);
-    padding: .75rem 0;
+    padding: var(--space-xxs) 0;
+
     color: white;
     text-align: center;
-}
-
-.vote-result-chart__bar::before {
-    display: block;
+    font-weight: 600;
+    font-size: var(--text-sm);
 }
 
 .vote-result-chart__bar--for {
-   background: green;
-}
-
-.vote-result-chart__bar--for::before {
-    content: '🔼';
+   background-color: var(--green);
+   background-image: var(--green-pattern);
 }
 
 .vote-result-chart__bar--against {
-    background: red;
-}
-
-.vote-result-chart__bar--against::before {
-    content: '🔽';
+    background-color: var(--red);
+    background-image: var(--red-pattern);
 }
 
  .vote-result-chart__bar--abstention {
-    background: blue;
+    background-color: var(--blue);
 }
-
-.vote-result-chart__bar--abstention::before {
-    content: '▶️';
-}
-
- .vote-result-chart__bar--absent {
-    background: gray;
-}
-
-.vote-result-chart__bar--absent::before {
-    content: 'N';
-}
-
