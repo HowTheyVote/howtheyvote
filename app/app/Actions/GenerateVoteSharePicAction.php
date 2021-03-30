@@ -17,6 +17,9 @@ class GenerateVoteSharePicAction extends Action
                 'type' => 'png',
                 'fullPage' => true,
             ],
+            'gotoOptions' => [
+                'waitUntil' => 'networkidle0',
+            ],
             'viewport' => [
                 'width' => 600,
                 'height' => 315,
