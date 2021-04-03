@@ -43,8 +43,14 @@
     --blue-dark: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 10%));
     --blue-darker: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 20%));
 
-    --gray: #E4E9EF;
-    --gray-light: #F8F9FA;
+    --gray-h: 213;
+    --gray-s: 10%;
+    --gray-l: 50%;
+    --gray: hsl(var(--gray-h), var(--gray-s), var(--gray-l));
+    --gray-light: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) + 40%));
+    --gray-lightest: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) + 47.5%));
+    --gray-dark: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) - 25%));
+    --gray-darkest: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) - 35%));
 
-    --color-text: #333;
+    --color-text: var(--gray-darkest);
 }
