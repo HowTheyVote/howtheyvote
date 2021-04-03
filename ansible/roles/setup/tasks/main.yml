@@ -2,6 +2,9 @@
 - name: Setup PHP version
   command: "uberspace tools version use php {{ php_version }}"
 
+- name: Setup node version
+  command: "uberspace tools version use node {{ node_version }}"
+
 - name: Check if Poetry is installed
   shell: "{{ ansible_facts.env.HOME }}/.poetry/bin/poetry --version"
   register: poetry_version
@@ -11,7 +14,7 @@
   when: poetry_version.rc != 0
   block:
     - name: Get Poetry installer
-      get_url: 
+      get_url:
         url: "https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py"
         dest: "{{ ansible_facts.env.HOME }}/get-poetry.py"
 
@@ -19,6 +22,6 @@
       command: "python{{ python_version }} {{ ansible_facts.env.HOME }}/get-poetry.py"
 
     - name: Remove Poetry installer
-      file: 
+      file:
         path: "{{ ansible_facts.env.HOME }}/get-poetry.py"
         state: absent
