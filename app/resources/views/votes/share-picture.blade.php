@@ -16,8 +16,9 @@
                 <x-stack space="xxs">
                     <h1 class="beta">{{ $vote->display_title }}</h1>
                     <p class="text--xs">
-                        Result of the vote in the European Parliament on
-                        {{ $vote->date->formatLocalized('%b %e, %Y') }}.
+                        @lang('votes.share-picture.subtitle', [
+                            'date' => $vote->date->formatLocalized('%b %e, %Y'),
+                        ])
                     </p>
                 </x-stack>
                 <x-vote-result-chart :stats="$vote->stats" />
