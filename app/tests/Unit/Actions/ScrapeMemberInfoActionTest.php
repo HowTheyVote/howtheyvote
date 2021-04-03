@@ -30,6 +30,6 @@ it('updates member data', function () {
         'first_name_normalized' => 'jane',
         'last_name_normalized' => 'doe',
         'country' => CountryEnum::GB(),
-        'date_of_birth' => '1975-01-01 00:00:00',
+        'date_of_birth' => '1975-01-01',
     ]);
 });

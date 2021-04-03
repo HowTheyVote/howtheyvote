@@ -40,7 +40,7 @@ it('creates new vote record including relations', function () {
 
     expect($vote)->toEqual([
         'doceo_vote_id' => 109619,
-        'date' => '2019-10-24 00:00:00',
+        'date' => '2019-10-24',
         'description' => '§ 1/2',
         'term_id' => $this->term->id,
     ]);
