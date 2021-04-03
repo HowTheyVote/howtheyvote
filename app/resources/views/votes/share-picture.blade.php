@@ -20,9 +20,7 @@
                         {{ $vote->date->formatLocalized('%b %e, %Y') }}.
                     </p>
                 </x-stack>
-                <x-stack space="xxs">
-                    <x-vote-result-chart :stats="$vote->stats" />
-                </x-stack>
+                <x-vote-result-chart :stats="$vote->stats" />
             </x-stack>
         </x-share-picture>
     </body>
