@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use Spatie\Enum\Laravel\Enum;
+
 /**
  * @method static self AT()
  * @method static self BE()
