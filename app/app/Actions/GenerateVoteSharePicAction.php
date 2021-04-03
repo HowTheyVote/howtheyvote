@@ -10,7 +10,7 @@ class GenerateVoteSharePicAction extends Action
 {
     public function execute(Vote $vote): void
     {
-        $token = env('BROWSERLESS_TOKEN');
+        $token = config('browserless.token');
         $response = Http::post("https://chrome.browserless.io/screenshot?token={$token}", [
             'url' => route('vote.share-picture', ['vote' => $vote->id]),
             'options' => [

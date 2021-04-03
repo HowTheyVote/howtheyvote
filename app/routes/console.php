@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\CompileVoteStatsAction;
+use App\Actions\GenerateVoteSharePicAction;
 use App\Actions\ScrapeMemberGroupsAction;
 use App\Actions\ScrapeMemberInfoAction;
 use App\Actions\ScrapeMembersAction;
@@ -93,3 +94,11 @@ Artisan::command('scrape:vote-results {--term=} {--date=}', function (
 
     $this->output->writeln('');
 })->describe('Scrape and save all votes with compiled stats for the given date and term.');
+
+Artisan::command('share-picture:vote {--vote=}', function (
+    int $vote,
+    GenerateVoteSharePicAction $action
+) {
+    $vote = Vote::find($vote);
+    $action->execute($vote);
+})->describe('Generates a picture showing the overall result for a given vote.');
