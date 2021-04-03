@@ -56,6 +56,16 @@
     cmd: "php artisan migrate --force"
     chdir: "{{ epvotes.install_dir }}/app"
 
+- name: Install node dependencies
+  shell:
+    cmd: "npm ci"
+    chdir: "{{ epvotes.install_dir }}/app"
+
+- name: Build CSS and JS
+  shell:
+    cmd: "npm run prod --scripts-prepend-node-path"
+    chdir: "{{ epvotes.install_dir }}/app"
+
 - name: Setup webserver document root
   file:
     state: link
