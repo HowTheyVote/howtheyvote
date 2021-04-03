@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use Spatie\Enum\Laravel\Enum;
+
 /**
  * @method static self COD()
  * @method static self CNS()
