@@ -50,10 +50,27 @@ jobs:
       run:
         working-directory: app
 
+    services:
+      mariadb:
+        image: mariadb:10.5.5
+        ports:
+          - '3306:3306'
+        env:
+          MYSQL_DATABASE: tests
+          MYSQL_USER: laravel
+          MYSQL_PASSWORD: laravel
+          MYSQL_ROOT_PASSWORD: laravel
+        options: >-
+          --health-cmd="mariadb-admin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     env:
       APP_ENV: testing
-      DB_CONNECTION: sqlite
-      DB_DATABASE: ':memory:'
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel
+      DB_HOST: '127.0.0.1'
 
     steps:
     - name: Setup PHP
@@ -118,7 +135,7 @@ jobs:
         run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > ansible-vault.pass
 
       - name: Run Ansible playbook
-        run: ansible-playbook site.yml -i ./hosts --vault-password-file ansible-vault.pass 
+        run: ansible-playbook site.yml -i ./hosts --vault-password-file ansible-vault.pass
 
       - name: Delete secret files
         run: rm ansible-vault.pass && rm ~/.ssh/id_rsa
