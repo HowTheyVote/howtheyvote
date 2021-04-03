@@ -29,7 +29,6 @@ services:
       - APP_NAME=epvotes
       - APP_ENV=local
       - APP_DEBUG=true
-      - APP_URL=http://localhost
       - DB_CONNECTION=mysql
       - DB_HOST=mariadb
       - DB_DATABASE=laravel
