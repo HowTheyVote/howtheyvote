@@ -31,7 +31,7 @@ it('scrapes the procedure for a document', function () {
         'type' => ProcedureTypeEnum::RSP(),
         'number' => 2755,
         'year' => 2019,
-        'id' => Procedure::count(),
+        'id' => $procedure->id,
     ];
 
     expect($procedure->getAttributes())->toEqual($expected);
