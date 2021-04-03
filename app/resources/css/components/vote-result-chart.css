@@ -26,5 +26,5 @@
 }
 
  .vote-result-chart__bar--abstention {
-    background-color: var(--blue);
+    background-color: var(--gray);
 }
