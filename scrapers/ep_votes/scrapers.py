@@ -189,7 +189,7 @@ class VoteResultsScraper(Scraper):
             description=self._description(tag),
             reference=self._reference(tag),
             votings=self._votings(tag),
-            vote_type=vote_type,
+            type=vote_type,
             subvote_description=subvote_description,
         )
 

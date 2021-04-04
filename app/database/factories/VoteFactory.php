@@ -32,7 +32,7 @@ class VoteFactory extends Factory
             'description' => '§ 1/2',
             'document_id' => Document::factory(),
             'term_id' => Term::factory(),
-            'vote_type' => VoteTypeEnum::FINAL(),
+            'type' => VoteTypeEnum::FINAL(),
         ];
     }
 

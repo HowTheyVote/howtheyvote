@@ -165,7 +165,7 @@ def test_vote_results_scraper_run(mock_request):
             description="§ 1/1",
             reference=DocReference(type=DocType.B, term=9, number=229, year=2020),
             votings=votings,
-            vote_type=VoteType.SPLIT,
+            type=VoteType.SPLIT,
             subvote_description="§ 1/1",
         )
     ]

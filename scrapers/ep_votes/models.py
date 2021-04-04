@@ -223,7 +223,7 @@ class Vote:
     doceo_vote_id: int
     date: date
     votings: List[Voting]
-    vote_type: VoteType
+    type: VoteType
     subvote_description: Optional[str] = None
     description: Optional[str] = None
     reference: Optional[DocReference] = None

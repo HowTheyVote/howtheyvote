@@ -65,7 +65,7 @@ class ScrapeVoteResultsAction extends Action
 
         $vote->fill([
             'description' => $data['description'],
-            'vote_type' => VoteTypeEnum::make($data['vote_type']),
+            'type' => VoteTypeEnum::make($data['type']),
             'subvote_description' => $data['subvote_description'],
             'document_id' => $document->id ?? null,
         ]);
