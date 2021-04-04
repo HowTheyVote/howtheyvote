@@ -4,6 +4,7 @@ use App\Actions\ScrapeVoteResultsAction;
 use App\Document;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\VotePositionEnum;
+use App\Enums\VoteTypeEnum;
 use App\Member;
 use App\Procedure;
 use App\Term;
@@ -30,22 +31,15 @@ it('creates new vote record including relations', function () {
 
     expect(Vote::count())->toEqual(1);
 
-    $vote = Arr::except(Vote::first()->getAttributes(), [
-        'created_at',
-        'updated_at',
-        'id',
-        'document_id',
-        'stats',
-    ]);
+    $vote = Vote::first();
 
-    expect($vote)->toEqual([
-        'doceo_vote_id' => 109619,
-        'date' => '2019-10-24',
-        'description' => '§ 1/2',
-        'term_id' => $this->term->id,
-    ]);
-
-    expect(Vote::first()->document)->not()->toBeNull();
+    expect($vote->doceo_vote_id)->toEqual(109619);
+    expect($vote->date)->toEqual(new Carbon('2019-10-24'));
+    expect($vote->description)->toEqual('§ 1/2');
+    expect($vote->term->id)->toEqual($this->term->id);
+    expect($vote->vote_type)->toEqual(VoteTypeEnum::SPLIT());
+    expect($vote->subvote_description)->toEqual('§ 1/2');
+    expect($vote->document)->not()->toBeNull();
 });
 
 it('creates new related document record with document infos', function () {

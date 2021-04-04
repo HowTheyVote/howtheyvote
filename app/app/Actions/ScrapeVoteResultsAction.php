@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Document;
 use App\Enums\DocumentTypeEnum;
 use App\Enums\VotePositionEnum;
+use App\Enums\VoteTypeEnum;
 use App\Member;
 use App\Term;
 use App\Vote;
@@ -56,16 +57,20 @@ class ScrapeVoteResultsAction extends Action
         ?Document $document,
         array $data
     ): Vote {
-        $vote = Vote::firstOrCreate([
+        $vote = Vote::firstOrNew([
             'doceo_vote_id' => $data['doceo_vote_id'],
             'term_id' => $term->id,
             'date' => $date,
         ]);
 
-        $vote->update([
+        $vote->fill([
             'description' => $data['description'],
+            'vote_type' => VoteTypeEnum::make($data['vote_type']),
+            'subvote_description' => $data['subvote_description'],
             'document_id' => $document->id ?? null,
         ]);
+
+        $vote->save();
 
         return $vote;
     }
