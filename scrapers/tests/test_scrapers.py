@@ -281,6 +281,7 @@ def tags_for_type():
         "<RollCallVote.Description.Text>Text - §1 §2</RollCallVote.Description.Text>",
         "<RollCallVote.Description.Text>Text - §1 - 5</RollCallVote.Description.Text>",
         "<RollCallVote.Description.Text>Text - §1 §3 - 5</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Ordre du jour de mardi - demande du groupe GUE/NGL</RollCallVote.Description.Text>",
     ]
 
     return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
@@ -319,6 +320,9 @@ def test_vote_results_scraper_type(tags_for_type):
     assert scraper._subvote(tags_for_type[16]) == (VoteType.SPLIT, "§1 §2")
     assert scraper._subvote(tags_for_type[17]) == (VoteType.SPLIT, "§1 - 5")
     assert scraper._subvote(tags_for_type[18]) == (VoteType.SPLIT, "§1 §3 - 5")
+
+    # agenda
+    assert scraper._subvote(tags_for_type[19]) == (VoteType.AGENDA, None)
 
 
 def test_document_scraper_run(mock_request):

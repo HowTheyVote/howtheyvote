@@ -216,6 +216,7 @@ class VoteType(Enum):
     FINAL = auto()
     SPLIT = auto()
     AMENDMENT = auto()
+    AGENDA = auto()
 
 
 @dataclass
