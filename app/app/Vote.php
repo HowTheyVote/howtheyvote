@@ -17,7 +17,7 @@ class Vote extends Model
         'term_id',
         'document_id',
         'stats',
-        'vote_type',
+        'type',
         'subvote_description',
     ];
 
@@ -27,7 +27,7 @@ class Vote extends Model
 
     protected $casts = [
         'stats' => 'array',
-        'vote_type' => VoteTypeEnum::class,
+        'type' => VoteTypeEnum::class,
     ];
 
     public function term()

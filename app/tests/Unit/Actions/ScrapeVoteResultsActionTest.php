@@ -37,7 +37,7 @@ it('creates new vote record including relations', function () {
     expect($vote->date)->toEqual(new Carbon('2019-10-24'));
     expect($vote->description)->toEqual('§ 1/2');
     expect($vote->term->id)->toEqual($this->term->id);
-    expect($vote->vote_type)->toEqual(VoteTypeEnum::SPLIT());
+    expect($vote->type)->toEqual(VoteTypeEnum::SPLIT());
     expect($vote->subvote_description)->toEqual('§ 1/2');
     expect($vote->document)->not()->toBeNull();
 });
