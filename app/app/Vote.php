@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,8 @@ class Vote extends Model
         'term_id',
         'document_id',
         'stats',
+        'vote_type',
+        'subvote_description',
     ];
 
     protected $dates = [
@@ -24,6 +27,7 @@ class Vote extends Model
 
     protected $casts = [
         'stats' => 'array',
+        'vote_type' => VoteTypeEnum::class,
     ];
 
     public function term()
