@@ -16,8 +16,8 @@
 }
 
 .vote-result-chart__bar--for {
-   background-color: var(--green);
-   background-image: var(--green-pattern);
+    background-color: var(--green);
+    background-image: var(--green-pattern);
 }
 
 .vote-result-chart__bar--against {
@@ -25,6 +25,6 @@
     background-image: var(--red-pattern);
 }
 
- .vote-result-chart__bar--abstention {
+.vote-result-chart__bar--abstention {
     background-color: var(--gray);
 }
