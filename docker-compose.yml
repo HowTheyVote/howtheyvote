@@ -2,6 +2,7 @@ version: '3.7'
 
 volumes:
   scrapers_virtualenvs: {}
+  mariadb_storage: {}
 
 services:
   scrapers:
@@ -41,9 +42,9 @@ services:
     tty: true
 
   mariadb:
-    image: mariadb:10.5.5
+    build: ./mariadb
     volumes:
-      - ./mariadb/storage:/var/lib/mysql
+      - mariadb_storage:/var/lib/mysql
     ports:
       - '3306:3306'
     ulimits:
