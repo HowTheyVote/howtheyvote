@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Document;
 use App\Enums\VotePositionEnum;
+use App\Enums\VoteTypeEnum;
 use App\Term;
 use App\Vote;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -31,6 +32,7 @@ class VoteFactory extends Factory
             'description' => '§ 1/2',
             'document_id' => Document::factory(),
             'term_id' => Term::factory(),
+            'vote_type' => VoteTypeEnum::FINAL(),
         ];
     }
 
