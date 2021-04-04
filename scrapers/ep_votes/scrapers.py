@@ -181,13 +181,16 @@ class VoteResultsScraper(Scraper):
         return [self._result(tag) for tag in tags]
 
     def _result(self, tag: Tag) -> Vote:
+        vote_type, subvote_description = self._subvote(tag)
+
         return Vote(
             doceo_vote_id=int(tag["Identifier"]),
             date=self._date(tag),
             description=self._description(tag),
             reference=self._reference(tag),
             votings=self._votings(tag),
-            vote_type=self._type(tag),
+            vote_type=vote_type,
+            subvote_description=subvote_description,
         )
 
     def _date(self, tag: Tag) -> date:
@@ -204,7 +207,7 @@ class VoteResultsScraper(Scraper):
 
         return removeprefix(text.strip(), "- ")
 
-    def _type(self, tag: Tag) -> VoteType:
+    def _subvote(self, tag: Tag) -> Tuple[VoteType, Optional[str]]:
         description = self._description(tag)
 
         numbering_regex = r"\s*\d+(?:\s*-\s*\d+)?(?:\/\d+)?"
@@ -216,7 +219,7 @@ class VoteResultsScraper(Scraper):
         amendments = re.search(amendments_regex, description)
 
         if amendments:
-            return VoteType.AMENDMENT
+            return VoteType.AMENDMENT, amendments.group(0)
 
         single_paragraph_regex = r"§" + numbering_regex
         paragraphs_regex = (
@@ -224,13 +227,16 @@ class VoteResultsScraper(Scraper):
         )
         paragraphs = re.search(paragraphs_regex, description)
 
+        if paragraphs:
+            return VoteType.SPLIT, paragraphs.group(0)
+
         consideration_regex = r"Consid[eé]rant\s*[A-Z]+(?:\/\d+)?$"
         consideration = re.search(consideration_regex, description)
 
-        if paragraphs or consideration:
-            return VoteType.SPLIT
+        if consideration:
+            return VoteType.SPLIT, consideration.group(0)
 
-        return VoteType.FINAL
+        return VoteType.FINAL, None
 
     def _reference(self, tag: Tag) -> Optional[DocReference]:
         ref_tag = self._reference_tag(tag)

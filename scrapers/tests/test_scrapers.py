@@ -166,6 +166,7 @@ def test_vote_results_scraper_run(mock_request):
             reference=DocReference(type=DocType.B, term=9, number=229, year=2020),
             votings=votings,
             vote_type=VoteType.SPLIT,
+            subvote_description="§ 1/1",
         )
     ]
 
@@ -289,35 +290,35 @@ def test_vote_results_scraper_type(tags_for_type):
     scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
 
     # by default, if no special vote identifier is found, it's a final vote
-    assert scraper._type(tags_for_type[0]) == VoteType.FINAL
+    assert scraper._subvote(tags_for_type[0]) == (VoteType.FINAL, None)
 
     # amendments
-    assert scraper._type(tags_for_type[1]) == VoteType.AMENDMENT
-    assert scraper._type(tags_for_type[2]) == VoteType.AMENDMENT
-    assert scraper._type(tags_for_type[3]) == VoteType.AMENDMENT
-    assert scraper._type(tags_for_type[4]) == VoteType.AMENDMENT
+    assert scraper._subvote(tags_for_type[1]) == (VoteType.AMENDMENT, "Am 1")
+    assert scraper._subvote(tags_for_type[2]) == (VoteType.AMENDMENT, "Am 11")
+    assert scraper._subvote(tags_for_type[3]) == (VoteType.AMENDMENT, "Am 1/2")
+    assert scraper._subvote(tags_for_type[4]) == (VoteType.AMENDMENT, "Am  1/2")
 
     # paragraphs
-    assert scraper._type(tags_for_type[5]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[6]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[7]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[8]) == VoteType.SPLIT
+    assert scraper._subvote(tags_for_type[5]) == (VoteType.SPLIT, "§1")
+    assert scraper._subvote(tags_for_type[6]) == (VoteType.SPLIT, "§11")
+    assert scraper._subvote(tags_for_type[7]) == (VoteType.SPLIT, "§1/2")
+    assert scraper._subvote(tags_for_type[8]) == (VoteType.SPLIT, "§ 1")
 
     # considerant
-    assert scraper._type(tags_for_type[9]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[10]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[11]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[12]) == VoteType.SPLIT
+    assert scraper._subvote(tags_for_type[9]) == (VoteType.SPLIT, "Considérant A")
+    assert scraper._subvote(tags_for_type[10]) == (VoteType.SPLIT, "Considerant A")
+    assert scraper._subvote(tags_for_type[11]) == (VoteType.SPLIT, "Considerant AB")
+    assert scraper._subvote(tags_for_type[12]) == (VoteType.SPLIT, "Considerant A/1")
 
     # multiple amendments
-    assert scraper._type(tags_for_type[13]) == VoteType.AMENDMENT
-    assert scraper._type(tags_for_type[14]) == VoteType.AMENDMENT
-    assert scraper._type(tags_for_type[15]) == VoteType.AMENDMENT
+    assert scraper._subvote(tags_for_type[13]) == (VoteType.AMENDMENT, "Am 1 Am 2")
+    assert scraper._subvote(tags_for_type[14]) == (VoteType.AMENDMENT, "Am 1 - 5")
+    assert scraper._subvote(tags_for_type[15]) == (VoteType.AMENDMENT, "Am 1 Am 3 - 5")
 
     # multiple paragraphs
-    assert scraper._type(tags_for_type[16]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[17]) == VoteType.SPLIT
-    assert scraper._type(tags_for_type[18]) == VoteType.SPLIT
+    assert scraper._subvote(tags_for_type[16]) == (VoteType.SPLIT, "§1 §2")
+    assert scraper._subvote(tags_for_type[17]) == (VoteType.SPLIT, "§1 - 5")
+    assert scraper._subvote(tags_for_type[18]) == (VoteType.SPLIT, "§1 §3 - 5")
 
 
 def test_document_scraper_run(mock_request):
