@@ -49,7 +49,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
-        "/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-B9-0154/2019": "procedure-b9-0154-2019.xml",  # noqa: E501
+        "/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-B9-0154/2019": "procedure-b9-0154-2019.xml",
     }
 
     file = MOCK_RESPONSES[url]
@@ -128,12 +128,12 @@ def test_member_groups_scraper_group(mock_request):
 
     tags = [
         "<strong>02-07-2019 ...</strong> : Renew Europe Group - Member",
-        "<strong>02-07-2019 ...</strong> : Group of the European People's Party (Christian Democrats) - Chair",  # noqa: E501
-        "<strong>02-07-2019 ...</strong> : Group of the European United Left - Nordic Green Left - Co-Chair",  # noqa: E501
-        "<strong>02-07-2019 ...</strong> : Group of the Greens/European Free Alliance - Vice-Chair",  # noqa: E501
-        "<strong>14-05-2020 ...</strong> : European Conservatives and Reformists Group - Member of the Bureau",  # noqa: E501
-        "<strong>02-07-2019 ...</strong> : Group of the Progressive Alliance of Socialists and Democrats in the European Parliament - First Vice-Chair",  # noqa: E501
-        "<strong>02-07-2019 ...</strong> : European Conservatives and Reformists Group - Co-treasurer",  # noqa: E501
+        "<strong>02-07-2019 ...</strong> : Group of the European People's Party (Christian Democrats) - Chair",
+        "<strong>02-07-2019 ...</strong> : Group of the European United Left - Nordic Green Left - Co-Chair",
+        "<strong>02-07-2019 ...</strong> : Group of the Greens/European Free Alliance - Vice-Chair",
+        "<strong>14-05-2020 ...</strong> : European Conservatives and Reformists Group - Member of the Bureau",
+        "<strong>02-07-2019 ...</strong> : Group of the Progressive Alliance of Socialists and Democrats in the European Parliament - First Vice-Chair",
+        "<strong>02-07-2019 ...</strong> : European Conservatives and Reformists Group - Co-treasurer",
         "<strong>02-07-2019 ...</strong> : Non-attached Members",
     ]
 
@@ -165,7 +165,7 @@ def test_vote_results_scraper_run(mock_request):
             description="§ 1/1",
             reference=DocReference(type=DocType.B, term=9, number=229, year=2020),
             votings=votings,
-            vote_type=VoteType.FINAL,
+            vote_type=VoteType.SPLIT,
         )
     ]
 
@@ -186,7 +186,7 @@ def test_vote_results_scraper_run_positions_missing(mock_request):
 
 
 @pytest.fixture
-def description_tags():
+def tags_for_description():
     descriptions = [
         (  # Handles resolution references (iPlRe)
             "<RollCallVote.Description.Text>"
@@ -226,7 +226,7 @@ def description_tags():
     return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
 
 
-def test_vote_results_scraper_description(description_tags):
+def test_vote_results_scraper_description(tags_for_description):
     scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
 
     expected = [
@@ -237,12 +237,12 @@ def test_vote_results_scraper_description(description_tags):
         "Younous Omarjee - Vote unique",
     ]
 
-    assert scraper._description(description_tags[0]) == expected[0]
-    assert scraper._description(description_tags[1]) == expected[1]
-    assert scraper._description(description_tags[2]) == expected[2]
+    assert scraper._description(tags_for_description[0]) == expected[0]
+    assert scraper._description(tags_for_description[1]) == expected[1]
+    assert scraper._description(tags_for_description[2]) == expected[2]
 
 
-def test_vote_results_scraper_reference(description_tags):
+def test_vote_results_scraper_reference(tags_for_description):
     scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
 
     expected = [
@@ -253,9 +253,71 @@ def test_vote_results_scraper_reference(description_tags):
         DocReference.from_str("A9-0020/2019"),
     ]
 
-    assert scraper._reference(description_tags[0]) == expected[0]
-    assert scraper._reference(description_tags[1]) == expected[1]
-    assert scraper._reference(description_tags[2]) == expected[2]
+    assert scraper._reference(tags_for_description[0]) == expected[0]
+    assert scraper._reference(tags_for_description[1]) == expected[1]
+    assert scraper._reference(tags_for_description[2]) == expected[2]
+
+
+@pytest.fixture
+def tags_for_type():
+    descriptions = [
+        "<RollCallVote.Description.Text>Text</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am 1</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am 11</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am 1/2</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am  1/2</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - §1</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - §11</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - §1/2</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - § 1</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Considérant A</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Considerant A</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Considerant AB</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Considerant A/1</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am 1 Am 2</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am 1 - 5</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - Am 1 Am 3 - 5</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - §1 §2</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - §1 - 5</RollCallVote.Description.Text>",
+        "<RollCallVote.Description.Text>Text - §1 §3 - 5</RollCallVote.Description.Text>",
+    ]
+
+    return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
+
+
+def test_vote_results_scraper_type(tags_for_type):
+    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
+
+    # by default, if no special vote identifier is found, it's a final vote
+    assert scraper._type(tags_for_type[0]) == VoteType.FINAL
+
+    # amendments
+    assert scraper._type(tags_for_type[1]) == VoteType.AMENDMENT
+    assert scraper._type(tags_for_type[2]) == VoteType.AMENDMENT
+    assert scraper._type(tags_for_type[3]) == VoteType.AMENDMENT
+    assert scraper._type(tags_for_type[4]) == VoteType.AMENDMENT
+
+    # paragraphs
+    assert scraper._type(tags_for_type[5]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[6]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[7]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[8]) == VoteType.SPLIT
+
+    # considerant
+    assert scraper._type(tags_for_type[9]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[10]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[11]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[12]) == VoteType.SPLIT
+
+    # multiple amendments
+    assert scraper._type(tags_for_type[13]) == VoteType.AMENDMENT
+    assert scraper._type(tags_for_type[14]) == VoteType.AMENDMENT
+    assert scraper._type(tags_for_type[15]) == VoteType.AMENDMENT
+
+    # multiple paragraphs
+    assert scraper._type(tags_for_type[16]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[17]) == VoteType.SPLIT
+    assert scraper._type(tags_for_type[18]) == VoteType.SPLIT
 
 
 def test_document_scraper_run(mock_request):
