@@ -212,11 +212,19 @@ class Voting:
     position: Position
 
 
+class VoteType(Enum):
+    FINAL = auto()
+    SPLIT = auto()
+    AMENDMENT = auto()
+
+
 @dataclass
 class Vote:
     doceo_vote_id: int
     date: date
     votings: List[Voting]
+    vote_type: VoteType
+    subvote_description: Optional[str] = None
     description: Optional[str] = None
     reference: Optional[DocReference] = None
 

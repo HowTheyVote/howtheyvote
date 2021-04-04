@@ -12,6 +12,7 @@ from .models import (
     GroupMembership,
     Position,
     Voting,
+    VoteType,
     Vote,
     Doc,
     DocType,
@@ -185,6 +186,7 @@ class VoteResultsScraper(Scraper):
             description=self._description(tag),
             reference=self._reference(tag),
             votings=self._votings(tag),
+            vote_type=VoteType.FINAL,
         )
 
     def _date(self, tag: Tag) -> date:
