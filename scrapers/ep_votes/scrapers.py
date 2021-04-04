@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup, Tag
 import requests
+import re
 from datetime import date, datetime
 from typing import Any, List, Optional, Tuple
 from abc import ABC, abstractmethod
@@ -186,7 +187,7 @@ class VoteResultsScraper(Scraper):
             description=self._description(tag),
             reference=self._reference(tag),
             votings=self._votings(tag),
-            vote_type=VoteType.FINAL,
+            vote_type=self._type(tag),
         )
 
     def _date(self, tag: Tag) -> date:
@@ -202,6 +203,34 @@ class VoteResultsScraper(Scraper):
             text = text.replace(ref_tag.text, " ")
 
         return removeprefix(text.strip(), "- ")
+
+    def _type(self, tag: Tag) -> VoteType:
+        description = self._description(tag)
+
+        numbering_regex = r"\s*\d+(?:\s*-\s*\d+)?(?:\/\d+)?"
+
+        single_amendment_regex = r"Am" + numbering_regex
+        amendments_regex = (
+            single_amendment_regex + r"(?:\s+" + single_amendment_regex + r")*$"
+        )
+        amendments = re.search(amendments_regex, description)
+
+        if amendments:
+            return VoteType.AMENDMENT
+
+        single_paragraph_regex = r"§" + numbering_regex
+        paragraphs_regex = (
+            single_paragraph_regex + r"(?:\s+" + single_paragraph_regex + r")*$"
+        )
+        paragraphs = re.search(paragraphs_regex, description)
+
+        consideration_regex = r"Consid[eé]rant\s*[A-Z]+(?:\/\d+)?$"
+        consideration = re.search(consideration_regex, description)
+
+        if paragraphs or consideration:
+            return VoteType.SPLIT
+
+        return VoteType.FINAL
 
     def _reference(self, tag: Tag) -> Optional[DocReference]:
         ref_tag = self._reference_tag(tag)
