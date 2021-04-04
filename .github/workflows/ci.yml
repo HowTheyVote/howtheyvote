@@ -101,11 +101,12 @@ jobs:
     - name: Test with pest
       run: composer test-with-coverage
 
-    - name: Upload coverage report as artifact
-      uses: actions/upload-artifact@v2
+    - name: Uploade coverage report to codecov.io
+      uses: codecov/codecov-action@v1
       with:
-        name: coverage-report
-        path: ${{ github.workspace }}/app/coverage-report
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./app/coverage.xml
+        flags: app
 
   deploy:
     needs: [app, scrapers]
