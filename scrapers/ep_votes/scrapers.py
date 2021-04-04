@@ -236,6 +236,9 @@ class VoteResultsScraper(Scraper):
         if consideration:
             return VoteType.SPLIT, consideration.group(0)
 
+        if description.startswith("Ordre du jour"):
+            return VoteType.AGENDA, None
+
         return VoteType.FINAL, None
 
     def _reference(self, tag: Tag) -> Optional[DocReference]:
