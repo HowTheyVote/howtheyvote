@@ -7,10 +7,13 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "prettier": "prettier --check resources/**/*.{js,css}",
+        "prettier-fix": "prettier --write resources/**/*.{js,css}"
     },
     "devDependencies": {
         "laravel-mix": "^6.0.6",
-        "postcss": "^8.1.14"
+        "postcss": "^8.1.14",
+        "prettier": "^2.2.1"
     }
 }
