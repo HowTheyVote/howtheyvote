@@ -23,6 +23,11 @@
                 </x-stack>
                 <x-vote-result-chart :stats="$vote->stats" />
             </x-stack>
+
+            <x-slot name="footer">
+                {{ __('votes.share-picture.footer') }}<br>
+                <strong>{{ $shortDisplayUrl }}</strong>
+            </x-slot>
         </x-share-picture>
     </body>
 </html>
