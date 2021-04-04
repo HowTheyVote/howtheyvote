@@ -16,11 +16,16 @@ class ScrapeVoteResultsAction extends Action
 {
     private $scrapeAction;
     private $documentInfoAction;
+    private $sharePicAction;
 
-    public function __construct(ScrapeAction $scrapeAction, ScrapeDocumentInfoAction $documentInfoAction)
-    {
+    public function __construct(
+        ScrapeAction $scrapeAction,
+        ScrapeDocumentInfoAction $documentInfoAction,
+        GenerateVoteSharePicAction $sharePicAction
+    ) {
         $this->scrapeAction = $scrapeAction;
         $this->documentInfoAction = $documentInfoAction;
+        $this->sharePicAction = $sharePicAction;
     }
 
     public function execute(Term $term, Carbon $date): void
@@ -45,6 +50,10 @@ class ScrapeVoteResultsAction extends Action
             $document = $this->findOrCreateDocument($term, $data['reference']);
             $vote = $this->createOrUpdateVote($members, $term, $date, $document, $data);
             $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
+
+            if ($vote->type->equals(VoteTypeEnum::FINAL()) && $vote->wasRecentlyCreated) {
+                $this->sharePicAction->execute($vote);
+            }
         }
 
         $this->log("Imported {$total} votes for {$date}");
