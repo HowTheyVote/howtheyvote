@@ -5,6 +5,7 @@ namespace App;
 use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Vinkla\Hashids\Facades\Hashids;
 
 class Vote extends Model
 {
@@ -58,5 +59,10 @@ class Vote extends Model
         }
 
         return $this->description;
+    }
+
+    public function getHashIdAttribute(): string
+    {
+        return Hashids::encode($this->id);
     }
 }
