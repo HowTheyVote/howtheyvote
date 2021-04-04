@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::get('/votes/{vote}/share-picture', [VotesController::class, 'sharePicture'])->name('vote.share-picture');
+Route::get('/{hashId}', fn ($hashId) => null)->name('vote.short');
