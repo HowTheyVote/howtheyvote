@@ -28,12 +28,11 @@ app = Flask(__name__)
 
 SimpleResponse = Union[Dict, Tuple[Dict, int]]
 SimpleHandler = Callable[..., SimpleResponse]
-Handler = Callable[..., Response]
 
 
-def json_response(handler: SimpleHandler) -> Handler:
+def json_response(handler: SimpleHandler) -> Callable[..., Response]:
     @wraps(handler)
-    def wrapper() -> Response:
+    def wrapped_handler() -> Response:
         res = handler()
 
         if isinstance(res, tuple):
@@ -44,78 +43,69 @@ def json_response(handler: SimpleHandler) -> Handler:
 
         return Response(to_json(body), status=status, content_type="application/json")
 
-    return wrapper
+    return wrapped_handler
+
+
+def params(**params: Callable) -> Callable:
+    def decorator(handler: SimpleHandler) -> Callable[..., SimpleResponse]:
+        @wraps(handler)
+        def wrapped_handler() -> SimpleResponse:
+            args = request.args
+            data = {}
+
+            for key, type in params.items():
+                data[key] = args.get(key, type=type)
+
+            missing = [x for x in params if not data[x]]
+
+            if missing:
+                message = ", ".join(missing)
+                return {"message": f"Missing required parameters: {message}"}, 400
+
+            return handler(**data)
+
+        return wrapped_handler
+
+    return decorator
 
 
 @app.route("/members")
 @json_response
-def members() -> SimpleResponse:
-    term = request.args.get("term", type=int)
-
-    if term is None:
-        return {"message": "Missing required paramters"}, 400
-
+@params(term=int)
+def members(term: int) -> SimpleResponse:
     return MembersScraper(term=term).run()
 
 
 @app.route("/member_info")
 @json_response
-def member_info() -> SimpleResponse:
-    web_id = request.args.get("web_id", type=int)
-
-    if web_id is None:
-        return {"message": "Missing required paramters"}, 400
-
+@params(web_id=int)
+def member_info(web_id: int) -> SimpleResponse:
     return MemberInfoScraper(web_id=web_id).run()
 
 
 @app.route("/member_groups")
 @json_response
-def member_groups() -> SimpleResponse:
-    web_id = request.args.get("web_id", type=int)
-    term = request.args.get("term", type=int)
-
-    if term is None or web_id is None:
-        return {"message": "Missing required paramters"}, 400
-
+@params(web_id=int, term=int)
+def member_groups(term: int, web_id: int) -> SimpleResponse:
     return MemberGroupsScraper(term=term, web_id=web_id).run()
 
 
 @app.route("/vote_results")
 @json_response
-def vote_results() -> SimpleResponse:
-    term = request.args.get("term", type=int)
-    date = request.args.get("date", type=datetime.date.fromisoformat)
-
-    if term is None or date is None:
-        return {"message": "Missing rrequired paramters"}, 400
-
+@params(term=int, date=datetime.date.fromisoformat)
+def vote_results(term: int, date: datetime.date) -> SimpleResponse:
     return VoteResultsScraper(term=term, date=date).run()
 
 
 @app.route("/document_info")
 @json_response
-def document_info() -> SimpleResponse:
-    type = request.args.get("type", type=lambda x: DocType[x])
-    term = request.args.get("term", type=int)
-    year = request.args.get("year", type=int)
-    number = request.args.get("number", type=int)
-
-    if type is None or term is None or year is None or number is None:
-        return {"message": "Missing rrequired paramters"}, 400
-
+@params(type=lambda x: DocType[x], term=int, year=int, number=int)
+def document_info(type: DocType, term: int, year: int, number: int) -> SimpleResponse:
     return DocumentInfoScraper(type=type, term=term, year=year, number=number).run()
 
 
 @app.route("/procedure")
 @json_response
-def procedure() -> SimpleResponse:
-    type = request.args.get("type", type=lambda x: DocType[x])
-    term = request.args.get("term", type=int)
-    year = request.args.get("year", type=int)
-    number = request.args.get("number", type=int)
-
-    if type is None or term is None or year is None or number is None:
-        return {"message": "Missing required paramters"}, 400
-
+@params(type=lambda x: DocType[x], term=int, year=int, number=int)
+def procedure(type: DocType, term: int, year: int, number: int) -> SimpleResponse:
     return ProcedureScraper(type=type, term=term, year=year, number=number).run()
