@@ -7,7 +7,7 @@ volumes:
 services:
   scrapers:
     build: ./scrapers
-    command: poetry run python -m flask run --host=0.0.0.0
+    command: poetry run flask run --host=0.0.0.0
     volumes:
       - ./scrapers:/app
       - scrapers_virtualenvs:/root/.cache/pypoetry/virtualenvs
@@ -15,6 +15,7 @@ services:
       - '5000:5000'
     environment:
       - FLASK_APP=ep_votes/api.py
+      - FLASK_ENV=development
     stdin_open: true
     tty: true
 
