@@ -43,6 +43,16 @@ jobs:
     - name: Test with pytest
       run: make tests
 
+    - name: Convert coverage report to XML
+      run: make coverage
+
+    - name: Upload coverage report to codecov.io
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./scrapers/coverage.xml
+        flags: scrapers
+
   app:
     runs-on: ubuntu-latest
 
@@ -101,7 +111,7 @@ jobs:
     - name: Test with pest
       run: composer test-with-coverage
 
-    - name: Uploade coverage report to codecov.io
+    - name: Upload coverage report to codecov.io
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}

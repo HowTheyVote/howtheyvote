@@ -1,9 +1,12 @@
-.PHONY: default tests lint format types
+.PHONY: default tests coverage lint format types
 
 default: format lint types tests
 
 tests:
-	poetry run pytest
+	poetry run pytest --cov=.
+
+coverage:
+	poetry run coverage xml
 
 lint:
 	poetry run flake8
