@@ -1,6 +1,6 @@
 import pytest
 from flask import Flask
-from ep_votes.api import params
+from ep_votes.api import params, json_response
 from datetime import date
 
 
@@ -30,3 +30,21 @@ def test_params_missing(app, handler):
         expected = {"message": "Missing required parameters: date"}, 400
 
         assert decorated_handler() == expected
+
+
+def test_json_response():
+    handler = lambda: {"message": "ok"}  # noqa: E731
+    decorated_handler = json_response(handler)
+    response = decorated_handler()
+
+    assert response.status_code == 200
+    assert response.data == b'{"message": "ok"}'
+
+
+def test_json_response_status():
+    handler = lambda: ({"message": "error"}, 500)  # noqa: E731
+    decorated_handler = json_response(handler)
+    response = decorated_handler()
+
+    assert response.status_code == 500
+    assert response.data == b'{"message": "error"}'
