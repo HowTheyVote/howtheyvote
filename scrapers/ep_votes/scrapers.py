@@ -28,7 +28,7 @@ class Scraper(ABC):
 
     @abstractmethod
     def __init__(self, *args: Any, **kwds: Any):
-        pass
+        raise NotImplementedError
 
     def run(self) -> Any:
         self._load()
@@ -36,11 +36,11 @@ class Scraper(ABC):
 
     @abstractmethod
     def _extract_data(self) -> Any:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _url(self) -> str:
-        pass
+        raise NotImplementedError
 
     def _load(self) -> None:
         url = self._url()
