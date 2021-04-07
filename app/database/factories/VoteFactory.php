@@ -58,4 +58,19 @@ class VoteFactory extends Factory
             $vote->members()->syncWithoutDetaching($members);
         });
     }
+
+    public function withStats()
+    {
+        return $this->state([
+            'stats' => [
+                'voted' => 60,
+                'active' => 100,
+                'by_position' => [
+                    'FOR' => 10,
+                    'AGAINST' => 20,
+                    'ABSTENTION' => 30,
+                ],
+            ],
+        ]);
+    }
 }
