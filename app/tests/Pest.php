@@ -15,3 +15,7 @@ expect()->extend('toSeeInOrder', function (array $strings) {
 expect()->extend('toSeeTextInOrder', function (array $texts) {
     return $this->value->assertSeeTextInOrder($texts);
 });
+
+expect()->extend('toHaveStatus', function (int $code) {
+    return $this->value->assertStatus($code);
+});
