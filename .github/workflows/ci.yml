@@ -78,6 +78,8 @@ jobs:
 
     env:
       APP_ENV: testing
+      # Use this key for testing purposes only
+      APP_KEY: base64:aZ+X6o+vmxSZD8RtLYTpQ5NlQ7SXOgmz5CYjG9faFdU=
       DB_USERNAME: laravel
       DB_PASSWORD: laravel
       DB_HOST: '127.0.0.1'
@@ -102,8 +104,14 @@ jobs:
           ${{ runner.os }}-${{ env.cache-name }}-
           ${{ runner.os }}-
 
-    - name: Install dependencies
+    - name: Install PHP dependencies
       run: composer install
+
+    - name: Install Node.js dependencies
+      run: npm ci
+
+    - name: Build frontend assets
+      run: npm run prod
 
     - name: Check code style with PHP CS Fixer
       run: composer cs
