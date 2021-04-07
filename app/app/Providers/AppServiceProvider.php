@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Actions\ScrapeAction;
+use App\Mixins\CollectionMixin;
+use App\Mixins\ComponentAttributeBagMixin;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -47,24 +49,7 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        Collection::macro('toAssoc', function () {
-            return $this->reduce(function ($assoc, $keyValuePair) {
-                [$key, $value] = $keyValuePair;
-                $assoc[$key] = $value;
-
-                return $assoc;
-            }, new static);
-        });
-
-        ComponentAttributeBag::macro('bem', function (string $base, ?string $modifiers) {
-            if (! $modifiers) {
-                return $this;
-            }
-
-            $modifiers = explode(' ', $modifiers);
-            $classes = array_map(fn ($modifier) => "{$base}--{$modifier}", $modifiers);
-
-            return $this->class([$base, ...$classes]);
-        });
+        Collection::mixin(new CollectionMixin);
+        ComponentAttributeBag::mixin(new ComponentAttributeBagMixin);
     }
 }
