@@ -21,6 +21,8 @@ from .models import (
     DocReference,
     Procedure,
     ProcedureReference,
+    VoteCollection,
+    VoteItem,
 )
 
 USER_AGENTS = [
@@ -352,3 +354,40 @@ class ProcedureScraper(Scraper):
 
     def _reference(self, tag: Tag) -> ProcedureReference:
         return ProcedureReference.from_str(tag.text.strip())
+
+
+class VoteCollectionScraper(Scraper):
+    BS_PARSER = "lxml-xml"
+    BASE_URL = "https://europarl.europa.eu/doceo/document/"
+    # PV-9-2021-03-09-VOT_EN.xml
+
+    def __init__(self, term: int, date: date):
+        self.term = term
+        self.date = date
+
+    def _url(self) -> str:
+        document = f"PV-{self.term}-{self.date}-VOT_EN.xml"
+        return f"{self.BASE_URL}{document}"
+
+    def _extract_data(self) -> List[VoteCollection]:
+        tags = self._resource.find_all("Vote.Result")
+
+        return [self._collection(tag) for tag in tags]
+
+    def _collection(self, tag: Tag) -> VoteCollection:
+        return VoteCollection(title=self._title(tag), votes=self._votes(tag))
+
+    def _votes(self, tag: Tag) -> List[VoteItem]:
+        # first row contains the table header
+        tags = tag.select("Vote\\.Result\\.Table\\.Results > TABLE > TBODY > TR")[1:]
+        return [self._vote(tag) for tag in tags]
+
+    def _vote(self, tag: Tag) -> VoteItem:
+        subject_tag = tag.select_one("[COLNAME='C1']")
+        subject = subject_tag.text.strip() if subject_tag else ""
+
+        return VoteItem(subject)
+
+    def _title(self, tag: Tag) -> str:
+        title_tag = tag.find("Vote.Result.Text.Title")
+        return title_tag.text.strip()

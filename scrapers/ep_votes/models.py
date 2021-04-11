@@ -224,7 +224,7 @@ class Vote:
     doceo_vote_id: int
     date: date
     votings: List[Voting]
-    type: VoteType
+    type: Optional[VoteType] = None
     subvote_description: Optional[str] = None
     description: Optional[str] = None
     reference: Optional[DocReference] = None
@@ -279,3 +279,16 @@ class ProcedureReference:
 class Procedure:
     title: str
     reference: ProcedureReference
+
+
+@dataclass
+# TODO: Rename to Vote once the current scraper
+# implementation has been removed.
+class VoteItem:
+    subject: str
+
+
+@dataclass
+class VoteCollection:
+    title: str
+    votes: List[VoteItem]
