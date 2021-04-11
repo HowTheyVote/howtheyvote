@@ -34,7 +34,7 @@ TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 
 def mock_response(req, context):
     url = req.url
-    url = url.replace("https://europarl.europa.eu", "")
+    url = url.replace("https://www.europarl.europa.eu", "")
     url = url.replace("https://oeil.secure.europarl.europa.eu", "")
 
     MOCK_RESPONSES = {
