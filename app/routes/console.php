@@ -1,6 +1,5 @@
 <?php
 
-use App\Actions\CompileVoteStatsAction;
 use App\Actions\GenerateVoteSharePicAction;
 use App\Actions\ScrapeMemberGroupsAction;
 use App\Actions\ScrapeMemberInfoAction;
@@ -73,24 +72,13 @@ Artisan::command('scrape:members-groups {--term=}', function (
 Artisan::command('scrape:vote-results {--term=} {--date=}', function (
     int $term,
     string $date,
-    ScrapeVoteResultsAction $action,
-    CompileVoteStatsAction $statsAction
+    ScrapeVoteResultsAction $action
 ) {
     $term = Term::whereNumber($term)->first();
     $date = Carbon::parse($date);
 
     $this->info("Scraping vote results for {$date}");
     $action->execute($term, $date);
-
-    $votes = Vote::whereDate('date', '=', $date->toDateString())->get();
-    $votesCount = $votes->count();
-
-    foreach ($votes as $index => $vote) {
-        $progress = ($index + 1).'/'.$votesCount;
-        $this->output->write("\r<info>Compiling stats for vote {$progress}</info>");
-
-        $statsAction->execute($vote);
-    }
 
     $this->output->writeln('');
 })->describe('Scrape and save all votes with compiled stats for the given date and term.');
