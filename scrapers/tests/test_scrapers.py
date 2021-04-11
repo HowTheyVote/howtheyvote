@@ -10,6 +10,7 @@ from ep_votes.scrapers import (
     VoteResultsScraper,
     DocumentInfoScraper,
     ProcedureScraper,
+    VoteCollectionScraper,
 )
 from ep_votes.models import (
     Member,
@@ -50,6 +51,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
         "/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-B9-0154/2019": "procedure-b9-0154-2019.xml",
+        "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
     }
 
     file = MOCK_RESPONSES[url]
@@ -410,3 +412,40 @@ def test_procedure_scraper_title(procedure_title_tags):
 
     assert scraper._title(procedure_title_tags[0]) == expected[0]
     assert scraper._title(procedure_title_tags[1]) == expected[1]
+
+
+def test_vote_collection_scraper_url():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+
+    expected = "https://europarl.europa.eu/doceo/document/PV-9-2021-03-09-VOT_EN.xml"
+    assert scraper._url() == expected
+
+
+def test_vote_collection_scraper_run():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+    result = scraper.run()
+
+    assert len(result) == 28
+    assert (
+        result[0].title
+        == "Request for waiver of the immunity of Carles Puigdemont i Casamajó"
+    )
+    assert result[27].title == "Children’s rights"
+
+
+def test_vote_collection_scraper_run_vote_items_subjects():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+    result = scraper.run()
+
+    assert len(result[9].votes) == 8
+    assert (
+        result[9].votes[0].subject
+        == "Amendments by the committee responsible – put to the vote collectively"
+    )
+    assert result[9].votes[1].subject == "§ 5, sub§ 1"
+    assert result[9].votes[2].subject == "After recital 2"
+    assert result[9].votes[3].subject == "Recital 3"
+    assert result[9].votes[4].subject == "Recital 8"
+    assert result[9].votes[5].subject == "Recital 15"
+    assert result[9].votes[6].subject == "Recital 25"
+    assert result[9].votes[7].subject == "Commission proposal"
