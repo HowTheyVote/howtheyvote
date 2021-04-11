@@ -449,3 +449,107 @@ def test_vote_collection_scraper_run_vote_items_subjects():
     assert result[9].votes[5].subject == "Recital 15"
     assert result[9].votes[6].subject == "Recital 25"
     assert result[9].votes[7].subject == "Commission proposal"
+
+
+def test_vote_collection_scraper_add_referenced_texts():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+    table = [{"c1": "A very important topic"}, {"c1": "2 / 1", "c2": "2 / 2"}]
+
+    expected_table = [
+        {"c1": "A very important topic"},
+        {"c1": "2 / 1", "c2": "2 / 2", "referenced_text": "A very important topic"},
+    ]
+
+    assert scraper._add_referenced_text(table) == expected_table
+
+
+def test_vote_collection_scraper_include_row_heading():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+
+    rows = [
+        {"c1": "Amendments to the recitals"},
+        {
+            "c1": "After recital G",
+            "c2": "1",
+            "c3": "ECR",
+            "c4": "RCV",
+            "c5": "-",
+            "c6": "134, 539, 22",
+        },
+    ]
+
+    assert scraper._include_row(rows[0]) is False
+    assert scraper._include_row(rows[1]) is True
+
+
+def test_vote_collection_scraper_include_row_lapsed():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+
+    rows = [
+        {
+            "c1": "After recital G",
+            "c2": "1",
+            "c3": "ECR",
+            "c4": "RCV",
+            "c5": "↓",
+            "c6": "134, 539, 22",
+        },
+        {
+            "c1": "After recital G",
+            "c2": "1",
+            "c3": "ECR",
+            "c4": "RCV",
+            "c5": "+",
+            "c6": "134, 539, 22",
+        },
+        {
+            "c1": "After recital G",
+            "c2": "1",
+            "c3": "ECR",
+            "c4": "RCV",
+            "c5": "-",
+            "c6": "134, 539, 22",
+        },
+    ]
+
+    assert scraper._include_row(rows[0]) is False
+    assert scraper._include_row(rows[1]) is True
+    assert scraper._include_row(rows[2]) is True
+
+
+def test_vote_collection_scraper_include_row_no_rcv():
+    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+
+    rows = [
+        {"c1": "Proposal for a decision", "c2": "SEC", "c3": "+", "c4": "400, 248, 45"},
+        {
+            "c1": "§5",
+            "c2": "§",
+            "c3": "original text",
+            "c4": "split",
+            "c5": "",
+            "c6": "",
+        },
+        {
+            "c1": "§5",
+            "c2": "§",
+            "c3": "original text",
+            "c4": "1/RCV",
+            "c5": "+",
+            "c6": "585, 69, 42",
+        },
+        {
+            "c1": "Recital 17",
+            "c2": "25",
+            "c3": "MEPs",
+            "c4": "RCV",
+            "c5": "-",
+            "c6": "181, 481, 33",
+        },
+    ]
+
+    assert scraper._include_row(rows[0]) is False
+    assert scraper._include_row(rows[1]) is False
+
+    assert scraper._include_row(rows[2]) is True
+    assert scraper._include_row(rows[3]) is True

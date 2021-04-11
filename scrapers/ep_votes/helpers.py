@@ -47,7 +47,8 @@ def removesuffix(string: str, suffix: str) -> str:
     return string[:]
 
 
-Rows = List[Dict[str, str]]
+Row = Dict[str, Optional[str]]
+Rows = List[Row]
 
 
 def normalize_rowspan(table_tag: Tag) -> Rows:

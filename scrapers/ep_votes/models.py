@@ -285,7 +285,7 @@ class Procedure:
 # TODO: Rename to Vote once the current scraper
 # implementation has been removed.
 class VoteItem:
-    subject: str
+    subject: Optional[str]
 
 
 @dataclass
