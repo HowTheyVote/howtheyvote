@@ -26,10 +26,21 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $date = Carbon::today()->toDateString();
-        $schedule->command("scrape:vote-results --term=9 --date {$date}")->dailyAt('21:00');
-        $schedule->command('scrape:members --term=9')->weeklyOn(0, '18:00');
-        $schedule->command('scrape:members-info')->weeklyOn(0, '19:00');
-        $schedule->command('scrape:members-groups --term=9')->weeklyOn(0, '20:00');
+        $schedule->command("scrape:vote-results --term=9 --date {$date}")
+            ->dailyAt('21:00')
+            ->pingOnSuccess(config('pings.scrape-vote-results'));
+
+        $schedule->command('scrape:members --term=9')
+            ->weeklyOn(0, '18:00')
+            ->pingOnSuccess(config('pings.scrape-members'));
+
+        $schedule->command('scrape:members-info')
+            ->weeklyOn(0, '19:00')
+            ->pingOnSuccess(config('pings.scrape-members-info'));
+
+        $schedule->command('scrape:members-groups --term=9')
+            ->weeklyOn(0, '20:00')
+            ->pingOnSuccess(config('pings.scrape-members-groups:'));
     }
 
     /**
