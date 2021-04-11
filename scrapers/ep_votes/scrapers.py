@@ -5,7 +5,7 @@ from datetime import date, datetime
 import random
 from typing import Any, List, Optional, Tuple, Dict
 from abc import ABC, abstractmethod
-from .helpers import removeprefix, removesuffix
+from .helpers import removeprefix, removesuffix, normalize_rowspan, Rows, Row
 from .models import (
     Member,
     MemberInfo,
@@ -378,13 +378,47 @@ class VoteCollectionScraper(Scraper):
         return VoteCollection(title=self._title(tag), votes=self._votes(tag))
 
     def _votes(self, tag: Tag) -> List[VoteItem]:
-        # first row contains the table header
-        tags = tag.select("Vote\\.Result\\.Table\\.Results > TABLE > TBODY > TR")[1:]
-        return [self._vote(tag) for tag in tags]
+        votes_table = tag.select_one("Vote\\.Result\\.Table\\.Results > TABLE")
+        votes_table = normalize_rowspan(votes_table)
 
-    def _vote(self, tag: Tag) -> VoteItem:
-        subject_tag = tag.select_one("[COLNAME='C1']")
-        subject = subject_tag.text.strip() if subject_tag else ""
+        # first row contains the table header
+        votes_table = votes_table[1:]
+
+        votes_table = self._add_referenced_text(votes_table)
+        votes_table = [row for row in votes_table if self._include_row(row)]
+
+        return [self._vote(row) for row in votes_table]
+
+    def _add_referenced_text(self, votes_table: Rows) -> Rows:
+        current_reference = None
+        for row in votes_table:
+            keys = row.keys()
+            if len(keys) == 1 and "c1" in keys:
+                current_reference = row["c1"]
+            else:
+                row["referenced_text"] = current_reference
+
+        return votes_table
+
+    def _include_row(self, row: Row) -> bool:
+        # non-RCV votes
+        c4 = row.get("c4")
+        if not c4 or not c4.endswith("RCV"):
+            return False
+
+        # full-row headings
+        keys = row.keys()
+        if len(keys) == 1 and "c1" in keys:
+            return False
+
+        # lapsed votes
+        if row.get("c5") == "↓":
+            return False
+
+        return True
+
+    def _vote(self, row: Row) -> VoteItem:
+        subject = row.get("c1")
 
         return VoteItem(subject)
 
