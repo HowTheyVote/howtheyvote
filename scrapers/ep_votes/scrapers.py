@@ -400,14 +400,9 @@ class VoteCollectionScraper(Scraper):
         return votes_table
 
     def _include_row(self, row: Row) -> bool:
-        # non-RCV votes
+        # non-RCV votes or full row headings (since c4 does not exist there)
         c4 = row.get("c4")
         if not c4 or not c4.endswith("RCV"):
-            return False
-
-        # full-row headings
-        keys = row.keys()
-        if len(keys) == 1 and "c1" in keys:
             return False
 
         # lapsed votes
