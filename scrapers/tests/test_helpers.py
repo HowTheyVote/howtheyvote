@@ -1,4 +1,5 @@
 from datetime import date
+from bs4 import BeautifulSoup
 from ep_votes.models import (
     Country,
     Voting,
@@ -9,6 +10,7 @@ from ep_votes.helpers import (
     to_json,
     removeprefix,
     removesuffix,
+    normalize_rowspan,
 )
 
 
@@ -47,3 +49,110 @@ def test_removeprefix():
 def test_removesuffix():
     assert removesuffix("original-string", "-suffix") == "original-string"
     assert removesuffix("original-string-suffix", "-suffix") == "original-string"
+
+
+def test_normalize_rowspan():
+    xml = (
+        "<TABLE>"
+        "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>1 / 1</TD>"
+        "           <TD COLNAME='C2'>1 / 2</TD>"
+        "       </TR>"
+        "   </TBODY>"
+        "</TABLE>"
+    )
+
+    table_tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = [
+        {"c1": "1 / 1", "c2": "1 / 2"},
+    ]
+
+    assert normalize_rowspan(table_tag) == expected
+
+
+def test_normalize_rowspan_rowspan_a():
+    xml = (
+        "<TABLE>"
+        "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1' ROWSPAN='2'>1 / 1</TD>"
+        "           <TD COLNAME='C2'>1 / 2</TD>"
+        "       </TR>"
+        "       <TR>"
+        "           <TD COLNAME='C2'>2 / 2</TD>"
+        "       </TR>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>3 / 1</TD>"
+        "           <TD COLNAME='C2'>3 / 2</TD>"
+        "       </TR>"
+        "   </TBODY>"
+        "</TABLE>"
+    )
+
+    table_tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = [
+        {"c1": "1 / 1", "c2": "1 / 2"},
+        {"c1": "1 / 1", "c2": "2 / 2"},
+        {"c1": "3 / 1", "c2": "3 / 2"},
+    ]
+
+    assert normalize_rowspan(table_tag) == expected
+
+
+def test_normalize_rowspan_rowspan_b():
+    xml = (
+        "<TABLE>"
+        "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1' ROWSPAN='3'>1 / 1</TD>"
+        "           <TD COLNAME='C2' ROWSPAN='2'>1 / 2</TD>"
+        "           <TD COLNAME='C3'>1 / 3</TD>"
+        "       </TR>"
+        "       <TR>"
+        "           <TD COLNAME='C3'>2 / 3</TD>"
+        "       </TR>"
+        "       <TR>"
+        "           <TD COLNAME='C2' ROWSPAN='2'>3 / 2</TD>"
+        "           <TD COLNAME='C3'>3 / 3</TD>"
+        "       </TR>"
+        "   </TBODY>"
+        "</TABLE>"
+    )
+
+    table_tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = [
+        {"c1": "1 / 1", "c2": "1 / 2", "c3": "1 / 3"},
+        {"c1": "1 / 1", "c2": "1 / 2", "c3": "2 / 3"},
+        {"c1": "1 / 1", "c2": "3 / 2", "c3": "3 / 3"},
+    ]
+
+    assert normalize_rowspan(table_tag) == expected
+
+
+def test_normalize_rowspan_colspan():
+    xml = (
+        "<TABLE>"
+        "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>1 / 1</TD>"
+        "           <TD COLNAME='C2'>1 / 2</TD>"
+        "       </TR>"
+        "       <TR>"
+        "           <TD COLNAME='C1' COLSPAN='2'>2 / 1</TD>"
+        "       </TR>"
+        "   </TBODY>"
+        "</TABLE>"
+    )
+
+    table_tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = [
+        {"c1": "1 / 1", "c2": "1 / 2"},
+        {"c1": "2 / 1"},
+    ]
+
+    assert normalize_rowspan(table_tag) == expected
