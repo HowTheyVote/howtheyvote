@@ -51,6 +51,11 @@
     src: epvotes/app/.env.j2
     dest: "{{ epvotes.install_dir }}/app/.env"
 
+- name: Cache Laravel config
+  shell:
+    cmd: php artisan config:cache
+    chdir: "{{ epvotes.install_dir }}/app"
+
 - name: Run migrations
   shell:
     cmd: "php artisan migrate --force"
