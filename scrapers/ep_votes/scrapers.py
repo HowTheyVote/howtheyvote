@@ -49,7 +49,7 @@ class Scraper(ABC):
 
 
 class MembersScraper(Scraper):
-    BASE_URL = "https://europarl.europa.eu/meps/en/directory/xml"
+    BASE_URL = "https://www.europarl.europa.eu/meps/en/directory/xml"
     BS_PARSER = "lxml-xml"
 
     def __init__(self, term: int):
@@ -68,7 +68,7 @@ class MembersScraper(Scraper):
 
 
 class MemberInfoScraper(Scraper):
-    BASE_URL = "https://europarl.europa.eu/meps/en"
+    BASE_URL = "https://www.europarl.europa.eu/meps/en"
 
     def __init__(self, web_id: int):
         self.web_id = web_id
@@ -107,7 +107,7 @@ class MemberInfoScraper(Scraper):
 
 
 class MemberGroupsScraper(Scraper):
-    BASE_URL = "https://europarl.europa.eu/meps/en"
+    BASE_URL = "https://www.europarl.europa.eu/meps/en"
 
     def __init__(self, web_id: int, term: int):
         self.web_id = web_id
@@ -165,7 +165,7 @@ class MemberGroupsScraper(Scraper):
 
 
 class VoteResultsScraper(Scraper):
-    BASE_URL = "https://europarl.europa.eu/doceo/document"
+    BASE_URL = "https://www.europarl.europa.eu/doceo/document"
     BS_PARSER = "lxml-xml"
 
     def __init__(self, date: date, term: int):
@@ -290,7 +290,7 @@ class VoteResultsScraper(Scraper):
 
 
 class DocumentInfoScraper(Scraper):
-    BASE_URL = "https://europarl.europa.eu/doceo/document"
+    BASE_URL = "https://www.europarl.europa.eu/doceo/document"
 
     def __init__(self, type: DocType, term: int, year: int, number: int):
         self.type = type
