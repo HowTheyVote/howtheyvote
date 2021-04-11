@@ -17,15 +17,18 @@ class ScrapeVoteResultsAction extends Action
     private $scrapeAction;
     private $documentInfoAction;
     private $sharePicAction;
+    private $compileAction;
 
     public function __construct(
         ScrapeAction $scrapeAction,
         ScrapeDocumentInfoAction $documentInfoAction,
+        CompileVoteStatsAction $compileAction,
         GenerateVoteSharePicAction $sharePicAction
     ) {
         $this->scrapeAction = $scrapeAction;
         $this->documentInfoAction = $documentInfoAction;
         $this->sharePicAction = $sharePicAction;
+        $this->compileAction = $compileAction;
     }
 
     public function execute(Term $term, Carbon $date): void
@@ -50,6 +53,7 @@ class ScrapeVoteResultsAction extends Action
             $document = $this->findOrCreateDocument($term, $data['reference']);
             $vote = $this->createOrUpdateVote($members, $term, $date, $document, $data);
             $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
+            $this->compileAction->execute($vote);
 
             if ($vote->type->equals(VoteTypeEnum::FINAL()) && $vote->wasRecentlyCreated) {
                 $this->sharePicAction->execute($vote);

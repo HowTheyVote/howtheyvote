@@ -231,3 +231,21 @@ it('finds members with special characters in name', function () {
 
     expect(Vote::first()->members()->first()->last_name)->toEqual('DOÉ');
 });
+
+it('compiles vote stats', function () {
+    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-3.json');
+
+    $jane = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->activeAt($this->date)->create();
+
+    $john = Member::factory([
+        'first_name' => 'John',
+        'last_name' => 'Doe',
+    ])->activeAt($this->date)->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Vote::first()->stats['voted'])->toEqual(2);
+});
