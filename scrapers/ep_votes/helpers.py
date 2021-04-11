@@ -51,7 +51,7 @@ Row = Dict[str, Optional[str]]
 Rows = List[Row]
 
 
-def normalize_rowspan(table_tag: Tag) -> Rows:
+def normalize_table(table_tag: Tag) -> Rows:
     row_tags = table_tag.select("TR")
     rows: Rows = []
     current_rowspans: Dict[str, int] = {}
@@ -67,13 +67,19 @@ def normalize_rowspan(table_tag: Tag) -> Rows:
                 current_rowspans[column_name] -= 1
 
         # Set contents of cells beginning in current row
+        offset = 0
+
         for cell_tag in cell_tags:
-            column_name = cell_tag["COLNAME"].lower()
+            column_number = int(cell_tag["COLNAME"].lower()[1:]) + offset
+            column_name = "c" + str(column_number)
             row[column_name] = cell_tag.text.strip()
 
             # Update rowspan values in case cell spans multiple rows
             rowspan = int(cell_tag.get("ROWSPAN", "1"))
             current_rowspans[column_name] = rowspan - 1
+
+            # Update colspan in case cell spans multiple columns
+            offset += int(cell_tag.get("COLSPAN", 1)) - 1
 
         rows.append(row)
 

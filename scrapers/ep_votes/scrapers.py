@@ -5,7 +5,7 @@ from datetime import date, datetime
 import random
 from typing import Any, List, Optional, Tuple, Dict
 from abc import ABC, abstractmethod
-from .helpers import removeprefix, removesuffix, normalize_rowspan, Rows, Row
+from .helpers import removeprefix, removesuffix, normalize_table, Rows, Row
 from .models import (
     Member,
     MemberInfo,
@@ -379,8 +379,7 @@ class VoteCollectionScraper(Scraper):
 
     def _votes(self, tag: Tag) -> List[VoteItem]:
         votes_table = tag.select_one("Vote\\.Result\\.Table\\.Results > TABLE")
-        votes_table = normalize_rowspan(votes_table)
-
+        votes_table = normalize_table(votes_table)
         # first row contains the table header
         votes_table = votes_table[1:]
 

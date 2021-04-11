@@ -10,7 +10,7 @@ from ep_votes.helpers import (
     to_json,
     removeprefix,
     removesuffix,
-    normalize_rowspan,
+    normalize_table,
 )
 
 
@@ -51,7 +51,7 @@ def test_removesuffix():
     assert removesuffix("original-string-suffix", "-suffix") == "original-string"
 
 
-def test_normalize_rowspan():
+def test_normalize_table():
     xml = (
         "<TABLE>"
         "   <TBODY>"
@@ -69,10 +69,10 @@ def test_normalize_rowspan():
         {"c1": "1 / 1", "c2": "1 / 2"},
     ]
 
-    assert normalize_rowspan(table_tag) == expected
+    assert normalize_table(table_tag) == expected
 
 
-def test_normalize_rowspan_rowspan_a():
+def test_normalize_table_rowspan_a():
     xml = (
         "<TABLE>"
         "   <TBODY>"
@@ -99,10 +99,10 @@ def test_normalize_rowspan_rowspan_a():
         {"c1": "3 / 1", "c2": "3 / 2"},
     ]
 
-    assert normalize_rowspan(table_tag) == expected
+    assert normalize_table(table_tag) == expected
 
 
-def test_normalize_rowspan_rowspan_b():
+def test_normalize_table_rowspan_b():
     xml = (
         "<TABLE>"
         "   <TBODY>"
@@ -130,10 +130,32 @@ def test_normalize_rowspan_rowspan_b():
         {"c1": "1 / 1", "c2": "3 / 2", "c3": "3 / 3"},
     ]
 
-    assert normalize_rowspan(table_tag) == expected
+    assert normalize_table(table_tag) == expected
 
 
-def test_normalize_rowspan_colspan():
+def test_normalize_table_colspan():
+    xml = (
+        "<TABLE>"
+        "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>1 / 1</TD>"
+        "           <TD COLNAME='C2' COLSPAN='2'>1 / 2</TD>"
+        "           <TD COLNAME='C3'>1 / 4</TD>"
+        "       </TR>"
+        "   </TBODY>"
+        "</TABLE>"
+    )
+
+    table_tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = [
+        {"c1": "1 / 1", "c2": "1 / 2", "c4": "1 / 4"},
+    ]
+
+    assert normalize_table(table_tag) == expected
+
+
+def test_normalize_table_rowspan_and_colspan():
     xml = (
         "<TABLE>"
         "   <TBODY>"
@@ -155,4 +177,4 @@ def test_normalize_rowspan_colspan():
         {"c1": "2 / 1"},
     ]
 
-    assert normalize_rowspan(table_tag) == expected
+    assert normalize_table(table_tag) == expected
