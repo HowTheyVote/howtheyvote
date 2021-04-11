@@ -67,7 +67,7 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "test": "pest --no-interaction --coverage",
+        "test": "@php artisan config:clear && pest --no-interaction --coverage",
         "test-with-coverage": "pest --no-interaction --coverage-clover ./coverage.xml",
         "cs": "php-cs-fixer fix --dry-run",
         "cs-fix": "php-cs-fixer fix"
