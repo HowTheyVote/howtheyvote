@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup, Tag
 import requests
 import re
 from datetime import date, datetime
-from typing import Any, List, Optional, Tuple
+import random
+from typing import Any, List, Optional, Tuple, Dict
 from abc import ABC, abstractmethod
 from .helpers import removeprefix, removesuffix
 from .models import (
@@ -21,6 +22,12 @@ from .models import (
     Procedure,
     ProcedureReference,
 )
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",  # noqa: E501
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15",  # noqa: E501
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0",  # noqa: E501
+]
 
 
 class Scraper(ABC):
@@ -44,8 +51,15 @@ class Scraper(ABC):
 
     def _load(self) -> None:
         url = self._url()
-        raw = requests.get(url).text
+        raw = requests.get(url, headers=self._headers()).text
         self._resource = BeautifulSoup(raw, self.BS_PARSER)
+
+    def _headers(self) -> Dict[str, str]:
+        return {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-language": "en-us",
+            "user-agent": random.choice(USER_AGENTS),
+        }
 
 
 class MembersScraper(Scraper):
