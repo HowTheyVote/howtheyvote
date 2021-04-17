@@ -213,10 +213,19 @@ class Voting:
 
 
 class VoteType(Enum):
-    FINAL = auto()
-    SPLIT = auto()
+    PRIMARY = auto()
     AMENDMENT = auto()
+    SEPARATE = auto()
+
+    # TODO: Remove once old vote scraper has been removed completely
+    SPLIT = auto()
+    FINAL = auto()
     AGENDA = auto()
+
+
+class VoteResult(Enum):
+    ADOPTED = auto()
+    REJECTED = auto()
 
 
 @dataclass
@@ -285,6 +294,7 @@ class Procedure:
 # TODO: Rename to Vote once the current scraper
 # implementation has been removed.
 class VoteItem:
+    author: Optional[str]
     subject: Optional[str]
 
 

@@ -22,6 +22,7 @@ from ep_votes.models import (
     Voting,
     VoteType,
     Vote,
+    VoteItem,
     Doc,
     DocReference,
     DocType,
@@ -433,22 +434,27 @@ def test_vote_collections_scraper_run():
     )
 
 
-def test_vote_collections_scraper_run_vote_items_subjects():
+def test_vote_collections_scraper_run_vote_items():
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
 
     assert len(result[3].votes) == 8
-    assert (
-        result[3].votes[0].subject
-        == "Amendments by the committee responsible – put to the vote collectively"
-    )
-    assert result[3].votes[1].subject == "§ 5, sub§ 1"
-    assert result[3].votes[2].subject == "After recital 2"
-    assert result[3].votes[3].subject == "Recital 3"
-    assert result[3].votes[4].subject == "Recital 8"
-    assert result[3].votes[5].subject == "Recital 15"
-    assert result[3].votes[6].subject == "Recital 25"
-    assert result[3].votes[7].subject == "Commission proposal"
+
+    expected_votes = [
+        VoteItem(
+            subject="Amendments by the committee responsible – put to the vote collectively",
+            author="committee",
+        ),
+        VoteItem(subject="§ 5, sub§ 1", author="committee"),
+        VoteItem(subject="After recital 2", author="ID"),
+        VoteItem(subject="Recital 3", author="ID"),
+        VoteItem(subject="Recital 8", author="ID"),
+        VoteItem(subject="Recital 15", author="ID"),
+        VoteItem(subject="Recital 25", author="ID"),
+        VoteItem(subject="Commission proposal", author=None),
+    ]
+
+    assert result[3].votes == expected_votes
 
 
 def test_vote_collections_scraper_add_referenced_texts():
