@@ -356,7 +356,7 @@ class ProcedureScraper(Scraper):
         return ProcedureReference.from_str(tag.text.strip())
 
 
-class VoteCollectionScraper(Scraper):
+class VoteCollectionsScraper(Scraper):
     BS_PARSER = "lxml-xml"
     BASE_URL = "https://europarl.europa.eu/doceo/document/"
     # PV-9-2021-03-09-VOT_EN.xml

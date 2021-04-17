@@ -10,7 +10,7 @@ from ep_votes.scrapers import (
     VoteResultsScraper,
     DocumentInfoScraper,
     ProcedureScraper,
-    VoteCollectionScraper,
+    VoteCollectionsScraper,
 )
 from ep_votes.models import (
     Member,
@@ -414,15 +414,15 @@ def test_procedure_scraper_title(procedure_title_tags):
     assert scraper._title(procedure_title_tags[1]) == expected[1]
 
 
-def test_vote_collection_scraper_url():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_url():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
     expected = "https://europarl.europa.eu/doceo/document/PV-9-2021-03-09-VOT_EN.xml"
     assert scraper._url() == expected
 
 
-def test_vote_collection_scraper_run():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_run():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
     assert len(result) == 22
     assert result[0].title == "InvestEU programme ***I"
@@ -433,8 +433,8 @@ def test_vote_collection_scraper_run():
     )
 
 
-def test_vote_collection_scraper_run_vote_items_subjects():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_run_vote_items_subjects():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
 
     assert len(result[3].votes) == 8
@@ -451,8 +451,8 @@ def test_vote_collection_scraper_run_vote_items_subjects():
     assert result[3].votes[7].subject == "Commission proposal"
 
 
-def test_vote_collection_scraper_add_referenced_texts():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_add_referenced_texts():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
     table = [
         {"Subject": "A very important topic"},
@@ -478,8 +478,8 @@ def test_vote_collection_scraper_add_referenced_texts():
     assert scraper._add_referenced_text(table) == expected_table
 
 
-def test_vote_collection_scraper_include_row_heading():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_include_row_heading():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
     rows = [
         {"c1": "Amendments to the recitals"},
@@ -497,8 +497,8 @@ def test_vote_collection_scraper_include_row_heading():
     assert scraper._include_row(rows[1]) is True
 
 
-def test_vote_collection_scraper_include_row_lapsed():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_include_row_lapsed():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
     rows = [
         {
@@ -532,8 +532,8 @@ def test_vote_collection_scraper_include_row_lapsed():
     assert scraper._include_row(rows[2]) is True
 
 
-def test_vote_collection_scraper_include_row_no_rcv():
-    scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
+def test_vote_collections_scraper_include_row_no_rcv():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
     rows = [
         {"c1": "Proposal for a decision", "c2": "SEC", "c3": "+", "c4": "400, 248, 45"},
