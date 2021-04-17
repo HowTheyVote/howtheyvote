@@ -83,4 +83,10 @@ def normalize_table(table_tag: Tag) -> Rows:
 
         rows.append(row)
 
-    return rows
+    header = rows[0]
+    body = rows[1:]
+
+    for index, row in enumerate(body):
+        body[index] = {header[key] or key: value for key, value in row.items()}
+
+    return body
