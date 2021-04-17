@@ -227,6 +227,16 @@ class VoteResult(Enum):
     ADOPTED = auto()
     REJECTED = auto()
 
+    @classmethod
+    def from_str(cls, string: str) -> "VoteResult":
+        if string == "+":
+            return cls.ADOPTED
+
+        if string == "-":
+            return cls.REJECTED
+
+        raise ValueError("Vote can either be adopted or rejected.")
+
 
 @dataclass
 class Vote:
@@ -296,6 +306,7 @@ class Procedure:
 class VoteItem:
     author: Optional[str]
     subject: Optional[str]
+    result: VoteResult
 
 
 @dataclass

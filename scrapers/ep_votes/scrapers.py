@@ -21,6 +21,7 @@ from .models import (
     DocReference,
     Procedure,
     ProcedureReference,
+    VoteResult,
     VoteCollection,
     VoteItem,
 )
@@ -412,6 +413,7 @@ class VoteCollectionsScraper(Scraper):
         return VoteItem(
             subject=row.get("Subject"),
             author=row.get("Author"),
+            result=VoteResult.from_str(str(row["Vote"])),
         )
 
     def _title(self, tag: Tag) -> str:

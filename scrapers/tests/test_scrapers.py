@@ -20,6 +20,7 @@ from ep_votes.models import (
     GroupMembership,
     Position,
     Voting,
+    VoteResult,
     VoteType,
     Vote,
     VoteItem,
@@ -444,14 +445,15 @@ def test_vote_collections_scraper_run_vote_items():
         VoteItem(
             subject="Amendments by the committee responsible – put to the vote collectively",
             author="committee",
+            result=VoteResult.ADOPTED,
         ),
-        VoteItem(subject="§ 5, sub§ 1", author="committee"),
-        VoteItem(subject="After recital 2", author="ID"),
-        VoteItem(subject="Recital 3", author="ID"),
-        VoteItem(subject="Recital 8", author="ID"),
-        VoteItem(subject="Recital 15", author="ID"),
-        VoteItem(subject="Recital 25", author="ID"),
-        VoteItem(subject="Commission proposal", author=None),
+        VoteItem(subject="§ 5, sub§ 1", author="committee", result=VoteResult.ADOPTED),
+        VoteItem(subject="After recital 2", author="ID", result=VoteResult.REJECTED),
+        VoteItem(subject="Recital 3", author="ID", result=VoteResult.REJECTED),
+        VoteItem(subject="Recital 8", author="ID", result=VoteResult.REJECTED),
+        VoteItem(subject="Recital 15", author="ID", result=VoteResult.REJECTED),
+        VoteItem(subject="Recital 25", author="ID", result=VoteResult.REJECTED),
+        VoteItem(subject="Commission proposal", author=None, result=VoteResult.ADOPTED),
     ]
 
     assert result[3].votes == expected_votes

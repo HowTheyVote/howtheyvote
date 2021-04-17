@@ -7,6 +7,7 @@ from ep_votes.models import (
     MemberInfo,
     ProcedureReference,
     ProcedureType,
+    VoteResult,
 )
 
 
@@ -108,3 +109,11 @@ def test_member_info_parse_full_name_aristocratic_title():
         "William",
         "(The Earl of) DARTMOUTH",
     )
+
+
+def test_vote_result_from_str():
+    assert VoteResult.from_str("+") == VoteResult.ADOPTED
+    assert VoteResult.from_str("-") == VoteResult.REJECTED
+
+    with pytest.raises(ValueError):
+        VoteResult.from_str("↓")
