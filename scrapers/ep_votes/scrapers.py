@@ -409,9 +409,10 @@ class VoteCollectionsScraper(Scraper):
         return True
 
     def _vote(self, row: Row) -> VoteItem:
-        subject = row.get("Subject")
-
-        return VoteItem(subject)
+        return VoteItem(
+            subject=row.get("Subject"),
+            author=row.get("Author"),
+        )
 
     def _title(self, tag: Tag) -> str:
         title_tag = tag.find("Vote.Result.Text.Title")
