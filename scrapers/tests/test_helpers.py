@@ -56,6 +56,10 @@ def test_normalize_table():
         "<TABLE>"
         "   <TBODY>"
         "       <TR>"
+        "           <TD COLNAME='C1'>Column 1</TD>"
+        "           <TD COLNAME='C2'>Column 2</TD>"
+        "       </TR>"
+        "       <TR>"
         "           <TD COLNAME='C1'>1 / 1</TD>"
         "           <TD COLNAME='C2'>1 / 2</TD>"
         "       </TR>"
@@ -66,7 +70,7 @@ def test_normalize_table():
     table_tag = BeautifulSoup(xml, "lxml-xml")
 
     expected = [
-        {"c1": "1 / 1", "c2": "1 / 2"},
+        {"Column 1": "1 / 1", "Column 2": "1 / 2"},
     ]
 
     assert normalize_table(table_tag) == expected
@@ -76,6 +80,10 @@ def test_normalize_table_rowspan_a():
     xml = (
         "<TABLE>"
         "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>Column 1</TD>"
+        "           <TD COLNAME='C2'>Column 2</TD>"
+        "       </TR>"
         "       <TR>"
         "           <TD COLNAME='C1' ROWSPAN='2'>1 / 1</TD>"
         "           <TD COLNAME='C2'>1 / 2</TD>"
@@ -94,9 +102,9 @@ def test_normalize_table_rowspan_a():
     table_tag = BeautifulSoup(xml, "lxml-xml")
 
     expected = [
-        {"c1": "1 / 1", "c2": "1 / 2"},
-        {"c1": "1 / 1", "c2": "2 / 2"},
-        {"c1": "3 / 1", "c2": "3 / 2"},
+        {"Column 1": "1 / 1", "Column 2": "1 / 2"},
+        {"Column 1": "1 / 1", "Column 2": "2 / 2"},
+        {"Column 1": "3 / 1", "Column 2": "3 / 2"},
     ]
 
     assert normalize_table(table_tag) == expected
@@ -106,6 +114,11 @@ def test_normalize_table_rowspan_b():
     xml = (
         "<TABLE>"
         "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>Column 1</TD>"
+        "           <TD COLNAME='C2'>Column 2</TD>"
+        "           <TD COLNAME='C3'>Column 3</TD>"
+        "       </TR>"
         "       <TR>"
         "           <TD COLNAME='C1' ROWSPAN='3'>1 / 1</TD>"
         "           <TD COLNAME='C2' ROWSPAN='2'>1 / 2</TD>"
@@ -125,9 +138,9 @@ def test_normalize_table_rowspan_b():
     table_tag = BeautifulSoup(xml, "lxml-xml")
 
     expected = [
-        {"c1": "1 / 1", "c2": "1 / 2", "c3": "1 / 3"},
-        {"c1": "1 / 1", "c2": "1 / 2", "c3": "2 / 3"},
-        {"c1": "1 / 1", "c2": "3 / 2", "c3": "3 / 3"},
+        {"Column 1": "1 / 1", "Column 2": "1 / 2", "Column 3": "1 / 3"},
+        {"Column 1": "1 / 1", "Column 2": "1 / 2", "Column 3": "2 / 3"},
+        {"Column 1": "1 / 1", "Column 2": "3 / 2", "Column 3": "3 / 3"},
     ]
 
     assert normalize_table(table_tag) == expected
@@ -137,6 +150,12 @@ def test_normalize_table_colspan():
     xml = (
         "<TABLE>"
         "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>Column 1</TD>"
+        "           <TD COLNAME='C2'>Column 2</TD>"
+        "           <TD COLNAME='C3'>Column 3</TD>"
+        "           <TD COLNAME='C4'>Column 4</TD>"
+        "       </TR>"
         "       <TR>"
         "           <TD COLNAME='C1'>1 / 1</TD>"
         "           <TD COLNAME='C2' COLSPAN='2'>1 / 2</TD>"
@@ -149,22 +168,29 @@ def test_normalize_table_colspan():
     table_tag = BeautifulSoup(xml, "lxml-xml")
 
     expected = [
-        {"c1": "1 / 1", "c2": "1 / 2", "c4": "1 / 4"},
+        {"Column 1": "1 / 1", "Column 2": "1 / 2", "Column 4": "1 / 4"},
     ]
 
     assert normalize_table(table_tag) == expected
 
 
-def test_normalize_table_rowspan_and_colspan():
+def test_normalize_table_column_names():
     xml = (
         "<TABLE>"
         "   <TBODY>"
         "       <TR>"
+        "           <TD COLNAME='C1'>Column 1</TD>"
+        "           <TD COLNAME='C2'>Column 2</TD>"
+        "           <TD COLNAME='C3'>Column 3</TD>"
+        "       </TR>"
+        "       <TR>"
         "           <TD COLNAME='C1'>1 / 1</TD>"
         "           <TD COLNAME='C2'>1 / 2</TD>"
+        "           <TD COLNAME='C3'>1 / 3</TD>"
         "       </TR>"
         "       <TR>"
         "           <TD COLNAME='C1' COLSPAN='2'>2 / 1</TD>"
+        "           <TD COLNAME='C2'>2 / 3</TD>"
         "       </TR>"
         "   </TBODY>"
         "</TABLE>"
@@ -173,8 +199,8 @@ def test_normalize_table_rowspan_and_colspan():
     table_tag = BeautifulSoup(xml, "lxml-xml")
 
     expected = [
-        {"c1": "1 / 1", "c2": "1 / 2"},
-        {"c1": "2 / 1"},
+        {"Column 1": "1 / 1", "Column 2": "1 / 2", "Column 3": "1 / 3"},
+        {"Column 1": "2 / 1", "Column 3": "2 / 3"},
     ]
 
     assert normalize_table(table_tag) == expected
