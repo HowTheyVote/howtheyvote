@@ -415,8 +415,11 @@ class VoteCollectionsScraper(Scraper):
             author=row.get("Author"),
             result=VoteResult.from_str(str(row["Vote"])),
             split_part=self._split_part(row.get("RCV etc.")),
+            amendment_number=self._amendment_number(row.get("Am No")),
         )
 
+    def _amendment_number(self, string: Optional[str]) -> Optional[str]:
+        return string if string != "§" else None
 
     def _split_part(self, string: Optional[str]) -> Optional[int]:
         split_part = re.search(r"^(\d*)\/RCV$", string or "")
