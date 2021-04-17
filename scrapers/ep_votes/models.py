@@ -309,6 +309,7 @@ class VoteItem:
     result: VoteResult
     split_part: Optional[int]
     amendment_number: Optional[str]
+    vote_type: VoteType
 
 
 @dataclass
