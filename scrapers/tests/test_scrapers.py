@@ -448,6 +448,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.ADOPTED,
             split_part=None,
             amendment_number="1-65, 67-76",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="§ 5, sub§ 1",
@@ -455,6 +456,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.ADOPTED,
             split_part=None,
             amendment_number="66",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="After recital 2",
@@ -462,6 +464,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.REJECTED,
             split_part=None,
             amendment_number="77",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="Recital 3",
@@ -469,6 +472,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.REJECTED,
             split_part=None,
             amendment_number="78",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="Recital 8",
@@ -476,6 +480,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.REJECTED,
             split_part=None,
             amendment_number="79",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="Recital 15",
@@ -483,6 +488,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.REJECTED,
             split_part=None,
             amendment_number="80",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="Recital 25",
@@ -490,6 +496,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.REJECTED,
             split_part=None,
             amendment_number="81",
+            vote_type=VoteType.AMENDMENT,
         ),
         VoteItem(
             subject="Commission proposal",
@@ -497,6 +504,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.ADOPTED,
             split_part=None,
             amendment_number=None,
+            vote_type=VoteType.PRIMARY,
         ),
     ]
 
@@ -509,6 +517,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.ADOPTED,
             split_part=1,
             amendment_number=None,
+            vote_type=VoteType.SEPARATE,
         ),
         VoteItem(
             subject="§ 1",
@@ -516,6 +525,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.ADOPTED,
             split_part=2,
             amendment_number=None,
+            vote_type=VoteType.SEPARATE,
         ),
         VoteItem(
             subject="§ 1",
@@ -523,6 +533,7 @@ def test_vote_collections_scraper_run_vote_items():
             result=VoteResult.ADOPTED,
             split_part=3,
             amendment_number=None,
+            vote_type=VoteType.SEPARATE,
         ),
     ]
 
