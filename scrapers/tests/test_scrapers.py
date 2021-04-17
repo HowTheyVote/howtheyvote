@@ -446,17 +446,76 @@ def test_vote_collections_scraper_run_vote_items():
             subject="Amendments by the committee responsible – put to the vote collectively",
             author="committee",
             result=VoteResult.ADOPTED,
+            split_part=None,
         ),
-        VoteItem(subject="§ 5, sub§ 1", author="committee", result=VoteResult.ADOPTED),
-        VoteItem(subject="After recital 2", author="ID", result=VoteResult.REJECTED),
-        VoteItem(subject="Recital 3", author="ID", result=VoteResult.REJECTED),
-        VoteItem(subject="Recital 8", author="ID", result=VoteResult.REJECTED),
-        VoteItem(subject="Recital 15", author="ID", result=VoteResult.REJECTED),
-        VoteItem(subject="Recital 25", author="ID", result=VoteResult.REJECTED),
-        VoteItem(subject="Commission proposal", author=None, result=VoteResult.ADOPTED),
+        VoteItem(
+            subject="§ 5, sub§ 1",
+            author="committee",
+            result=VoteResult.ADOPTED,
+            split_part=None,
+        ),
+        VoteItem(
+            subject="After recital 2",
+            author="ID",
+            result=VoteResult.REJECTED,
+            split_part=None,
+        ),
+        VoteItem(
+            subject="Recital 3",
+            author="ID",
+            result=VoteResult.REJECTED,
+            split_part=None,
+        ),
+        VoteItem(
+            subject="Recital 8",
+            author="ID",
+            result=VoteResult.REJECTED,
+            split_part=None,
+        ),
+        VoteItem(
+            subject="Recital 15",
+            author="ID",
+            result=VoteResult.REJECTED,
+            split_part=None,
+        ),
+        VoteItem(
+            subject="Recital 25",
+            author="ID",
+            result=VoteResult.REJECTED,
+            split_part=None,
+        ),
+        VoteItem(
+            subject="Commission proposal",
+            author=None,
+            result=VoteResult.ADOPTED,
+            split_part=None,
+        ),
     ]
 
     assert result[3].votes == expected_votes
+
+    expected_votes = [
+        VoteItem(
+            subject="§ 1",
+            author="original text",
+            result=VoteResult.ADOPTED,
+            split_part=1,
+        ),
+        VoteItem(
+            subject="§ 1",
+            author="original text",
+            result=VoteResult.ADOPTED,
+            split_part=2,
+        ),
+        VoteItem(
+            subject="§ 1",
+            author="original text",
+            result=VoteResult.ADOPTED,
+            split_part=3,
+        ),
+    ]
+
+    assert result[4].votes[:3] == expected_votes
 
 
 def test_vote_collections_scraper_add_referenced_texts():
