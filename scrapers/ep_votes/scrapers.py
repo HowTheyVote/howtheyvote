@@ -371,8 +371,8 @@ class VoteCollectionScraper(Scraper):
 
     def _extract_data(self) -> List[VoteCollection]:
         tags = self._resource.find_all("Vote.Result")
-
-        return [self._collection(tag) for tag in tags]
+        collections = [self._collection(tag) for tag in tags]
+        return [collection for collection in collections if len(collection.votes) > 0]
 
     def _collection(self, tag: Tag) -> VoteCollection:
         return VoteCollection(title=self._title(tag), votes=self._votes(tag))
@@ -380,9 +380,6 @@ class VoteCollectionScraper(Scraper):
     def _votes(self, tag: Tag) -> List[VoteItem]:
         votes_table = tag.select_one("Vote\\.Result\\.Table\\.Results > TABLE")
         votes_table = normalize_table(votes_table)
-        # first row contains the table header
-        votes_table = votes_table[1:]
-
         votes_table = self._add_referenced_text(votes_table)
         votes_table = [row for row in votes_table if self._include_row(row)]
 
@@ -392,8 +389,8 @@ class VoteCollectionScraper(Scraper):
         current_reference = None
         for row in votes_table:
             keys = row.keys()
-            if len(keys) == 1 and "c1" in keys:
-                current_reference = row["c1"]
+            if len(keys) == 1 and "Subject" in keys:
+                current_reference = row.get("Subject")
             else:
                 row["referenced_text"] = current_reference
 
@@ -401,18 +398,18 @@ class VoteCollectionScraper(Scraper):
 
     def _include_row(self, row: Row) -> bool:
         # non-RCV votes or full row headings (since c4 does not exist there)
-        c4 = row.get("c4")
+        c4 = row.get("RCV etc.")
         if not c4 or not c4.endswith("RCV"):
             return False
 
         # lapsed votes
-        if row.get("c5") == "↓":
+        if row.get("Vote") == "↓":
             return False
 
         return True
 
     def _vote(self, row: Row) -> VoteItem:
-        subject = row.get("c1")
+        subject = row.get("Subject")
 
         return VoteItem(subject)
 
