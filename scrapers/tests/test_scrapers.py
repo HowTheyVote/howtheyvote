@@ -447,48 +447,56 @@ def test_vote_collections_scraper_run_vote_items():
             author="committee",
             result=VoteResult.ADOPTED,
             split_part=None,
+            amendment_number="1-65, 67-76",
         ),
         VoteItem(
             subject="§ 5, sub§ 1",
             author="committee",
             result=VoteResult.ADOPTED,
             split_part=None,
+            amendment_number="66",
         ),
         VoteItem(
             subject="After recital 2",
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
+            amendment_number="77",
         ),
         VoteItem(
             subject="Recital 3",
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
+            amendment_number="78",
         ),
         VoteItem(
             subject="Recital 8",
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
+            amendment_number="79",
         ),
         VoteItem(
             subject="Recital 15",
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
+            amendment_number="80",
         ),
         VoteItem(
             subject="Recital 25",
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
+            amendment_number="81",
         ),
         VoteItem(
             subject="Commission proposal",
             author=None,
             result=VoteResult.ADOPTED,
             split_part=None,
+            amendment_number=None,
         ),
     ]
 
@@ -500,18 +508,21 @@ def test_vote_collections_scraper_run_vote_items():
             author="original text",
             result=VoteResult.ADOPTED,
             split_part=1,
+            amendment_number=None,
         ),
         VoteItem(
             subject="§ 1",
             author="original text",
             result=VoteResult.ADOPTED,
             split_part=2,
+            amendment_number=None,
         ),
         VoteItem(
             subject="§ 1",
             author="original text",
             result=VoteResult.ADOPTED,
             split_part=3,
+            amendment_number=None,
         ),
     ]
 
