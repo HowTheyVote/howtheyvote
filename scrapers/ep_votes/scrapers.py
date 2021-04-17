@@ -414,7 +414,15 @@ class VoteCollectionsScraper(Scraper):
             subject=row.get("Subject"),
             author=row.get("Author"),
             result=VoteResult.from_str(str(row["Vote"])),
+            split_part=self._split_part(row.get("RCV etc.")),
         )
+
+
+    def _split_part(self, string: Optional[str]) -> Optional[int]:
+        split_part = re.search(r"^(\d*)\/RCV$", string or "")
+        split_part = split_part.group(1) if split_part else None  # type: ignore
+        split_part = int(split_part) if split_part else None  # type: ignore
+        return split_part
 
     def _title(self, tag: Tag) -> str:
         title_tag = tag.find("Vote.Result.Text.Title")

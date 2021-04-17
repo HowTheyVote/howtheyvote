@@ -307,6 +307,7 @@ class VoteItem:
     author: Optional[str]
     subject: Optional[str]
     result: VoteResult
+    split_part: Optional[int]
 
 
 @dataclass
