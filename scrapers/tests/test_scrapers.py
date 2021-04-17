@@ -424,40 +424,55 @@ def test_vote_collection_scraper_url():
 def test_vote_collection_scraper_run():
     scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
-
-    assert len(result) == 28
+    assert len(result) == 22
+    assert result[0].title == "InvestEU programme ***I"
+    assert result[21].title == "Children’s rights"
     assert (
-        result[0].title
-        == "Request for waiver of the immunity of Carles Puigdemont i Casamajó"
+        result[12].title
+        == "Objection pursuant to Rule 112(2) and (3): Genetically modified maize MZIR098 (SYN-ØØØ98-3)"
     )
-    assert result[27].title == "Children’s rights"
 
 
 def test_vote_collection_scraper_run_vote_items_subjects():
     scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
 
-    assert len(result[9].votes) == 8
+    assert len(result[3].votes) == 8
     assert (
-        result[9].votes[0].subject
+        result[3].votes[0].subject
         == "Amendments by the committee responsible – put to the vote collectively"
     )
-    assert result[9].votes[1].subject == "§ 5, sub§ 1"
-    assert result[9].votes[2].subject == "After recital 2"
-    assert result[9].votes[3].subject == "Recital 3"
-    assert result[9].votes[4].subject == "Recital 8"
-    assert result[9].votes[5].subject == "Recital 15"
-    assert result[9].votes[6].subject == "Recital 25"
-    assert result[9].votes[7].subject == "Commission proposal"
+    assert result[3].votes[1].subject == "§ 5, sub§ 1"
+    assert result[3].votes[2].subject == "After recital 2"
+    assert result[3].votes[3].subject == "Recital 3"
+    assert result[3].votes[4].subject == "Recital 8"
+    assert result[3].votes[5].subject == "Recital 15"
+    assert result[3].votes[6].subject == "Recital 25"
+    assert result[3].votes[7].subject == "Commission proposal"
 
 
 def test_vote_collection_scraper_add_referenced_texts():
     scraper = VoteCollectionScraper(term=9, date=date(2021, 3, 9))
-    table = [{"c1": "A very important topic"}, {"c1": "2 / 1", "c2": "2 / 2"}]
+
+    table = [
+        {"Subject": "A very important topic"},
+        {
+            "Subject": "Proposal",
+            "RCV etc.": "RCV",
+            "Vote": "+",
+            "RCV/EV – remarks": "100, 50, 25",
+        },
+    ]
 
     expected_table = [
-        {"c1": "A very important topic"},
-        {"c1": "2 / 1", "c2": "2 / 2", "referenced_text": "A very important topic"},
+        {"Subject": "A very important topic"},
+        {
+            "Subject": "Proposal",
+            "RCV etc.": "RCV",
+            "Vote": "+",
+            "RCV/EV – remarks": "100, 50, 25",
+            "referenced_text": "A very important topic",
+        },
     ]
 
     assert scraper._add_referenced_text(table) == expected_table
@@ -469,12 +484,12 @@ def test_vote_collection_scraper_include_row_heading():
     rows = [
         {"c1": "Amendments to the recitals"},
         {
-            "c1": "After recital G",
-            "c2": "1",
-            "c3": "ECR",
-            "c4": "RCV",
-            "c5": "-",
-            "c6": "134, 539, 22",
+            "Subject": "After recital G",
+            "Am No": "1",
+            "Author": "ECR",
+            "RCV etc.": "RCV",
+            "Vote": "-",
+            "RCV/EV – remarks": "134, 539, 22",
         },
     ]
 
@@ -487,28 +502,28 @@ def test_vote_collection_scraper_include_row_lapsed():
 
     rows = [
         {
-            "c1": "After recital G",
-            "c2": "1",
-            "c3": "ECR",
-            "c4": "RCV",
-            "c5": "↓",
-            "c6": "134, 539, 22",
+            "Subject": "After recital G",
+            "Am No": "1",
+            "Author": "ECR",
+            "RCV etc.": "RCV",
+            "Vote": "↓",
+            "RCV/EV – remarks": "134, 539, 22",
         },
         {
-            "c1": "After recital G",
-            "c2": "1",
-            "c3": "ECR",
-            "c4": "RCV",
-            "c5": "+",
-            "c6": "134, 539, 22",
+            "Subject": "After recital G",
+            "Am No": "1",
+            "Author": "ECR",
+            "RCV etc.": "RCV",
+            "Vote": "+",
+            "RCV/EV – remarks": "134, 539, 22",
         },
         {
-            "c1": "After recital G",
-            "c2": "1",
-            "c3": "ECR",
-            "c4": "RCV",
-            "c5": "-",
-            "c6": "134, 539, 22",
+            "Subject": "After recital G",
+            "Am No": "1",
+            "Author": "ECR",
+            "RCV etc.": "RCV",
+            "Vote": "-",
+            "RCV/EV – remarks": "134, 539, 22",
         },
     ]
 
@@ -523,28 +538,28 @@ def test_vote_collection_scraper_include_row_no_rcv():
     rows = [
         {"c1": "Proposal for a decision", "c2": "SEC", "c3": "+", "c4": "400, 248, 45"},
         {
-            "c1": "§5",
-            "c2": "§",
-            "c3": "original text",
-            "c4": "split",
-            "c5": "",
-            "c6": "",
+            "Subject": "§5",
+            "Am No": "§",
+            "Author": "original text",
+            "RCV etc.": "split",
+            "Vote": "",
+            "RCV/EV – remarks": "",
         },
         {
-            "c1": "§5",
-            "c2": "§",
-            "c3": "original text",
-            "c4": "1/RCV",
-            "c5": "+",
-            "c6": "585, 69, 42",
+            "Subject": "§5",
+            "Am No": "§",
+            "Author": "original text",
+            "RCV etc.": "1/RCV",
+            "Vote": "+",
+            "RCV/EV – remarks": "585, 69, 42",
         },
         {
-            "c1": "Recital 17",
-            "c2": "25",
-            "c3": "MEPs",
-            "c4": "RCV",
-            "c5": "-",
-            "c6": "181, 481, 33",
+            "Subject": "Recital 17",
+            "Am No": "25",
+            "Author": "MEPs",
+            "RCV etc.": "RCV",
+            "Vote": "-",
+            "RCV/EV – remarks": "181, 481, 33",
         },
     ]
 

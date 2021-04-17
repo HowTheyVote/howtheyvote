@@ -83,6 +83,7 @@ def normalize_table(table_tag: Tag) -> Rows:
 
         rows.append(row)
 
+    # Use column headers as keys in subsequent rows
     header = rows[0]
     body = rows[1:]
 
