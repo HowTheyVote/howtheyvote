@@ -25,3 +25,6 @@
       file:
         path: "{{ ansible_facts.env.HOME }}/get-poetry.py"
         state: absent
+
+- name: Setup Google FLoC opt out header
+  command: "uberspace web header set / Permissions-Policy \"interest-cohort=()\""
