@@ -212,15 +212,18 @@ class Voting:
     position: Position
 
 
+@dataclass
+class VotingList:
+    description: str
+    reference: Optional[str]
+    doceo_vote_id: int
+    votings: List[Voting]
+
+
 class VoteType(Enum):
     PRIMARY = auto()
     AMENDMENT = auto()
     SEPARATE = auto()
-
-    # TODO: Remove once old vote scraper has been removed completely
-    SPLIT = auto()
-    FINAL = auto()
-    AGENDA = auto()
 
 
 class VoteResult(Enum):
@@ -236,17 +239,6 @@ class VoteResult(Enum):
             return cls.REJECTED
 
         raise ValueError("Vote can either be adopted or rejected.")
-
-
-@dataclass
-class Vote:
-    doceo_vote_id: int
-    date: date
-    votings: List[Voting]
-    type: Optional[VoteType] = None
-    subvote_description: Optional[str] = None
-    description: Optional[str] = None
-    reference: Optional[DocReference] = None
 
 
 class ProcedureType(Enum):
@@ -301,9 +293,7 @@ class Procedure:
 
 
 @dataclass
-# TODO: Rename to Vote once the current scraper
-# implementation has been removed.
-class VoteItem:
+class Vote:
     author: Optional[str]
     subject: Optional[str]
     result: VoteResult
@@ -315,4 +305,5 @@ class VoteItem:
 @dataclass
 class VoteCollection:
     title: str
-    votes: List[VoteItem]
+    reference: Optional[str]
+    votes: List[Vote]

@@ -1,13 +1,13 @@
 import pytest
 from requests_mock import ANY
 from pathlib import Path
-from datetime import date, datetime
+from datetime import date
 from bs4 import BeautifulSoup
 from ep_votes.scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
-    VoteResultsScraper,
+    VotingListsScraper,
     DocumentInfoScraper,
     ProcedureScraper,
     VoteCollectionsScraper,
@@ -20,12 +20,11 @@ from ep_votes.models import (
     GroupMembership,
     Position,
     Voting,
+    VotingList,
     VoteResult,
     VoteType,
     Vote,
-    VoteItem,
     Doc,
-    DocReference,
     DocType,
     Procedure,
     ProcedureReference,
@@ -53,6 +52,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
         "/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-B9-0154/2019": "procedure-b9-0154-2019.xml",
+        "/doceo/document/PV-9-2021-03-09-RCV_FR.xml": "pv-9-2021-09-03-rcv-fr.xml",
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
     }
 
@@ -153,8 +153,8 @@ def test_member_groups_scraper_group(mock_request):
     assert scraper._group(tags[7]) == Group.NI
 
 
-def test_vote_results_scraper_run(mock_request):
-    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
+def test_voting_lists_scraper_run(mock_request):
+    scraper = VotingListsScraper(term=9, date=date(2020, 7, 23))
 
     votings = [
         Voting(doceo_member_id=7244, name="Aguilar", position=Position.FOR),
@@ -162,171 +162,29 @@ def test_vote_results_scraper_run(mock_request):
         Voting(doceo_member_id=6836, name="Kolakušić", position=Position.ABSTENTION),
     ]
 
-    votes = [
-        Vote(
+    expected = [
+        VotingList(
+            description="B9-0229/2020 - § 1/1",
+            reference="B9-0229/2020",
             doceo_vote_id=116365,
-            date=datetime(2020, 7, 23, 12, 49, 32),
-            description="§ 1/1",
-            reference=DocReference(type=DocType.B, term=9, number=229, year=2020),
             votings=votings,
-            type=VoteType.SPLIT,
-            subvote_description="§ 1/1",
         )
     ]
 
-    assert scraper.run() == votes
+    assert scraper.run() == expected
 
 
-def test_vote_results_scraper_run_positions_missing(mock_request):
-    scraper = VoteResultsScraper(term=9, date=date(2019, 10, 22))
+def test_voting_lists_scraper_run_positions_missing(mock_request):
+    scraper = VotingListsScraper(term=9, date=date(2019, 10, 22))
 
     votings = [
         Voting(doceo_member_id=5602, name="Ždanoka", position=Position.FOR),
         Voting(doceo_member_id=6752, name="Mobarik", position=Position.ABSTENTION),
     ]
 
-    votes = scraper.run()
+    voting_lists = scraper.run()
 
-    assert votes[0].votings == votings
-
-
-@pytest.fixture
-def tags_for_description():
-    descriptions = [
-        (  # Handles resolution references (iPlRe)
-            "<RollCallVote.Description.Text>"
-            '<a redmap-uri="/reds:iPlRe/B-9-2019-0029">B9-0229/2020</a> - § 1/1'
-            "</RollCallVote.Description.Text>"
-        ),
-        (
-            # Handles report references (iPlRp)
-            "<RollCallVote.Description.Text>"
-            '<a redmap-uri="/reds:iPlRp/A-9-2019-0017">A9-0017/2019</a> - '
-            "Monika Hohlmeier et Eider Gardiazabal Rubial - Am 49"
-            "</RollCallVote.Description.Text>"
-        ),
-        (  # Handles descriptions without document references
-            "<RollCallVote.Description.Text>"
-            "Ordre du jour de mardi - demande du groupe GUE/NGL"
-            "</RollCallVote.Description.Text>"
-        ),
-        (  # Ignore references to non-plenary documents
-            "<RollCallVote.Description.Text>"
-            "Proposition de règlement "
-            "("
-            '<a redmap-uri="/reds:iEcCom/COM-2019-0396">COM(2019)0396</a>'
-            "- C9-0108/2019-"
-            '<a redmap-uri="/reds:DirContProc/COD-2019-0179">2019/0179(COD)</a>'
-            ")"
-            "</RollCallVote.Description.Text>"
-        ),
-        (  # Removes additional whitespace
-            "<RollCallVote.Description.Text>"
-            '<a redmap-uri="/reds:iPlRp/A-9-2019-0020">A9-0020/2019</a>'
-            "-    Younous Omarjee - Vote unique"
-            "</RollCallVote.Description.Text>"
-        ),
-    ]
-
-    return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
-
-
-def test_vote_results_scraper_description(tags_for_description):
-    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
-
-    expected = [
-        "§ 1/1",
-        "Monika Hohlmeier et Eider Gardiazabal Rubial - Am 49",
-        "Ordre du jour de mardi - demande du groupe GUE/NGL",
-        "Proposition de règlement (COM(2019)0396- C9-0108/2019-2019/0179(COD))",
-        "Younous Omarjee - Vote unique",
-    ]
-
-    assert scraper._description(tags_for_description[0]) == expected[0]
-    assert scraper._description(tags_for_description[1]) == expected[1]
-    assert scraper._description(tags_for_description[2]) == expected[2]
-
-
-def test_vote_results_scraper_reference(tags_for_description):
-    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
-
-    expected = [
-        DocReference.from_str("B9-0229/2020"),
-        DocReference.from_str("A9-0017/2019"),
-        None,
-        None,
-        DocReference.from_str("A9-0020/2019"),
-    ]
-
-    assert scraper._reference(tags_for_description[0]) == expected[0]
-    assert scraper._reference(tags_for_description[1]) == expected[1]
-    assert scraper._reference(tags_for_description[2]) == expected[2]
-
-
-@pytest.fixture
-def tags_for_type():
-    descriptions = [
-        "<RollCallVote.Description.Text>Text</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am 1</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am 11</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am 1/2</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am  1/2</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - §1</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - §11</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - §1/2</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - § 1</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Considérant A</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Considerant A</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Considerant AB</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Considerant A/1</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am 1 Am 2</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am 1 - 5</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - Am 1 Am 3 - 5</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - §1 §2</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - §1 - 5</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Text - §1 §3 - 5</RollCallVote.Description.Text>",
-        "<RollCallVote.Description.Text>Ordre du jour de mardi - demande du groupe GUE/NGL</RollCallVote.Description.Text>",
-    ]
-
-    return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
-
-
-def test_vote_results_scraper_type(tags_for_type):
-    scraper = VoteResultsScraper(term=9, date=date(2020, 7, 23))
-
-    # by default, if no special vote identifier is found, it's a final vote
-    assert scraper._subvote(tags_for_type[0]) == (VoteType.FINAL, None)
-
-    # amendments
-    assert scraper._subvote(tags_for_type[1]) == (VoteType.AMENDMENT, "Am 1")
-    assert scraper._subvote(tags_for_type[2]) == (VoteType.AMENDMENT, "Am 11")
-    assert scraper._subvote(tags_for_type[3]) == (VoteType.AMENDMENT, "Am 1/2")
-    assert scraper._subvote(tags_for_type[4]) == (VoteType.AMENDMENT, "Am  1/2")
-
-    # paragraphs
-    assert scraper._subvote(tags_for_type[5]) == (VoteType.SPLIT, "§1")
-    assert scraper._subvote(tags_for_type[6]) == (VoteType.SPLIT, "§11")
-    assert scraper._subvote(tags_for_type[7]) == (VoteType.SPLIT, "§1/2")
-    assert scraper._subvote(tags_for_type[8]) == (VoteType.SPLIT, "§ 1")
-
-    # considerant
-    assert scraper._subvote(tags_for_type[9]) == (VoteType.SPLIT, "Considérant A")
-    assert scraper._subvote(tags_for_type[10]) == (VoteType.SPLIT, "Considerant A")
-    assert scraper._subvote(tags_for_type[11]) == (VoteType.SPLIT, "Considerant AB")
-    assert scraper._subvote(tags_for_type[12]) == (VoteType.SPLIT, "Considerant A/1")
-
-    # multiple amendments
-    assert scraper._subvote(tags_for_type[13]) == (VoteType.AMENDMENT, "Am 1 Am 2")
-    assert scraper._subvote(tags_for_type[14]) == (VoteType.AMENDMENT, "Am 1 - 5")
-    assert scraper._subvote(tags_for_type[15]) == (VoteType.AMENDMENT, "Am 1 Am 3 - 5")
-
-    # multiple paragraphs
-    assert scraper._subvote(tags_for_type[16]) == (VoteType.SPLIT, "§1 §2")
-    assert scraper._subvote(tags_for_type[17]) == (VoteType.SPLIT, "§1 - 5")
-    assert scraper._subvote(tags_for_type[18]) == (VoteType.SPLIT, "§1 §3 - 5")
-
-    # agenda
-    assert scraper._subvote(tags_for_type[19]) == (VoteType.AGENDA, None)
+    assert voting_lists[0].votings == votings
 
 
 def test_document_scraper_run(mock_request):
@@ -442,7 +300,7 @@ def test_vote_collections_scraper_run_vote_items():
     assert len(result[3].votes) == 8
 
     expected_votes = [
-        VoteItem(
+        Vote(
             subject="Amendments by the committee responsible – put to the vote collectively",
             author="committee",
             result=VoteResult.ADOPTED,
@@ -450,7 +308,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="1-65, 67-76",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="§ 5, sub§ 1",
             author="committee",
             result=VoteResult.ADOPTED,
@@ -458,7 +316,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="66",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="After recital 2",
             author="ID",
             result=VoteResult.REJECTED,
@@ -466,7 +324,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="77",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="Recital 3",
             author="ID",
             result=VoteResult.REJECTED,
@@ -474,7 +332,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="78",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="Recital 8",
             author="ID",
             result=VoteResult.REJECTED,
@@ -482,7 +340,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="79",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="Recital 15",
             author="ID",
             result=VoteResult.REJECTED,
@@ -490,7 +348,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="80",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="Recital 25",
             author="ID",
             result=VoteResult.REJECTED,
@@ -498,7 +356,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number="81",
             vote_type=VoteType.AMENDMENT,
         ),
-        VoteItem(
+        Vote(
             subject="Commission proposal",
             author=None,
             result=VoteResult.ADOPTED,
@@ -511,7 +369,7 @@ def test_vote_collections_scraper_run_vote_items():
     assert result[3].votes == expected_votes
 
     expected_votes = [
-        VoteItem(
+        Vote(
             subject="§ 1",
             author="original text",
             result=VoteResult.ADOPTED,
@@ -519,7 +377,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number=None,
             vote_type=VoteType.SEPARATE,
         ),
-        VoteItem(
+        Vote(
             subject="§ 1",
             author="original text",
             result=VoteResult.ADOPTED,
@@ -527,7 +385,7 @@ def test_vote_collections_scraper_run_vote_items():
             amendment_number=None,
             vote_type=VoteType.SEPARATE,
         ),
-        VoteItem(
+        Vote(
             subject="§ 1",
             author="original text",
             result=VoteResult.ADOPTED,
