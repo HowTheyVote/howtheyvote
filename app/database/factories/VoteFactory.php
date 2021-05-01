@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Document;
 use App\Enums\VotePositionEnum;
 use App\Enums\VoteTypeEnum;
 use App\Term;
@@ -30,7 +29,6 @@ class VoteFactory extends Factory
             'doceo_vote_id' => $this->faker->numberBetween(0, 999999),
             'date' => $this->faker->dateTimeThisCentury(),
             'description' => '§ 1/2',
-            'document_id' => Document::factory(),
             'term_id' => Term::factory(),
             'type' => VoteTypeEnum::FINAL(),
         ];

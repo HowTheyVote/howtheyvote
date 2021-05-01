@@ -1,12 +1,9 @@
 <?php
 
 use App\Actions\ScrapeVoteResultsAction;
-use App\Document;
-use App\Enums\DocumentTypeEnum;
 use App\Enums\VotePositionEnum;
 use App\Enums\VoteTypeEnum;
 use App\Member;
-use App\Procedure;
 use App\Term;
 use App\Vote;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,10 +12,6 @@ use Illuminate\Support\Carbon;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    //TODO: use dep injection to mock ScrapeDocumentInfoAction
-    Http::fakeJsonFromFile('*/document_info?type=B&term=9&number=154&year=2019', 'document_info.json');
-    Http::fakeJsonFromFile('*/procedure?type=B&term=9&number=154&year=2019', 'procedure.json');
-
     $this->action = $this->app->make(ScrapeVoteResultsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     $this->date = new Carbon('2019-10-24');
@@ -33,65 +26,16 @@ it('creates new vote record including relations', function () {
 
     $vote = Vote::first();
 
+    // TODO: fixme
     expect($vote->doceo_vote_id)->toEqual(109619);
     expect($vote->date)->toEqual(new Carbon('2019-10-24'));
     expect($vote->description)->toEqual('§ 1/2');
     expect($vote->term->id)->toEqual($this->term->id);
     expect($vote->type)->toEqual(VoteTypeEnum::SPLIT());
     expect($vote->subvote_description)->toEqual('§ 1/2');
-    expect($vote->document)->not()->toBeNull();
 });
 
-it('creates new related document record with document infos', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
-
-    $this->action->execute($this->term, $this->date);
-
-    expect(Document::count())->toEqual(1);
-    expect(Procedure::count())->toEqual(1);
-
-    $document = Arr::except(Document::first()->getAttributes(), [
-        'created_at',
-        'updated_at',
-        'id',
-    ]);
-
-    expect($document)->toEqual([
-        'type' => DocumentTypeEnum::B(),
-        'term_id' => $this->term->id,
-        'number' => 154,
-        'year' => 2019,
-        'title' => 'MOTION FOR A RESOLUTION on search and rescue in the Mediterranean',
-        'procedure_id' => Procedure::first()->id,
-    ]);
-});
-
-it('finds and relates existing document record', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
-
-    $document = Document::factory([
-        'type' => DocumentTypeEnum::B(),
-        'term_id' => $this->term->id,
-        'number' => 154,
-        'year' => 2019,
-        'title' => 'MOTION FOR A RESOLUTION on search and rescue in the Mediterranean',
-    ])->create();
-
-    $this->action->execute($this->term, $this->date);
-
-    expect(Document::count())->toEqual(1);
-    expect(Vote::first()->document_id)->toEqual($document->id);
-});
-
-it('handles votes without document reference', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-5.json');
-
-    $this->action->execute($this->term, $this->date);
-
-    expect(Document::count())->toEqual(0);
-    expect(Vote::first()->document_id)->toBeNull();
-});
-
+// TODO: fixme
 it('updates existing vote record inlcuding relations', function () {
     Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
 
@@ -100,14 +44,11 @@ it('updates existing vote record inlcuding relations', function () {
         'date' => $this->date,
         'term_id' => $this->term->id,
         'description' => 'Old Description',
-        'document_id' => null,
     ])->create();
 
     $this->action->execute($this->term, $this->date);
 
     expect(Vote::count())->toEqual(1);
-    expect(Document::count())->toEqual(1);
-    expect($vote->fresh()->document)->toBeInstanceOf(Document::class);
 });
 
 it('finds and relates members with position', function () {

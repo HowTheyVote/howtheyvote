@@ -2,8 +2,6 @@
 
 namespace App\Actions;
 
-use App\Document;
-use App\Enums\DocumentTypeEnum;
 use App\Enums\VotePositionEnum;
 use App\Enums\VoteTypeEnum;
 use App\Member;
@@ -15,18 +13,15 @@ use Illuminate\Support\Collection;
 class ScrapeVoteResultsAction extends Action
 {
     private $scrapeAction;
-    private $documentInfoAction;
     private $sharePicAction;
     private $compileAction;
 
     public function __construct(
         ScrapeAction $scrapeAction,
-        ScrapeDocumentInfoAction $documentInfoAction,
         CompileVoteStatsAction $compileAction,
         GenerateVoteSharePicAction $sharePicAction
     ) {
         $this->scrapeAction = $scrapeAction;
-        $this->documentInfoAction = $documentInfoAction;
         $this->sharePicAction = $sharePicAction;
         $this->compileAction = $compileAction;
     }
@@ -50,8 +45,7 @@ class ScrapeVoteResultsAction extends Action
                 'doceo_vote_id' => $data['doceo_vote_id'],
             ]);
 
-            $document = $this->findOrCreateDocument($term, $data['reference']);
-            $vote = $this->createOrUpdateVote($members, $term, $date, $document, $data);
+            $vote = $this->createOrUpdateVote($members, $term, $date, $data);
             $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
             $this->compileAction->execute($vote);
 
@@ -67,7 +61,6 @@ class ScrapeVoteResultsAction extends Action
         Collection $members,
         Term $term,
         Carbon $date,
-        ?Document $document,
         array $data
     ): Vote {
         $vote = Vote::firstOrNew([
@@ -80,34 +73,11 @@ class ScrapeVoteResultsAction extends Action
             'description' => $data['description'],
             'type' => VoteTypeEnum::make($data['type']),
             'subvote_description' => $data['subvote_description'],
-            'document_id' => $document->id ?? null,
         ]);
 
         $vote->save();
 
         return $vote;
-    }
-
-    protected function findOrCreateDocument(Term $term, ?array $data): ?Document
-    {
-        if (! $data) {
-            return null;
-        }
-
-        $this->log('Importing document', $data);
-
-        $document = Document::firstOrCreate([
-            'type' => DocumentTypeEnum::make($data['type']),
-            'term_id' => $term->id,
-            'number' => $data['number'],
-            'year' => $data['year'],
-        ]);
-
-        if ($document->wasRecentlyCreated) {
-            $this->documentInfoAction->execute($document);
-        }
-
-        return $document;
     }
 
     protected function createOrUpdateVotings(
