@@ -3,20 +3,19 @@
 namespace Database\Factories;
 
 use App\Enums\VotePositionEnum;
-use App\Enums\VoteTypeEnum;
 use App\Term;
-use App\Vote;
+use App\VotingList;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class VoteFactory extends Factory
+class VotingListFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Vote::class;
+    protected $model = VotingList::class;
 
     /**
      * Define the model's default state.
@@ -30,7 +29,6 @@ class VoteFactory extends Factory
             'date' => $this->faker->dateTimeThisCentury(),
             'description' => '§ 1/2',
             'term_id' => Term::factory(),
-            'type' => VoteTypeEnum::FINAL(),
         ];
     }
 
@@ -45,7 +43,7 @@ class VoteFactory extends Factory
     {
         $position = VotePositionEnum::make($position);
 
-        return $this->afterCreating(function (Vote $vote) use ($position, $factory) {
+        return $this->afterCreating(function (VotingList $votingList) use ($position, $factory) {
             $members = $factory
                 ->create()
                 ->map(function ($member) use ($position) {
@@ -53,7 +51,7 @@ class VoteFactory extends Factory
                 })
                 ->toAssoc();
 
-            $vote->members()->syncWithoutDetaching($members);
+            $votingList->members()->syncWithoutDetaching($members);
         });
     }
 

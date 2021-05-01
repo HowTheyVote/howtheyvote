@@ -4,10 +4,9 @@ use App\Actions\GenerateVoteSharePicAction;
 use App\Actions\ScrapeMemberGroupsAction;
 use App\Actions\ScrapeMemberInfoAction;
 use App\Actions\ScrapeMembersAction;
-use App\Actions\ScrapeVoteResultsAction;
+use App\Actions\ScrapeVotingListsAction;
 use App\Member;
 use App\Term;
-use App\Vote;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -69,20 +68,21 @@ Artisan::command('scrape:members-groups {--term=}', function (
     $this->output->writeln('');
 })->describe('Scrape and save group info for all saved members for the given term.');
 
-Artisan::command('scrape:vote-results {--term=} {--date=}', function (
+Artisan::command('scrape:voting-lists {--term=} {--date=}', function (
     int $term,
     string $date,
-    ScrapeVoteResultsAction $action
+    ScrapeVotingListsAction $action
 ) {
     $term = Term::whereNumber($term)->first();
     $date = Carbon::parse($date);
 
-    $this->info("Scraping vote results for {$date}");
+    $this->info("Scraping voting lists for {$date}");
     $action->execute($term, $date);
 
     $this->output->writeln('');
-})->describe('Scrape and save all votes with compiled stats for the given date and term.');
+})->describe('Scrape and save all voting lists with compiled stats for the given date and term.');
 
+// TODO: fixup
 Artisan::command('share-picture:vote {--vote=}', function (
     int $vote,
     GenerateVoteSharePicAction $action

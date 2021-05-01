@@ -2,12 +2,11 @@
 
 namespace App;
 
-use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Vinkla\Hashids\Facades\Hashids;
 
-class Vote extends Model
+class VotingList extends Model
 {
     use HasFactory;
 
@@ -17,8 +16,6 @@ class Vote extends Model
         'description',
         'term_id',
         'stats',
-        'type',
-        'subvote_description',
     ];
 
     protected $dates = [
@@ -27,7 +24,6 @@ class Vote extends Model
 
     protected $casts = [
         'stats' => 'array',
-        'type' => VoteTypeEnum::class,
     ];
 
     public function term()
@@ -37,8 +33,8 @@ class Vote extends Model
 
     public function members()
     {
-        return $this->belongsToMany(Member::class)
-            ->using(MemberVote::class)
+        return $this->belongsToMany(Member::class, 'votings')
+            ->using(Voting::class)
             ->withPivot('position');
     }
 
