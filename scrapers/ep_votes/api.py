@@ -11,14 +11,11 @@ from typing import (
     Union,
 )
 from .helpers import to_json
-from .models import DocType
 from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
     VotingListsScraper,
-    DocumentInfoScraper,
-    ProcedureScraper,
 )
 
 load_dotenv()
@@ -95,17 +92,3 @@ def member_groups(term: int, web_id: int) -> SimpleResponse:
 @params(term=int, date=datetime.date.fromisoformat)
 def voting_lists(term: int, date: datetime.date) -> SimpleResponse:
     return VotingListsScraper(term=term, date=date).run()
-
-
-@app.route("/document_info")
-@json_response
-@params(type=lambda x: DocType[x], term=int, year=int, number=int)
-def document_info(type: DocType, term: int, year: int, number: int) -> SimpleResponse:
-    return DocumentInfoScraper(type=type, term=term, year=year, number=number).run()
-
-
-@app.route("/procedure")
-@json_response
-@params(type=lambda x: DocType[x], term=int, year=int, number=int)
-def procedure(type: DocType, term: int, year: int, number: int) -> SimpleResponse:
-    return ProcedureScraper(type=type, term=term, year=year, number=number).run()

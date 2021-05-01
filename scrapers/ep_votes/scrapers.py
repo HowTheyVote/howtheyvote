@@ -17,10 +17,6 @@ from .models import (
     VotingList,
     VoteType,
     Vote,
-    Doc,
-    DocType,
-    Procedure,
-    ProcedureReference,
     VoteResult,
     VoteCollection,
 )
@@ -246,57 +242,6 @@ class VotingListsScraper(Scraper):
     def _description(self, tag: Tag) -> str:
         desc_tag = tag.find("RollCallVote.Description.Text")
         return removeprefix(desc_tag.text.strip(), "- ")
-
-
-class DocumentInfoScraper(Scraper):
-    BASE_URL = "https://www.europarl.europa.eu/doceo/document"
-
-    def __init__(self, type: DocType, term: int, year: int, number: int):
-        self.type = type
-        self.term = term
-        self.year = year
-        self.number = number
-
-    def _url(self) -> str:
-        file = f"{self.type.name}-{self.term}-{self.year:04}-{self.number:04}_EN.html"
-        return f"{self.BASE_URL}/{file}"
-
-    def _extract_data(self) -> Doc:
-        return Doc(title=self._title())
-
-    def _title(self) -> str:
-        tag = self._resource.find("title")
-        return tag.text.strip()
-
-
-class ProcedureScraper(Scraper):
-    BS_PARSER = "lxml-xml"
-    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-"  # noqa: E501
-
-    def __init__(self, type: DocType, term: int, year: int, number: int):
-        self.type = type
-        self.term = term
-        self.year = year
-        self.number = number
-
-    def _url(self) -> str:
-        document = f"{self.type.name}{self.term}-{self.number:04}/{self.year:04}"
-        return f"{self.BASE_URL}{document}"
-
-    def _extract_data(self) -> Procedure:
-        item_tag = self._resource.find("item")
-        title_tag = item_tag.find("title")
-        reference_tag = item_tag.find("reference")
-
-        return Procedure(
-            title=self._title(title_tag), reference=self._reference(reference_tag)
-        )
-
-    def _title(self, tag: Tag) -> str:
-        return tag.text.strip().replace("\n", " ")
-
-    def _reference(self, tag: Tag) -> ProcedureReference:
-        return ProcedureReference.from_str(tag.text.strip())
 
 
 class VoteCollectionsScraper(Scraper):

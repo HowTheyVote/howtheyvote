@@ -4,7 +4,6 @@ from ep_votes.models import (
     Country,
     Voting,
     Position,
-    DocReference,
 )
 from ep_votes.helpers import (
     to_json,
@@ -32,13 +31,6 @@ def test_to_json_enum():
 def test_to_json_voting():
     data = {"voting": Voting(doceo_member_id=1, name="Name", position=Position.FOR)}
     assert to_json(data) == '{"voting": ["Name", "FOR"]}'
-
-
-def test_to_json_dataclass():
-    data = {"dataclass": DocReference.from_str("A9-0001/2021")}
-    expected = '{"dataclass": {"type": "A", "term": 9, "number": 1, "year": 2021}}'
-
-    assert to_json(data) == expected
 
 
 def test_removeprefix():

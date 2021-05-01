@@ -8,8 +8,6 @@ from ep_votes.scrapers import (
     MemberInfoScraper,
     MemberGroupsScraper,
     VotingListsScraper,
-    DocumentInfoScraper,
-    ProcedureScraper,
     VoteCollectionsScraper,
 )
 from ep_votes.models import (
@@ -24,11 +22,6 @@ from ep_votes.models import (
     VoteResult,
     VoteType,
     Vote,
-    Doc,
-    DocType,
-    Procedure,
-    ProcedureReference,
-    ProcedureType,
 )
 
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -37,7 +30,6 @@ TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 def mock_response(req, context):
     url = req.url
     url = url.replace("https://www.europarl.europa.eu", "")
-    url = url.replace("https://oeil.secure.europarl.europa.eu", "")
 
     MOCK_RESPONSES = {
         "/meps/en/directory/xml/?leg=8": "directory_term_8.xml",
@@ -50,8 +42,6 @@ def mock_response(req, context):
         "/meps/en/124831/NAME/history/9": "adinolfi_term_9.html",
         "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
-        "/doceo/document/B-9-2020-0220_EN.html": "b-9-2020-0220-en.html",
-        "/oeil/popups/printresultlist.xml?lang=en&limit=1&q=documentEP:D-B9-0154/2019": "procedure-b9-0154-2019.xml",
         "/doceo/document/PV-9-2021-03-09-RCV_FR.xml": "pv-9-2021-09-03-rcv-fr.xml",
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
     }
@@ -185,93 +175,6 @@ def test_voting_lists_scraper_run_positions_missing(mock_request):
     voting_lists = scraper.run()
 
     assert voting_lists[0].votings == votings
-
-
-def test_document_scraper_run(mock_request):
-    title = "MOTION FOR A RESOLUTION on the EU’s public health strategy post-COVID-19"
-
-    scraper = DocumentInfoScraper(
-        type=DocType.B,
-        term=9,
-        number=220,
-        year=2020,
-    )
-
-    expected = Doc(title=title)
-
-    assert scraper.run() == expected
-
-
-def test_procedure_scraper_run(mock_request):
-    title = "Search and rescue in the Mediterranean (SAR)"
-
-    scraper = ProcedureScraper(
-        type=DocType.B,
-        term=9,
-        year=2019,
-        number=154,
-    )
-
-    expected_reference = ProcedureReference(
-        type=ProcedureType.RSP,
-        year=2019,
-        number=2755,
-    )
-
-    expected = Procedure(
-        title=title,
-        reference=expected_reference,
-    )
-
-    assert scraper.run() == expected
-
-
-@pytest.fixture
-def procedure_title_tags():
-    descriptions = [
-        (  # Handles leading/trailing white space
-            "<title>"
-            "<![CDATA[ Search and rescue in the Mediterranean (SAR) ]]>"
-            "</title>"
-        ),
-        (
-            # Handles line breaks
-            "<title>"
-            "<![CDATA[ Decision to raise no objections to the draft Commission\n"
-            "regulation amending Regulation (EC) No 1126/2008 adopting certain\n"
-            "international accounting standards in accordance with Regulation\n"
-            "(EC) No 1606/2002 of the European Parliament and of the Council as\n"
-            "regards International Accounting Standard 39, International\n"
-            "Financial Reporting Standards 7 and 9 ]]>"
-            "</title>"
-        ),
-    ]
-
-    return [BeautifulSoup(desc, "lxml-xml") for desc in descriptions]
-
-
-def test_procedure_scraper_title(procedure_title_tags):
-    scraper = ProcedureScraper(
-        type=DocType.B,
-        term=9,
-        year=2019,
-        number=154,
-    )
-
-    expected = [
-        "Search and rescue in the Mediterranean (SAR)",
-        (
-            "Decision to raise no objections to the draft Commission "
-            "regulation amending Regulation (EC) No 1126/2008 adopting certain "
-            "international accounting standards in accordance with Regulation "
-            "(EC) No 1606/2002 of the European Parliament and of the Council as "
-            "regards International Accounting Standard 39, International "
-            "Financial Reporting Standards 7 and 9"
-        ),
-    ]
-
-    assert scraper._title(procedure_title_tags[0]) == expected[0]
-    assert scraper._title(procedure_title_tags[1]) == expected[1]
 
 
 def test_vote_collections_scraper_url():
