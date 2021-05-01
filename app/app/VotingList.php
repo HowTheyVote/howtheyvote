@@ -14,6 +14,7 @@ class VotingList extends Model
         'doceo_vote_id',
         'date',
         'description',
+        'reference',
         'term_id',
         'stats',
     ];

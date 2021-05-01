@@ -63,6 +63,7 @@ class ScrapeVotingListsAction extends Action
 
         $votingList->fill([
             'description' => $data['description'],
+            'reference' => $data['reference'],
         ]);
 
         $votingList->save();

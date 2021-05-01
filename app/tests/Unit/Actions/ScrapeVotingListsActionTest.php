@@ -16,7 +16,7 @@ beforeEach(function () {
     $this->date = new Carbon('2019-10-24');
 });
 
-it('creates new vote record including relations', function () {
+it('creates new voting list record including relations', function () {
     Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists.json');
 
     $this->action->execute($this->term, $this->date);
@@ -27,11 +27,12 @@ it('creates new vote record including relations', function () {
 
     expect($votingList->doceo_vote_id)->toEqual(109619);
     expect($votingList->date)->toEqual(new Carbon('2019-10-24'));
-    expect($votingList->description)->toEqual('§ 1/2');
+    expect($votingList->description)->toEqual('B9-0154/2019 - § 1/2');
+    expect($votingList->reference)->toEqual('B9-0154/2019');
     expect($votingList->term->id)->toEqual($this->term->id);
 });
 
-it('updates existing vote record inlcuding relations', function () {
+it('updates existing voting list record', function () {
     Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists.json');
 
     $votingList = VotingList::factory([
