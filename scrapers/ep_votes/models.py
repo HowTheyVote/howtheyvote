@@ -106,40 +106,6 @@ class Group(Enum):
         return cls[GROUP_NAMES[name]]
 
 
-class DocType(Enum):
-    A = auto()  # report
-    B = auto()  # motion for resolution
-    RC = auto()  # joint motion for resolution
-
-
-@dataclass
-class DocReference:
-    type: DocType
-    term: int
-    number: int
-    year: int
-
-    @classmethod
-    def from_str(cls, ref: str) -> "DocReference":
-        regex = r"^(A|B|RC)(?:-B)?(\d{1,2})-(\d{4})\/(\d{4})$"
-        match = re.search(regex, ref)
-
-        if not match:
-            raise ValueError("Unrecognized document reference format")
-
-        return cls(
-            type=DocType[match.group(1)],
-            term=int(match.group(2)),
-            number=int(match.group(3)),
-            year=int(match.group(4)),
-        )
-
-
-@dataclass
-class Doc:
-    title: str
-
-
 @dataclass
 class Member:
     web_id: int
@@ -239,57 +205,6 @@ class VoteResult(Enum):
             return cls.REJECTED
 
         raise ValueError("Vote can either be adopted or rejected.")
-
-
-class ProcedureType(Enum):
-    COD = auto()
-    CNS = auto()
-    APP = auto()
-    BUD = auto()
-    DEC = auto()
-    BUI = auto()
-    NLE = auto()
-    AVC = auto()
-    SYN = auto()
-    INL = auto()
-    INI = auto()
-    RSP = auto()
-    DCE = auto()
-    COS = auto()
-    REG = auto()
-    IMM = auto()
-    RSO = auto()
-    INS = auto()
-    ACI = auto()
-    DEA = auto()
-    RPS = auto()
-
-
-@dataclass
-class ProcedureReference:
-    type: ProcedureType
-    number: int
-    year: int
-
-    @classmethod
-    def from_str(cls, ref: str) -> "ProcedureReference":
-        regex = r"^(\d{4})\/(\d{4})\(([A-Z]{3})\)"
-        match = re.search(regex, ref)
-
-        if not match:
-            raise ValueError("Unrecognized procedure reference format")
-
-        return cls(
-            year=int(match.group(1)),
-            number=int(match.group(2)),
-            type=ProcedureType[match.group(3)],
-        )
-
-
-@dataclass
-class Procedure:
-    title: str
-    reference: ProcedureReference
 
 
 @dataclass
