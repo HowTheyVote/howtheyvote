@@ -28,6 +28,21 @@ USER_AGENTS = [
 ]
 
 
+def extract_reference(tag: Tag) -> Optional[str]:
+    ref_tag = tag.find("a")
+
+    if ref_tag is None:
+        return None
+
+    redmap_uri = ref_tag["redmap-uri"]
+    allowed = ["/reds:iPlRe", "/reds:iPlRp"]
+
+    if not any(redmap_uri.startswith(prefix) for prefix in allowed):
+        return None
+
+    return ref_tag.text
+
+
 class Scraper(ABC):
     BS_PARSER = "lxml"
 
@@ -225,19 +240,8 @@ class VotingListsScraper(Scraper):
         doceo_id = int(tag.get("MepId"))
         return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
 
-    def _reference(self, tag: Tag) -> Optional[BeautifulSoup]:
-        ref_tag = tag.find("RollCallVote.Description.Text").find("a")
-
-        if ref_tag is None:
-            return None
-
-        redmap_uri = ref_tag["redmap-uri"]
-        allowed = ["/reds:iPlRe", "/reds:iPlRp"]
-
-        if not any(redmap_uri.startswith(prefix) for prefix in allowed):
-            return None
-
-        return ref_tag.text
+    def _reference(self, tag: Tag) -> Optional[str]:
+        return extract_reference(tag.find("RollCallVote.Description.Text"))
 
     def _description(self, tag: Tag) -> str:
         desc_tag = tag.find("RollCallVote.Description.Text")
@@ -264,8 +268,13 @@ class VoteCollectionsScraper(Scraper):
 
     def _collection(self, tag: Tag) -> VoteCollection:
         return VoteCollection(
-            title=self._title(tag), reference=None, votes=self._votes(tag)
+            title=self._title(tag),
+            reference=self._reference(tag),
+            votes=self._votes(tag),
         )
+
+    def _reference(self, tag: Tag) -> Optional[str]:
+        return extract_reference(tag.find("Vote.Result.Description.Text"))
 
     def _votes(self, tag: Tag) -> List[Vote]:
         votes_table = tag.select_one("Vote\\.Result\\.Table\\.Results > TABLE")

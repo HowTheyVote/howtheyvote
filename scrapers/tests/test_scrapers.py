@@ -188,12 +188,16 @@ def test_vote_collections_scraper_run():
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
     assert len(result) == 22
+
     assert result[0].title == "InvestEU programme ***I"
+    assert result[0].reference == "A9-0203/2020"
+
     assert result[21].title == "Children’s rights"
     assert (
         result[12].title
         == "Objection pursuant to Rule 112(2) and (3): Genetically modified maize MZIR098 (SYN-ØØØ98-3)"
     )
+    assert result[21].reference == "B9-0164/2021"
 
 
 def test_vote_collections_scraper_run_vote_items():
