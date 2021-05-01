@@ -42,8 +42,8 @@ class Member extends Model
 
     public function votes()
     {
-        return $this->belongsToMany(Vote::class)
-            ->using(MemberVote::class)
+        return $this->belongsToMany(VotingList::class, 'votings')
+            ->using(Voting::class)
             ->withPivot('position');
     }
 

@@ -3,32 +3,28 @@
 namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
-use App\Enums\VoteTypeEnum;
 use App\Member;
 use App\Term;
-use App\Vote;
+use App\VotingList;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class ScrapeVoteResultsAction extends Action
+class ScrapeVotingListsAction extends Action
 {
     private $scrapeAction;
-    private $sharePicAction;
     private $compileAction;
 
     public function __construct(
         ScrapeAction $scrapeAction,
-        CompileVoteStatsAction $compileAction,
-        GenerateVoteSharePicAction $sharePicAction
+        CompileStatsAction $compileAction
     ) {
         $this->scrapeAction = $scrapeAction;
-        $this->sharePicAction = $sharePicAction;
         $this->compileAction = $compileAction;
     }
 
     public function execute(Term $term, Carbon $date): void
     {
-        $response = $this->scrapeAction->execute('vote_results', [
+        $response = $this->scrapeAction->execute('voting_lists', [
             'term' => $term->number,
             'date' => $date->toDateString(),
         ]);
@@ -45,48 +41,42 @@ class ScrapeVoteResultsAction extends Action
                 'doceo_vote_id' => $data['doceo_vote_id'],
             ]);
 
-            $vote = $this->createOrUpdateVote($members, $term, $date, $data);
-            $this->createOrUpdateVotings($members, $date, $vote, $data['votings']);
-            $this->compileAction->execute($vote);
-
-            if ($vote->type->equals(VoteTypeEnum::FINAL()) && $vote->wasRecentlyCreated) {
-                $this->sharePicAction->execute($vote);
-            }
+            $votingList = $this->createOrUpdateVotingList($members, $term, $date, $data);
+            $this->createOrUpdateVotings($members, $date, $votingList, $data['votings']);
+            $this->compileAction->execute($votingList);
         }
 
         $this->log("Imported {$total} votes for {$date}");
     }
 
-    protected function createOrUpdateVote(
+    protected function createOrUpdateVotingList(
         Collection $members,
         Term $term,
         Carbon $date,
         array $data
-    ): Vote {
-        $vote = Vote::firstOrNew([
+    ): VotingList {
+        $votingList = VotingList::firstOrNew([
             'doceo_vote_id' => $data['doceo_vote_id'],
             'term_id' => $term->id,
             'date' => $date,
         ]);
 
-        $vote->fill([
+        $votingList->fill([
             'description' => $data['description'],
-            'type' => VoteTypeEnum::make($data['type']),
-            'subvote_description' => $data['subvote_description'],
         ]);
 
-        $vote->save();
+        $votingList->save();
 
-        return $vote;
+        return $votingList;
     }
 
     protected function createOrUpdateVotings(
         Collection $members,
         Carbon $date,
-        Vote $vote,
+        VotingList $votingList,
         array $votings
     ): void {
-        $memberVotes = [];
+        $memberIds = [];
 
         foreach ($votings as $voting) {
             // To reduce response size, votings are encoded
@@ -96,13 +86,13 @@ class ScrapeVoteResultsAction extends Action
 
             $member = $this->findMember($members, $date, $name);
 
-            $memberVotes[$member->id] = [
+            $memberIds[$member->id] = [
                 'position' => $position,
             ];
         }
 
-        $vote->members()->detach();
-        $vote->members()->attach($memberVotes);
+        $votingList->members()->detach();
+        $votingList->members()->attach($memberIds);
     }
 
     protected function findMember(Collection $members, Carbon $date, string $name): Member

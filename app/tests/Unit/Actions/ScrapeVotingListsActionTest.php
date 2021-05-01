@@ -1,45 +1,40 @@
 <?php
 
-use App\Actions\ScrapeVoteResultsAction;
+use App\Actions\ScrapeVotingListsAction;
 use App\Enums\VotePositionEnum;
-use App\Enums\VoteTypeEnum;
 use App\Member;
 use App\Term;
-use App\Vote;
+use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->action = $this->app->make(ScrapeVoteResultsAction::class);
+    $this->action = $this->app->make(ScrapeVotingListsAction::class);
     $this->term = Term::factory(['number' => 9])->create();
     $this->date = new Carbon('2019-10-24');
 });
 
 it('creates new vote record including relations', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists.json');
 
     $this->action->execute($this->term, $this->date);
 
-    expect(Vote::count())->toEqual(1);
+    expect(VotingList::count())->toEqual(1);
 
-    $vote = Vote::first();
+    $votingList = VotingList::first();
 
-    // TODO: fixme
-    expect($vote->doceo_vote_id)->toEqual(109619);
-    expect($vote->date)->toEqual(new Carbon('2019-10-24'));
-    expect($vote->description)->toEqual('§ 1/2');
-    expect($vote->term->id)->toEqual($this->term->id);
-    expect($vote->type)->toEqual(VoteTypeEnum::SPLIT());
-    expect($vote->subvote_description)->toEqual('§ 1/2');
+    expect($votingList->doceo_vote_id)->toEqual(109619);
+    expect($votingList->date)->toEqual(new Carbon('2019-10-24'));
+    expect($votingList->description)->toEqual('§ 1/2');
+    expect($votingList->term->id)->toEqual($this->term->id);
 });
 
-// TODO: fixme
 it('updates existing vote record inlcuding relations', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists.json');
 
-    $vote = Vote::factory([
+    $votingList = VotingList::factory([
         'doceo_vote_id' => 109619,
         'date' => $this->date,
         'term_id' => $this->term->id,
@@ -48,11 +43,11 @@ it('updates existing vote record inlcuding relations', function () {
 
     $this->action->execute($this->term, $this->date);
 
-    expect(Vote::count())->toEqual(1);
+    expect(VotingList::count())->toEqual(1);
 });
 
 it('finds and relates members with position', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-2.json');
 
     $member = Member::factory([
         'first_name' => 'Jane',
@@ -61,19 +56,19 @@ it('finds and relates members with position', function () {
 
     $this->action->execute($this->term, $this->date);
 
-    $vote = Vote::first();
+    $votingList = VotingList::first();
 
     expect($member->votes()->count())->toEqual(1);
-    expect($vote->members()->count())->toEqual(1);
+    expect($votingList->members()->count())->toEqual(1);
 
     $position = $member->votes()->first()->pivot->position;
     expect($position)->toEqual(VotePositionEnum::FOR());
 });
 
 it('updates related members', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-2.json');
 
-    $vote = Vote::factory([
+    $votingList = VotingList::factory([
         'doceo_vote_id' => 109619,
         'date' => $this->date,
         'term_id' => $this->term->id,
@@ -84,22 +79,22 @@ it('updates related members', function () {
         'last_name' => 'Doe',
     ])->activeAt($this->date)->create();
 
-    $vote->members()->attach($member, [
+    $votingList->members()->attach($member, [
         'position' => VotePositionEnum::AGAINST(),
     ]);
 
     $this->action->execute($this->term, $this->date);
 
-    expect($vote->members()->count())->toEqual(1);
+    expect($votingList->members()->count())->toEqual(1);
 
-    $position = $vote->members()->first()->pivot->position;
+    $position = $votingList->members()->first()->pivot->position;
     $expected = VotePositionEnum::FOR();
 
     expect($position)->toEqual($expected);
 });
 
 it('ignores inactive members', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-2.json');
 
     $inactiveMember = Member::factory([
         'first_name' => 'Jane',
@@ -113,14 +108,14 @@ it('ignores inactive members', function () {
 
     $this->action->execute($this->term, $this->date);
 
-    $vote = Vote::first();
+    $votingList = VotingList::first();
 
-    expect($vote->members()->count())->toEqual(1);
-    expect($vote->members()->first()->id)->toEqual($activeMember->id);
+    expect($votingList->members()->count())->toEqual(1);
+    expect($votingList->members()->first()->id)->toEqual($activeMember->id);
 });
 
 it('finds members by first and last name if ambiguous', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-3.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-3.json');
 
     $jane = Member::factory([
         'first_name' => 'Jane',
@@ -134,9 +129,9 @@ it('finds members by first and last name if ambiguous', function () {
 
     $this->action->execute($this->term, $this->date);
 
-    expect(Vote::count())->toEqual(1);
+    expect(VotingList::count())->toEqual(1);
 
-    $members = Vote::first()->members();
+    $members = VotingList::first()->members();
 
     $positionJane = (clone $members)
         ->whereFirstName('Jane')
@@ -156,25 +151,25 @@ it('finds members by first and last name if ambiguous', function () {
 });
 
 it('finds members using case-insensitive comparisons', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-2.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-2.json');
     Member::factory(['last_name' => 'DOE'])->activeAt($this->date)->create();
 
     $this->action->execute($this->term, $this->date);
 
-    expect(Vote::first()->members()->first()->last_name)->toEqual('DOE');
+    expect(VotingList::first()->members()->first()->last_name)->toEqual('DOE');
 });
 
 it('finds members with special characters in name', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-4.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-4.json');
     Member::factory(['last_name' => 'DOÉ'])->activeAt($this->date)->create();
 
     $this->action->execute($this->term, $this->date);
 
-    expect(Vote::first()->members()->first()->last_name)->toEqual('DOÉ');
+    expect(VotingList::first()->members()->first()->last_name)->toEqual('DOÉ');
 });
 
 it('compiles vote stats', function () {
-    Http::fakeJsonFromFile('*/vote_results?term=9&date=2019-10-24', 'vote_results-3.json');
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-3.json');
 
     $jane = Member::factory([
         'first_name' => 'Jane',
@@ -188,5 +183,5 @@ it('compiles vote stats', function () {
 
     $this->action->execute($this->term, $this->date);
 
-    expect(Vote::first()->stats['voted'])->toEqual(2);
+    expect(VotingList::first()->stats['voted'])->toEqual(2);
 });

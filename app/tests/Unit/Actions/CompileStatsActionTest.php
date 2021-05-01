@@ -1,16 +1,16 @@
 <?php
 
-use App\Actions\CompileVoteStatsAction;
+use App\Actions\CompileStatsAction;
 use App\Group;
 use App\Member;
-use App\Vote;
+use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->action = $this->app->make(CompileVoteStatsAction::class);
+    $this->action = $this->app->make(CompileStatsAction::class);
     $this->date = new Carbon('2020-01-01');
 });
 
@@ -27,16 +27,16 @@ it('compiles general stats', function () {
         ->activeAt($this->date)
         ->count(1);
 
-    $vote = Vote::factory()
+    $votingList = VotingList::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $for)
         ->withMembers('AGAINST', $against)
         ->withMembers('ABSTENTION', $abstention)
         ->create();
 
-    $this->action->execute($vote);
+    $this->action->execute($votingList);
 
-    $stats = $vote->fresh()->stats;
+    $stats = $votingList->fresh()->stats;
 
     expect($stats['voted'])->toEqual(6);
     expect($stats['active'])->toEqual(6);
@@ -68,16 +68,16 @@ it('compiles stats per country', function () {
         ->activeAt($this->date)
         ->create();
 
-    $vote = Vote::factory()
+    $votingList = VotingList::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $deFor)
         ->withMembers('AGAINST', $deAgainst)
         ->withMembers('FOR', $frFor)
         ->create();
 
-    $this->action->execute($vote);
+    $this->action->execute($votingList);
 
-    $stats = $vote->fresh()->stats['by_country'];
+    $stats = $votingList->fresh()->stats['by_country'];
 
     expect($stats['DE'])->toEqual([
         'voted' => 2,
@@ -116,15 +116,15 @@ it('compiles stats per group', function () {
         ->activeAt($this->date, $epp)
         ->create();
 
-    $vote = Vote::factory()
+    $votingList = VotingList::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $greensFor)
         ->withMembers('AGAINST', $eppAgainst)
         ->create();
 
-    $this->action->execute($vote);
+    $this->action->execute($votingList);
 
-    $stats = $vote->fresh()->stats['by_group'];
+    $stats = $votingList->fresh()->stats['by_group'];
 
     expect($stats[$greens->id])->toEqual([
         'voted' => 1,

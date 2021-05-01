@@ -4,33 +4,33 @@ namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
 use App\Member;
-use App\Vote;
+use App\VotingList;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class CompileVoteStatsAction extends Action
+class CompileStatsAction extends Action
 {
-    public function execute(Vote $vote): void
+    public function execute(VotingList $votingList): void
     {
-        $voted = $vote->members()->count();
-        $active = Member::activeAt($vote->date)->count();
+        $voted = $votingList->members()->count();
+        $active = Member::activeAt($votingList->date)->count();
 
         $stats = [
-            'voted' => $vote->members()->count(),
+            'voted' => $votingList->members()->count(),
             'active' => $active,
-            'by_position' => $this->byPosition($vote),
-            'by_country' => $this->byCountry($vote),
-            'by_group' => $this->byGroup($vote),
+            'by_position' => $this->byPosition($votingList),
+            'by_country' => $this->byCountry($votingList),
+            'by_group' => $this->byGroup($votingList),
         ];
 
-        $vote->update(['stats' => $stats]);
+        $votingList->update(['stats' => $stats]);
     }
 
-    protected function byCountry(Vote $vote): array
+    protected function byCountry(VotingList $votingList): array
     {
-        $this->log("Compiling country stats for vote {$vote->id}");
+        $this->log("Compiling country stats for vote {$votingList->id}");
 
-        $active = Member::activeAt($vote->date)
+        $active = Member::activeAt($votingList->date)
             ->select('country', DB::raw('count(*) as count'))
             ->groupBy('country')
             ->get()
@@ -42,7 +42,7 @@ class CompileVoteStatsAction extends Action
         // the pivot columns for a relation query. This will however
         // cause an SQL syntax error, as they aren't included in the
         // group by statement.
-        $byPosition = $vote->members()
+        $byPosition = $votingList->members()
             ->getQuery()
             ->select('position', 'country', DB::raw('count(*) as count'))
             ->groupBy('country', 'position')
@@ -63,12 +63,12 @@ class CompileVoteStatsAction extends Action
         return $stats;
     }
 
-    protected function byGroup(Vote $vote): array
+    protected function byGroup(VotingList $votingList): array
     {
-        $this->log("Compiling group stats for vote {$vote->id}");
+        $this->log("Compiling group stats for vote {$votingList->id}");
 
-        $active = Member::activeAt($vote->date)
-            ->withGroupMembershipAt($vote->date)
+        $active = Member::activeAt($votingList->date)
+            ->withGroupMembershipAt($votingList->date)
             ->select('group_id', DB::raw('count(*) as count'))
             ->groupBy('group_id')
             ->get()
@@ -77,9 +77,9 @@ class CompileVoteStatsAction extends Action
 
         // See comment in `byCountry` for an explanation why we're
         // using `getQuery`.
-        $byPosition = $vote->members()
+        $byPosition = $votingList->members()
             ->getQuery()
-            ->withGroupMembershipAt($vote->date)
+            ->withGroupMembershipAt($votingList->date)
             ->select('position', 'group_id', DB::raw('count(*) as count'))
             ->groupBy('position', 'group_id')
             ->get()
@@ -97,13 +97,13 @@ class CompileVoteStatsAction extends Action
         ]);
     }
 
-    protected function byPosition(Vote $vote): array
+    protected function byPosition(VotingList $votingList): array
     {
-        $this->log("Compiling general stats for vote {$vote->id}");
+        $this->log("Compiling general stats for vote {$votingList->id}");
 
         // See comment in `byCountry` for an explanation why we're
         // using `getQuery`.
-        $rows = $vote->members()
+        $rows = $votingList->members()
             ->getQuery()
             ->groupBy('position')
             ->select('position', DB::raw('count(*) as count'))
