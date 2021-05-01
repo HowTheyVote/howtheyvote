@@ -16,7 +16,6 @@ class Vote extends Model
         'date',
         'description',
         'term_id',
-        'document_id',
         'stats',
         'type',
         'subvote_description',
@@ -36,11 +35,6 @@ class Vote extends Model
         return $this->belongsTo(Term::class);
     }
 
-    public function document()
-    {
-        return $this->belongsTo(Document::class);
-    }
-
     public function members()
     {
         return $this->belongsToMany(Member::class)
@@ -50,14 +44,6 @@ class Vote extends Model
 
     public function getDisplayTitleAttribute(): ?string
     {
-        if ($procedureTitle = $this->document?->procedure?->title) {
-            return $procedureTitle;
-        }
-
-        if ($documentTitle = $this->document?->title) {
-            return $documentTitle;
-        }
-
         return $this->description;
     }
 
