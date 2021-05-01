@@ -1,16 +1,8 @@
 [
     {
         "doceo_vote_id": 109619,
-        "date": "2020-10-24",
-        "description": "§ 1/2",
-        "type": "SPLIT",
-        "subvote_description": "§ 1/2",
-        "reference": {
-            "type": "B",
-            "term": 9,
-            "number": 154,
-            "year": 2019
-        },
+        "description": "B9-0154/2019 - § 1/2",
+        "reference": "B9-0154/2019",
         "votings": []
     }
 ]
