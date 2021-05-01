@@ -14,16 +14,15 @@ from .models import (
     GroupMembership,
     Position,
     Voting,
+    VotingList,
     VoteType,
     Vote,
     Doc,
     DocType,
-    DocReference,
     Procedure,
     ProcedureReference,
     VoteResult,
     VoteCollection,
-    VoteItem,
 )
 
 USER_AGENTS = [
@@ -181,7 +180,7 @@ class MemberGroupsScraper(Scraper):
         return start.date(), end.date()
 
 
-class VoteResultsScraper(Scraper):
+class VotingListsScraper(Scraper):
     BASE_URL = "https://www.europarl.europa.eu/doceo/document"
     BS_PARSER = "lxml-xml"
 
@@ -193,92 +192,17 @@ class VoteResultsScraper(Scraper):
         date = self.date.strftime("%Y-%m-%d")
         return f"{self.BASE_URL}/PV-{self.term}-{date}-RCV_FR.xml"
 
-    def _extract_data(self) -> List[Vote]:
+    def _extract_data(self) -> List[VotingList]:
         tags = self._resource.find_all("RollCallVote.Result")
-        return [self._result(tag) for tag in tags]
+        return [self._voting_list(tag) for tag in tags]
 
-    def _result(self, tag: Tag) -> Vote:
-        vote_type, subvote_description = self._subvote(tag)
-
-        return Vote(
-            doceo_vote_id=int(tag["Identifier"]),
-            date=self._date(tag),
+    def _voting_list(self, tag: Tag) -> VotingList:
+        return VotingList(
             description=self._description(tag),
             reference=self._reference(tag),
+            doceo_vote_id=int(tag["Identifier"]),
             votings=self._votings(tag),
-            type=vote_type,
-            subvote_description=subvote_description,
         )
-
-    def _date(self, tag: Tag) -> date:
-        return datetime.fromisoformat(tag.get("Date"))
-
-    def _description(self, tag: Tag) -> str:
-        ref_tag = self._reference_tag(tag)
-        desc_tag = tag.find("RollCallVote.Description.Text")
-
-        text = desc_tag.text
-
-        if ref_tag:
-            text = text.replace(ref_tag.text, " ")
-
-        return removeprefix(text.strip(), "- ")
-
-    def _subvote(self, tag: Tag) -> Tuple[VoteType, Optional[str]]:
-        description = self._description(tag)
-
-        numbering_regex = r"\s*\d+(?:\s*-\s*\d+)?(?:\/\d+)?"
-
-        single_amendment_regex = r"Am" + numbering_regex
-        amendments_regex = (
-            single_amendment_regex + r"(?:\s+" + single_amendment_regex + r")*$"
-        )
-        amendments = re.search(amendments_regex, description)
-
-        if amendments:
-            return VoteType.AMENDMENT, amendments.group(0)
-
-        single_paragraph_regex = r"§" + numbering_regex
-        paragraphs_regex = (
-            single_paragraph_regex + r"(?:\s+" + single_paragraph_regex + r")*$"
-        )
-        paragraphs = re.search(paragraphs_regex, description)
-
-        if paragraphs:
-            return VoteType.SPLIT, paragraphs.group(0)
-
-        consideration_regex = r"Consid[eé]rant\s*[A-Z]+(?:\/\d+)?$"
-        consideration = re.search(consideration_regex, description)
-
-        if consideration:
-            return VoteType.SPLIT, consideration.group(0)
-
-        if description.startswith("Ordre du jour"):
-            return VoteType.AGENDA, None
-
-        return VoteType.FINAL, None
-
-    def _reference(self, tag: Tag) -> Optional[DocReference]:
-        ref_tag = self._reference_tag(tag)
-
-        if not ref_tag:
-            return None
-
-        return DocReference.from_str(ref_tag.text)
-
-    def _reference_tag(self, tag: Tag) -> Optional[BeautifulSoup]:
-        ref_tag = tag.find("RollCallVote.Description.Text").find("a")
-
-        if ref_tag is None:
-            return None
-
-        redmap_uri = ref_tag["redmap-uri"]
-        allowed = ["/reds:iPlRe", "/reds:iPlRp"]
-
-        if not any(redmap_uri.startswith(prefix) for prefix in allowed):
-            return None
-
-        return ref_tag
 
     def _votings(self, tag: Tag) -> List[Voting]:
         votings = []
@@ -304,6 +228,24 @@ class VoteResultsScraper(Scraper):
     def _voting(self, tag: BeautifulSoup, position: Position) -> Voting:
         doceo_id = int(tag.get("MepId"))
         return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
+
+    def _reference(self, tag: Tag) -> Optional[BeautifulSoup]:
+        ref_tag = tag.find("RollCallVote.Description.Text").find("a")
+
+        if ref_tag is None:
+            return None
+
+        redmap_uri = ref_tag["redmap-uri"]
+        allowed = ["/reds:iPlRe", "/reds:iPlRp"]
+
+        if not any(redmap_uri.startswith(prefix) for prefix in allowed):
+            return None
+
+        return ref_tag.text
+
+    def _description(self, tag: Tag) -> str:
+        desc_tag = tag.find("RollCallVote.Description.Text")
+        return removeprefix(desc_tag.text.strip(), "- ")
 
 
 class DocumentInfoScraper(Scraper):
@@ -376,9 +318,11 @@ class VoteCollectionsScraper(Scraper):
         return [collection for collection in collections if len(collection.votes) > 0]
 
     def _collection(self, tag: Tag) -> VoteCollection:
-        return VoteCollection(title=self._title(tag), votes=self._votes(tag))
+        return VoteCollection(
+            title=self._title(tag), reference=None, votes=self._votes(tag)
+        )
 
-    def _votes(self, tag: Tag) -> List[VoteItem]:
+    def _votes(self, tag: Tag) -> List[Vote]:
         votes_table = tag.select_one("Vote\\.Result\\.Table\\.Results > TABLE")
         votes_table = normalize_table(votes_table)
         votes_table = self._add_referenced_text(votes_table)
@@ -409,8 +353,8 @@ class VoteCollectionsScraper(Scraper):
 
         return True
 
-    def _vote(self, row: Row) -> VoteItem:
-        return VoteItem(
+    def _vote(self, row: Row) -> Vote:
+        return Vote(
             subject=row.get("Subject"),
             author=row.get("Author"),
             result=VoteResult.from_str(str(row["Vote"])),

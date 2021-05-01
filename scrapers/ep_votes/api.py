@@ -16,7 +16,7 @@ from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
-    VoteResultsScraper,
+    VotingListsScraper,
     DocumentInfoScraper,
     ProcedureScraper,
 )
@@ -90,11 +90,11 @@ def member_groups(term: int, web_id: int) -> SimpleResponse:
     return MemberGroupsScraper(term=term, web_id=web_id).run()
 
 
-@app.route("/vote_results")
+@app.route("/voting_lists")
 @json_response
 @params(term=int, date=datetime.date.fromisoformat)
-def vote_results(term: int, date: datetime.date) -> SimpleResponse:
-    return VoteResultsScraper(term=term, date=date).run()
+def voting_lists(term: int, date: datetime.date) -> SimpleResponse:
+    return VotingListsScraper(term=term, date=date).run()
 
 
 @app.route("/document_info")
