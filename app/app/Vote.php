@@ -4,10 +4,13 @@ namespace App;
 
 use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'author',
         'subject',
@@ -27,5 +30,10 @@ class Vote extends Model
     public function voteCollection()
     {
         return $this->belongsTo(VoteCollection::class);
+    }
+
+    public function votingList()
+    {
+        return $this->hasOne(VotingList::class);
     }
 }

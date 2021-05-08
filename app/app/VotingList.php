@@ -17,6 +17,7 @@ class VotingList extends Model
         'reference',
         'term_id',
         'stats',
+        'vote_id',
     ];
 
     protected $dates = [
@@ -37,6 +38,11 @@ class VotingList extends Model
         return $this->belongsToMany(Member::class, 'votings')
             ->using(Voting::class)
             ->withPivot('position');
+    }
+
+    public function vote()
+    {
+        return $this->belongsTo(Vote::class);
     }
 
     public function getDisplayTitleAttribute(): ?string
