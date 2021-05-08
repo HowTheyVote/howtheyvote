@@ -43,6 +43,7 @@ it('creates associated votes', function () {
     expect($vote->type)->toEqual(VoteTypeEnum::SEPARATE());
     expect($vote->amendment)->toEqual(null);
     expect($vote->split_part)->toEqual(1);
+    expect($vote->formatted)->toEqual('§ 13/1');
 });
 
 it('updates existing voting list record', function () {
