@@ -4,7 +4,7 @@ from enum import Enum
 from bs4 import Tag
 from dataclasses import is_dataclass
 from typing import Any, Optional, List, Dict
-from .models import Voting
+from .models import Vote, Voting
 
 
 class EPVotesEncoder(json.JSONEncoder):
@@ -19,6 +19,9 @@ class EPVotesEncoder(json.JSONEncoder):
 
         if isinstance(obj, Enum):
             return obj.name
+
+        if isinstance(obj, Vote):
+            return obj.__dict__ | {"formatted": obj.formatted}
 
         if isinstance(obj, Voting):
             return [obj.name, obj.position]
