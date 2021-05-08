@@ -3,7 +3,9 @@ from ep_votes.models import (
     Country,
     Group,
     MemberInfo,
+    Vote,
     VoteResult,
+    VoteType,
 )
 
 
@@ -82,3 +84,130 @@ def test_vote_result_from_str():
 
     with pytest.raises(ValueError):
         VoteResult.from_str("↓")
+
+
+def _vote_factory(**data):
+    default = {
+        "subject": "Subject",
+        "author": "original text",
+        "type": VoteType.PRIMARY,
+        "result": VoteResult.ADOPTED,
+        "amendment": None,
+        "split_part": None,
+    }
+
+    return Vote(**(default | data))
+
+
+def test_vote_formatted_basic_split_vote():
+    vote = _vote_factory(
+        type=VoteType.SEPARATE,
+        subject="§ 1",
+        split_part=1,
+    )
+
+    assert vote.formatted == "§ 1/1"
+
+
+def test_vote_formatted_basic_split_vote_with_recital():
+    vote = _vote_factory(
+        type=VoteType.SEPARATE,
+        subject="Recital A",
+        split_part=1,
+    )
+
+    assert vote.formatted == "Considérant A/1"
+
+
+def test_vote_formatted_basic_split_vote_with_citation():
+    vote = _vote_factory(
+        type=VoteType.SEPARATE,
+        subject="Citation 1",
+        split_part=1,
+    )
+
+    assert vote.formatted == "Visa 1/1"
+
+
+def test_vote_formatted_basic_split_vote_with_part():
+    vote = _vote_factory(
+        type=VoteType.SEPARATE,
+        subject="Part I",
+        split_part=1,
+    )
+
+    assert vote.formatted == "Partie I/1"
+
+
+def test_vote_formatted_basic_split_vote_with_annex():
+    vote = _vote_factory(
+        type=VoteType.SEPARATE,
+        subject="Annex, Part I",
+        split_part=1,
+    )
+
+    assert vote.formatted == "Annexe, Partie I/1"
+
+
+def test_vote_formatted_basic_split_vote_with_appendix():
+    vote = _vote_factory(
+        type=VoteType.SEPARATE,
+        subject="Appendix 1",
+        split_part=1,
+    )
+
+    assert vote.formatted == "Appendice 1/1"
+
+
+def test_vote_formatted_amendment_with_coresponding_part():
+    vote = _vote_factory(
+        type=VoteType.AMENDMENT,
+        amendment="1CP",
+    )
+
+    assert vote.formatted == "Am 1PC"
+
+
+def test_vote_formatted_amendment_with_coresponding_part_and_number():
+    vote = _vote_factory(
+        type=VoteType.AMENDMENT,
+        amendment="1CP1",
+    )
+
+    assert vote.formatted == "Am 1PC1"
+
+
+def test_vote_formatted_amendment_with_compromise_amendment():
+    vote = _vote_factory(
+        type=VoteType.AMENDMENT,
+        amendment="1CA",
+    )
+
+    assert vote.formatted == "Am 1AC"
+
+
+def test_vote_formatted_deleted_amendment():
+    vote = _vote_factory(
+        type=VoteType.AMENDMENT,
+        amendment="1D",
+    )
+
+    assert vote.formatted == "Am 1S"
+
+
+def test_vote_formatted_amendment():
+    vote = _vote_factory(
+        type=VoteType.AMENDMENT,
+        amendment="1",
+    )
+
+    assert vote.formatted == "Am 1"
+
+
+def test_vote_formatted_amendment_range():
+    vote = _vote_factory(
+        type=VoteType.AMENDMENT,
+        amendment="1 - 2",
+    )
+
+    assert vote.formatted == "Am 1 - 2"

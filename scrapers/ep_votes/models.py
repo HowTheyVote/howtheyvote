@@ -216,6 +216,29 @@ class Vote:
     amendment: Optional[str]
     type: VoteType
 
+    @property
+    def formatted(self) -> str:
+        formatted = ""
+
+        if self.type == VoteType.SEPARATE:
+            formatted = str(self.subject)
+            formatted = formatted.replace("Recital", "Considérant")
+            formatted = formatted.replace("Citation", "Visa")
+            formatted = formatted.replace("Part", "Partie")
+            formatted = formatted.replace("Annex", "Annexe")
+            formatted = formatted.replace("Appendix", "Appendice")
+
+        if self.type == VoteType.AMENDMENT:
+            formatted = "Am " + str(self.amendment)
+            formatted = formatted.replace("CP", "PC")
+            formatted = formatted.replace("CA", "AC")
+            formatted = formatted.replace("D", "S")
+
+        if self.split_part is not None:
+            formatted = formatted + "/" + str(self.split_part)
+
+        return formatted
+
 
 @dataclass
 class VoteCollection:
