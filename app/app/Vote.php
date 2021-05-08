@@ -2,15 +2,12 @@
 
 namespace App;
 
-use Enums\VoteResultEnum;
-use Enums\VoteTypeEnum;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\VoteResultEnum;
+use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'author',
         'subject',
@@ -18,6 +15,7 @@ class Vote extends Model
         'amendment',
         'result',
         'split_part',
+        'vote_collection_id',
     ];
 
     protected $casts = [

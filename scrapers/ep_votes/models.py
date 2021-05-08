@@ -213,8 +213,8 @@ class Vote:
     subject: Optional[str]
     result: VoteResult
     split_part: Optional[int]
-    amendment_number: Optional[str]
-    vote_type: VoteType
+    amendment: Optional[str]
+    type: VoteType
 
 
 @dataclass

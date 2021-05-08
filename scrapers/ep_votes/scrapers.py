@@ -313,11 +313,11 @@ class VoteCollectionsScraper(Scraper):
             author=row.get("Author"),
             result=VoteResult.from_str(str(row["Vote"])),
             split_part=self._split_part(row.get("RCV etc.")),
-            amendment_number=self._amendment_number(row.get("Am No")),
-            vote_type=self._vote_type(row),
+            amendment=self._amendment(row.get("Am No")),
+            type=self._type(row),
         )
 
-    def _vote_type(self, row: Row) -> VoteType:
+    def _type(self, row: Row) -> VoteType:
         if row.get("Am No") == "§":
             return VoteType.SEPARATE
 
@@ -326,7 +326,7 @@ class VoteCollectionsScraper(Scraper):
 
         return VoteType.PRIMARY
 
-    def _amendment_number(self, string: Optional[str]) -> Optional[str]:
+    def _amendment(self, string: Optional[str]) -> Optional[str]:
         return string if string != "§" else None
 
     def _split_part(self, string: Optional[str]) -> Optional[int]:
