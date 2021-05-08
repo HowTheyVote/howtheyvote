@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIndexOnVoteCollectionsTable extends Migration
+class AddVoteCollectionIdOnVotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddIndexOnVoteCollectionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('vote_collections', function (Blueprint $table) {
-            $table->unique(['term_id', 'date', 'title']);
+        Schema::table('votes', function (Blueprint $table) {
+            $table->foreignId('vote_collection_id')->constrained();
         });
     }
 
