@@ -21,7 +21,7 @@ class EPVotesEncoder(json.JSONEncoder):
             return obj.name
 
         if isinstance(obj, Vote):
-            return obj.__dict__ | {"formatted": obj.formatted}
+            return dict(obj.__dict__, formatted=obj.formatted)
 
         if isinstance(obj, Voting):
             return [obj.name, obj.position]

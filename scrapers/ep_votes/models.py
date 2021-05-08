@@ -220,6 +220,15 @@ class Vote:
     def formatted(self) -> str:
         formatted = ""
 
+        if self.type == VoteType.PRIMARY:
+            subject = str(self.subject)
+
+            if subject == "Commission proposal":
+                return "Proposition de la Commission"
+
+            if "(as a whole)" in subject:
+                return "Proposition de résolution"
+
         if self.type == VoteType.SEPARATE:
             formatted = str(self.subject)
             formatted = formatted.replace("Recital", "Considérant")

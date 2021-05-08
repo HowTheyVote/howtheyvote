@@ -96,7 +96,7 @@ def _vote_factory(**data):
         "split_part": None,
     }
 
-    return Vote(**(default | data))
+    return Vote(**dict(default, **data))
 
 
 def test_vote_formatted_basic_split_vote():
@@ -211,3 +211,39 @@ def test_vote_formatted_amendment_range():
     )
 
     assert vote.formatted == "Am 1 - 2"
+
+
+def test_vote_formatted_resolution():
+    vote = _vote_factory(
+        type=VoteType.PRIMARY,
+        subject="Resolution (as a whole)",
+    )
+
+    assert vote.formatted == "Proposition de résolution"
+
+
+def test_vote_formatted_motion_for_resolution():
+    vote = _vote_factory(
+        type=VoteType.PRIMARY,
+        subject="Motion for resolution (as a whole)",
+    )
+
+    assert vote.formatted == "Proposition de résolution"
+
+
+def test_vote_formatted_motion_for_resolution_with_committee():
+    vote = _vote_factory(
+        type=VoteType.PRIMARY,
+        subject="Motion for a resolution (EMPL committee) (as a whole)",
+    )
+
+    assert vote.formatted == "Proposition de résolution"
+
+
+def test_vote_formatted_commision_proposal():
+    vote = _vote_factory(
+        type=VoteType.PRIMARY,
+        subject="Commission proposal",
+    )
+
+    assert vote.formatted == "Proposition de la Commission"
