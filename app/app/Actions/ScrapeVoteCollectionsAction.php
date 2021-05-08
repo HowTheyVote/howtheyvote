@@ -67,6 +67,7 @@ class ScrapeVoteCollectionsAction extends Action
                 'split_part' => $vote['split_part'],
                 'amendment' => $vote['amendment'],
                 'vote_collection_id' => $voteCollection->id,
+                'formatted' => $vote['formatted']
             ]);
         }
 

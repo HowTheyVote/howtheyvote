@@ -1,201 +1,260 @@
-[{
-    "title": "A WTO-compatible EU carbon border adjustment mechanism",
-    "reference": "A9-0019/2021",
-    "votes": [{
-        "author": "original text",
-        "subject": "\u00a7 5",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 5",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "MEPs",
-        "subject": "\u00a7 12",
-        "result": "REJECTED",
-        "split_part": null,
-        "amendment": "2",
-        "type": "AMENDMENT"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 12",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 12",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 13",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 13",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 16",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 16",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 20",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "MEPs",
-        "subject": "\u00a7 22",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": "3",
-        "type": "AMENDMENT"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 25",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "MEPs",
-        "subject": "\u00a7 28",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": "4",
-        "type": "AMENDMENT"
-    }, {
-        "author": "MEPs",
-        "subject": "\u00a7 28",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": "4",
-        "type": "AMENDMENT"
-    }, {
-        "author": "MEPs",
-        "subject": "\u00a7 28",
-        "result": "ADOPTED",
-        "split_part": 3,
-        "amendment": "4",
-        "type": "AMENDMENT"
-    }, {
-        "author": "MEPs",
-        "subject": "After \u00a7 32",
-        "result": "REJECTED",
-        "split_part": null,
-        "amendment": "1",
-        "type": "AMENDMENT"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 33",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 33",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 33",
-        "result": "ADOPTED",
-        "split_part": 3,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 33",
-        "result": "ADOPTED",
-        "split_part": 4,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 34",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 34",
-        "result": "REJECTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "\u00a7 39",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "Citation 11",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "Recital G",
-        "result": "ADOPTED",
-        "split_part": 1,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "Recital G",
-        "result": "ADOPTED",
-        "split_part": 2,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": "original text",
-        "subject": "Recital R",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": null,
-        "type": "SEPARATE"
-    }, {
-        "author": null,
-        "subject": "Motion for a resolution (as a whole)",
-        "result": "ADOPTED",
-        "split_part": null,
-        "amendment": null,
-        "type": "PRIMARY"
-    }]
-}]
+[
+    {
+       "title":"A WTO-compatible EU carbon border adjustment mechanism",
+       "reference":"A9-0019/2021",
+       "votes":[
+          {
+             "author":"original text",
+             "subject":"\u00a7 5",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 5/1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 5",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 5/2"
+          },
+          {
+             "author":"MEPs",
+             "subject":"\u00a7 12",
+             "result":"REJECTED",
+             "split_part":null,
+             "amendment":"2",
+             "type":"AMENDMENT",
+             "formatted":"Am 2"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 12",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 12/1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 12",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 12/2"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 13",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 13/1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 13",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 13/2"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 16",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 16/1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 16",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 16/2"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 20",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 20"
+          },
+          {
+             "author":"MEPs",
+             "subject":"\u00a7 22",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":"3",
+             "type":"AMENDMENT",
+             "formatted":"Am 3"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 25",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 25"
+          },
+          {
+             "author":"MEPs",
+             "subject":"\u00a7 28",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":"4",
+             "type":"AMENDMENT",
+             "formatted":"Am 4/1"
+          },
+          {
+             "author":"MEPs",
+             "subject":"\u00a7 28",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":"4",
+             "type":"AMENDMENT",
+             "formatted":"Am 4/2"
+          },
+          {
+             "author":"MEPs",
+             "subject":"\u00a7 28",
+             "result":"ADOPTED",
+             "split_part":3,
+             "amendment":"4",
+             "type":"AMENDMENT",
+             "formatted":"Am 4/3"
+          },
+          {
+             "author":"MEPs",
+             "subject":"After \u00a7 32",
+             "result":"REJECTED",
+             "split_part":null,
+             "amendment":"1",
+             "type":"AMENDMENT",
+             "formatted":"Am 1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 33",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 33/1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 33",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 33/2"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 33",
+             "result":"ADOPTED",
+             "split_part":3,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 33/3"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 33",
+             "result":"ADOPTED",
+             "split_part":4,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 33/4"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 34",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 34/1"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 34",
+             "result":"REJECTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 34/2"
+          },
+          {
+             "author":"original text",
+             "subject":"\u00a7 39",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"\u00a7 39"
+          },
+          {
+             "author":"original text",
+             "subject":"Citation 11",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"Visa 11"
+          },
+          {
+             "author":"original text",
+             "subject":"Recital G",
+             "result":"ADOPTED",
+             "split_part":1,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"Consid\u00e9rant G/1"
+          },
+          {
+             "author":"original text",
+             "subject":"Recital G",
+             "result":"ADOPTED",
+             "split_part":2,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"Consid\u00e9rant G/2"
+          },
+          {
+             "author":"original text",
+             "subject":"Recital R",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":null,
+             "type":"SEPARATE",
+             "formatted":"Consid\u00e9rant R"
+          },
+          {
+             "author":null,
+             "subject":"Motion for a resolution (as a whole)",
+             "result":"ADOPTED",
+             "split_part":null,
+             "amendment":null,
+             "type":"PRIMARY",
+             "formatted":"Proposition de r\u00e9solution"
+          }
+       ]
+    }
+ ]

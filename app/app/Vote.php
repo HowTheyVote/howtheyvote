@@ -16,6 +16,7 @@ class Vote extends Model
         'result',
         'split_part',
         'vote_collection_id',
+        'formatted',
     ];
 
     protected $casts = [
