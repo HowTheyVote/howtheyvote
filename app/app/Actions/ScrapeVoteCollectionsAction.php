@@ -2,7 +2,10 @@
 
 namespace App\Actions;
 
+use App\Enums\VoteResultEnum;
+use App\Enums\VoteTypeEnum;
 use App\Term;
+use App\Vote;
 use App\VoteCollection;
 use Illuminate\Support\Carbon;
 
@@ -50,6 +53,22 @@ class ScrapeVoteCollectionsAction extends Action
         ]);
 
         $voteCollection->save();
+
+        if (! $voteCollection->wasRecentlyCreated) {
+            $voteCollection->votes()->delete();
+        }
+
+        foreach ($data['votes'] as $vote) {
+            Vote::create([
+                'author' => $vote['author'],
+                'subject' => $vote['subject'],
+                'type' => VoteTypeEnum::make($vote['type']),
+                'result' => VoteResultEnum::make($vote['result']),
+                'split_part' => $vote['split_part'],
+                'amendment' => $vote['amendment'],
+                'vote_collection_id' => $voteCollection->id,
+            ]);
+        }
 
         return $voteCollection;
     }
