@@ -204,7 +204,7 @@ class VoteResult(Enum):
         if string == "-":
             return cls.REJECTED
 
-        raise ValueError("Vote can either be adopted or rejected.")
+        raise ValueError("Vote must be either be adopted or rejected.")
 
 
 @dataclass
