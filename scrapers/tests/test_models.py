@@ -96,7 +96,7 @@ def _vote_factory(**data):
         "split_part": None,
     }
 
-    return Vote(**dict(default, **data))
+    return Vote(**(default | data))
 
 
 def test_vote_formatted_basic_split_vote():
