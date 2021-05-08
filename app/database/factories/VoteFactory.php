@@ -2,18 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Term;
-use App\VoteCollection;
+use App\Enums\VoteResultEnum;
+use App\Enums\VoteTypeEnum;
+use App\Vote;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class VoteCollectionFactory extends Factory
+class VoteFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = VoteCollection::class;
+    protected $model = Vote::class;
 
     /**
      * Define the model's default state.
@@ -23,10 +24,8 @@ class VoteCollectionFactory extends Factory
     public function definition()
     {
         return [
-            'title' => 'Children’s rights',
-            'reference' => 'A9-1234/2021',
-            'date' => $this->faker->dateTimeThisCentury(),
-            'term_id' => Term::factory(),
+            'type' => VoteTypeEnum::PRIMARY(),
+            'result' =>  VoteResultEnum::ADOPTED(),
         ];
     }
 }

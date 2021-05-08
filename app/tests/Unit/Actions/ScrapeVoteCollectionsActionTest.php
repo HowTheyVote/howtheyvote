@@ -33,7 +33,6 @@ it('creates associated votes', function () {
     $this->action->execute($this->term, $this->date);
 
     $voteCollection = VoteCollection::first();
-
     expect($voteCollection->votes()->count())->toEqual(28);
 
     $vote = $voteCollection->votes()->skip(5)->first();
