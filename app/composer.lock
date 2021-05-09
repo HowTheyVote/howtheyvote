@@ -1846,16 +1846,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "1.6.0",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "19a9673b833cc37770439097b381d86cd125bfe8"
+                "reference": "2651c497f005de305c7ba3f232cbd87b8c00ee8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/19a9673b833cc37770439097b381d86cd125bfe8",
-                "reference": "19a9673b833cc37770439097b381d86cd125bfe8",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/2651c497f005de305c7ba3f232cbd87b8c00ee8c",
+                "reference": "2651c497f005de305c7ba3f232cbd87b8c00ee8c",
                 "shasum": ""
             },
             "require": {
@@ -1943,7 +1943,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-01T19:00:49+00:00"
+            "time": "2021-05-08T16:08:00+00:00"
         },
         {
             "name": "league/flysystem",
@@ -3833,16 +3833,16 @@
         },
         {
             "name": "spatie/enum",
-            "version": "3.7.1",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/enum.git",
-                "reference": "c86b1fd251ccbb0cc7237d3376a75a6e28ad051c"
+                "reference": "9da7dfe60deabeabee217125b505e28107ca4a84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/enum/zipball/c86b1fd251ccbb0cc7237d3376a75a6e28ad051c",
-                "reference": "c86b1fd251ccbb0cc7237d3376a75a6e28ad051c",
+                "url": "https://api.github.com/repos/spatie/enum/zipball/9da7dfe60deabeabee217125b505e28107ca4a84",
+                "reference": "9da7dfe60deabeabee217125b505e28107ca4a84",
                 "shasum": ""
             },
             "require": {
@@ -3890,6 +3890,11 @@
                 "enumerable",
                 "spatie"
             ],
+            "support": {
+                "docs": "https://docs.spatie.be/enum",
+                "issues": "https://github.com/spatie/enum/issues",
+                "source": "https://github.com/spatie/enum"
+            },
             "funding": [
                 {
                     "url": "https://spatie.be/open-source/support-us",
@@ -3900,20 +3905,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-02-12T10:20:29+00:00"
+            "time": "2021-04-12T13:24:11+00:00"
         },
         {
             "name": "spatie/laravel-enum",
-            "version": "2.4.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-enum.git",
-                "reference": "0588c8abe1e999ca8d359a97b4d182c1222c089e"
+                "reference": "fd31abb8f548795ce834fa7e8749e268b61cd0c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/0588c8abe1e999ca8d359a97b4d182c1222c089e",
-                "reference": "0588c8abe1e999ca8d359a97b4d182c1222c089e",
+                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/fd31abb8f548795ce834fa7e8749e268b61cd0c3",
+                "reference": "fd31abb8f548795ce834fa7e8749e268b61cd0c3",
                 "shasum": ""
             },
             "require": {
@@ -3978,6 +3983,10 @@
                 "laravel-enum",
                 "spatie"
             ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-enum/issues",
+                "source": "https://github.com/spatie/laravel-enum/tree/2.5.0"
+            },
             "funding": [
                 {
                     "url": "https://spatie.be/open-source/support-us",
@@ -3988,7 +3997,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-02-19T11:35:56+00:00"
+            "time": "2021-05-01T10:00:13+00:00"
         },
         {
             "name": "spatie/macroable",
