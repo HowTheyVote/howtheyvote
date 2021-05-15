@@ -251,6 +251,12 @@ def test_vote_formatted_commision_proposal():
     assert vote.formatted == "Proposition de la Commission"
 
 
+def test_vote_formatted_single_vote():
+    vote = _vote_factory(type=VoteType.PRIMARY, subject="Single vote")
+
+    assert vote.formatted == "Vote unique"
+
+
 def test_vote_reference_in_subject():
     vote = _vote_factory(subject="A9-0123/2021", subheading="B9-4567/2021")
 
