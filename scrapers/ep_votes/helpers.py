@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import date
 from enum import Enum
 from bs4 import Tag
@@ -94,3 +95,8 @@ def normalize_table(table_tag: Tag) -> Rows:
         body[index] = {header[key] or key: value for key, value in row.items()}
 
     return body
+
+
+def normalize_whitespace(string: str) -> str:
+    string = string.replace("+", " + ")
+    return re.sub(r"\s+", " ", string)
