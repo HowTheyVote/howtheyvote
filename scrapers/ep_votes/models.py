@@ -232,6 +232,9 @@ class Vote:
             if "(as a whole)" in subject:
                 return "Proposition de résolution"
 
+            if subject == "Single vote":
+                return "Vote unique"
+
         if self.type == VoteType.SEPARATE:
             formatted = str(self.subject)
             formatted = formatted.replace("Recital", "Considérant")
