@@ -69,6 +69,8 @@ class ScrapeVoteCollectionsAction extends Action
                 'vote_collection_id' => $voteCollection->id,
                 'formatted' => $vote['formatted'],
                 'remarks' => $vote['remarks'],
+                'reference' => $vote['reference'],
+                'subheading' => $vote['subheading'],
             ]);
         }
 
