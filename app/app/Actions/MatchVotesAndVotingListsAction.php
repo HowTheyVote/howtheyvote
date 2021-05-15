@@ -22,11 +22,20 @@ class MatchVotesAndVotingListsAction extends Action
                 throw CouldNotMatchVoteException::multipleMatchingVotingLists($vote);
             }
 
-            if ($count == 0) {
+            if ($count === 0) {
                 throw CouldNotMatchVoteException::noMatchingVotingList($vote);
             }
 
-            $votingList = $votingLists->first()->update([
+            $votingList = $votingLists->first();
+
+            $stats = $votingList->stats['by_position'];
+            $resultString = $stats['FOR'].$stats['AGAINST'].$stats['ABSTENTION'];
+
+            if ($resultString !== $vote->remarks) {
+                throw CouldNotMatchVoteException::resultsDoNotMatch($vote, $votingList);
+            }
+
+            $votingList = $votingList->update([
                 'vote_id' => $vote->id,
             ]);
         }
