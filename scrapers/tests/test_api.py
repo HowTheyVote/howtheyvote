@@ -1,6 +1,7 @@
 import pytest
 from flask import Flask
-from ep_votes.api import params, json_response
+from ep_votes.api import params, json_response, to_json
+from ep_votes.models import Country, Voting, Position
 from datetime import date
 
 
@@ -48,3 +49,23 @@ def test_json_response_status():
 
     assert response.status_code == 500
     assert response.data == b'{"message": "error"}'
+
+
+def test_to_json_date():
+    data = {"date": date(2021, 1, 1)}
+    assert to_json(data) == '{"date": "2021-01-01"}'
+
+
+def test_to_json_set():
+    data = {"set": set([1, 2, 3])}
+    assert to_json(data) == '{"set": [1, 2, 3]}'
+
+
+def test_to_json_enum():
+    data = {"enum": Country.DE}
+    assert to_json(data) == '{"enum": "DE"}'
+
+
+def test_to_json_voting():
+    data = {"voting": Voting(doceo_member_id=1, name="Name", position=Position.FOR)}
+    assert to_json(data) == '{"voting": ["Name", "FOR"]}'

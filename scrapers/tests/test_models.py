@@ -89,6 +89,7 @@ def test_vote_result_from_str():
 def _vote_factory(**data):
     default = {
         "subject": "Subject",
+        "subheading": "Subheading",
         "author": "original text",
         "type": VoteType.PRIMARY,
         "result": VoteResult.ADOPTED,
@@ -248,3 +249,21 @@ def test_vote_formatted_commision_proposal():
     )
 
     assert vote.formatted == "Proposition de la Commission"
+
+
+def test_vote_reference_in_subject():
+    vote = _vote_factory(subject="A9-0123/2021", subheading="B9-4567/2021")
+
+    assert vote.reference == "A9-0123/2021"
+
+
+def test_vote_reference_in_subheading():
+    vote = _vote_factory(subheading="B9-4567/2021")
+
+    assert vote.reference == "B9-4567/2021"
+
+
+def test_vote_reference_not_present():
+    vote = _vote_factory()
+
+    assert vote.reference is None

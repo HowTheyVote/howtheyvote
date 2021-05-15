@@ -1,40 +1,7 @@
-import json
 import re
-from datetime import date
-from enum import Enum
 from bs4 import Tag
-from dataclasses import is_dataclass
-from typing import Any, Optional, List, Dict
-from .models import Vote, Voting
-
-
-class EPVotesEncoder(json.JSONEncoder):
-    DATE_FORMAT = "%Y-%m-%d"
-
-    def default(self, obj: Any) -> Any:
-        if isinstance(obj, date):
-            return obj.strftime(self.DATE_FORMAT)
-
-        if isinstance(obj, set):
-            return list(obj)
-
-        if isinstance(obj, Enum):
-            return obj.name
-
-        if isinstance(obj, Vote):
-            return dict(obj.__dict__, formatted=obj.formatted)
-
-        if isinstance(obj, Voting):
-            return [obj.name, obj.position]
-
-        if is_dataclass(obj):
-            return obj.__dict__
-
-        return super(EPVotesEncoder, self).default(obj)
-
-
-def to_json(data: Any, indent: Optional[int] = None) -> str:
-    return json.dumps(data, cls=EPVotesEncoder, indent=indent)
+from typing import Optional
+from typing import Dict, List
 
 
 def removeprefix(string: str, prefix: str) -> str:
@@ -100,3 +67,13 @@ def normalize_table(table_tag: Tag) -> Rows:
 def normalize_whitespace(string: str) -> str:
     string = string.replace("+", " + ")
     return re.sub(r"\s+", " ", string)
+
+
+def extract_reference(string: Optional[str]) -> Optional[str]:
+    if not string:
+        return None
+
+    reference_regex = r"(A|B|C|RC-B)\d+-\d{4}/\d{4}"
+    match = re.search(reference_regex, string)
+
+    return match.group(0) if match else None

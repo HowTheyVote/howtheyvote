@@ -2,6 +2,10 @@ from flask import Flask, Response, request
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
 from dotenv import load_dotenv
+from enum import Enum
+import json
+from dataclasses import is_dataclass
+from datetime import date
 import datetime
 from functools import wraps
 from typing import (
@@ -9,8 +13,10 @@ from typing import (
     Dict,
     Tuple,
     Union,
+    Any,
+    Optional,
 )
-from .helpers import to_json
+from .models import Vote, Voting
 from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
@@ -26,6 +32,35 @@ app = Flask(__name__)
 
 SimpleResponse = Union[Dict, Tuple[Dict, int]]
 SimpleHandler = Callable[..., SimpleResponse]
+
+
+class EPVotesEncoder(json.JSONEncoder):
+    DATE_FORMAT = "%Y-%m-%d"
+
+    def default(self, obj: Any) -> Any:
+        if isinstance(obj, date):
+            return obj.strftime(self.DATE_FORMAT)
+
+        if isinstance(obj, set):
+            return list(obj)
+
+        if isinstance(obj, Enum):
+            return obj.name
+
+        if isinstance(obj, Vote):
+            return dict(obj.__dict__, formatted=obj.formatted)
+
+        if isinstance(obj, Voting):
+            return [obj.name, obj.position]
+
+        if is_dataclass(obj):
+            return obj.__dict__
+
+        return super(EPVotesEncoder, self).default(obj)
+
+
+def to_json(data: Any, indent: Optional[int] = None) -> str:
+    return json.dumps(data, cls=EPVotesEncoder, indent=indent)
 
 
 def json_response(handler: SimpleHandler) -> Callable[..., Response]:

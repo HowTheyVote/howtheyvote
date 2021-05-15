@@ -1,37 +1,11 @@
-from datetime import date
 from bs4 import BeautifulSoup
-from ep_votes.models import (
-    Country,
-    Voting,
-    Position,
-)
 from ep_votes.helpers import (
-    to_json,
     removeprefix,
     removesuffix,
     normalize_table,
     normalize_whitespace,
+    extract_reference,
 )
-
-
-def test_to_json_date():
-    data = {"date": date(2021, 1, 1)}
-    assert to_json(data) == '{"date": "2021-01-01"}'
-
-
-def test_to_json_set():
-    data = {"set": set([1, 2, 3])}
-    assert to_json(data) == '{"set": [1, 2, 3]}'
-
-
-def test_to_json_enum():
-    data = {"enum": Country.DE}
-    assert to_json(data) == '{"enum": "DE"}'
-
-
-def test_to_json_voting():
-    data = {"voting": Voting(doceo_member_id=1, name="Name", position=Position.FOR)}
-    assert to_json(data) == '{"voting": ["Name", "FOR"]}'
 
 
 def test_removeprefix():
@@ -211,3 +185,23 @@ def test_normalize_whitespace_double_space():
 def test_normalize_whitespace_plus():
     assert normalize_whitespace("Am 342+343") == "Am 342 + 343"
     assert normalize_whitespace("Am 342 +343") == "Am 342 + 343"
+
+
+def test_extract_references():
+    string = "Proposal for a regulation (COM(2020)0818 - C9-0420/2020 - 2020/0358(COD))"
+    assert extract_reference(string) == "C9-0420/2020"
+
+    string = "Report: Sven Simon (A9-0002/2021)"
+    assert extract_reference(string) == "A9-0002/2021"
+
+    string = "RC-Bblabla"
+    assert True
+
+
+def test_extract_references_no_match():
+    string = "No reference in this string"
+    assert extract_reference(string) is None
+
+
+def test_extract_references_none():
+    assert extract_reference(None) is None
