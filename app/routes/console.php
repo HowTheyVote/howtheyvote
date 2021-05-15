@@ -1,9 +1,11 @@
 <?php
 
 use App\Actions\GenerateVoteSharePicAction;
+use App\Actions\MatchVotesAndVotingListsAction;
 use App\Actions\ScrapeMemberGroupsAction;
 use App\Actions\ScrapeMemberInfoAction;
 use App\Actions\ScrapeMembersAction;
+use App\Actions\ScrapeVoteCollectionsAction;
 use App\Actions\ScrapeVotingListsAction;
 use App\Member;
 use App\Term;
@@ -81,6 +83,24 @@ Artisan::command('scrape:voting-lists {--term=} {--date=}', function (
 
     $this->output->writeln('');
 })->describe('Scrape and save all voting lists with compiled stats for the given date and term.');
+
+Artisan::command('scrape:vote-collections {--term=} {--date=}', function (
+    int $term,
+    string $date,
+    ScrapeVoteCollectionsAction $action
+) {
+    $term = Term::whereNumber($term)->first();
+    $date = Carbon::parse($date);
+
+    $this->info("Scraping vote collections for {$date}");
+    $action->execute($term, $date);
+
+    $this->output->writeln('');
+})->describe('Scrape and save all vote collections for the given date and term.');
+
+Artisan::command('match', function (MatchVotesAndVotingListsAction $action) {
+    $action->execute();
+})->describe('Matches all available votes to their voting lists.');
 
 // TODO: fixup
 Artisan::command('share-picture:vote {--vote=}', function (
