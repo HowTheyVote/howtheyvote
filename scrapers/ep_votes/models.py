@@ -215,6 +215,7 @@ class Vote:
     split_part: Optional[int]
     amendment: Optional[str]
     type: VoteType
+    remarks: Optional[str]
 
     @property
     def formatted(self) -> str:

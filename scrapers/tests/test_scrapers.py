@@ -214,6 +214,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="1-65, 67-76",
             type=VoteType.AMENDMENT,
+            remarks="5624094",
         ),
         Vote(
             subject="§ 5, sub§ 1",
@@ -222,6 +223,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="66",
             type=VoteType.AMENDMENT,
+            remarks="53614713",
         ),
         Vote(
             subject="After recital 2",
@@ -230,6 +232,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="77",
             type=VoteType.AMENDMENT,
+            remarks="8758423",
         ),
         Vote(
             subject="Recital 3",
@@ -238,6 +241,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="78",
             type=VoteType.AMENDMENT,
+            remarks="5858650",
         ),
         Vote(
             subject="Recital 8",
@@ -246,6 +250,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="79",
             type=VoteType.AMENDMENT,
+            remarks="9757819",
         ),
         Vote(
             subject="Recital 15",
@@ -254,6 +259,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="80",
             type=VoteType.AMENDMENT,
+            remarks="9458911",
         ),
         Vote(
             subject="Recital 25",
@@ -262,6 +268,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment="81",
             type=VoteType.AMENDMENT,
+            remarks="8759115",
         ),
         Vote(
             subject="Commission proposal",
@@ -270,6 +277,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=None,
             amendment=None,
             type=VoteType.PRIMARY,
+            remarks="5686364",
         ),
     ]
 
@@ -283,6 +291,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=1,
             amendment=None,
             type=VoteType.SEPARATE,
+            remarks="6612015",
         ),
         Vote(
             subject="§ 1",
@@ -291,6 +300,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=2,
             amendment=None,
             type=VoteType.SEPARATE,
+            remarks="5401488",
         ),
         Vote(
             subject="§ 1",
@@ -299,6 +309,7 @@ def test_vote_collections_scraper_run_vote_items():
             split_part=3,
             amendment=None,
             type=VoteType.SEPARATE,
+            remarks="53215212",
         ),
     ]
 
