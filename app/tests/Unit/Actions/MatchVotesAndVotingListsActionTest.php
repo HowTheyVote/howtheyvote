@@ -54,6 +54,24 @@ it('matches vote without title', function () {
     expect($votingList->fresh()->vote->id)->toEqual($vote->id);
 });
 
+it('matches based on vote reference', function () {
+    $vote = Vote::factory([
+        'vote_collection_id' => $this->voteCollection->id,
+        'reference' => 'B9-4567/2021',
+        'formatted' => 'Am 1/2',
+        'remarks' => '102030',
+    ])->create();
+
+    $votingList = VotingList::factory([
+        'description' => 'B9-4567/2021 - Name of rapporteur - Am 1/2',
+        'reference' => 'B9-4567/2021',
+    ])->withStats(10, 20, 30)->create();
+
+    $this->action->execute();
+
+    expect($votingList->fresh()->vote->id)->toEqual($vote->id);
+});
+
 it('throws an error when a vote is present but no voting list', function () {
     $vote = Vote::factory(['id' => 1])->create();
 
