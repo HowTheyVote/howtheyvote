@@ -11,7 +11,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 5/1",
-             "remarks":"5856942"
+             "remarks":"5856942",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -21,7 +23,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 5/2",
-             "remarks":"37430715"
+             "remarks":"37430715",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"MEPs",
@@ -31,7 +35,9 @@
              "amendment":"2",
              "type":"AMENDMENT",
              "formatted":"Am 2",
-             "remarks":"28736743"
+             "remarks":"28736743",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -41,7 +47,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 12/1",
-             "remarks":"5935648"
+             "remarks":"5935648",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -51,7 +59,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 12/2",
-             "remarks":"36731416"
+             "remarks":"36731416",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -61,7 +71,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 13/1",
-             "remarks":"6312739"
+             "remarks":"6312739",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -71,7 +83,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 13/2",
-             "remarks":"41222758"
+             "remarks":"41222758",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -81,7 +95,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 16/1",
-             "remarks":"52811950"
+             "remarks":"52811950",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -91,7 +107,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 16/2",
-             "remarks":"3663229"
+             "remarks":"3663229",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -101,7 +119,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 20",
-             "remarks":"33932038"
+             "remarks":"33932038",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"MEPs",
@@ -111,7 +131,9 @@
              "amendment":"3",
              "type":"AMENDMENT",
              "formatted":"Am 3",
-             "remarks":"35630040"
+             "remarks":"35630040",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -121,7 +143,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 25",
-             "remarks":"39822381"
+             "remarks":"39822381",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"MEPs",
@@ -131,7 +155,9 @@
              "amendment":"4",
              "type":"AMENDMENT",
              "formatted":"Am 4/1",
-             "remarks":"42624526"
+             "remarks":"42624526",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"MEPs",
@@ -141,7 +167,9 @@
              "amendment":"4",
              "type":"AMENDMENT",
              "formatted":"Am 4/2",
-             "remarks":"34033026"
+             "remarks":"34033026",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"MEPs",
@@ -151,7 +179,9 @@
              "amendment":"4",
              "type":"AMENDMENT",
              "formatted":"Am 4/3",
-             "remarks":"34432923"
+             "remarks":"34432923",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"MEPs",
@@ -161,7 +191,9 @@
              "amendment":"1",
              "type":"AMENDMENT",
              "formatted":"Am 1",
-             "remarks":"11956117"
+             "remarks":"11956117",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -171,7 +203,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 33/1",
-             "remarks":"5899711"
+             "remarks":"5899711",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -181,7 +215,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 33/2",
-             "remarks":"54012235"
+             "remarks":"54012235",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -191,7 +227,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 33/3",
-             "remarks":"668218"
+             "remarks":"668218",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -201,7 +239,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 33/4",
-             "remarks":"3852374"
+             "remarks":"3852374",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -211,7 +251,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 34/1",
-             "remarks":"55910335"
+             "remarks":"55910335",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -221,7 +263,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 34/2",
-             "remarks":"28233877"
+             "remarks":"28233877",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -231,7 +275,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"\u00a7 39",
-             "remarks":"35831623"
+             "remarks":"35831623",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -241,7 +287,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"Visa 11",
-             "remarks":"37530615"
+             "remarks":"37530615",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -251,7 +299,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"Consid\u00e9rant G/1",
-             "remarks":"5807344"
+             "remarks":"5807344",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -261,7 +311,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"Consid\u00e9rant G/2",
-             "remarks":"4002889"
+             "remarks":"4002889",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":"original text",
@@ -271,7 +323,9 @@
              "amendment":null,
              "type":"SEPARATE",
              "formatted":"Consid\u00e9rant R",
-             "remarks":"35433012"
+             "remarks":"35433012",
+             "reference":null,
+             "subheading":null
           },
           {
              "author":null,
@@ -281,7 +335,9 @@
              "amendment":null,
              "type":"PRIMARY",
              "formatted":"Proposition de r\u00e9solution",
-             "remarks":"44470181"
+             "remarks":"44470181",
+             "reference":null,
+             "subheading":null
           }
        ]
     }

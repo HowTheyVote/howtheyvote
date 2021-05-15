@@ -21,6 +21,8 @@ class Vote extends Model
         'vote_collection_id',
         'formatted',
         'remarks',
+        'reference',
+        'subheading',
     ];
 
     protected $casts = [
