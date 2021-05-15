@@ -10,6 +10,7 @@ from ep_votes.helpers import (
     removeprefix,
     removesuffix,
     normalize_table,
+    normalize_whitespace,
 )
 
 
@@ -196,3 +197,17 @@ def test_normalize_table_column_names():
     ]
 
     assert normalize_table(table_tag) == expected
+
+
+def test_normalize_whitespace_double_space():
+    string = "Contrôle des pêches - Am 1-7, 10, 13-14, 17-36,  38-42,  78-80, 83, 87-94, 96-97"
+    expected = (
+        "Contrôle des pêches - Am 1-7, 10, 13-14, 17-36, 38-42, 78-80, 83, 87-94, 96-97"
+    )
+
+    assert normalize_whitespace(string) == expected
+
+
+def test_normalize_whitespace_plus():
+    assert normalize_whitespace("Am 342+343") == "Am 342 + 343"
+    assert normalize_whitespace("Am 342 +343") == "Am 342 + 343"

@@ -5,7 +5,14 @@ from datetime import date, datetime
 import random
 from typing import Any, List, Optional, Tuple, Dict
 from abc import ABC, abstractmethod
-from .helpers import removeprefix, removesuffix, normalize_table, Rows, Row
+from .helpers import (
+    removeprefix,
+    removesuffix,
+    normalize_table,
+    Rows,
+    Row,
+    normalize_whitespace,
+)
 from .models import (
     Member,
     MemberInfo,
@@ -245,7 +252,7 @@ class VotingListsScraper(Scraper):
 
     def _description(self, tag: Tag) -> str:
         desc_tag = tag.find("RollCallVote.Description.Text")
-        return removeprefix(desc_tag.text.strip(), "- ")
+        return normalize_whitespace(removeprefix(desc_tag.text.strip(), "- "))
 
 
 class VoteCollectionsScraper(Scraper):
@@ -337,4 +344,4 @@ class VoteCollectionsScraper(Scraper):
 
     def _title(self, tag: Tag) -> str:
         title_tag = tag.find("Vote.Result.Text.Title")
-        return title_tag.text.strip()
+        return normalize_whitespace(title_tag.text.strip())
