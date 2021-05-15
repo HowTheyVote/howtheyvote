@@ -9,7 +9,6 @@ from ep_votes.scrapers import (
     MemberGroupsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
-    extract_reference,
 )
 from ep_votes.models import (
     Member,
@@ -210,6 +209,7 @@ def test_vote_collections_scraper_run_vote_items():
     expected_votes = [
         Vote(
             subject="Amendments by the committee responsible – put to the vote collectively",
+            subheading=None,
             author="committee",
             result=VoteResult.ADOPTED,
             split_part=None,
@@ -219,6 +219,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="§ 5, sub§ 1",
+            subheading=None,
             author="committee",
             result=VoteResult.ADOPTED,
             split_part=None,
@@ -228,6 +229,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="After recital 2",
+            subheading=None,
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
@@ -237,6 +239,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="Recital 3",
+            subheading=None,
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
@@ -246,6 +249,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="Recital 8",
+            subheading=None,
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
@@ -255,6 +259,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="Recital 15",
+            subheading=None,
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
@@ -264,6 +269,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="Recital 25",
+            subheading=None,
             author="ID",
             result=VoteResult.REJECTED,
             split_part=None,
@@ -273,6 +279,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="Commission proposal",
+            subheading=None,
             author=None,
             result=VoteResult.ADOPTED,
             split_part=None,
@@ -287,6 +294,7 @@ def test_vote_collections_scraper_run_vote_items():
     expected_votes = [
         Vote(
             subject="§ 1",
+            subheading="Amendments to the paragraphs of the motion for a resolution",
             author="original text",
             result=VoteResult.ADOPTED,
             split_part=1,
@@ -296,6 +304,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="§ 1",
+            subheading="Amendments to the paragraphs of the motion for a resolution",
             author="original text",
             result=VoteResult.ADOPTED,
             split_part=2,
@@ -305,6 +314,7 @@ def test_vote_collections_scraper_run_vote_items():
         ),
         Vote(
             subject="§ 1",
+            subheading="Amendments to the paragraphs of the motion for a resolution",
             author="original text",
             result=VoteResult.ADOPTED,
             split_part=3,
@@ -317,7 +327,7 @@ def test_vote_collections_scraper_run_vote_items():
     assert result[4].votes[:3] == expected_votes
 
 
-def test_vote_collections_scraper_add_referenced_texts():
+def test_vote_collections_scraper_add_subheading():
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
     table = [
@@ -337,11 +347,11 @@ def test_vote_collections_scraper_add_referenced_texts():
             "RCV etc.": "RCV",
             "Vote": "+",
             "RCV/EV – remarks": "100, 50, 25",
-            "referenced_text": "A very important topic",
+            "Subheading": "A very important topic",
         },
     ]
 
-    assert scraper._add_referenced_text(table) == expected_table
+    assert scraper._add_subheading(table) == expected_table
 
 
 def test_vote_collections_scraper_include_row_heading():
@@ -434,17 +444,3 @@ def test_vote_collections_scraper_include_row_no_rcv():
 
     assert scraper._include_row(rows[2]) is True
     assert scraper._include_row(rows[3]) is True
-
-
-def test_extract_references_with_links():
-    html = 'Report: Sven Simon (<a href="#reds:iPlRp/A-9-2021-0002" data-rel="reds" redmap-uri="/reds:iPlRp/A-9-2021-0002">A9-0002/2021</a>)'
-    tag = BeautifulSoup(html, "lxml-html").body
-
-    assert extract_reference(tag) == "A9-0002/2021"
-
-
-def test_extract_references_from_plaintext():
-    html = 'Proposal for a regulation (<a href="#reds:iEcCom/COM-2020-0818" data-rel="reds" redmap-uri="/reds:iEcCom/COM-2020-0818">COM(2020)0818</a>- C9-0420/2020 -<a href="#reds:DirContProc/COD-2020-0358" data-rel="reds" redmap-uri="/reds:DirContProc/COD-2020-0358">2020/0358(COD)</a>)'
-    tag = BeautifulSoup(html, "lxml-html").body
-
-    assert extract_reference(tag) == "C9-0420/2020"

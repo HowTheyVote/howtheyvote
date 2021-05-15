@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from unidecode import unidecode
 from typing import Optional, Tuple, List
 from datetime import date
+from .helpers import extract_reference
 
 COUNTRY_NAMES = {
     "Austria": "AT",
@@ -216,6 +217,7 @@ class Vote:
     amendment: Optional[str]
     type: VoteType
     remarks: Optional[str]
+    subheading: Optional[str]
 
     @property
     def formatted(self) -> str:
@@ -248,6 +250,16 @@ class Vote:
             formatted = formatted + "/" + str(self.split_part)
 
         return formatted
+
+    @property
+    def reference(self) -> Optional[str]:
+        reference = extract_reference(self.subject)
+        if reference:
+            return reference
+        reference = extract_reference(self.subheading)
+        if reference:
+            return reference
+        return None
 
 
 @dataclass

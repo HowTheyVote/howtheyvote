@@ -12,6 +12,7 @@ from .helpers import (
     Rows,
     Row,
     normalize_whitespace,
+    extract_reference,
 )
 from .models import (
     Member,
@@ -33,21 +34,6 @@ USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15",  # noqa: E501
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0",  # noqa: E501
 ]
-
-
-def extract_reference(tag: Tag) -> Optional[str]:
-    ref_tag = tag.find("a")
-
-    redmap_uri = ref_tag["redmap-uri"] if ref_tag else ""
-    allowed = ["/reds:iPlRe", "/reds:iPlRp"]
-
-    if any(redmap_uri.startswith(prefix) for prefix in allowed):
-        return ref_tag.text
-
-    reference_regex = r"C\d+-\d{4}/\d{4}"
-
-    match = re.search(reference_regex, tag.text)
-    return match.group(0) if match else None
 
 
 class Scraper(ABC):
@@ -248,7 +234,7 @@ class VotingListsScraper(Scraper):
         return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
 
     def _reference(self, tag: Tag) -> Optional[str]:
-        return extract_reference(tag.find("RollCallVote.Description.Text"))
+        return extract_reference(tag.find("RollCallVote.Description.Text").text)
 
     def _description(self, tag: Tag) -> str:
         desc_tag = tag.find("RollCallVote.Description.Text")
@@ -281,24 +267,24 @@ class VoteCollectionsScraper(Scraper):
         )
 
     def _reference(self, tag: Tag) -> Optional[str]:
-        return extract_reference(tag.find("Vote.Result.Description.Text"))
+        return extract_reference(tag.find("Vote.Result.Description.Text").text)
 
     def _votes(self, tag: Tag) -> List[Vote]:
         votes_table = tag.select_one("Vote\\.Result\\.Table\\.Results > TABLE")
         votes_table = normalize_table(votes_table)
-        votes_table = self._add_referenced_text(votes_table)
+        votes_table = self._add_subheading(votes_table)
         votes_table = [row for row in votes_table if self._include_row(row)]
 
         return [self._vote(row) for row in votes_table]
 
-    def _add_referenced_text(self, votes_table: Rows) -> Rows:
+    def _add_subheading(self, votes_table: Rows) -> Rows:
         current_reference = None
         for row in votes_table:
             keys = row.keys()
             if len(keys) == 1 and "Subject" in keys:
                 current_reference = row.get("Subject")
             else:
-                row["referenced_text"] = current_reference
+                row["Subheading"] = current_reference
 
         return votes_table
 
@@ -323,6 +309,7 @@ class VoteCollectionsScraper(Scraper):
             amendment=self._amendment(row.get("Am No")),
             type=self._type(row),
             remarks=self._remarks(row.get("RCV/EV – remarks")),
+            subheading=row.get("Subheading"),
         )
 
     def _remarks(self, string: Optional[str]) -> str:
