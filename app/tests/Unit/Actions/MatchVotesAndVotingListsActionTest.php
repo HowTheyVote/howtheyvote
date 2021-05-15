@@ -2,6 +2,7 @@
 
 use App\Actions\MatchVotesAndVotingListsAction;
 use App\Enums\VoteTypeEnum;
+use App\Exceptions\CouldNotMatchVoteException;
 use App\Vote;
 use App\VoteCollection;
 use App\VotingList;
@@ -50,3 +51,25 @@ it('matches vote without title', function () {
 
     expect($votingList->fresh()->vote->id)->toEqual($vote->id);
 });
+
+it('throws an error when a vote is present but no voting list', function () {
+    $vote = Vote::factory(['id' => 1])->create();
+
+    $this->action->execute();
+})->throws(CouldNotMatchVoteException::class, 'No voting list for vote 1 found.');
+
+it('throws an error when a vote has multiple matching voting lists', function () {
+    $vote = Vote::factory([
+        'id' => 1,
+        'vote_collection_id' => $this->voteCollection->id,
+        'formatted' => 'Am 1/2',
+        'type' => VoteTypeEnum::AMENDMENT(),
+    ])->create();
+
+    VotingList::factory([
+        'description' => 'A9-0123/2021 - Name of rapporteur - Am 1/2',
+        'reference' => 'A9-0123/2021',
+    ])->count(2)->create();
+
+    $this->action->execute();
+})->throws(CouldNotMatchVoteException::class, 'Multiple voting lists for vote 1 found.');
