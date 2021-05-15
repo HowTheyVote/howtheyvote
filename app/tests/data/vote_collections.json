@@ -10,7 +10,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 5/1"
+             "formatted":"\u00a7 5/1",
+             "remarks":"5856942"
           },
           {
              "author":"original text",
@@ -19,7 +20,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 5/2"
+             "formatted":"\u00a7 5/2",
+             "remarks":"37430715"
           },
           {
              "author":"MEPs",
@@ -28,7 +30,8 @@
              "split_part":null,
              "amendment":"2",
              "type":"AMENDMENT",
-             "formatted":"Am 2"
+             "formatted":"Am 2",
+             "remarks":"28736743"
           },
           {
              "author":"original text",
@@ -37,7 +40,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 12/1"
+             "formatted":"\u00a7 12/1",
+             "remarks":"5935648"
           },
           {
              "author":"original text",
@@ -46,7 +50,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 12/2"
+             "formatted":"\u00a7 12/2",
+             "remarks":"36731416"
           },
           {
              "author":"original text",
@@ -55,7 +60,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 13/1"
+             "formatted":"\u00a7 13/1",
+             "remarks":"6312739"
           },
           {
              "author":"original text",
@@ -64,7 +70,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 13/2"
+             "formatted":"\u00a7 13/2",
+             "remarks":"41222758"
           },
           {
              "author":"original text",
@@ -73,7 +80,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 16/1"
+             "formatted":"\u00a7 16/1",
+             "remarks":"52811950"
           },
           {
              "author":"original text",
@@ -82,7 +90,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 16/2"
+             "formatted":"\u00a7 16/2",
+             "remarks":"3663229"
           },
           {
              "author":"original text",
@@ -91,7 +100,8 @@
              "split_part":null,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 20"
+             "formatted":"\u00a7 20",
+             "remarks":"33932038"
           },
           {
              "author":"MEPs",
@@ -100,7 +110,8 @@
              "split_part":null,
              "amendment":"3",
              "type":"AMENDMENT",
-             "formatted":"Am 3"
+             "formatted":"Am 3",
+             "remarks":"35630040"
           },
           {
              "author":"original text",
@@ -109,7 +120,8 @@
              "split_part":null,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 25"
+             "formatted":"\u00a7 25",
+             "remarks":"39822381"
           },
           {
              "author":"MEPs",
@@ -118,7 +130,8 @@
              "split_part":1,
              "amendment":"4",
              "type":"AMENDMENT",
-             "formatted":"Am 4/1"
+             "formatted":"Am 4/1",
+             "remarks":"42624526"
           },
           {
              "author":"MEPs",
@@ -127,7 +140,8 @@
              "split_part":2,
              "amendment":"4",
              "type":"AMENDMENT",
-             "formatted":"Am 4/2"
+             "formatted":"Am 4/2",
+             "remarks":"34033026"
           },
           {
              "author":"MEPs",
@@ -136,7 +150,8 @@
              "split_part":3,
              "amendment":"4",
              "type":"AMENDMENT",
-             "formatted":"Am 4/3"
+             "formatted":"Am 4/3",
+             "remarks":"34432923"
           },
           {
              "author":"MEPs",
@@ -145,7 +160,8 @@
              "split_part":null,
              "amendment":"1",
              "type":"AMENDMENT",
-             "formatted":"Am 1"
+             "formatted":"Am 1",
+             "remarks":"11956117"
           },
           {
              "author":"original text",
@@ -154,7 +170,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 33/1"
+             "formatted":"\u00a7 33/1",
+             "remarks":"5899711"
           },
           {
              "author":"original text",
@@ -163,7 +180,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 33/2"
+             "formatted":"\u00a7 33/2",
+             "remarks":"54012235"
           },
           {
              "author":"original text",
@@ -172,7 +190,8 @@
              "split_part":3,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 33/3"
+             "formatted":"\u00a7 33/3",
+             "remarks":"668218"
           },
           {
              "author":"original text",
@@ -181,7 +200,8 @@
              "split_part":4,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 33/4"
+             "formatted":"\u00a7 33/4",
+             "remarks":"3852374"
           },
           {
              "author":"original text",
@@ -190,7 +210,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 34/1"
+             "formatted":"\u00a7 34/1",
+             "remarks":"55910335"
           },
           {
              "author":"original text",
@@ -199,7 +220,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 34/2"
+             "formatted":"\u00a7 34/2",
+             "remarks":"28233877"
           },
           {
              "author":"original text",
@@ -208,7 +230,8 @@
              "split_part":null,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"\u00a7 39"
+             "formatted":"\u00a7 39",
+             "remarks":"35831623"
           },
           {
              "author":"original text",
@@ -217,7 +240,8 @@
              "split_part":null,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"Visa 11"
+             "formatted":"Visa 11",
+             "remarks":"37530615"
           },
           {
              "author":"original text",
@@ -226,7 +250,8 @@
              "split_part":1,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"Consid\u00e9rant G/1"
+             "formatted":"Consid\u00e9rant G/1",
+             "remarks":"5807344"
           },
           {
              "author":"original text",
@@ -235,7 +260,8 @@
              "split_part":2,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"Consid\u00e9rant G/2"
+             "formatted":"Consid\u00e9rant G/2",
+             "remarks":"4002889"
           },
           {
              "author":"original text",
@@ -244,7 +270,8 @@
              "split_part":null,
              "amendment":null,
              "type":"SEPARATE",
-             "formatted":"Consid\u00e9rant R"
+             "formatted":"Consid\u00e9rant R",
+             "remarks":"35433012"
           },
           {
              "author":null,
@@ -253,7 +280,8 @@
              "split_part":null,
              "amendment":null,
              "type":"PRIMARY",
-             "formatted":"Proposition de r\u00e9solution"
+             "formatted":"Proposition de r\u00e9solution",
+             "remarks":"44470181"
           }
        ]
     }

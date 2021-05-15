@@ -94,6 +94,7 @@ def _vote_factory(**data):
         "result": VoteResult.ADOPTED,
         "amendment": None,
         "split_part": None,
+        "remarks": None,
     }
 
     return Vote(**(default | data))
