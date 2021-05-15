@@ -23,12 +23,13 @@ it('matches vote with title', function () {
         'type' => VoteTypeEnum::AMENDMENT(),
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
+        'remarks' => '102030',
     ])->create();
 
     $votingList = VotingList::factory([
         'description' => 'Quelques textes en français - Some English text - Irgendein deutscher Text - A9-0123/2021 - Name of rapporteur - Am 1/2',
         'reference' => 'A9-0123/2021',
-    ])->create();
+    ])->withStats(10, 20, 30)->create();
 
     $this->action->execute();
 
@@ -40,12 +41,13 @@ it('matches vote without title', function () {
         'type' => VoteTypeEnum::AMENDMENT(),
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
+        'remarks' => '102030',
     ])->create();
 
     $votingList = VotingList::factory([
         'description' => 'A9-0123/2021 - Name of rapporteur - Am 1/2',
         'reference' => 'A9-0123/2021',
-    ])->create();
+    ])->withStats(10, 20, 30)->create();
 
     $this->action->execute();
 
@@ -73,3 +75,21 @@ it('throws an error when a vote has multiple matching voting lists', function ()
 
     $this->action->execute();
 })->throws(CouldNotMatchVoteException::class, 'Multiple voting lists for vote 1 found.');
+
+it('throws an error when a vote and its matched voting list have different results', function () {
+    $vote = Vote::factory([
+        'id' => 1,
+        'vote_collection_id' => $this->voteCollection->id,
+        'formatted' => 'Am 1/2',
+        'type' => VoteTypeEnum::AMENDMENT(),
+        'remarks' => '102030',
+    ])->create();
+
+    VotingList::factory([
+        'id' => 1,
+        'description' => 'A9-0123/2021 - Name of rapporteur - Am 1/2',
+        'reference' => 'A9-0123/2021',
+    ])->withStats(30, 20, 10)->create();
+
+    $this->action->execute();
+})->throws(CouldNotMatchVoteException::class, 'Result for matched voting list 1 and vote 1 are not equal');

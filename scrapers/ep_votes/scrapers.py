@@ -325,8 +325,8 @@ class VoteCollectionsScraper(Scraper):
             remarks=self._remarks(row.get("RCV/EV – remarks")),
         )
 
-    def _remarks(self, string: str) -> str:
-        return normalize_whitespace(string.strip())
+    def _remarks(self, string: Optional[str]) -> str:
+        return normalize_whitespace(string.strip() if string else "")
 
     def _type(self, row: Row) -> VoteType:
         if row.get("Am No") == "§":

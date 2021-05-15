@@ -55,16 +55,16 @@ class VotingListFactory extends Factory
         });
     }
 
-    public function withStats()
+    public function withStats(int $for = 10, int $against = 20, int $abstention = 30)
     {
         return $this->state([
             'stats' => [
-                'voted' => 60,
-                'active' => 100,
+                'voted' => $for + $against + $abstention,
+                'active' => $for + $against + $abstention + 40,
                 'by_position' => [
-                    'FOR' => 10,
-                    'AGAINST' => 20,
-                    'ABSTENTION' => 30,
+                    'FOR' => $for,
+                    'AGAINST' => $against,
+                    'ABSTENTION' => $abstention,
                 ],
             ],
         ]);
