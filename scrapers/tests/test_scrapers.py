@@ -9,6 +9,7 @@ from ep_votes.scrapers import (
     MemberGroupsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
+    extract_reference,
 )
 from ep_votes.models import (
     Member,
@@ -433,3 +434,17 @@ def test_vote_collections_scraper_include_row_no_rcv():
 
     assert scraper._include_row(rows[2]) is True
     assert scraper._include_row(rows[3]) is True
+
+
+def test_extract_references_with_links():
+    html = 'Report: Sven Simon (<a href="#reds:iPlRp/A-9-2021-0002" data-rel="reds" redmap-uri="/reds:iPlRp/A-9-2021-0002">A9-0002/2021</a>)'
+    tag = BeautifulSoup(html, "lxml-html").body
+
+    assert extract_reference(tag) == "A9-0002/2021"
+
+
+def test_extract_references_from_plaintext():
+    html = 'Proposal for a regulation (<a href="#reds:iEcCom/COM-2020-0818" data-rel="reds" redmap-uri="/reds:iEcCom/COM-2020-0818">COM(2020)0818</a>- C9-0420/2020 -<a href="#reds:DirContProc/COD-2020-0358" data-rel="reds" redmap-uri="/reds:DirContProc/COD-2020-0358">2020/0358(COD)</a>)'
+    tag = BeautifulSoup(html, "lxml-html").body
+
+    assert extract_reference(tag) == "C9-0420/2020"

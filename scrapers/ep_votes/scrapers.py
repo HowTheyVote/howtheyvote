@@ -38,16 +38,16 @@ USER_AGENTS = [
 def extract_reference(tag: Tag) -> Optional[str]:
     ref_tag = tag.find("a")
 
-    if ref_tag is None:
-        return None
-
-    redmap_uri = ref_tag["redmap-uri"]
+    redmap_uri = ref_tag["redmap-uri"] if ref_tag else ""
     allowed = ["/reds:iPlRe", "/reds:iPlRp"]
 
-    if not any(redmap_uri.startswith(prefix) for prefix in allowed):
-        return None
+    if any(redmap_uri.startswith(prefix) for prefix in allowed):
+        return ref_tag.text
 
-    return ref_tag.text
+    reference_regex = r"C\d+-\d{4}/\d{4}"
+
+    match = re.search(reference_regex, tag.text)
+    return match.group(0) if match else None
 
 
 class Scraper(ABC):
