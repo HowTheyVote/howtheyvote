@@ -70,7 +70,9 @@ def normalize_table(table_tag: Tag) -> Rows:
 
 def normalize_whitespace(string: str) -> str:
     string = string.replace("+", " + ")
-    return re.sub(r"\s+", " ", string)
+    string = re.sub(r"\s+", " ", string)
+
+    return string.strip()
 
 
 def extract_reference(string: Optional[str]) -> Optional[str]:

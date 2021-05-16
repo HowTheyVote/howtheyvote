@@ -212,6 +212,14 @@ def test_normalize_whitespace_plus():
     assert normalize_whitespace("Am 342 +343") == "Am 342 + 343"
 
 
+def test_normalize_whitespace_line_breaks():
+    assert normalize_whitespace("Line 1\nLine 2") == "Line 1 Line 2"
+
+
+def test_normalize_whitespace_strip():
+    assert normalize_whitespace("  Text  ") == "Text"
+
+
 def test_extract_references():
     string = "Proposal for a regulation (COM(2020)0818 - C9-0420/2020 - 2020/0358(COD))"
     assert extract_reference(string) == "C9-0420/2020"
