@@ -8,24 +8,24 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-        <title>{{ $vote->display_title }} - Sharepic</title>
+        <title>{{ $votingList->display_title }} - Sharepic</title>
     </head>
     <body>
         <x-share-picture>
             <x-stack space="sm">
                 <x-stack space="xxs">
-                    <h1 class="beta">{{ $vote->display_title }}</h1>
+                    <h1 class="beta">{{ $votingList->display_title }}</h1>
                     <p class="text--xs">
-                        @lang('votes.share-picture.subtitle', [
-                            'date' => $vote->date->formatLocalized('%b %e, %Y'),
+                        @lang('voting-lists.share-picture.subtitle', [
+                            'date' => $votingList->date->formatLocalized('%b %e, %Y'),
                         ])
                     </p>
                 </x-stack>
-                <x-vote-result-chart :stats="$vote->stats" />
+                <x-vote-result-chart :stats="$votingList->stats" />
             </x-stack>
 
             <x-slot name="footer">
-                {{ __('votes.share-picture.footer') }}<br>
+                {{ __('voting-lists.share-picture.footer') }}<br>
                 <strong>{{ $shortDisplayUrl }}</strong>
             </x-slot>
         </x-share-picture>

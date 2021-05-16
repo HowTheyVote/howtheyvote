@@ -39,4 +39,9 @@ class Vote extends Model
     {
         return $this->hasOne(VotingList::class);
     }
+
+    public function getDisplayTitleAttribute()
+    {
+        return $this->voteCollection->title;
+    }
 }
