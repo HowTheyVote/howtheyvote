@@ -43,6 +43,10 @@ def normalize_table(table_tag: Tag) -> Rows:
         for cell_tag in cell_tags:
             column_number = int(cell_tag["COLNAME"].lower()[1:]) + offset
             column_name = "c" + str(column_number)
+
+            for br_tag in cell_tag.select("BR"):
+                br_tag.replace_with(" ")
+
             row[column_name] = cell_tag.text.strip()
 
             # Update rowspan values in case cell spans multiple rows
