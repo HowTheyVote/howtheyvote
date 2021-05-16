@@ -308,12 +308,9 @@ class VoteCollectionsScraper(Scraper):
             split_part=self._split_part(row.get("RCV etc.")),
             amendment=self._amendment(row.get("Am No")),
             type=self._type(row),
-            remarks=self._remarks(row.get("RCV/EV – remarks")),
+            remarks=row.get("RCV/EV – remarks"),
             subheading=row.get("Subheading"),
         )
-
-    def _remarks(self, string: Optional[str]) -> str:
-        return normalize_whitespace(string.strip() if string else "")
 
     def _type(self, row: Row) -> VoteType:
         if row.get("Am No") == "§":

@@ -47,7 +47,7 @@ def normalize_table(table_tag: Tag) -> Rows:
             for br_tag in cell_tag.select("BR"):
                 br_tag.replace_with(" ")
 
-            row[column_name] = cell_tag.text.strip()
+            row[column_name] = normalize_whitespace(cell_tag.text)
 
             # Update rowspan values in case cell spans multiple rows
             rowspan = int(cell_tag.get("ROWSPAN", "1"))
