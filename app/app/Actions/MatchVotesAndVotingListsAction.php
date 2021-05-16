@@ -13,12 +13,16 @@ class MatchVotesAndVotingListsAction extends Action
         $votesToMatch = Vote::whereDoesntHave('votingList')->get();
 
         foreach ($votesToMatch as $vote) {
-            $votingLists = VotingList::where('vote_id', null)
-                ->where('description', 'like', "%{$vote->reference} - %{$vote->formatted}");
+            $votingLists = null;
 
-            if ($votingLists->count() === 0) {
+            if ($vote->reference) {
                 $votingLists = VotingList::where('vote_id', null)
-                    ->where('description', 'like', "%{$vote->voteCollection->reference} - %{$vote->formatted}");
+                    ->where('description', 'like', "%{$vote->reference}%{$vote->formatted}");
+            }
+
+            if (! $votingLists || $votingLists->count() === 0) {
+                $votingLists = VotingList::where('vote_id', null)
+                    ->where('description', 'like', "%{$vote->voteCollection->reference}%{$vote->formatted}");
             }
 
             $count = $votingLists->count();
