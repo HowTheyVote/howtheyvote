@@ -45,9 +45,9 @@ class VotingList extends Model
         return $this->belongsTo(Vote::class);
     }
 
-    public function getDisplayTitleAttribute(): ?string
+    public function getDisplayTitleAttribute(): string
     {
-        return $this->description;
+        return $this->vote?->display_title ?: $this->description;
     }
 
     public function getHashIdAttribute(): string

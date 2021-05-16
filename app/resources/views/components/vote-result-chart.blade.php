@@ -23,27 +23,27 @@
 
     <p class="text--xs">
         <span class="text--green">
-            <strong>@lang('votes.for'): {{ $stats['by_position']['FOR'] }}</strong>
+            <strong>@lang('voting-lists.for'): {{ $stats['by_position']['FOR'] }}</strong>
             <x-thumb modifiers="for" />
         </span>
 
         |
 
         <span class="text--red">
-            <strong>@lang('votes.against'): {{ $stats['by_position']['AGAINST'] }}</strong>
+            <strong>@lang('voting-lists.against'): {{ $stats['by_position']['AGAINST'] }}</strong>
             <x-thumb modifiers="against" />
         </span>
 
         |
 
         <span>
-            <strong>@lang('votes.abstentions'): {{ $stats['by_position']['ABSTENTION'] }}</strong>
+            <strong>@lang('voting-lists.abstentions'): {{ $stats['by_position']['ABSTENTION'] }}</strong>
             <x-thumb modifiers="abstention" />
         </span>
 
         |
 
-        @lang('votes.share-picture.summary', [
+        @lang('voting-lists.share-picture.summary', [
             'voted' => $stats['voted'],
             'did-not-vote' => $stats['active'] - $stats['voted']
         ])

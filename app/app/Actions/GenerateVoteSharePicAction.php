@@ -1,7 +1,5 @@
 <?php
 
-// TODO: fixup
-
 namespace App\Actions;
 
 use App\Vote;
