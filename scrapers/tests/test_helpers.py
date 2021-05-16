@@ -173,6 +173,31 @@ def test_normalize_table_column_names():
     assert normalize_table(table_tag) == expected
 
 
+def test_normalize_table_line_breaks():
+    xml = (
+        "<TABLE>"
+        "   <TBODY>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>Column 1</TD>"
+        "       </TR>"
+        "       <TR>"
+        "           <TD COLNAME='C1'>"
+        "               Line 1<BR/>Line 2"
+        "           </TD>"
+        "       </TR>"
+        "   </TBODY>"
+        "</TABLE>"
+    )
+
+    table_tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = [
+        {"Column 1": "Line 1 Line 2"},
+    ]
+
+    assert normalize_table(table_tag) == expected
+
+
 def test_normalize_whitespace_double_space():
     string = "Contrôle des pêches - Am 1-7, 10, 13-14, 17-36,  38-42,  78-80, 83, 87-94, 96-97"
     expected = (
