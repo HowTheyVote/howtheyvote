@@ -24,21 +24,21 @@
     <p class="text--xs">
         <span class="text--green">
             <strong>@lang('voting-lists.for'): {{ $stats['by_position']['FOR'] }}</strong>
-            <x-thumb modifiers="for" />
+            <x-thumb position="for" />
         </span>
 
         |
 
         <span class="text--red">
             <strong>@lang('voting-lists.against'): {{ $stats['by_position']['AGAINST'] }}</strong>
-            <x-thumb modifiers="against" />
+            <x-thumb position="against" />
         </span>
 
         |
 
         <span>
             <strong>@lang('voting-lists.abstentions'): {{ $stats['by_position']['ABSTENTION'] }}</strong>
-            <x-thumb modifiers="abstention" />
+            <x-thumb position="abstention" />
         </span>
 
         |
