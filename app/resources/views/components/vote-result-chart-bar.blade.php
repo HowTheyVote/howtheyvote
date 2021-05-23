@@ -14,7 +14,7 @@
     style="--ratio: {{ $ratio}}"
 >
     @if ($percentage >= 10)
-        <x-thumb :modifiers="$position" />
+        <x-thumb :position="$position" />
     @endif
 
     @if ($percentage >= 5)
