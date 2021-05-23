@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\VotingListsController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+
 Route::get('/votes/{votingList}/share-picture', [VotingListsController::class, 'sharePicture'])->name('voting-list.share-picture');
+
+// Handles short URLs and should be registered as the last route
 Route::get('/{hashId}', fn ($hashId) => null)->name('voting-list.short');
