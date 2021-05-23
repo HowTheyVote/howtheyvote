@@ -21,6 +21,8 @@ Route::get('/', function () {
 
 Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
 
+Route::get('/votes/{votingList}', [VotingListsController::class, 'show'])->name('voting-list.show');
+
 Route::get('/votes/{votingList}/share-picture', [VotingListsController::class, 'sharePicture'])->name('voting-list.share-picture');
 
 // Handles short URLs and should be registered as the last route
