@@ -17,4 +17,8 @@
 
 
     </x-wrapper>
+
+    <x-avatar url="https://www.europarl.europa.eu/mepphoto/197433.jpg" />
+    <x-avatar url="https://www.europarl.europa.eu/mepphoto/1911.jpg" />
+    <x-avatar url="https://www.europarl.europa.eu/mepphoto/28229.jpg" />
 </x-app>
