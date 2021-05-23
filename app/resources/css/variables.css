@@ -20,6 +20,8 @@
     --space-xl: calc(2 * var(--space));
     --space-xxl: calc(3 * var(--space));
 
+    --max-width: 42rem;
+
     --font-family: IBM Plex Sans, system-ui;
     --font-family-condensed: IBM Plex Sans Condensed, system-ui;
     --font-family-heading: var(--font-family-condensed);

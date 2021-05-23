@@ -4,6 +4,7 @@
 @import './global/typography.css';
 
 @import './components/stack.css';
+@import './components/wrapper.css';
 @import './components/thumb.css';
 @import './components/cc-logo.css';
 @import './components/share-picture.css';
