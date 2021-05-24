@@ -5,6 +5,11 @@
     align-items: center;
 }
 
+.list-item__avatar,
+.list-item__thumb {
+    flex-shrink: 0;
+}
+
 .list-item__text {
     flex-grow: 1;
 }
