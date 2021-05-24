@@ -51,6 +51,7 @@
 }
 
 .thumb--circle.thumb--for > svg,
-.thumb--circle.thumb--adopted > svg {
+.thumb--circle.thumb--adopted > svg,
+.thumb--circle.thumb--abstention > svg {
     vertical-align: 20%;
 }
