@@ -2,6 +2,7 @@
     'value' => 0,
     'total' => 0,
     'position' => null,
+    'style' => null,
 ])
 
 @php
@@ -13,11 +14,11 @@
     {{ $attributes->bem('vote-result-chart__bar', $position) }}
     style="--ratio: {{ $ratio}}"
 >
-    @if ($percentage >= 10)
+    @if ($style !== 'slim' && $percentage >= 10)
         <x-thumb :position="$position" />
     @endif
 
-    @if ($percentage >= 5)
+    @if ($style !== 'slim' && $percentage >= 5)
         {{ $percentage }}%
     @endif
 </div>
