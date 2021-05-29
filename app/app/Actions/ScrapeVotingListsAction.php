@@ -77,7 +77,7 @@ class ScrapeVotingListsAction extends Action
         VotingList $votingList,
         array $votings
     ): void {
-        $memberIds = [];
+        $membersMapping = [];
 
         foreach ($votings as $voting) {
             // To reduce response size, votings are encoded
@@ -87,13 +87,25 @@ class ScrapeVotingListsAction extends Action
 
             $member = $this->findMember($members, $date, $name);
 
-            $memberIds[$member->id] = [
+            $membersMapping[$member->id] = [
                 'position' => $position,
             ];
         }
 
+        $membersWhoVoted = array_keys($membersMapping);
+
+        // All members who did not participate in a vote need to be stored as well
+        // indicating they did not vote.
+        foreach ($members as $member) {
+            if (! in_array($member->id, $membersWhoVoted)) {
+                $membersMapping[$member->id] = [
+                    'position' => VotePositionEnum::NOVOTE(),
+                ];
+            }
+        }
+
         $votingList->members()->detach();
-        $votingList->members()->attach($memberIds);
+        $votingList->members()->attach($membersMapping);
     }
 
     protected function findMember(Collection $members, Carbon $date, string $name): Member

@@ -186,3 +186,17 @@ it('compiles vote stats', function () {
 
     expect(VotingList::first()->stats['voted'])->toEqual(2);
 });
+
+it('handles members who did not vote', function () {
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-6.json');
+
+    $jane = Member::factory([
+        'first_name' => 'Jane',
+        'last_name' => 'Doe',
+    ])->activeAt($this->date)->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    $position = VotingList::first()->members()->first()->pivot->position;
+    expect($position)->toEqual(VotePositionEnum::NOVOTE());
+});

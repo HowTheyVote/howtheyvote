@@ -8,6 +8,7 @@ use Spatie\Enum\Laravel\Enum;
  * @method static self FOR()
  * @method static self AGAINST()
  * @method static self ABSTENTION()
+ * @method static self NOVOTE()
  */
 class VotePositionEnum extends Enum
 {
@@ -17,6 +18,7 @@ class VotePositionEnum extends Enum
             'FOR' => 0,
             'AGAINST' => 1,
             'ABSTENTION' => 2,
+            'NOVOTE' => 3,
         ];
     }
 }
