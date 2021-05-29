@@ -40,6 +40,11 @@ class Member extends Model
         return $this->hasMany(GroupMembership::class);
     }
 
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
     public function votes()
     {
         return $this->belongsToMany(VotingList::class, 'votings')

@@ -9,8 +9,16 @@ class VotingListsController extends Controller
 {
     public function show(VotingList $votingList)
     {
+        $members = $votingList
+            ->members()
+            ->withGroupMembershipAt($votingList->date)
+            ->with('group')
+            ->select('*')
+            ->get();
+
         return view('voting-lists.show', [
             'votingList' => $votingList,
+            'members' => $members,
         ]);
     }
 
