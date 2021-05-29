@@ -17,5 +17,7 @@
 @endphp
 
 <span {{ $attributes->bem('thumb', [$position, $result, $style]) }}>
-    <svg aria-hidden="true"><use href="/assets/icons.svg#thumb" /></svg>
+    @if ($position !== 'novote')
+        <svg aria-hidden="true"><use href="/assets/icons.svg#thumb" /></svg>
+    @endif
 </span>
