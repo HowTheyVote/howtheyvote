@@ -5,26 +5,32 @@
 
 <x-stack class="stack--xxs">
     <div class="vote-result-chart">
+        @if ($stats['by_position']['FOR'] > 0)
         <x-vote-result-chart-bar
             :value="$stats['by_position']['FOR']"
             :total="$stats['voted']"
             :style="$style"
             position="for"
         />
+        @endif
 
+        @if ($stats['by_position']['AGAINST'] > 0)
         <x-vote-result-chart-bar
             :value="$stats['by_position']['AGAINST']"
             :total="$stats['voted']"
             :style="$style"
             position="against"
         />
+        @endif
 
+        @if ($stats['by_position']['ABSTENTION'] > 0)
         <x-vote-result-chart-bar
             :value="$stats['by_position']['ABSTENTION']"
             :total="$stats['voted']"
             :style="$style"
             position="abstention"
         />
+        @endif
     </div>
 
     @if ($style !== 'slim')
