@@ -2,6 +2,7 @@
 
 @import './global/base.css';
 @import './global/typography.css';
+@import './global/utils.css';
 
 @import './components/stack.css';
 @import './components/wrapper.css';
