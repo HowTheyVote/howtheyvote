@@ -34,7 +34,7 @@ class CompileStatsAction extends Action
             ->select('country', DB::raw('count(*) as count'))
             ->groupBy('country')
             ->get()
-            ->map(fn ($row) => [$row->country->label, $row->count])
+            ->map(fn ($row) => [$row->country->value, $row->count])
             ->toAssoc();
 
         // We're using `getQuery` to get the underlying query builder
@@ -47,7 +47,7 @@ class CompileStatsAction extends Action
             ->select('position', 'country', DB::raw('count(*) as count'))
             ->groupBy('country', 'position')
             ->get()
-            ->groupBy(fn ($row) => $row->country->label)
+            ->groupBy(fn ($row) => $row->country->value)
             ->map(fn ($rows) => $this->formatPositions($rows));
 
         $voted = $byPosition->map(function ($counts) {

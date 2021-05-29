@@ -1,7 +1,7 @@
 .avatar {
     position: relative;
-    width: var(--space-xxl);
-    height: var(--space-xxl);
+    width: var(--space-xl);
+    height: var(--space-xl);
     border-radius: 50%;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);

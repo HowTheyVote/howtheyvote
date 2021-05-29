@@ -1,0 +1,10 @@
+.list-item {
+    display: flex;
+    width: 100%;
+    gap: var(--space-xs);
+    align-items: center;
+}
+
+.list-item__text {
+    flex-grow: 1;
+}
