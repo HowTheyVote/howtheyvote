@@ -26,7 +26,7 @@ class GroupMembershipFactory extends Factory
     public function definition()
     {
         return [
-            'group_id' => Group::factory(),
+            'group_id' => Group::first()?->id ?: Group::factory(),
             'member_id' => Member::factory(),
             'term_id' => Term::factory(),
             'start_date' => $this->faker->dateTimeThisDecade(),

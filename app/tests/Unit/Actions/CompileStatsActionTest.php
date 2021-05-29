@@ -27,11 +27,16 @@ it('compiles general stats', function () {
         ->activeAt($this->date)
         ->count(1);
 
+    $noVote = Member::factory()
+        ->activeAt($this->date)
+        ->count(1);
+
     $votingList = VotingList::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $for)
         ->withMembers('AGAINST', $against)
         ->withMembers('ABSTENTION', $abstention)
+        ->withMembers('NOVOTE', $noVote)
         ->create();
 
     $this->action->execute($votingList);
@@ -39,11 +44,12 @@ it('compiles general stats', function () {
     $stats = $votingList->fresh()->stats;
 
     expect($stats['voted'])->toEqual(6);
-    expect($stats['active'])->toEqual(6);
+    expect($stats['active'])->toEqual(7);
     expect($stats['by_position'])->toEqual([
         'FOR' => 3,
         'AGAINST' => 2,
         'ABSTENTION' => 1,
+        'NOVOTE' => 1,
     ]);
 });
 
@@ -63,16 +69,17 @@ it('compiles stats per country', function () {
         ->activeAt($this->date)
         ->count(2);
 
-    $frWithoutVote = Member::factory()
+    $frNoVote = Member::factory()
         ->country('FR')
         ->activeAt($this->date)
-        ->create();
+        ->count(1);
 
     $votingList = VotingList::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $deFor)
         ->withMembers('AGAINST', $deAgainst)
         ->withMembers('FOR', $frFor)
+        ->withMembers('NOVOTE', $frNoVote)
         ->create();
 
     $this->action->execute($votingList);
@@ -86,6 +93,7 @@ it('compiles stats per country', function () {
             'FOR' => 1,
             'AGAINST' => 1,
             'ABSTENTION' => 0,
+            'NOVOTE' => 0,
         ],
     ]);
 
@@ -96,6 +104,7 @@ it('compiles stats per country', function () {
             'FOR' => 2,
             'AGAINST' => 0,
             'ABSTENTION' => 0,
+            'NOVOTE' => 1,
         ],
     ]);
 });
@@ -112,14 +121,15 @@ it('compiles stats per group', function () {
         ->activeAt($this->date, $epp)
         ->count(2);
 
-    $eppWithoutVote = Member::factory()
+    $eppNoVote = Member::factory()
         ->activeAt($this->date, $epp)
-        ->create();
+        ->count(1);
 
     $votingList = VotingList::factory()
         ->withDate($this->date)
         ->withMembers('FOR', $greensFor)
         ->withMembers('AGAINST', $eppAgainst)
+        ->withMembers('NOVOTE', $eppNoVote)
         ->create();
 
     $this->action->execute($votingList);
@@ -133,6 +143,7 @@ it('compiles stats per group', function () {
             'FOR' => 1,
             'AGAINST' => 0,
             'ABSTENTION' => 0,
+            'NOVOTE' => 0,
         ],
     ]);
 
@@ -143,6 +154,7 @@ it('compiles stats per group', function () {
             'FOR' => 0,
             'AGAINST' => 2,
             'ABSTENTION' => 0,
+            'NOVOTE' => 1,
         ],
     ]);
 });

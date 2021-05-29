@@ -45,7 +45,7 @@
 
         @lang('voting-lists.share-picture.summary', [
             'voted' => $stats['voted'],
-            'did-not-vote' => $stats['active'] - $stats['voted']
+            'did-not-vote' => $stats['by_position']['NOVOTE'],
         ])
     </p>
 </x-stack>
