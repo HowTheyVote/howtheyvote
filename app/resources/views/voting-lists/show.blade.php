@@ -13,9 +13,22 @@
                     @endif
                 </p>
 
-                <x-vote-result-chart :stats="$votingList->stats" />
+                <x-vote-result-chart :stats="$votingList->stats"/>
             </x-stack>
-
+            <x-list>
+                @foreach ($groups as $group)
+                    <x-list-item
+                        :title="$group->name"
+                        :subtitle="__('voting-lists.groups.count', [
+                            'voted' => $group->stats['voted'],
+                            'total' => $group->stats['active'],
+                        ])"
+                        :stats="$group->stats"
+                        avatarStyle="squared"
+                        avatarUrl="/assets/groups/{{ Str::lower($group->code) }}.svg"
+                    />
+                @endforeach
+            </x-list>
             <x-list>
                 @foreach ($members as $member)
                     <x-list-item
@@ -28,6 +41,7 @@
                     />
                 @endforeach
             </x-list>
+
         </x-stack>
     </x-wrapper>
 

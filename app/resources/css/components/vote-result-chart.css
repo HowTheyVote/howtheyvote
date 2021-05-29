@@ -5,6 +5,9 @@
     overflow: hidden;
 }
 
+.vote-result-chart--slim {
+}
+
 .vote-result-chart__bar {
     width: calc(var(--ratio) * 100%);
     padding: var(--space-xxs) 0;
@@ -26,5 +29,5 @@
 }
 
 .vote-result-chart__bar--abstention {
-    background-color: var(--gray);
+    background-color: var(--blue);
 }
