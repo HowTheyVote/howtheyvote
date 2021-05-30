@@ -14,5 +14,5 @@ it('display voting lists without associated vote', function () {
 
     $response = $this->get('/monitoring');
 
-    expect($response)->toSee('1 - Unmatched Voting List');
+    expect($response)->toHaveSelectorWithText('li', '1 - Unmatched Voting List');
 });

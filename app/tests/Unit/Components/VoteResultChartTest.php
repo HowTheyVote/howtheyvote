@@ -9,12 +9,10 @@ beforeEach(function () {
     $this->view = $this->blade('<x-vote-result-chart :stats=$stats />', ['stats' => $stats]);
 });
 
-it('renders three bars', function () {
-    expect($this->view)->toSeeInOrder([
-        'vote-result-chart__bar--for',
-        'vote-result-chart__bar--against',
-        'vote-result-chart__bar--abstention',
-    ]);
+it('renders three bars in correct order', function () {
+    expect($this->view)->toHaveSelector(
+        '.vote-result-chart__bar--for + .vote-result-chart__bar--against + .vote-result-chart__bar--abstention',
+    );
 });
 
 it('displays absolute numbers correctly', function () {
