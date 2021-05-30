@@ -13,10 +13,10 @@
     <div class="list-item__text">
         <strong>{{ $title }}</strong>
         <br>
-        {{ $subtitle }}
+        <span class="list-item__subtitle">{{ $subtitle }}</span>
 
         @if ($stats)
-            <x-vote-result-chart :stats="$stats" style="slim"/>
+            <x-vote-result-chart :stats="$stats" style="slim" class="list-item__chart" />
         @endif
     </div>
 

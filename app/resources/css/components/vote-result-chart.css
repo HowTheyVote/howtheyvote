@@ -5,9 +5,6 @@
     overflow: hidden;
 }
 
-.vote-result-chart--slim {
-}
-
 .vote-result-chart__bar {
     width: calc(var(--ratio) * 100%);
     padding: var(--space-xxs) 0;
@@ -16,6 +13,10 @@
     text-align: center;
     font-weight: 600;
     font-size: var(--text-sm);
+}
+
+.vote-result-chart--slim .vote-result-chart__bar {
+    padding: 4px;
 }
 
 .vote-result-chart__bar--for {
