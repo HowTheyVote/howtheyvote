@@ -14,21 +14,21 @@ it('contains no percentage value if it would be below 5%', function () {
 
 it('shows the correct thumb', function () {
     $view = $this->blade('<x-vote-result-chart-bar :value="10" :total="100" position="for" />');
-    expect($view)->toSee('thumb--for');
+    expect($view)->toHaveSelector('.thumb--for');
 
     $view = $this->blade('<x-vote-result-chart-bar :value="10" :total="100" position="against" />');
-    expect($view)->toSee('thumb--against');
+    expect($view)->toHaveSelector('.thumb--against');
 
     $view = $this->blade('<x-vote-result-chart-bar :value="10" :total="100" position="abstention" />');
-    expect($view)->toSee('thumb--abstention');
+    expect($view)->toHaveSelector('.thumb--abstention');
 });
 
 it('shows no thumb if percentage is below 10', function () {
     $view = $this->blade('<x-vote-result-chart-bar :value="9" :total="100" position="for" />');
-    expect($view)->not()->toSee('thumb');
+    expect($view)->not()->toHaveSelector('.thumb');
 });
 
 it('has the correct width depending on its percentage value', function () {
     $view = $this->blade('<x-vote-result-chart-bar :value="10" :total="100" position="for" />');
-    expect($view)->toSee('--ratio: 0.1');
+    expect($view)->toHaveSelector('.vote-result-chart__bar[style="--ratio: 0.1"]');
 });

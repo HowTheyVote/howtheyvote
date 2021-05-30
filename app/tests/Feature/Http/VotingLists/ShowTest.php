@@ -50,24 +50,24 @@ it('does not fail if there is no associated vote', function () {
 
 it('shows a title', function () {
     $response = $this->get('/votes/1');
-    expect($response)->toSeeText('My Title');
+    expect($response)->toHaveSelectorWithText('h1', 'My Title');
 });
 
 it('shows the result of the vote', function () {
     $response = $this->get('/votes/1');
-    expect($response)->toSee('adopted');
-    expect($response)->toSee('thumb--adopted thumb--circle');
+    expect($response)->toHaveSelectorWithText('h1 + p', 'adopted');
+    expect($response)->toHaveSelector('h1 + p > .thumb--adopted.thumb--circle');
 });
 
 it('displays a bar chart', function () {
     $response = $this->get('/votes/1');
-    expect($response)->toSee('vote-result-chart');
+    expect($response)->toHaveSelector('.vote-result-chart');
 });
 
 it('shows a list of members', function () {
     $response = $this->get('/votes/1');
-    expect($response)->toSeeText('Greens/EFA');
-    expect($response)->toSeeText('Jane DOE');
-    expect($response)->toSee('thumb--for thumb--circle list-item__thumb');
-    expect($response)->toSeeText('Netherlands');
+
+    expect($response)->toHaveSelectorWithText('.list-item__text', 'Jane DOE');
+    expect($response)->toHaveSelectorWithText('.list-item__text', 'Greens/EFA · Netherlands');
+    expect($response)->toHaveSelector('.thumb--for.thumb--circle.list-item__thumb');
 });
