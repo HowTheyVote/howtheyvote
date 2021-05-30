@@ -1,6 +1,6 @@
 :root {
     --text-size: 1.125rem;
-    --line-height: 1.5;
+    --line-height: 1.4;
 
     --text-scale-ratio: 1.25;
     --text-xs: calc(
@@ -63,7 +63,7 @@
         var(--gray-s),
         calc(var(--gray-l) + 47.5%)
     );
-    --gray-dark: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) - 25%));
+    --gray-dark: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) - 20%));
     --gray-darkest: hsl(
         var(--gray-h),
         var(--gray-s),
@@ -71,4 +71,5 @@
     );
 
     --color-text: var(--gray-darkest);
+    --color-text-light: var(--gray-dark);
 }

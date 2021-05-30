@@ -4,7 +4,7 @@
 ])
 
 <x-stack class="stack--xxs">
-    <div class="vote-result-chart">
+    <div {{ $attributes->bem('vote-result-chart', $style) }}>
         @if ($stats['by_position']['FOR'] > 0)
         <x-vote-result-chart-bar
             :value="$stats['by_position']['FOR']"

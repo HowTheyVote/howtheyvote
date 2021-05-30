@@ -12,4 +12,13 @@
 
 .list-item__text {
     flex-grow: 1;
+    font-size: var(--text-sm);
+}
+
+.list-item__subtitle {
+    color: var(--color-text-light);
+}
+
+.list-item__chart {
+    margin: var(--space-xxs) 0;
 }
