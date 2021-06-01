@@ -391,7 +391,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
 name = "requests-mock"
-version = "1.9.2"
+version = "1.9.3"
 description = "Mock out responses from the requests package"
 category = "dev"
 optional = false
@@ -510,7 +510,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "cff53f64c317aff4455c34f6072ee1bae9090d9fc9d99fe308db259cf07a8535"
+content-hash = "f1b50733eeb5f64991278a1132481575f96c37544eafff153361399345af80c5"
 
 [metadata.files]
 appdirs = [
@@ -857,8 +857,8 @@ requests = [
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
 requests-mock = [
-    {file = "requests-mock-1.9.2.tar.gz", hash = "sha256:33296f228d8c5df11a7988b741325422480baddfdf5dd9318fd0eb40c3ed8595"},
-    {file = "requests_mock-1.9.2-py2.py3-none-any.whl", hash = "sha256:5c8ef0254c14a84744be146e9799dc13ebc4f6186058112d9aeed96b131b58e2"},
+    {file = "requests-mock-1.9.3.tar.gz", hash = "sha256:8d72abe54546c1fc9696fa1516672f1031d72a55a1d66c85184f972a24ba0eba"},
+    {file = "requests_mock-1.9.3-py2.py3-none-any.whl", hash = "sha256:0a2d38a117c08bb78939ec163522976ad59a6b7fdd82b709e23bb98004a44970"},
 ]
 sentry-sdk = [
     {file = "sentry-sdk-1.1.0.tar.gz", hash = "sha256:c1227d38dca315ba35182373f129c3e2722e8ed999e52584e6aca7d287870739"},
