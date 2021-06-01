@@ -27,6 +27,9 @@ class VotingListsController extends Controller
             })
             ->filter(function ($group) {
                 return $group->stats && $group->stats['active'] > 0;
+            })
+            ->sortByDesc(function ($group) {
+                return $group->stats['active'];
             });
 
         return view('voting-lists.show', [
