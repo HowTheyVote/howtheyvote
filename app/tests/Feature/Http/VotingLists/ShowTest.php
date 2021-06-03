@@ -15,18 +15,31 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     $date = new Carbon('2021-05-23');
 
-    $greens = Group::factory([
+    $this->greens = Group::factory([
         'code' => 'GREENS',
+        'name' => 'Greens/European Free Alliance',
         'abbreviation' => 'Greens/EFA',
+    ])->create();
+
+    $this->sd = Group::factory([
+        'code' => 'SD',
+        'name' => 'Progressive Alliance of Socialists and Democrats',
+        'abbreviation' => 'S&D',
     ])->create();
 
     $greensFor = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'DOE',
         'country' => CountryEnum::NL(),
-    ])->activeAt($date, $greens)->count(1);
+    ])->activeAt($date, $this->greens)->count(1);
 
-    VotingList::factory([
+    $sdAgainst = Member::factory([
+        'first_name' => 'Martin',
+        'last_name' => 'EISENBAHN',
+        'country' => CountryEnum::DE(),
+    ])->activeAt($date, $this->sd)->count(2);
+
+    $votingListData = [
         'id' => 1,
         'description' => 'Matched Voting List',
         'date'=> $date,
@@ -34,7 +47,13 @@ beforeEach(function () {
             'result' => VoteResultEnum::ADOPTED(),
             'vote_collection_id' => VoteCollection::factory(['title' => 'My Title']),
         ]),
-    ])->withStats()->withMembers('FOR', $greensFor)->create();
+    ];
+
+    $this->votingList = VotingList::factory($votingListData)
+        ->withStats()
+        ->withMembers('FOR', $greensFor)
+        ->withMembers('AGAINST', $sdAgainst)
+        ->create();
 });
 
 it('does not fail if there is no associated vote', function () {
@@ -70,4 +89,39 @@ it('shows a list of members', function () {
     expect($response)->toHaveSelectorWithText('.list-item__text', 'Jane DOE');
     expect($response)->toHaveSelectorWithText('.list-item__text', 'Greens/EFA · Netherlands');
     expect($response)->toHaveSelector('.thumb--for.thumb--circle.list-item__thumb');
+});
+
+it('shows a list of groups sorted descending by number of active members', function () {
+    $this->votingList->stats = array_merge($this->votingList->stats, [
+        'by_group' => [
+            $this->sd->id => [
+                'active' => 100,
+                'voted' => 25,
+                'by_position' => [
+                    'FOR' => 25,
+                    'AGAINST' => 0,
+                    'ABSTENTION' => 0,
+                    'ABSENT' => 0,
+                ],
+            ],
+            $this->greens->id => [
+                'active' => 50,
+                'voted' => 50,
+                'by_position' => [
+                    'FOR' => 50,
+                    'AGAINST' => 0,
+                    'ABSTENTION' => 0,
+                    'ABSENT' => 0,
+                ],
+            ],
+        ],
+    ]);
+
+    $this->votingList->save();
+    $response = $this->get('/votes/1');
+
+    expect($response)->toSeeInOrder([
+        'Progressive Alliance of Socialists and Democrats',
+        'Greens/European Free Alliance',
+    ]);
 });
