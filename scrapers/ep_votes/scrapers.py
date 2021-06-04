@@ -112,7 +112,7 @@ class MemberInfoScraper(Scraper):
         return MemberInfo.parse_full_name(full)
 
     def _date_of_birth(self) -> Optional[date]:
-        tag = self._resource.select_one("#birthDate")
+        tag = self._resource.select_one(".sln-birth-date")
 
         if not tag:
             return None
