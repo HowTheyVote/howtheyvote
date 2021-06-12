@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.0",
         "sentry/sentry-laravel": "^2.4",
         "spatie/laravel-enum": "^2",
+        "spatie/simple-excel": "^1.13",
         "spatie/url": "^2.0",
         "symfony/css-selector": "^5.2",
         "vinkla/hashids": "^9.1"

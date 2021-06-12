@@ -27,3 +27,7 @@ expect()->extend('toHaveSelector', function (string $selector, ?int $count = nul
 expect()->extend('toHaveSelectorWithText', function (string $selector, string $text, ?int $count = null) {
     return $this->value->assertSelectorText($selector, $text, $count);
 });
+
+expect()->extend('toHaveHeader', function (string $headerName, mixed $value = null) {
+    return $this->value->assertHeader($headerName, $value);
+});
