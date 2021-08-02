@@ -4309,16 +4309,16 @@
         },
         {
             "name": "spatie/laravel-enum",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-enum.git",
-                "reference": "860bcf367e36d277eee86d0ba7dfa7df66e56594"
+                "reference": "dd3d3462d5c0d31d61db2120292e87f1ed234de3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/860bcf367e36d277eee86d0ba7dfa7df66e56594",
-                "reference": "860bcf367e36d277eee86d0ba7dfa7df66e56594",
+                "url": "https://api.github.com/repos/spatie/laravel-enum/zipball/dd3d3462d5c0d31d61db2120292e87f1ed234de3",
+                "reference": "dd3d3462d5c0d31d61db2120292e87f1ed234de3",
                 "shasum": ""
             },
             "require": {
@@ -4385,7 +4385,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-enum/issues",
-                "source": "https://github.com/spatie/laravel-enum/tree/2.5.1"
+                "source": "https://github.com/spatie/laravel-enum/tree/2.5.2"
             },
             "funding": [
                 {
@@ -4397,7 +4397,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-05-31T15:32:30+00:00"
+            "time": "2021-07-24T20:11:47+00:00"
         },
         {
             "name": "spatie/macroable",
