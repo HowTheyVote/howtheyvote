@@ -15,4 +15,4 @@ format:
 	poetry run black .
 
 types:
-	poetry run mypy ./ep_votes/
+	poetry run mypy --install-types --non-interactive ./ep_votes/
