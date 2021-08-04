@@ -52,6 +52,11 @@ class Member extends Model
             ->withPivot('position');
     }
 
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
     public static function normalizeName(string $name): string
     {
         $name = Str::lower($name);

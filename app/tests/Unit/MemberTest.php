@@ -88,6 +88,15 @@ it('automatically updates normalized name columns', function () {
     expect($last)->toEqual(Member::normalizeName($member->last_name));
 });
 
+it('returns full name', function () {
+    $member = Member::factory([
+        'first_name' => 'Martin',
+        'last_name' => 'Schulz',
+    ])->create();
+
+    expect($member->full_name)->toEqual('Martin Schulz');
+});
+
 it('loads with group membership at date', function () {
     $greens = Group::factory(['code' => 'GREENS'])->create();
     $epp = Group::factory(['code' => 'EPP'])->create();
