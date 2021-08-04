@@ -15,44 +15,24 @@
 
                 <x-vote-result-chart :stats="$votingList->stats"/>
             </x-stack>
+
             <x-list>
                 @foreach ($countries as $country => $stats)
-                    <x-list-item
-                        :title="\App\Enums\CountryEnum::make($country)->label"
-                        :emoji="\App\Enums\CountryEnum::make($country)->emoji"
-                        :subtitle="__('voting-lists.groups.count', [
-                            'voted' => $stats['voted'],
-                            'total' => $stats['active'],
-                        ])"
-                        :stats="$stats"
-                    />
-                @endforeach
-            </x-list>
-            <x-list>
-                @foreach ($groups as $group)
-                    <x-list-item
-                        :title="$group->name"
-                        :subtitle="__('voting-lists.groups.count', [
-                            'voted' => $group->stats['voted'],
-                            'total' => $group->stats['active'],
-                        ])"
-                        :stats="$group->stats"
-                        avatarStyle="squared"
-                        avatarUrl="/assets/groups/{{ Str::lower($group->code) }}.svg"
-                    />
-                @endforeach
-            </x-list>
-            <x-list>
-                @foreach ($members as $member)
-                    <x-list-item
-                        avatar-url="https://www.europarl.europa.eu/mepphoto/{{ $member->web_id }}.jpg"
-                        :title="$member->full_name"
-                        :subtitle="$member->group->abbreviation.' · '.$member->country->label"
-                        :position="$member->pivot->position"
-                    />
+                    <x-country-list-item :country="\App\Enums\CountryEnum::make($country)" :stats="$stats" />
                 @endforeach
             </x-list>
 
+            <x-list>
+                @foreach ($groups as $group)
+                    <x-group-list-item :group="$group" :stats="$group->stats" />
+                @endforeach
+            </x-list>
+
+            <x-list>
+                @foreach ($members as $member)
+                    <x-member-list-item :member="$member" :position="$member->pivot->position" />
+                @endforeach
+            </x-list>
         </x-stack>
     </x-wrapper>
 
