@@ -46,9 +46,7 @@
                 @foreach ($members as $member)
                     <x-list-item
                         avatar-url="https://www.europarl.europa.eu/mepphoto/{{ $member->web_id }}.jpg"
-                        {{-- TODO --}}
-                        {{-- using expressions instead of double brackets stops double escape --}}
-                        :title="$member->first_name.' '.$member->last_name"
+                        :title="$member->full_name"
                         :subtitle="$member->group->abbreviation.' · '.$member->country->label"
                         :position="$member->pivot->position"
                     />
