@@ -23,3 +23,13 @@ body {
 
     padding: var(--space) var(--space-sm);
 }
+
+input,
+button,
+textarea {
+    border: none;
+    background: none;
+    box-shadow: none;
+    font-family: inherit;
+    font-size: inherit;
+}

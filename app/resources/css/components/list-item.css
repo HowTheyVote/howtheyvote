@@ -12,7 +12,6 @@
 
 .list-item__text {
     flex-grow: 1;
-    font-size: var(--text-sm);
 }
 
 .list-item__subtitle {
