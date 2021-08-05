@@ -9,7 +9,8 @@
     --text-sm: calc(1 / var(--text-scale-ratio) * var(--text-size));
     --text-lg: calc(var(--text-scale-ratio) * var(--text-size));
     --text-xl: calc(
-        var(--text-scale-ratio) * var(--text-scale-ratio) * var(--text-size)
+        var(--text-scale-ratio) * var(--text-scale-ratio) *
+            var(--text-scale-ratio) * var(--text-size)
     );
 
     --space: calc(var(--line-height) * var(--text-size));
