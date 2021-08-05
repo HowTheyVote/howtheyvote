@@ -34,28 +34,10 @@
     </div>
 
     @if ($style !== 'slim')
-        <p class="text--xs">
-            <span class="text--green">
-                <strong>@lang('voting-lists.for'): {{ $stats['by_position']['FOR'] }}</strong>
-                <x-thumb position="for" />
-            </span>
-
-            |
-
-            <span class="text--red">
-                <strong>@lang('voting-lists.against'): {{ $stats['by_position']['AGAINST'] }}</strong>
-                <x-thumb position="against" />
-            </span>
-
-            |
-
-            <span class="text--blue">
-                <strong>@lang('voting-lists.abstentions'): {{ $stats['by_position']['ABSTENTION'] }}</strong>
-                <x-thumb position="abstention" />
-            </span>
-
-            |
-
+        <p class="text--sm">
+            @lang('voting-lists.for'): <strong>{{ $stats['by_position']['FOR'] }}</strong>.
+            @lang('voting-lists.against'): <strong>{{ $stats['by_position']['AGAINST'] }}</strong>.
+            @lang('voting-lists.abstentions'): <strong>{{ $stats['by_position']['ABSTENTION'] }}</strong>.
             @lang('voting-lists.share-picture.summary', [
                 'voted' => $stats['voted'],
                 'did-not-vote' => $stats['by_position']['NOVOTE'],
