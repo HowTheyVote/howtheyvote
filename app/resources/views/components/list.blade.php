@@ -16,10 +16,7 @@
 <div
     {{ $attributes->bem('list') }}
     x-data="{{ json_encode($initialState) }}"
-    x-bind:class="
-        (truncate && searchQuery === '') ? 'list--truncated' : ''
-        searchQuery !== '' ? 'list--filtered' : ''
-    "
+    x-bind:class="(truncate && searchQuery === '') ? 'list--truncated' : ''"
 >
     @if ($searchable)
         <x-input class="list__search"
