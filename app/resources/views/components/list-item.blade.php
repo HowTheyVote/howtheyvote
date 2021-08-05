@@ -26,7 +26,9 @@
             {{ $title }} {{ $emoji }}
         </strong>
 
-        <div class="list-item__subtitle">{{ $subtitle }}</div>
+        <div class="list-item__subtitle" x-ref="subtitle">
+            {{ $subtitle }}
+        </div>
 
         @if ($stats)
             <x-vote-result-chart
