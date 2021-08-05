@@ -17,6 +17,7 @@
         "prettier": "^2.2.1"
     },
     "dependencies": {
-        "@github/tab-container-element": "^3.1.2"
+        "@github/tab-container-element": "^3.1.2",
+        "alpinejs": "^3.2.3"
     }
 }

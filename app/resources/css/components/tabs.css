@@ -3,8 +3,18 @@
 }
 
 .tabs__tablist {
-    margin-bottom: var(--space-sm);
-    border-bottom: 1px solid var(--gray-light);
-    gap: var(--space-sm);
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+
     display: flex;
+    margin-bottom: var(--space-sm);
+    padding-top: var(--space);
+    gap: var(--space-sm);
+
+    background-color: white;
+    border-bottom: 1px solid var(--gray-light);
+
+    /* Prevent overflowing contents (e.g. shadows) from being visible */
+    box-shadow: calc(-1 * var(--space)) 0 0 white;
 }

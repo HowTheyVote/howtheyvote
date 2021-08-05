@@ -1,3 +1,18 @@
-.list > * + * {
+.list > ul > * + * {
     margin-top: var(--space-sm);
+}
+
+.list--truncated > ul > *:nth-child(n + 10) {
+    display: none;
+}
+
+.list__toggle {
+    display: block;
+    margin: auto;
+    margin-top: var(--space);
+}
+
+.list:not(.list--truncated) .list__toggle {
+    position: sticky;
+    bottom: var(--space-sm);
 }

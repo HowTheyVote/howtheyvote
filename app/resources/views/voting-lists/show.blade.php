@@ -24,7 +24,7 @@
                 </x-slot>
 
                 <x-tab-panel id="members" :selected="true">
-                    <x-list>
+                    <x-list :truncate="true" show-more="Show all MEPs">
                         @foreach ($members as $member)
                             <x-member-list-item :member="$member" :position="$member->pivot->position" />
                         @endforeach
@@ -40,7 +40,7 @@
                 </x-tab-panel>
 
                 <x-tab-panel id="countries">
-                    <x-list :truncate="true">
+                    <x-list :truncate="true" show-more="Show all countries">
                         @foreach ($countries as $country => $stats)
                             <x-country-list-item :country="\App\Enums\CountryEnum::make($country)" :stats="$stats" />
                         @endforeach
