@@ -1,5 +1,5 @@
 .input {
-    border: 1px solid var(--gray);
+    border: 1px solid var(--gray-light);
     border-radius: 4px;
     display: block;
     width: 100%;

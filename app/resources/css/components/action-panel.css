@@ -6,7 +6,7 @@
     align-items: start;
 
     border-radius: 4px;
-    background-color: var(--gray-light);
+    background-color: var(--gray-lightest);
 }
 
 @media screen and (min-width: 540px) {
