@@ -19,13 +19,12 @@
                 @foreach ($countries as $country => $stats)
                     <x-list-item
                         :title="\App\Enums\CountryEnum::make($country)->label"
+                        :emoji="\App\Enums\CountryEnum::make($country)->emoji"
                         :subtitle="__('voting-lists.groups.count', [
                             'voted' => $stats['voted'],
                             'total' => $stats['active'],
                         ])"
                         :stats="$stats"
-                        avatarStyle="squared"
-                        avatarUrl="/assets/countries/{{ Str::lower($country) }}.svg"
                     />
                 @endforeach
             </x-list>
