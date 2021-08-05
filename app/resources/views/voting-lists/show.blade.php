@@ -24,9 +24,18 @@
                 </x-slot>
 
                 <x-tab-panel id="members" :selected="true">
-                    <x-list :truncate="true" show-more="Show all MEPs">
+                    <x-list
+                        :truncate="true"
+                        show-more="Show all MEPs"
+                        :searchable="true"
+                        search-placeholder="Search MEPs by name"
+                    >
                         @foreach ($members as $member)
-                            <x-member-list-item :member="$member" :position="$member->pivot->position" />
+                            <x-member-list-item
+                                :member="$member"
+                                :position="$member->pivot->position"
+                                :searchKey="$member->full_name"
+                            />
                         @endforeach
                     </x-list>
                 </x-tab-panel>
@@ -40,9 +49,18 @@
                 </x-tab-panel>
 
                 <x-tab-panel id="countries">
-                    <x-list :truncate="true" show-more="Show all countries">
+                    <x-list
+                        :truncate="true"
+                        show-more="Show all countries"
+                        :searchable="true"
+                        searchPlaceholder="Search countries by name"
+                    >
                         @foreach ($countries as $country => $stats)
-                            <x-country-list-item :country="\App\Enums\CountryEnum::make($country)" :stats="$stats" />
+                            <x-country-list-item
+                                :country="\App\Enums\CountryEnum::make($country)"
+                                :stats="$stats"
+                                :searchKey="\App\Enums\CountryEnum::make($country)->label"
+                            />
                         @endforeach
                     </x-list>
                 </x-tab-panel>

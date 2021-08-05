@@ -8,4 +8,5 @@
     :title="$member->full_name"
     :subtitle="$member->group->abbreviation.' · '.$member->country->label"
     :position="$position"
+    {{ $attributes }}
 />

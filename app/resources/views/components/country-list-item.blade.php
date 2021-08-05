@@ -11,4 +11,5 @@
         'total' => $stats['active'],
     ])"
     :stats="$stats"
+    {{ $attributes }}
 />

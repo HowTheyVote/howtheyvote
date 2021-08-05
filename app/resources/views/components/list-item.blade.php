@@ -6,9 +6,23 @@
     'subtitle' => null,
     'position' => null,
     'stats' => null,
+    'searchKey' => null,
 ])
 
-<li {{ $attributes->bem('list-item') }}>
+@php
+    $initialState = [
+        'searchKey' => $searchKey,
+    ];
+@endphp
+
+<li
+    {{ $attributes->bem('list-item') }}
+
+    @if ($searchKey)
+        x-data="{{ json_encode($initialState) }}"
+        x-show="searchKey.toLowerCase().includes(searchQuery.toLowerCase())"
+    @endif
+>
     @if ($avatarUrl)
     <x-avatar :url="$avatarUrl" class="list-item__avatar" :style="$avatarStyle" />
     @endif
