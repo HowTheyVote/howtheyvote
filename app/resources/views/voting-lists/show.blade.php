@@ -1,6 +1,6 @@
 <x-app title="{{ $votingList->displayTitle }} · Vote Result">
     <x-wrapper>
-        <x-stack>
+        <x-stack space="lg">
             <x-stack space="xs">
                 <h1 class="alpha">{{ $votingList->display_title }}</h1>
                 <p>
@@ -18,8 +18,8 @@
 
             <x-tabs>
                 <x-slot name="list">
-                    <x-tab-button id="members" :selected="true">Members</x-tab-button>
-                    <x-tab-button id="groups">Groups</x-tab-button>
+                    <x-tab-button id="members" :selected="true">MEPs</x-tab-button>
+                    <x-tab-button id="groups">Political Groups</x-tab-button>
                     <x-tab-button id="countries">Countries</x-tab-button>
                 </x-slot>
 
@@ -40,7 +40,7 @@
                 </x-tab-panel>
 
                 <x-tab-panel id="countries">
-                    <x-list>
+                    <x-list :truncate="true">
                         @foreach ($countries as $country => $stats)
                             <x-country-list-item :country="\App\Enums\CountryEnum::make($country)" :stats="$stats" />
                         @endforeach
