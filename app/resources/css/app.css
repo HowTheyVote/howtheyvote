@@ -6,15 +6,17 @@
 
 @import './components/stack.css';
 @import './components/wrapper.css';
+
+@import './components/button.css';
+@import './components/input.css';
+@import './components/avatar.css';
 @import './components/thumb.css';
 @import './components/cc-logo.css';
-@import './components/share-picture.css';
-@import './components/vote-result-chart.css';
-@import './components/avatar.css';
+
+@import './components/action-panel.css';
 @import './components/list.css';
 @import './components/list-item.css';
 @import './components/tabs.css';
 @import './components/tab-button.css';
-@import './components/button.css';
-@import './components/input.css';
-@import './components/action-panel.css';
+@import './components/share-picture.css';
+@import './components/vote-result-chart.css';
