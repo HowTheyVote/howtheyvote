@@ -2,16 +2,19 @@
     'avatarUrl' => null,
     'avatarStyle' => null,
     'title' => null,
+    'emoji' => null,
     'subtitle' => null,
     'position' => null,
     'stats' => null,
 ])
 
 <li {{ $attributes->bem('list-item') }}>
+    @if ($avatarUrl)
     <x-avatar :url="$avatarUrl" class="list-item__avatar" :style="$avatarStyle" />
+    @endif
 
     <div class="list-item__text">
-        <strong>{{ $title }}</strong>
+        <strong>{{ $title }} {{ $emoji }}</strong>
         <br>
         <span class="list-item__subtitle">{{ $subtitle }}</span>
 
