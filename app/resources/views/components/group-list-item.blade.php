@@ -12,4 +12,5 @@
     :stats="$stats"
     avatarStyle="squared"
     avatarUrl="/assets/groups/{{ Str::lower($group->code) }}.svg"
+    {{ $attributes }}
 />
