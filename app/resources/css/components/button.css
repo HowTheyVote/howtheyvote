@@ -1,0 +1,18 @@
+.button {
+    padding: var(--space-xxs) var(--space-xs);
+    border: 2px solid var(--gray-dark);
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--gray-dark);
+    background-color: white;
+    transition: 0.1s all ease-out;
+}
+
+.button:hover {
+    background-color: var(--gray-dark);
+    color: white;
+}
+
+.button--lg {
+    padding: var(--space-xs) var(--space-sm);
+}
