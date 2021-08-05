@@ -28,7 +28,7 @@
                         :truncate="true"
                         show-more="Show all MEPs"
                         :searchable="true"
-                        search-placeholder="Search MEPs by name"
+                        search-placeholder="Search by name or country"
                     >
                         @foreach ($members as $member)
                             <x-member-list-item
@@ -52,7 +52,7 @@
                         :truncate="true"
                         show-more="Show all countries"
                         :searchable="true"
-                        searchPlaceholder="Search countries by name"
+                        searchPlaceholder="Search by name"
                     >
                         @foreach ($countries as $country => $stats)
                             <x-country-list-item
