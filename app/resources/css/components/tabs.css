@@ -1,0 +1,10 @@
+.tabs {
+    display: block;
+}
+
+.tabs__tablist {
+    margin-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--gray-light);
+    gap: var(--space-sm);
+    display: flex;
+}

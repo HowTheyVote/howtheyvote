@@ -15,5 +15,8 @@
         "laravel-mix": "^6.0.6",
         "postcss": "^8.2.10",
         "prettier": "^2.2.1"
+    },
+    "dependencies": {
+        "@github/tab-container-element": "^3.1.2"
     }
 }

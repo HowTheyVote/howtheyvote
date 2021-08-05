@@ -86,7 +86,7 @@ it('displays a bar chart', function () {
 it('shows a list of members', function () {
     $response = $this->get('/votes/1');
 
-    expect($response)->toHaveSelectorWithText('.list-item__text', 'Jane DOE');
+    expect($response)->toHaveSelectorWithText('[role="tabpanel"] .list-item__text', 'Jane DOE');
     expect($response)->toHaveSelectorWithText('.list-item__text', 'Greens/EFA · Netherlands');
     expect($response)->toHaveSelector('.thumb--for.thumb--circle.list-item__thumb');
 });
@@ -119,7 +119,7 @@ it('shows a list of groups sorted descending by number of active members', funct
 
     $this->votingList->save();
     $response = $this->get('/votes/1');
-
+    expect($response)->toHaveSelectorWithText('[role="tabpanel"] .list-item__text', 'Progressive Alliance of Socialists and Democrats');
     expect($response)->toSeeInOrder([
         'Progressive Alliance of Socialists and Democrats',
         'Greens/European Free Alliance',
@@ -155,6 +155,7 @@ it('shows all countries of which MEPs participated sorted descending by number o
     $this->votingList->save();
     $response = $this->get('/votes/1');
 
+    expect($response)->toHaveSelectorWithText('[role="tabpanel"] .list-item__text', 'Netherlands');
     expect($response)->toSeeInOrder([
         'Netherlands',
         'Germany',
