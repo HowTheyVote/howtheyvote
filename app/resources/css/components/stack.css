@@ -17,3 +17,7 @@
 .stack--lg > * + * {
     margin-top: var(--space-lg);
 }
+
+.stack--xl > * + * {
+    margin-top: var(--space-xl);
+}
