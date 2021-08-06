@@ -3,6 +3,7 @@
 @import './global/base.css';
 @import './global/typography.css';
 @import './global/utils.css';
+@import './global/alpine.css';
 
 @import './components/stack.css';
 @import './components/wrapper.css';
