@@ -34,7 +34,6 @@
                             <x-member-list-item
                                 :member="$member"
                                 :position="$member->pivot->position"
-                                :searchKey="$member->full_name"
                             />
                         @endforeach
                     </x-list>
@@ -59,7 +58,6 @@
                             <x-country-list-item
                                 :country="\App\Enums\CountryEnum::make($country)"
                                 :stats="$stats"
-                                :searchKey="\App\Enums\CountryEnum::make($country)->label"
                             />
                         @endforeach
                     </x-list>
