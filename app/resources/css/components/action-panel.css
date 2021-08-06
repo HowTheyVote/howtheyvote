@@ -1,0 +1,17 @@
+.action-panel {
+    display: flex;
+    padding: var(--space);
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: start;
+
+    border-radius: 4px;
+    background-color: var(--gray-light);
+}
+
+@media screen and (min-width: 540px) {
+    .action-panel {
+        flex-direction: row;
+        align-items: center;
+    }
+}

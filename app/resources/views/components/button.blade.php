@@ -1,5 +1,14 @@
-@props(['size' => null])
+@props([
+    'size' => null,
+    'href' => null,
+])
 
-<button {{ $attributes->bem('button', $size) }}>
-    {{ $slot }}
-</button>
+@if ($href)
+    <a {{ $attributes->bem('button', $size) }} href="{{ $href }}">
+        {{ $slot }}
+    </a>
+@else
+    <button {{ $attributes->bem('button', $size) }}>
+        {{ $slot }}
+    </button>
+@endif
