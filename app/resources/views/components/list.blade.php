@@ -1,9 +1,9 @@
 @props([
     'truncate' => false,
-    'showMore' => 'Show more',
-    'showLess' => 'Show less',
+    'showMore' => __('components.list.show-more'),
+    'showLess' => __('components.list.show-less'),
     'searchable' => false,
-    'searchPlaceholder' => 'Search',
+    'searchPlaceholder' => __('components.list.search-placeholder'),
 ])
 
 @php
