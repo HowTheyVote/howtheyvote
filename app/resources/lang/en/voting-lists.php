@@ -16,4 +16,10 @@ return [
         'count' => ':voted of :total MEPs voted',
     ],
 
+    'download' => [
+        'heading' => 'Open Data',
+        'text' => 'We provide raw voting data for this vote, ready to use in your own analyses, visualizations or applications. Data is provided in CSV format and licensed under Creative Commons Attribution License 4.0.',
+        'button-label' => 'Download',
+    ],
+
 ];

@@ -1,18 +1,19 @@
 .alpha,
 .beta,
 .gamma {
-    font-family: var(--font-family-heading);
     font-weight: 500;
     line-height: 1.2;
     color: var(--blue-darker);
 }
 
 .alpha {
+    font-family: var(--font-family-heading);
     font-size: var(--text-xl);
 }
 
 .beta {
     font-size: var(--text-lg);
+    font-weight: 600;
 }
 
 .gamma {

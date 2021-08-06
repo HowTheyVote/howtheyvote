@@ -1,10 +1,17 @@
 .button {
+    display: inline-block;
     padding: var(--space-xxs) var(--space-xs);
+    line-height: 1;
+
     border: 2px solid var(--gray-dark);
     border-radius: 4px;
+    background-color: white;
+
     font-weight: 600;
     color: var(--gray-dark);
-    background-color: white;
+    text-decoration: none;
+    text-align: center;
+
     transition: 0.1s all ease-out;
 }
 
