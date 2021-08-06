@@ -9,7 +9,6 @@
 
     display: flex;
     margin-bottom: var(--space-sm);
-    padding-top: var(--space);
     gap: var(--space-sm);
 
     background-color: white;
@@ -17,4 +16,9 @@
 
     /* Prevent overflowing contents (e.g. shadows) from being visible */
     box-shadow: calc(-1 * var(--space)) 0 0 white;
+
+    /* We use padding-top to add space at the top when stuck and use
+     * margin-top to normalize that effect when unstuck. */
+    padding-top: var(--space);
+    margin-top: calc(-1 * var(--space));
 }

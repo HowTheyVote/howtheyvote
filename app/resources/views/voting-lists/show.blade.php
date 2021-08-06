@@ -1,6 +1,6 @@
 <x-app title="{{ $votingList->displayTitle }} · Vote Result">
     <x-wrapper>
-        <x-stack space="lg">
+        <x-stack space="xl">
             <x-stack space="xs">
                 <h1 class="alpha">{{ $votingList->display_title }}</h1>
                 <p>
