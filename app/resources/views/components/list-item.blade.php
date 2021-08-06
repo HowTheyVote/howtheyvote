@@ -6,34 +6,34 @@
     'subtitle' => null,
     'position' => null,
     'stats' => null,
-    'searchKey' => null,
 ])
-
-@php
-    $initialState = [
-        'searchKey' => $searchKey,
-    ];
-@endphp
 
 <li
     {{ $attributes->bem('list-item') }}
-
-    @if ($searchKey)
-        x-data="{{ json_encode($initialState) }}"
-        x-show="searchKey.toLowerCase().includes(searchQuery.toLowerCase())"
-    @endif
+    x-data="listItem"
+    x-show="matchesSearchQuery"
 >
     @if ($avatarUrl)
-    <x-avatar :url="$avatarUrl" class="list-item__avatar" :style="$avatarStyle" />
+        <x-avatar
+            :url="$avatarUrl"
+            class="list-item__avatar"
+            :style="$avatarStyle"
+        />
     @endif
 
     <div class="list-item__text">
-        <strong>{{ $title }} {{ $emoji }}</strong>
-        <br>
-        <span class="list-item__subtitle">{{ $subtitle }}</span>
+        <strong x-ref="title">
+            {{ $title }} {{ $emoji }}
+        </strong>
+
+        <div class="list-item__subtitle">{{ $subtitle }}</div>
 
         @if ($stats)
-            <x-vote-result-chart :stats="$stats" style="slim" class="list-item__chart" />
+            <x-vote-result-chart
+                :stats="$stats"
+                style="slim"
+                class="list-item__chart"
+            />
         @endif
     </div>
 
