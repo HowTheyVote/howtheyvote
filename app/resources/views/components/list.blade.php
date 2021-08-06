@@ -23,6 +23,7 @@
             type="search"
             x-model="searchQuery"
             :placeholder="$searchPlaceholder"
+            x-cloak
         />
     @endif
 
@@ -37,6 +38,7 @@
             x-on:click="truncate = !truncate"
             x-bind:aria-expanded="truncate ? 'false' : 'true'"
             x-show="searchQuery === ''"
+            x-cloak
         >
             <span x-show="truncate">{{ $showMore }}</span>
             <span x-show="!truncate">{{ $showLess }}</span>
