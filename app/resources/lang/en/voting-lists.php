@@ -12,8 +12,21 @@ return [
     'against' => 'Against',
     'abstentions' => 'Abstentions',
 
+    'members' => [
+        'title' => 'MEPs',
+        'search-placeholder' => 'Search by name or country',
+        'show-more' => 'Show all MEPs',
+    ],
+
     'groups' => [
+        'title' => 'Political Groups',
         'count' => ':voted of :total MEPs voted',
+    ],
+
+    'countries' => [
+        'title' => 'Countries',
+        'search-placeholder' => 'Search by name',
+        'show-more' => 'Show all countries',
     ],
 
     'download' => [

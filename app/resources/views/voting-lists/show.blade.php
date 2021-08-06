@@ -18,17 +18,23 @@
 
             <x-tabs>
                 <x-slot name="list">
-                    <x-tab-button id="members" :selected="true">MEPs</x-tab-button>
-                    <x-tab-button id="groups">Political Groups</x-tab-button>
-                    <x-tab-button id="countries">Countries</x-tab-button>
+                    <x-tab-button id="members" :selected="true">
+                        {{ __('voting-lists.members.title') }}
+                    </x-tab-button>
+                    <x-tab-button id="groups">
+                        {{ __('voting-lists.groups.title') }}
+                    </x-tab-button>
+                    <x-tab-button id="countries">
+                        {{ __('voting-lists.countries.title') }}
+                    </x-tab-button>
                 </x-slot>
 
                 <x-tab-panel id="members" :selected="true">
                     <x-list
                         :truncate="true"
-                        show-more="Show all MEPs"
+                        :show-more="__('voting-lists.members.show-more')"
                         :searchable="true"
-                        search-placeholder="Search by name or country"
+                        :search-placeholder="__('voting-lists.members.search-placeholder')"
                     >
                         @foreach ($members as $member)
                             <x-member-list-item
@@ -50,9 +56,9 @@
                 <x-tab-panel id="countries">
                     <x-list
                         :truncate="true"
-                        show-more="Show all countries"
+                        :show-more="__('voting-lists.countries.show-more')"
                         :searchable="true"
-                        searchPlaceholder="Search by name"
+                        :search-placeholder="__('voting-lists.countries.search-placeholder')"
                     >
                         @foreach ($countries as $country => $stats)
                             <x-country-list-item
