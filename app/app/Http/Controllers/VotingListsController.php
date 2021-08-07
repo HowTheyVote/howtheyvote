@@ -64,7 +64,7 @@ class VotingListsController extends Controller
     {
         $rows = $this->members($votingList)->map(function ($member) {
             return [
-                'member_id' => $member->member_id,
+                'member_id' => $member->id,
                 'last_name' => $member->last_name,
                 'first_name' => $member->first_name,
                 'group.abbreviation' => $member->group->abbreviation,
@@ -87,7 +87,10 @@ class VotingListsController extends Controller
             ->members()
             ->withGroupMembershipAt($votingList->date)
             ->with('group')
-            ->select('*')
+            // Select only specific attributes of joined tables
+            // as otherwise e.g. `group_memberships.id` would overwrite
+            // `members.id`.
+            ->select('members.*', 'votings.position', 'group_memberships.group_id')
             ->get();
     }
 }
