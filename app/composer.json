@@ -16,6 +16,7 @@
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "sentry/sentry-laravel": "^2.4",
+        "silber/page-cache": "^1.0",
         "spatie/laravel-enum": "^2",
         "spatie/simple-excel": "^1.13",
         "spatie/url": "^2.0",

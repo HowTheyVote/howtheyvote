@@ -89,6 +89,11 @@
     minute: "*"
     job: "cd {{ epvotes.install_dir }}/app && php artisan schedule:run >> /dev/null 2>&1"
 
+- name: Clear static page cache
+  shell:
+    cmd: php artisan page-cache:clear
+    chdir: "{{ epvotes.install_dir }}/app"
+
 - name: Disable Laravel maintenance mode
   shell:
     cmd: php artisan up
