@@ -6,6 +6,10 @@
     padding: var(--space-xxs) var(--space-xs);
 }
 
+input[type='search'] {
+    -webkit-appearance: none;
+}
+
 .input:focus {
     outline: none;
     border-color: var(--blue);
