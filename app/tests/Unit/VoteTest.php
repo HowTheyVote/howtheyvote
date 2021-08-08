@@ -31,6 +31,22 @@ it('returns related votes', function () {
     expect($relatedVotes->pluck('id'))->not()->toContain($vote->id);
 });
 
+it('returns primary vote', function () {
+    $voteCollection = VoteCollection::factory()->create();
+
+    $nonPrimary = Vote::factory([
+        'vote_collection_id' => $voteCollection,
+        'type' => VoteTypeEnum::AMENDMENT(),
+    ])->create();
+
+    $primary = Vote::factory([
+        'vote_collection_id' => $voteCollection,
+        'type' => VoteTypeEnum::PRIMARY(),
+    ])->create();
+
+    expect($nonPrimary->primaryVote->id)->toEqual($primary->id);
+});
+
 it('returns a subtitle for amendments', function () {
     $vote = Vote::factory([
         'type' => VoteTypeEnum::AMENDMENT(),

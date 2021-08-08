@@ -1,5 +1,6 @@
 <x-app title="{{ $votingList->displayTitle }} · Vote Result">
     <x-wrapper>
+
         <x-stack space="xl">
             <x-stack space="xs">
                 <h1 class="alpha">{{ $votingList->display_title }}</h1>
@@ -13,7 +14,7 @@
                     @endif
                 </p>
 
-                @if ($votingList?->vote->type != \App\Enums\VoteTypeEnum::PRIMARY())
+                @if ($votingList->vote?->type != \App\Enums\VoteTypeEnum::PRIMARY())
                     <x-callout style="warning" :heading="__('voting-lists.non-primary-callout.heading')">
                         @if ($votingList->vote->type == \App\Enums\VoteTypeEnum::AMENDMENT())
                             {{
@@ -33,7 +34,7 @@
 
                         {!!
                             __('voting-lists.non-primary-callout.text', [
-                                'url' => route('voting-list.show', $votingList->vote->primaryVote()->first()->votingList),
+                                'url' => route('voting-list.show', $votingList->vote->primaryVote->votingList),
                             ])
                         !!}
                     </x-callout>

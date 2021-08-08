@@ -69,11 +69,17 @@ class Vote extends Model
 
     public function relatedVotes()
     {
-        return Vote::where('vote_collection_id', $this->voteCollection->id)->where('id', '!=', $this->id);
+        return $this
+            ->hasMany(self::class, 'vote_collection_id', 'vote_collection_id')
+            ->where('id', '!=', $this->id);
     }
 
     public function primaryVote()
     {
-        return $this->relatedVotes()->where('type', VoteTypeEnum::PRIMARY());
+        return $this
+            ->hasOne(self::class, 'vote_collection_id', 'vote_collection_id')
+            ->ofMany(['id' => 'max'], function ($query) {
+                return $query->where('type', VoteTypeEnum::PRIMARY());
+            });
     }
 }
