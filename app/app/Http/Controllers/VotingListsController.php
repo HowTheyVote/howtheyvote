@@ -60,9 +60,14 @@ class VotingListsController extends Controller
             return abort(404);
         }
 
+        $relatedVotes = $votingList->vote
+            ->relatedVotes()
+            ->with('votingList')
+            ->get();
+
         return view('voting-lists.related', [
             'votingList' => $votingList,
-            'relatedVotes' => $votingList->vote->relatedVotes()->get(),
+            'relatedVotes' => $relatedVotes,
         ]);
     }
 
