@@ -9,6 +9,10 @@
     background-color: var(--gray-lightest);
 }
 
+.action-panel__action {
+    flex-shrink: 0;
+}
+
 @media screen and (min-width: 540px) {
     .action-panel {
         flex-direction: row;

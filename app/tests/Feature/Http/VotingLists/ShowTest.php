@@ -2,6 +2,7 @@
 
 use App\Enums\CountryEnum;
 use App\Enums\VoteResultEnum;
+use App\Enums\VoteTypeEnum;
 use App\Group;
 use App\Member;
 use App\Vote;
@@ -39,21 +40,41 @@ beforeEach(function () {
         'country' => CountryEnum::DE(),
     ])->activeAt($date, $this->sd)->count(2);
 
-    $votingListData = [
+    $voteCollection = VoteCollection::factory(['title' => 'My Title'])->create();
+
+    $votingListDataFinal = [
         'id' => 1,
         'description' => 'Matched Voting List',
         'date'=> $date,
         'vote_id' => Vote::factory([
+            'type' => VoteTypeEnum::PRIMARY(),
             'result' => VoteResultEnum::ADOPTED(),
-            'vote_collection_id' => VoteCollection::factory(['title' => 'My Title']),
+            'vote_collection_id' => $voteCollection,
         ]),
     ];
 
-    $this->votingList = VotingList::factory($votingListData)
+    $this->votingList = VotingList::factory($votingListDataFinal)
         ->withStats()
         ->withMembers('FOR', $greensFor)
         ->withMembers('AGAINST', $sdAgainst)
         ->create();
+
+    $votingListDataNotFinal = [
+            'id' => 2,
+            'description' => 'Matched Voting List For Non Primary Vote',
+            'date'=> $date,
+            'vote_id' => Vote::factory([
+                'type' => VoteTypeEnum::SEPARATE(),
+                'result' => VoteResultEnum::ADOPTED(),
+                'vote_collection_id' => $voteCollection,
+            ]),
+        ];
+
+    $this->votingListNonFinal = VotingList::factory($votingListDataNotFinal)
+            ->withStats()
+            ->withMembers('FOR', $greensFor)
+            ->withMembers('AGAINST', $sdAgainst)
+            ->create();
 });
 
 it('does not fail if there is no associated vote', function () {
@@ -160,4 +181,35 @@ it('shows all countries of which MEPs participated sorted descending by number o
         'Netherlands',
         'Germany',
     ]);
+});
+
+it('shows a panel for link to related votes if associated vote is final ', function () {
+    $response = $this->get('/votes/1');
+    expect($response)->toHaveSelectorWithText('.action-panel', 'Related Votes');
+
+    $response = $this->get('/votes/2');
+
+    expect($response)->not()->toHaveSelectorWithText('.action-panel', 'Related Votes');
+});
+
+it('shows a callout if associated vote is not final', function () {
+    $response = $this->get('/votes/2');
+
+    expect($response)->toHaveSelector('.callout');
+
+    $response = $this->get('/votes/1');
+
+    expect($response)->not()->toHaveSelector('.callout--warning');
+});
+
+it('callout shows appropriate text for non-final votes', function () {
+    $response = $this->get('/votes/2');
+    expect($response)->toHaveSelectorWithText('.callout--warning', 'separate');
+
+    $vote = VotingList::find(2)->vote;
+    $vote->type = VoteTypeEnum::AMENDMENT();
+    $vote->save();
+
+    $response = $this->get('/votes/2');
+    expect($response)->toHaveSelectorWithText('.callout--warning', 'amendment');
 });

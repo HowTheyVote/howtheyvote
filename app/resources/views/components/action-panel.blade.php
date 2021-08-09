@@ -8,6 +8,7 @@
         <h2 class="beta">{{ $heading }}</h2>
         <p>{{ $text }}</p>
     </x-stack>
-
-    {{ $slot }}
+    <div class="action-panel__action">
+        {{ $slot }}
+    </div>
 </div>
