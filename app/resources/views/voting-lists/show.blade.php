@@ -97,6 +97,20 @@
                 </x-tab-panel>
             </x-tabs>
 
+            @if ($votingList->vote?->type == \App\Enums\VoteTypeEnum::PRIMARY() && $votingList->vote->relatedVotes)
+            <x-action-panel
+                :heading="__('voting-lists.related-votes-list.heading')"
+                :text="__('voting-lists.related-votes-list.text')"
+            >
+                <x-button
+                    size="lg"
+                    href="{{ route('voting-list.related', $votingList) }}"
+                >
+                    {{ __('voting-lists.related-votes-list.button-label') }}
+                </x-button>
+            </x-action-panel>
+            @endif
+
             <x-action-panel
                 :heading="__('voting-lists.download.heading')"
                 :text="__('voting-lists.download.text')"

@@ -35,6 +35,12 @@ return [
         'button-label' => 'Download',
     ],
 
+    'related-votes-list' => [
+        'heading' => 'See other votes on this subject',
+        'text' => 'There were previous votes on this subject, like amendments or split-votes.',
+        'button-label' => 'See related votes',
+    ],
+
     'non-primary-callout' => [
         'heading' => 'This is not the final vote!',
         'amendment' => 'This is a vote on :amendment.',
