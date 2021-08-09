@@ -14,7 +14,7 @@
                     @endif
                 </p>
 
-                @if ($votingList->vote?->type != \App\Enums\VoteTypeEnum::PRIMARY())
+                @if ($votingList->vote && $votingList->vote->type != \App\Enums\VoteTypeEnum::PRIMARY())
                     <x-callout style="warning" :heading="__('voting-lists.non-primary-callout.heading')">
                         @if ($votingList->vote->type == \App\Enums\VoteTypeEnum::AMENDMENT())
                             {{
@@ -97,7 +97,7 @@
                 </x-tab-panel>
             </x-tabs>
 
-            @if ($votingList->vote?->type == \App\Enums\VoteTypeEnum::PRIMARY() && $votingList->vote->relatedVotes)
+            @if ($votingList->vote && $votingList->vote->type == \App\Enums\VoteTypeEnum::PRIMARY() && $votingList->vote->relatedVotes()->exists())
             <x-action-panel
                 :heading="__('voting-lists.related-votes-list.heading')"
                 :text="__('voting-lists.related-votes-list.text')"

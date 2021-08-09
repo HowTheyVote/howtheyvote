@@ -36,9 +36,9 @@ return [
     ],
 
     'related-votes-list' => [
-        'heading' => 'See other votes on this subject',
+        'heading' => 'Related Votes',
         'text' => 'There were previous votes on this subject, like amendments or split-votes.',
-        'button-label' => 'See related votes',
+        'button-label' => 'View votes',
     ],
 
     'non-primary-callout' => [
