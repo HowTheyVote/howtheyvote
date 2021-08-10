@@ -110,3 +110,20 @@ it('checks separate type', function () {
     expect($vote->isAmendmentVote())->toBe(false);
     expect($vote->isSeparateVote())->toBe(true);
 });
+
+it('checks if related votes exist', function () {
+    $voteCollection = VoteCollection::factory()
+        ->create();
+
+    $nonPrimary = Vote::factory([
+        'vote_collection_id' => $voteCollection,
+        'type' => VoteTypeEnum::AMENDMENT(),
+    ])->create();
+
+    $primary = Vote::factory([
+        'vote_collection_id' => $voteCollection,
+        'type' => VoteTypeEnum::PRIMARY(),
+    ])->make();
+
+    expect($primary->hasRelatedVotes())->toBe(true);
+});
