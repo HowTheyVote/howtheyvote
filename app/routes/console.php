@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\CreateMemberThumbnailAction;
 use App\Actions\GenerateVoteSharePicAction;
 use App\Actions\MatchVotesAndVotingListsAction;
 use App\Actions\ScrapeMemberGroupsAction;
@@ -10,7 +11,6 @@ use App\Actions\ScrapeVotingListsAction;
 use App\Member;
 use App\Term;
 use App\VoteCollection;
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 
@@ -48,6 +48,20 @@ Artisan::command('scrape:members-info', function (ScrapeMemberInfoAction $action
 
     $this->output->writeln('');
 })->describe('Scrape and save info for all saved members.');
+
+Artisan::command('scrape:members-photos', function (CreateMemberThumbnailAction $action) {
+    $allMembers = Member::all();
+    $membersCount = $allMembers->count();
+
+    foreach ($allMembers as $index => $member) {
+        $progress = ($index + 1).'/'.$membersCount;
+        $this->output->write("\r<info>Creating thumbnail for member: {$progress}</info>");
+
+        $action->execute($member);
+    }
+
+    $this->output->writeln('');
+});
 
 Artisan::command('scrape:members-groups {--term=}', function (
     int $term,
