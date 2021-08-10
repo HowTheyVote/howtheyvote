@@ -365,3 +365,18 @@ class SummaryIDScraper(Scraper):
             return match.group(1)
 
         return None
+
+
+class SummaryScraper(Scraper):
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/popups/"
+
+    def __init__(self, summary_id: int):
+        self.summary_id = summary_id
+
+    def _url(self) -> str:
+        popup = f"summary.do?id={self.summary_id}&t=e&l=en"
+        return f"{self.BASE_URL}{popup}"
+
+    def _extract_data(self) -> List[str]:
+        items = self._resource.select(".ep-a_text > .MsoNormal")
+        return [item.text.strip().replace("\n", " ") for item in items]
