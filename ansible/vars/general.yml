@@ -6,3 +6,10 @@ poetry_executable: "{{ ansible_facts.env.HOME }}/.poetry/bin/poetry"
 epvotes:
   version: main
   install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
+  domains:
+    - howtheyvote.eu
+    - how-they-vote.eu
+    - abstimmungen.eu
+    - howtheyvoted.eu
+    - how-they-voted.eu
+    - ep-votes.eu
