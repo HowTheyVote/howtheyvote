@@ -25,10 +25,6 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->describe('Display an inspiring quote');
-
 Artisan::command('scrape:members {--term=}', function (
     int $term,
     ScrapeMembersAction $action
@@ -108,7 +104,7 @@ Artisan::command('scrape:all {--term=} {--from=} {--to=}', function (
 
     Artisan::call('scrape:members', ['--term' => $term]);
     Artisan::call('scrape:members-groups', ['--term' => $term]);
-    Artisan::call('scrape:members-infos');
+    Artisan::call('scrape:members-info');
 
     $count = VoteCollection::count();
 
