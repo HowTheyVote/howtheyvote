@@ -47,14 +47,14 @@ class Vote extends Model
 
     public function getSubtitleAttribute()
     {
-        if ($this->type->equals(VoteTypeEnum::AMENDMENT())) {
+        if ($this->isAmendmentVote()) {
             return __('votes.subtitle.amendment', [
                 'amendment' => $this->amendment,
                 'author' => $this->author,
             ]);
         }
 
-        if ($this->type->equals(VoteTypeEnum::SEPARATE())) {
+        if ($this->isSeparateVote()) {
             $subject = $this->split_part
                 ? "{$this->subject}/{$this->split_part}"
                 : $this->subject;
@@ -62,7 +62,7 @@ class Vote extends Model
             return __('votes.subtitle.separate', ['subject' => $subject]);
         }
 
-        if ($this->type->equals(VoteTypeEnum::PRIMARY())) {
+        if ($this->isPrimaryVote()) {
             return __('votes.subtitle.primary');
         }
     }

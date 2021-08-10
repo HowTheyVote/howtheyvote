@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CountryEnum;
-use App\Enums\VoteTypeEnum;
 use App\Group;
 use App\VotingList;
 use Spatie\SimpleExcel\SimpleExcelWriter;
@@ -56,7 +55,7 @@ class VotingListsController extends Controller
             return abort(404);
         }
 
-        if (! $votingList->vote->type->equals(VoteTypeEnum::PRIMARY())) {
+        if (! $votingList->vote->isPrimaryVote()) {
             return abort(404);
         }
 
