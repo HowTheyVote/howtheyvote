@@ -32,11 +32,13 @@
                             }}
                         @endif
 
+                        @if ($votingList->vote->primaryVote)
                         {!!
                             __('voting-lists.non-primary-callout.text', [
                                 'url' => route('voting-list.show', $votingList->vote->primaryVote->votingList),
                             ])
                         !!}
+                        @endif
                     </x-callout>
                 @endif
 
