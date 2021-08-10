@@ -82,4 +82,19 @@ class Vote extends Model
                 return $query->where('type', VoteTypeEnum::PRIMARY());
             });
     }
+
+    public function isPrimaryVote()
+    {
+        return VoteTypeEnum::PRIMARY()->equals($this->type);
+    }
+
+    public function isSeparateVote()
+    {
+        return VoteTypeEnum::SEPARATE()->equals($this->type);
+    }
+
+    public function isAmendmentVote()
+    {
+        return VoteTypeEnum::AMENDMENT()->equals($this->type);
+    }
 }

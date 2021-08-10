@@ -83,3 +83,30 @@ it('returns a subtitle for primary votes', function () {
 
     expect($vote->subtitle)->toEqual('Final vote');
 });
+
+it('checks primary type', function () {
+    $vote = Vote::factory(['type' => VoteTypeEnum::PRIMARY()])
+        ->make();
+
+    expect($vote->isPrimaryVote())->toBe(true);
+    expect($vote->isAmendmentVote())->toBe(false);
+    expect($vote->isSeparateVote())->toBe(false);
+});
+
+it('checks amendment type', function () {
+    $vote = Vote::factory(['type' => VoteTypeEnum::AMENDMENT()])
+        ->make();
+
+    expect($vote->isPrimaryVote())->toBe(false);
+    expect($vote->isAmendmentVote())->toBe(true);
+    expect($vote->isSeparateVote())->toBe(false);
+});
+
+it('checks separate type', function () {
+    $vote = Vote::factory(['type' => VoteTypeEnum::SEPARATE()])
+        ->make();
+
+    expect($vote->isPrimaryVote())->toBe(false);
+    expect($vote->isAmendmentVote())->toBe(false);
+    expect($vote->isSeparateVote())->toBe(true);
+});
