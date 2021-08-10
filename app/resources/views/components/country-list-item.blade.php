@@ -11,5 +11,6 @@
         'total' => $stats['active'],
     ])"
     :stats="$stats"
+    :search-key="$country->label"
     {{ $attributes }}
 />

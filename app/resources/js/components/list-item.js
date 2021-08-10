@@ -1,19 +1,17 @@
-export default () => ({
-  title: '',
-  subtitle: '',
-
-  init() {
-    this.title = this.$refs.title.textContent.toLowerCase().trim();
-    this.subtitle = this.$refs.subtitle.textContent.toLowerCase().trim();
-  },
+export default searchKey => ({
+  searchKey: searchKey && searchKey.toLowerCase(),
 
   matchesSearchQuery() {
-    const query = this.searchQuery.toLowerCase().trim();
+    const query = this.searchQuery && this.searchQuery.toLowerCase().trim();
 
     if (!query) {
       return true;
     }
 
-    return (this.title + this.subtitle).includes(query);
+    if (!this.searchKey) {
+      return false;
+    }
+
+    return this.searchKey.includes(query);
   },
 });
