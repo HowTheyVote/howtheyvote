@@ -99,7 +99,7 @@
                 </x-tab-panel>
             </x-tabs>
 
-            @if ($votingList->vote && $votingList->vote->isPrimaryVote() && $votingList->vote->relatedVotes()->exists())
+            @if ($votingList->vote && $votingList->vote->isPrimaryVote() && $votingList->vote->hasRelatedVotes())
             <x-action-panel
                 :heading="__('voting-lists.related-votes-list.heading')"
                 :text="__('voting-lists.related-votes-list.text')"

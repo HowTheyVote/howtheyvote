@@ -97,4 +97,9 @@ class Vote extends Model
     {
         return VoteTypeEnum::AMENDMENT()->equals($this->type);
     }
+
+    public function hasRelatedVotes()
+    {
+        return $this->relatedVotes()->exists();
+    }
 }
