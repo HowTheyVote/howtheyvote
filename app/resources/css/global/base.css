@@ -24,6 +24,10 @@ body {
     padding: var(--space) var(--space-sm);
 }
 
+a {
+    color: inherit;
+}
+
 input,
 button,
 textarea {

@@ -13,6 +13,7 @@
 @import './components/avatar.css';
 @import './components/thumb.css';
 @import './components/cc-logo.css';
+@import './components/callout.css';
 
 @import './components/action-panel.css';
 @import './components/list.css';
@@ -21,3 +22,4 @@
 @import './components/tab-button.css';
 @import './components/share-picture.css';
 @import './components/vote-result-chart.css';
+@import './components/vote-card.css';

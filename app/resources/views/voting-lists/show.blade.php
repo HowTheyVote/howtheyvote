@@ -13,6 +13,32 @@
                     @endif
                 </p>
 
+                @if ($votingList?->vote->type != \App\Enums\VoteTypeEnum::PRIMARY())
+                    <x-callout style="warning" :heading="__('voting-lists.non-primary-callout.heading')">
+                        @if ($votingList->vote->type == \App\Enums\VoteTypeEnum::AMENDMENT())
+                            {{
+                                __('voting-lists.non-primary-callout.amendment', [
+                                    'amendment' => lcfirst($votingList->vote->subtitle),
+                                ])
+                            }}
+                        @endif
+
+                        @if ($votingList->vote->type == \App\Enums\VoteTypeEnum::SEPARATE())
+                            {{
+                                __('voting-lists.non-primary-callout.separate', [
+                                    'separate' => lcfirst($votingList->vote->subtitle),
+                                ])
+                            }}
+                        @endif
+
+                        {!!
+                            __('voting-lists.non-primary-callout.text', [
+                                'url' => route('voting-list.show', $votingList->vote->primaryVote()->first()->votingList),
+                            ])
+                        !!}
+                    </x-callout>
+                @endif
+
                 <x-vote-result-chart :stats="$votingList->stats"/>
             </x-stack>
 

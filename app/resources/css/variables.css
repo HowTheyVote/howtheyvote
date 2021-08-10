@@ -62,6 +62,21 @@
     --blue-dark: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 10%));
     --blue-darker: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 20%));
 
+    --orange-h: 39;
+    --orange-s: 100%;
+    --orange-l: 49%;
+    --orange: hsl(var(--orange-h), var(--orange-s), var(--orange-l));
+    --orange-lightest: hsl(
+        var(--orange-h),
+        var(--orange-s),
+        calc(var(--orange-l) + 40%)
+    );
+    --orange-darker: hsl(
+        var(--orange-h),
+        var(--orange-s),
+        calc(var(--orange-l) - 35%)
+    );
+
     --gray-h: 213;
     --gray-s: 10%;
     --gray-l: 50%;

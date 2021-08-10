@@ -35,4 +35,10 @@ return [
         'button-label' => 'Download',
     ],
 
+    'non-primary-callout' => [
+        'heading' => 'This is not the final vote!',
+        'amendment' => 'This is a vote on :amendment.',
+        'separate' => 'This is a :separate.',
+        'text' => 'View the <a href=":url">result of the final vote</a> on this subject.',
+    ],
 ];

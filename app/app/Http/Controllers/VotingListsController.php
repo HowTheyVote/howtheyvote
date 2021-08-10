@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CountryEnum;
+use App\Enums\VoteTypeEnum;
 use App\Group;
 use App\VotingList;
 use Spatie\SimpleExcel\SimpleExcelWriter;
@@ -46,6 +47,22 @@ class VotingListsController extends Controller
             'members' => $this->members($votingList),
             'groups' => $groups,
             'countries' => $countries,
+        ]);
+    }
+
+    public function related(VotingList $votingList)
+    {
+        if (! $votingList->vote) {
+            return abort(404);
+        }
+
+        if (! $votingList->vote->type->equals(VoteTypeEnum::PRIMARY())) {
+            return abort(404);
+        }
+
+        return view('voting-lists.related', [
+            'votingList' => $votingList,
+            'relatedVotes' => $votingList->vote->relatedVotes()->get(),
         ]);
     }
 

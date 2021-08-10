@@ -18,6 +18,7 @@
 
 .gamma {
     font-size: var(--text-size);
+    font-weight: 600;
 }
 
 strong {
