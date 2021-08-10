@@ -6,11 +6,12 @@
     'subtitle' => null,
     'position' => null,
     'stats' => null,
+    'searchKey' => null,
 ])
 
 <li
     {{ $attributes->bem('list-item') }}
-    x-data="listItem"
+    x-data="listItem({{ json_encode($searchKey) }})"
     x-show="matchesSearchQuery"
 >
     @if ($avatarUrl)
@@ -22,11 +23,11 @@
     @endif
 
     <div class="list-item__text">
-        <strong x-ref="title">
+        <strong>
             {{ $title }} {{ $emoji }}
         </strong>
 
-        <div class="list-item__subtitle" x-ref="subtitle">
+        <div class="list-item__subtitle">
             {{ $subtitle }}
         </div>
 
