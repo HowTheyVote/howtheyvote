@@ -4,7 +4,7 @@
 ])
 
 <x-list-item
-    avatar-url="https://www.europarl.europa.eu/mepphoto/{{ $member->web_id }}.jpg"
+    :avatar-url="$member->thumbnail_url"
     :title="$member->full_name"
     :subtitle="$member->group->abbreviation.' · '.$member->country->label"
     :position="$position"

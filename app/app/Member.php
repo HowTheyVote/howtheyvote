@@ -108,4 +108,9 @@ class Member extends Model
             $join->on('group_memberships.member_id', '=', 'members.id');
         });
     }
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        return "/storage/members/{$this->id}-104px.jpg";
+    }
 }

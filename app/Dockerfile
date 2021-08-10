@@ -5,6 +5,9 @@ RUN apk --update add \
     autoconf \
     libressl-dev \
     libzip-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
     bash \
     less \
     make \
@@ -13,12 +16,18 @@ RUN apk --update add \
 RUN pecl install pcov && docker-php-ext-enable pcov
 RUN docker-php-ext-enable pcov
 
+RUN docker-php-ext-configure gd \
+    --enable-gd \
+    --with-jpeg \
+    --with-webp
+
 RUN docker-php-ext-install \
     bcmath \
     ctype \
     zip \
     mysqli \
-    pdo_mysql
+    pdo_mysql \
+    gd
 
 RUN apk add nodejs npm
 
