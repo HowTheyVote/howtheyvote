@@ -333,3 +333,35 @@ class VoteCollectionsScraper(Scraper):
     def _title(self, tag: Tag) -> str:
         title_tag = tag.find("Vote.Result.Text.Title")
         return normalize_whitespace(title_tag.text.strip())
+
+
+class SummaryIDScraper(Scraper):
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/popups/"
+
+    def __init__(self, reference: str):
+        self.reference = reference
+
+    def _url(self) -> str:
+        popup = f"ficheprocedure.do?reference={self.reference}"
+        return f"{self.BASE_URL}{popup}"
+
+    def _extract_data(self) -> Optional[str]:
+        section = self._resource.select_one("#key_events-data")
+        rows = section.select(".ep-table-row")
+
+        for row in rows:
+            description = row.select(".ep-table-column-head")[1]
+
+            if description.text.strip() != "Decision by Parliament":
+                continue
+
+            button = row.select_one("button[onclick]")
+            regex = r"\/oeil\/popups\/summary\.do\?id=(\d*)"
+            match = re.search(regex, button["onclick"])
+
+            if not match:
+                return None
+
+            return match.group(1)
+
+        return None
