@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Redirect to Primary Domain
+    RewriteCond %{HTTP_HOST} !^howtheyvote.eu [NC]
+    RewriteRule ^(.*)$ https://howtheyvote.eu/$1 [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

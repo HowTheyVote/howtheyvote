@@ -28,3 +28,17 @@
 
 - name: Setup Google FLoC opt out header
   command: "uberspace web header set / Permissions-Policy \"interest-cohort=()\""
+
+- name: Get configured domains
+  command: "uberspace web domain list"
+  register: current_domains
+
+- name: Add new domains
+  command: "uberspace web domain add {{ item }}"
+  with_items: "{{ epvotes.domains }}"
+  when: "item not in current_domains.stdout_lines"
+
+- name: Remove outdated domains
+  command: "uberspace web domain del {{ item }}"
+  with_items: "{{ current_domains.stdout_lines }}"
+  when: "item not in epvotes.domains and not item.endswith('uber.space')"
