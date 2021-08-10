@@ -9,6 +9,7 @@ from ep_votes.scrapers import (
     MemberGroupsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
+    SummaryIDScraper,
 )
 from ep_votes.models import (
     Member,
@@ -30,6 +31,7 @@ TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 def mock_response(req, context):
     url = req.url
     url = url.replace("https://www.europarl.europa.eu", "")
+    url = url.replace("https://oeil.secure.europarl.europa.eu", "")
 
     MOCK_RESPONSES = {
         "/meps/en/directory/xml/?leg=8": "directory_term_8.xml",
@@ -44,6 +46,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/PV-9-2021-03-09-RCV_FR.xml": "pv-9-2021-09-03-rcv-fr.xml",
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
+        "/oeil/popups/ficheprocedure.do?reference=B9-0116/2021": "ficheprocedure_b9-0116-2021.html",
     }
 
     file = MOCK_RESPONSES[url]
@@ -444,3 +447,15 @@ def test_vote_collections_scraper_include_row_no_rcv():
 
     assert scraper._include_row(rows[2]) is True
     assert scraper._include_row(rows[3]) is True
+
+
+def test_summary_id_scraper_run():
+    scraper = SummaryIDScraper(reference="B9-0116/2021")
+    assert scraper.run() == "1651118"
+
+
+def test_summary_id_scraper_url():
+    scraper = SummaryIDScraper(reference="B9-0116/2021")
+    expected = "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=B9-0116/2021"
+
+    assert scraper._url() == expected
