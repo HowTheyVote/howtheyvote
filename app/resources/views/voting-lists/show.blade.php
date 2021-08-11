@@ -17,7 +17,14 @@
                 </p>
 
                 @if ($votingList->vote && $votingList->vote->summary)
-                    <p>{{ $votingList->vote->summary->excerpt }}</p>
+                    <p>
+                        {{ $votingList->vote->summary->excerpt }}
+                        <a href="{{ route('voting-list.summary', [
+                            'votingList' => $votingList,
+                        ]) }}">
+                            {{ __('voting-lists.summary.read-more') }}
+                        </a>
+                    </p>
                 @endif
 
                 @if ($votingList->vote && !$votingList->vote->isPrimaryVote())

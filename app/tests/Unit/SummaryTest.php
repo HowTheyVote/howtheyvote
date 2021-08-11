@@ -35,4 +35,4 @@ it('has external URL', function () {
     $expected = 'https://oeil.secure.europarl.europa.eu/oeil/popups/summary.do?id=1234567&t=e&l=en';
 
     expect($summary->external_url)->toEqual($expected);
-})->only();
+});

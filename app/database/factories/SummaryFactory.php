@@ -24,6 +24,7 @@ class SummaryFactory extends Factory
         return [
             'reference' => 'Reference',
             'text' => 'Summary',
+            'oeil_id' => 1234567,
         ];
     }
 }
