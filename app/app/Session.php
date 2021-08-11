@@ -19,4 +19,9 @@ class Session extends Model
     protected $casts = [
         'location' => LocationEnum::class,
     ];
+
+    public function getDisplayTitleAttribute()
+    {
+        return __('session.title', ['start' => $this->start_date, 'end' => $this->end_date]);
+    }
 }
