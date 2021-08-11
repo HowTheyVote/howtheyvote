@@ -7,18 +7,21 @@ from ep_votes.scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
+    SessionsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
     SummaryIDScraper,
     SummaryScraper,
 )
 from ep_votes.models import (
+    Location,
     Member,
     MemberInfo,
     Country,
     Group,
     GroupMembership,
     Position,
+    Session,
     Voting,
     VotingList,
     VoteResult,
@@ -49,6 +52,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
         "/oeil/popups/ficheprocedure.do?reference=B9-0116/2021": "ficheprocedure_b9-0116-2021.html",
         "/oeil/popups/summary.do?id=1651118&t=e&l=en": "summary-1651118.html",
+        "/oeil/srvc/calendar.json?y=2021&m=11": "calendar_2021_11.json",
     }
 
     file = MOCK_RESPONSES[url]
@@ -560,3 +564,13 @@ def test_summary_scraper_format_paragraph():
     tag = BeautifulSoup(html, "lxml").select_one("p")
 
     assert scraper._format_paragraph(tag) == "## This is a heading"
+
+
+def test_sessions_scraper_run():
+    scraper = SessionsScraper(month=11, year=2021)
+    result = scraper.run()
+
+    session_one = Session(date(2021, 11, 10), date(2021, 11, 11), Location.BRUSSELS)
+    session_two = Session(date(2021, 11, 22), date(2021, 11, 25), Location.STRASBOURG)
+
+    assert result == [session_one, session_two]

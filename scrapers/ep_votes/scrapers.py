@@ -27,6 +27,8 @@ from .models import (
     Vote,
     VoteResult,
     VoteCollection,
+    Session,
+    Location,
 )
 
 USER_AGENTS = [
@@ -409,3 +411,39 @@ class SummaryScraper(Scraper):
             return "## " + text
 
         return text
+
+
+class SessionsScraper(Scraper):
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/srvc/calendar.json"
+
+    def __init__(self, year: int, month: int):
+        self.year = year
+        self.month = month
+
+    def _load(self) -> None:
+        self._resource = requests.get(self._url()).json()
+
+    def _url(self) -> str:
+        return f"{self.BASE_URL}?y={self.year}&m={self.month}"
+
+    def _extract_data(self) -> List[Session]:
+        sessions = self._resource["sessions"]
+        return [self._session(session) for session in sessions]
+
+    def _session(self, session: dict) -> Session:
+        return Session(
+            start_date=self._parse_date(session["start"]),
+            end_date=self._parse_date(session["end"]),
+            location=self._parse_location(session["location"]),
+        )
+
+    def _parse_date(self, date_string: str) -> date:
+        return date.fromisoformat(
+            date_string[0:4] + "-" + date_string[4:6] + "-" + date_string[6:]
+        )
+
+    def _parse_location(self, location_string: str) -> Location:
+        if "BRUSSELS" in location_string:
+            return Location.BRUSSELS
+        else:
+            return Location.STRASBOURG
