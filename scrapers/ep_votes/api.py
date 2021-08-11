@@ -21,6 +21,7 @@ from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
+    SessionsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
     SummaryIDScraper,
@@ -151,3 +152,10 @@ def summary_id(reference: str) -> SimpleResponse:
 @params(summary_id=str)
 def summary(summary_id: str) -> SimpleResponse:
     return SummaryScraper(summary_id=summary_id).run()
+
+
+@app.route("/sessions")
+@json_response
+@params(year=int, month=int)
+def sessions(year: int, month: int) -> SimpleResponse:
+    return SessionsScraper(year=year, month=month).run()

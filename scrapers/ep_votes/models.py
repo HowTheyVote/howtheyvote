@@ -270,3 +270,15 @@ class VoteCollection:
     title: str
     reference: Optional[str]
     votes: List[Vote]
+
+
+class Location(Enum):
+    BRUSSELS = auto()
+    STRASBOURG = auto()
+
+
+@dataclass
+class Session:
+    start_date: date
+    end_date: date
+    location: Location
