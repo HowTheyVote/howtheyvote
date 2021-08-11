@@ -387,6 +387,8 @@ class SummaryScraper(Scraper):
         popup = f"summary.do?id={self.summary_id}&t=e&l=en"
         return f"{self.BASE_URL}{popup}"
 
-    def _extract_data(self) -> List[str]:
+    def _extract_data(self) -> str:
         items = self._resource.select(".ep-a_text > .MsoNormal")
-        return [item.text.strip().replace("\n", " ") for item in items]
+        items = [item.text.strip().replace("\n", " ") for item in items]
+
+        return "\n\n".join(items)

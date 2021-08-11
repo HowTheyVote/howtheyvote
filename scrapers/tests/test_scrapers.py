@@ -520,23 +520,25 @@ def test_summary_id_scraper_summary_row():
 def test_summary_scraper_run():
     scraper = SummaryScraper(summary_id="1651118")
 
-    summary = [
-        "The European Parliament adopted by 667 votes to 1, with 27 abstentions, a resolution on the situation in Myanmar.",
-        "The text adopted in plenary had been tabled as a joint resolution by the EPP, S&D, Renew, Greens/EFA, ECR groups and The Left.",
-        "On 1 February 2021, the military of Myanmar, known as the Tatmadaw, in a clear violation of the constitution of Myanmar, arrested President Win Myint and State Counsellor Aung San Suu Kyi, as well as leading members of the government, seized power over the legislative, judicial and executive branches of government through a coup d\x92état, and issued a one-year state of emergency.",
-        "Parliament strongly condemns the military takeover and called on the Tatmadaw to immediately reinstate the civilian government, end the state of emergency, and allow all elected parliamentarians to assume their mandates in order to restore constitutional order and democratic norms.",
-        "The resolution called for the immediate and unconditional release of President Win Myint, State Counsellor Aung San Suu Kyi, and all others who have been illegally arrested under the pretext of fake elections or fraudulent election results or other unfounded accusations that have no merit.",
-        "Parliament urged the military and the rightfully elected Government of Myanmar under President Win Myint to initiate a free and fair process of drafting and implementing a new constitution together with the people of Myanmar, specifically guaranteeing the recognition and representation of all ethnic groups in Myanmar including the Rohingya, and that ensures security, freedom, harmony and peace for all.",
-        "The resolution strongly criticised the restrictions on the freedom of expression and assembly, and in this light also strongly condemned the curtailing of media freedom through blacking out the internet and restricting and blocking social media platforms such as Facebook and Twitter.",
-        "Parliament called on the EU institutions and other international financial organisations to closely scrutinise the financial activities of the Tatmadaw and its members and to elaborate on what kind of appropriate measures could be taken in case the situation in Myanmar fails to improve or even deteriorates further.",
-        "The EU and its Member States are urged to:",
-        "- increase pressure on the Tatmadaw and take any measure at their disposal to ensure the return to power of the elected authorities;",
-        "- foster international coordination in order to prevent any unauthorised goods from being illegally exported from Myanmar, specifically benefiting the military economically, and to end the production of illegal goods, especially the exploitation of natural resources such as illegally harvested wood;",
-        "- continue programmes that help the country\x92s citizens and to step up support where necessary in the light of the current crisis, including humanitarian assistance and democracy support initiatives.",
-        "Parliament urged the Council to:",
-        "- amend the mandate of the current scheme of restrictive measures to include breaches of democracy, and to extend targeted sanctions to the entire leadership of Myanmar\x92s military, including all those involved in the coup and other",
-        "legal entities directly owned by those involved in the coup;",
-        "- review, and possibly amend, the EU\x92s arms embargo on Myanmar to ensure that surveillance equipment and dual-use products that can be used by the military in its crackdown on rights and dissent are covered by the embargo.",
-    ]
+    summary = "\n\n".join(
+        [
+            "The European Parliament adopted by 667 votes to 1, with 27 abstentions, a resolution on the situation in Myanmar.",
+            "The text adopted in plenary had been tabled as a joint resolution by the EPP, S&D, Renew, Greens/EFA, ECR groups and The Left.",
+            "On 1 February 2021, the military of Myanmar, known as the Tatmadaw, in a clear violation of the constitution of Myanmar, arrested President Win Myint and State Counsellor Aung San Suu Kyi, as well as leading members of the government, seized power over the legislative, judicial and executive branches of government through a coup d\x92état, and issued a one-year state of emergency.",
+            "Parliament strongly condemns the military takeover and called on the Tatmadaw to immediately reinstate the civilian government, end the state of emergency, and allow all elected parliamentarians to assume their mandates in order to restore constitutional order and democratic norms.",
+            "The resolution called for the immediate and unconditional release of President Win Myint, State Counsellor Aung San Suu Kyi, and all others who have been illegally arrested under the pretext of fake elections or fraudulent election results or other unfounded accusations that have no merit.",
+            "Parliament urged the military and the rightfully elected Government of Myanmar under President Win Myint to initiate a free and fair process of drafting and implementing a new constitution together with the people of Myanmar, specifically guaranteeing the recognition and representation of all ethnic groups in Myanmar including the Rohingya, and that ensures security, freedom, harmony and peace for all.",
+            "The resolution strongly criticised the restrictions on the freedom of expression and assembly, and in this light also strongly condemned the curtailing of media freedom through blacking out the internet and restricting and blocking social media platforms such as Facebook and Twitter.",
+            "Parliament called on the EU institutions and other international financial organisations to closely scrutinise the financial activities of the Tatmadaw and its members and to elaborate on what kind of appropriate measures could be taken in case the situation in Myanmar fails to improve or even deteriorates further.",
+            "The EU and its Member States are urged to:",
+            "- increase pressure on the Tatmadaw and take any measure at their disposal to ensure the return to power of the elected authorities;",
+            "- foster international coordination in order to prevent any unauthorised goods from being illegally exported from Myanmar, specifically benefiting the military economically, and to end the production of illegal goods, especially the exploitation of natural resources such as illegally harvested wood;",
+            "- continue programmes that help the country\x92s citizens and to step up support where necessary in the light of the current crisis, including humanitarian assistance and democracy support initiatives.",
+            "Parliament urged the Council to:",
+            "- amend the mandate of the current scheme of restrictive measures to include breaches of democracy, and to extend targeted sanctions to the entire leadership of Myanmar\x92s military, including all those involved in the coup and other",
+            "legal entities directly owned by those involved in the coup;",
+            "- review, and possibly amend, the EU\x92s arms embargo on Myanmar to ensure that surveillance equipment and dual-use products that can be used by the military in its crackdown on rights and dissent are covered by the embargo.",
+        ]
+    )
 
     assert scraper.run() == summary
