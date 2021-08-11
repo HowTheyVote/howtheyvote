@@ -12,10 +12,12 @@ use Illuminate\Support\Carbon;
 class ScrapeVoteCollectionsAction extends Action
 {
     private $scrapeAction;
+    private $summaryAction;
 
-    public function __construct(ScrapeAction $scrapeAction)
+    public function __construct(ScrapeAction $scrapeAction, ScrapeSummaryAction $summaryAction)
     {
         $this->scrapeAction = $scrapeAction;
+        $this->summaryAction = $summaryAction;
     }
 
     public function execute(Term $term, Carbon $date): void
@@ -54,6 +56,8 @@ class ScrapeVoteCollectionsAction extends Action
 
         $voteCollection->save();
 
+        $this->createSummary($voteCollection);
+
         if (! $voteCollection->wasRecentlyCreated) {
             $voteCollection->votes()->delete();
         }
@@ -75,5 +79,12 @@ class ScrapeVoteCollectionsAction extends Action
         }
 
         return $voteCollection;
+    }
+
+    private function createSummary(VoteCollection $voteCollection): void
+    {
+        if (! $voteCollection->summary) {
+            $this->summaryAction->execute($voteCollection);
+        }
     }
 }
