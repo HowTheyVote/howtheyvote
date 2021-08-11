@@ -23,6 +23,7 @@ class Vote extends Model
         'remarks',
         'reference',
         'subheading',
+        'session_id',
     ];
 
     protected $casts = [
@@ -33,6 +34,11 @@ class Vote extends Model
     public function voteCollection()
     {
         return $this->belongsTo(VoteCollection::class);
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(Session::class);
     }
 
     public function votingList()

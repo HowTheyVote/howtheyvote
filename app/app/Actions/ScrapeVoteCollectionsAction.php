@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
+use App\Session;
 use App\Term;
 use App\Vote;
 use App\VoteCollection;
@@ -62,6 +63,9 @@ class ScrapeVoteCollectionsAction extends Action
             $voteCollection->votes()->delete();
         }
 
+        $session = Session::where('start_date', '<=', $date)
+            ->where('end_date', '>=', $date)->first();
+
         foreach ($data['votes'] as $vote) {
             Vote::create([
                 'author' => $vote['author'],
@@ -75,6 +79,7 @@ class ScrapeVoteCollectionsAction extends Action
                 'remarks' => $vote['remarks'],
                 'reference' => $vote['reference'],
                 'subheading' => $vote['subheading'],
+                'session_id' => $session?->id,
             ]);
         }
 

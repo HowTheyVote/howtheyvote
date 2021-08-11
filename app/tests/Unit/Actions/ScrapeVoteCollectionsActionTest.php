@@ -2,6 +2,7 @@
 
 use App\Actions\ScrapeVoteCollectionsAction;
 use App\Enums\VoteTypeEnum;
+use App\Session;
 use App\Summary;
 use App\Term;
 use App\Vote;
@@ -88,4 +89,16 @@ it('does not scrape summary if summary exists', function () {
 
     expect(Summary::count())->toEqual(1);
     expect($voteCollection->summary->text)->toEqual('This summary already exists');
+});
+
+it('references correct session in created votes', function () {
+    $session = Session::factory([
+        'start_date' =>'2021-03-06',
+        'end_date' =>'2021-03-09',
+        'id' => 1,
+    ])->create();
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(Vote::first()->session_id)->toEqual(1);
 });
