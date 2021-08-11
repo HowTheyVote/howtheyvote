@@ -14,6 +14,7 @@ class Session extends Model
         'start_date',
         'end_date',
         'location',
+        'id',
     ];
 
     protected $casts = [
@@ -23,5 +24,10 @@ class Session extends Model
     public function getDisplayTitleAttribute()
     {
         return __('session.title', ['start' => $this->start_date, 'end' => $this->end_date]);
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
     }
 }
