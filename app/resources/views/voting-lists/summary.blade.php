@@ -6,6 +6,15 @@
             <x-markdown>
                 {{ $summary->text }}
             </x-markdown>
+
+            <x-callout>
+                <p>
+                    {!! __('votes.summary.copyright', [
+                        'url' => $summary->external_url,
+                        'year' => $summary->created_at->format('Y'),
+                    ]) !!}
+                </p>
+            </x-callout>
         </x-stack>
     </x-wrapper>
 </x-app>
