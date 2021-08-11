@@ -542,3 +542,21 @@ def test_summary_scraper_run():
     )
 
     assert scraper.run() == summary
+
+
+def test_summary_scraper_format_paragraph():
+    scraper = SummaryScraper(summary_id="1651118")
+
+    html = "".join(
+        [
+            '<p class="MsoNormal" style="font-style:italic;font-weight:bold;text-align:justify">',
+            '   <span lang="EN-GB">',
+            "       This is a heading",
+            "   </span>",
+            "</p>",
+        ]
+    )
+
+    tag = BeautifulSoup(html, "lxml").select_one("p")
+
+    assert scraper._format_paragraph(tag) == "## This is a heading"

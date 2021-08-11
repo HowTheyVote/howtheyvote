@@ -389,6 +389,24 @@ class SummaryScraper(Scraper):
 
     def _extract_data(self) -> str:
         items = self._resource.select(".ep-a_text > .MsoNormal")
-        items = [item.text.strip().replace("\n", " ") for item in items]
+        items = [self._format_paragraph(item) for item in items]
 
         return "\n\n".join(items)
+
+    def _format_paragraph(self, paragraph: Tag) -> str:
+        text = paragraph.text.strip().replace("\n", " ")
+
+        style_attr = paragraph.get("style")
+        heading_styles = ["font-weight", "bold", "font-style", "italic"]
+
+        if not style_attr:
+            return text
+
+        # Headings aren't marked up using appropriate HTML tags.
+        # Instead, they are simply styled using inline CSS.
+        # In case we detect those styles, we prepend Markdown
+        # syntax for second-level headings.
+        if all(style in style_attr for style in heading_styles):
+            return "## " + text
+
+        return text
