@@ -9,7 +9,11 @@
 
             <x-stack space="xs">
                 @foreach ($relatedVotes as $relatedVote)
-                    <x-vote-card :vote="$relatedVote" />
+                    <x-vote-card
+                        :vote="$relatedVote"
+                        :heading="$relatedVote->subtitle"
+                        text=""
+                    />
                 @endforeach
             </x-stack>
         </x-stack>

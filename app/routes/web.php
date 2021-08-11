@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
 
+Route::get('/votes', [VotingListsController::class, 'index'])->name('voting-lists.index');
 Route::get('/votes/{votingList}.csv', [VotingListsController::class, 'csv'])->name('voting-list.csv');
 Route::get('/votes/{votingList}', [VotingListsController::class, 'show'])->name('voting-list.show');
 Route::get('/votes/{votingList}/summary', [VotingListsController::class, 'summary'])->name('voting-list.summary');

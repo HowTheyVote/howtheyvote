@@ -1,18 +1,19 @@
-@props(['vote' => null])
+@props([
+    'vote' => null,
+    'heading' => null,
+    'text' => null,
+    ])
 
 <article {{ $attributes->bem('vote-card') }}>
-    <a href="{{ route('voting-list.show', ['votingList' => $vote->votingList]) }}">
+    <a href="{{ route('voting-list.show', $vote->votingList) }}">
         <x-thumb
             class="vote-card__thumb"
             :result="$vote->result"
             style="circle"
         />
         <div>
-            <strong>{{ $vote->subtitle }}</strong><br>
-
-            @if ($vote->subheading)
-                <p>{{ $vote->subheading }}</p>
-            @endif
+            <strong>{{ $heading ? $heading : $vote->display_title }}</strong>
+            <p>{{ $text === null ? $vote->date : $text }}</p>
         </div>
     </a>
 </article>
