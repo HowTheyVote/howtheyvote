@@ -72,6 +72,11 @@ class Vote extends Model
         }
     }
 
+    public function getDateAttribute()
+    {
+        return $this->votingList->date->format('Y-m-d');
+    }
+
     public function relatedVotes()
     {
         return $this
