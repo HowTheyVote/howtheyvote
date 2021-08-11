@@ -72,9 +72,9 @@ class Vote extends Model
         }
     }
 
-    public function getDateAttribute()
+    public function getFormattedDateAttribute()
     {
-        return $this->votingList->date->format('Y-m-d');
+        return $this->votingList->date->isoFormat('dddd, MMMM D, YYYY');
     }
 
     public function relatedVotes()

@@ -13,7 +13,7 @@
         />
         <div>
             <strong>{{ $heading ? $heading : $vote->display_title }}</strong>
-            <p>{{ $text === null ? $vote->date : $text }}</p>
+            <p>{{ $text === null ? $vote->formatted_date : $text }}</p>
         </div>
     </a>
 </article>
