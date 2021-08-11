@@ -348,21 +348,31 @@ class SummaryIDScraper(Scraper):
     def _extract_data(self) -> Optional[str]:
         section = self._resource.select_one("#key_events-data")
         rows = section.select(".ep-table-row")
+        row = self._summary_row(rows)
 
+        if not row:
+            return None
+
+        button = row.select_one("button[onclick]")
+        regex = r"\/oeil\/popups\/summary\.do\?id=(\d*)"
+        match = re.search(regex, button["onclick"])
+
+        if not match:
+            return None
+
+        return match.group(1)
+
+    def _summary_row(self, rows: List[Tag]) -> Optional[Tag]:
         for row in rows:
-            description = row.select(".ep-table-column-head")[1]
+            header_cells = row.select(".ep-table-column-head")
 
-            if description.text.strip() != "Decision by Parliament":
+            if len(header_cells) < 2:
                 continue
 
-            button = row.select_one("button[onclick]")
-            regex = r"\/oeil\/popups\/summary\.do\?id=(\d*)"
-            match = re.search(regex, button["onclick"])
+            description = header_cells[1].text.strip()
 
-            if not match:
-                return None
-
-            return match.group(1)
+            if description.startswith("Decision by Parliament"):
+                return row
 
         return None
 
@@ -370,7 +380,7 @@ class SummaryIDScraper(Scraper):
 class SummaryScraper(Scraper):
     BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/popups/"
 
-    def __init__(self, summary_id: int):
+    def __init__(self, summary_id: str):
         self.summary_id = summary_id
 
     def _url(self) -> str:
