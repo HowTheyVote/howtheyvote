@@ -13,6 +13,7 @@ class Summary extends Model
     protected $fillable = [
         'reference',
         'text',
+        'oeil_id',
     ];
 
     public function getExcerptAttribute(): string
@@ -27,5 +28,12 @@ class Summary extends Model
             ->join("\n\n");
 
         return Str::words($text, 50);
+    }
+
+    public function getExternalUrlAttribute(): string
+    {
+        $baseUrl = 'https://oeil.secure.europarl.europa.eu/oeil/popups';
+
+        return "{$baseUrl}/summary.do?id={$this->oeil_id}&t=e&l=en";
     }
 }

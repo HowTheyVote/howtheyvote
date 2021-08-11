@@ -33,6 +33,7 @@ class ScrapeSummaryAction extends Action
             ->firstOrNew();
 
         $summary->reference = $voteCollection->reference;
+        $summary->oeil_id = $summaryId;
         $summary->text = $text;
 
         $summary->save();

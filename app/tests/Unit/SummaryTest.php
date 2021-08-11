@@ -25,4 +25,14 @@ it('removes headings from excerpt', function () {
     ])->make();
 
     expect($summary->excerpt)->toEqual('Second paragraph');
+});
+
+it('has external URL', function () {
+    $summary = Summary::factory([
+        'oeil_id' => '1234567',
+    ])->make();
+
+    $expected = 'https://oeil.secure.europarl.europa.eu/oeil/popups/summary.do?id=1234567&t=e&l=en';
+
+    expect($summary->external_url)->toEqual($expected);
 })->only();
