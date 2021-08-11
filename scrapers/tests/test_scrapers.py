@@ -549,7 +549,7 @@ def test_summary_scraper_format_paragraph():
 
     html = "".join(
         [
-            '<p class="MsoNormal" style="font-style:italic;font-weight:bold;text-align:justify">',
+            '<p class="MsoNormal" style="font-weight:bold;text-align:justify">',
             '   <span lang="EN-GB">',
             "       This is a heading",
             "   </span>",

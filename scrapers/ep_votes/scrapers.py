@@ -396,17 +396,16 @@ class SummaryScraper(Scraper):
     def _format_paragraph(self, paragraph: Tag) -> str:
         text = paragraph.text.strip().replace("\n", " ")
 
-        style_attr = paragraph.get("style")
-        heading_styles = ["font-weight", "bold", "font-style", "italic"]
+        style = paragraph.get("style")
 
-        if not style_attr:
+        if not style:
             return text
 
         # Headings aren't marked up using appropriate HTML tags.
         # Instead, they are simply styled using inline CSS.
         # In case we detect those styles, we prepend Markdown
         # syntax for second-level headings.
-        if all(style in style_attr for style in heading_styles):
+        if "font-weight" in style and "bold" in style:
             return "## " + text
 
         return text

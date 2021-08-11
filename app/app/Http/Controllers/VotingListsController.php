@@ -49,6 +49,14 @@ class VotingListsController extends Controller
         ]);
     }
 
+    public function summary(VotingList $votingList)
+    {
+        return view('voting-lists.summary', [
+            'votingList' => $votingList,
+            'summary' => $votingList->vote->summary,
+        ]);
+    }
+
     public function related(VotingList $votingList)
     {
         if (! $votingList->vote) {

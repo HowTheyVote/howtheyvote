@@ -11,12 +11,14 @@
     font-size: var(--text-xl);
 }
 
-.beta {
+.beta,
+.markdown h1 {
     font-size: var(--text-lg);
     font-weight: 600;
 }
 
-.gamma {
+.gamma,
+.markdown h2 {
     font-size: var(--text-size);
     font-weight: 600;
 }
