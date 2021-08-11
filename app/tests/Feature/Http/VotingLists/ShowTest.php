@@ -5,6 +5,7 @@ use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
 use App\Group;
 use App\Member;
+use App\Summary;
 use App\Vote;
 use App\VoteCollection;
 use App\VotingList;
@@ -215,15 +216,11 @@ it('callout shows appropriate text for non-final votes', function () {
 });
 
 it('displays summary', function () {
-    $this
-        ->votingList
-        ->vote
-        ->voteCollection
-        ->summary()
-        ->create([
-            'reference' => $this->votingList->vote->voteCollection->reference,
-            'text' => "First paragraph is stripped.\n\nThis is the summary.",
-        ]);
+    Summary::factory([
+        'reference' => $this->votingList->vote->voteCollection->reference,
+        'oeil_id' => 1234567,
+        'text' => "First paragraph is stripped.\n\nThis is the summary.",
+    ])->create();
 
     $response = $this->get('/votes/2');
 

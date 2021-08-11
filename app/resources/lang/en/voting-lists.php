@@ -47,4 +47,8 @@ return [
         'separate' => 'This is a :separate.',
         'text' => 'View the <a href=":url">result of the final vote</a> on this subject.',
     ],
+
+    'summary' => [
+        'read-more' => 'Read more',
+    ],
 ];
