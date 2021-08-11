@@ -51,6 +51,10 @@ class VotingListsController extends Controller
 
     public function summary(VotingList $votingList)
     {
+        if (! $votingList->vote->summary) {
+            return abort(404);
+        }
+
         return view('voting-lists.summary', [
             'votingList' => $votingList,
             'summary' => $votingList->vote->summary,
