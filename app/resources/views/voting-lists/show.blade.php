@@ -5,14 +5,20 @@
             <x-stack space="xs">
                 <h1 class="alpha">{{ $votingList->display_title }}</h1>
                 <p>
-                    {{ $votingList->date->formatLocalized('%b %e, %Y') }}
+                    <strong>
+                        {{ $votingList->date->formatLocalized('%b %e, %Y') }}
 
-                    @if ($votingList->vote)
-                        ·
-                        {{ Str::lower($votingList->vote->result->label) }}
-                        <x-thumb style="circle" :result="$votingList->vote->result" />
-                    @endif
+                        @if ($votingList->vote)
+                            ·
+                            {{ Str::lower($votingList->vote->result->label) }}
+                            <x-thumb style="circle" :result="$votingList->vote->result" />
+                        @endif
+                    </strong>
                 </p>
+
+                @if ($votingList->vote && $votingList->vote->summary)
+                    <p>{{ $votingList->vote->summary->excerpt }}</p>
+                @endif
 
                 @if ($votingList->vote && !$votingList->vote->isPrimaryVote())
                     <x-callout style="warning" :heading="__('voting-lists.non-primary-callout.heading')">
@@ -41,9 +47,9 @@
                         @endif
                     </x-callout>
                 @endif
-
-                <x-vote-result-chart :stats="$votingList->stats"/>
             </x-stack>
+
+            <x-vote-result-chart :stats="$votingList->stats"/>
 
             <x-tabs>
                 <x-slot name="list">

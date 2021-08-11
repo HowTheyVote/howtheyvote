@@ -96,7 +96,7 @@ it('shows a title', function () {
 it('shows the result of the vote', function () {
     $response = $this->get('/votes/1');
     expect($response)->toHaveSelectorWithText('h1 + p', 'adopted');
-    expect($response)->toHaveSelector('h1 + p > .thumb--adopted.thumb--circle');
+    expect($response)->toHaveSelector('h1 + p > strong .thumb--adopted.thumb--circle');
 });
 
 it('displays a bar chart', function () {
@@ -212,4 +212,20 @@ it('callout shows appropriate text for non-final votes', function () {
 
     $response = $this->get('/votes/2');
     expect($response)->toHaveSelectorWithText('.callout--warning', 'amendment');
+});
+
+it('displays summary', function () {
+    $this
+        ->votingList
+        ->vote
+        ->voteCollection
+        ->summary()
+        ->create([
+            'reference' => $this->votingList->vote->voteCollection->reference,
+            'text' => "First paragraph is stripped.\n\nThis is the summary.",
+        ]);
+
+    $response = $this->get('/votes/2');
+
+    expect($response)->toHaveSelectorWithText('p', 'This is the summary.');
 });
