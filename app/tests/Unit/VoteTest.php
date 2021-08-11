@@ -134,5 +134,5 @@ it('has a date', function () {
         'vote_id' => Vote::factory(),
     ])->create();
 
-    expect($votingList->vote->date)->toEqual($votingList->date->toDateString());
+    expect($votingList->vote->formatted_date)->toEqual($votingList->date->toDateString());
 });
