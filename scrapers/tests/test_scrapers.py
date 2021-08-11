@@ -463,6 +463,60 @@ def test_summary_id_scraper_url():
     assert scraper._url() == expected
 
 
+def test_summary_id_scraper_summary_row():
+    scraper = SummaryIDScraper(reference="B9-0116/2021")
+
+    html = "".join(
+        [
+            '<div class="ep-table-row">',
+            '   <div class="ep-table-cell">',
+            '      <div class="ep-p_text">',
+            '         <span class="ep_name">27/01/2021</span>',
+            "      </div>",
+            "   </div>",
+            '   <div class="ep-table-cell">',
+            '      <div class="ep-p_text">',
+            '         <span class="ep_name">Vote in committee, 1st reading</span>',
+            "      </div>",
+            "   </div>",
+            "</div>",
+            # This is the relevant row, as it contains the description "Decision by Parliament"
+            '<div class="ep-table-row">',
+            '   <div class="ep-table-cell ep-table-cell-s ep-table-column-head">',
+            '      <div class="ep-p_text">',
+            '         <span class="ep_name">09/02/2021</span>',
+            "      </div>",
+            "   </div>",
+            '   <div class="ep-table-cell ep-table-cell-xl ep-table-column-head">',
+            '      <div class="ep-p_text">',
+            '         <span class="ep_name">Decision by Parliament, 1st reading</span>',
+            "      </div>",
+            "   </div>",
+            '   <div class="ep-table-cell ep-table-cell-m center-cell">',
+            '      <div class="ep-p_text">',
+            '         <span class="ep_name">',
+            '         <a class="externalDocument" href="https://www.europarl.europa.eu/doceo/document/TA-9-2021-0032_EN.html" target="externalDocument">T9-0032/2021</a>',
+            "         </span>",
+            "      </div>",
+            "   </div>",
+            '   <div class="ep-table-cell ep-table-cell-m center-cell">',
+            '      <div class="ep-a_button ep-layout_neutral">',
+            '         <div class="ep-p_button ep-p_smallbutton">',
+            '            <button type="button" onclick="location.href=\'/oeil/popups/summary.do?id=1651043&amp;t=e&amp;l=en\'" title="Summary for Decision by Parliament, 1st reading" target="_blank">',
+            '                <span class="ep_name">Summary</span><span class="ep_icon">&nbsp;</span>',
+            "            </button>",
+            "         </div>",
+            "      </div>",
+            "   </div>",
+            "</div>",
+        ]
+    )
+
+    rows = BeautifulSoup(html, "lxml-html").select(".ep-table-row")
+
+    assert scraper._summary_row(rows) == rows[1]
+
+
 def test_summary_scraper_run():
     scraper = SummaryScraper(summary_id="1651118")
 
