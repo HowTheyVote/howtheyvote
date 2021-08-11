@@ -14,3 +14,15 @@ it('has excerpt', function () {
 
     expect($summary->excerpt)->toEqual($expected);
 });
+
+it('removes headings from excerpt', function () {
+    $summary = Summary::factory([
+        'text' => implode("\n\n", [
+            'First paragraph is always removed',
+            '## Heading',
+            'Second paragraph',
+        ]),
+    ])->make();
+
+    expect($summary->excerpt)->toEqual('Second paragraph');
+})->only();
