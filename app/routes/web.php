@@ -23,6 +23,7 @@ Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitor
 
 Route::get('/votes/{votingList}.csv', [VotingListsController::class, 'csv'])->name('voting-list.csv');
 Route::get('/votes/{votingList}', [VotingListsController::class, 'show'])->name('voting-list.show');
+Route::get('/votes/{votingList}/summary', [VotingListsController::class, 'summary'])->name('voting-list.summary');
 Route::get('/votes/{votingList}/related', [VotingListsController::class, 'related'])->name('voting-list.related');
 
 Route::get('/votes/{votingList}/share-picture', [VotingListsController::class, 'sharePicture'])->name('voting-list.share-picture');

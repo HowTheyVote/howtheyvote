@@ -1,0 +1,17 @@
+.markdown > * + * {
+    margin-top: var(--space-xs);
+}
+
+.markdown * + h1,
+.markdown * + h2,
+.markdown * + h3 {
+    margin-top: var(--space);
+}
+
+.markdown ul {
+    padding-left: var(--space);
+}
+
+.markdown li + li {
+    margin-top: var(--space-xxs);
+}
