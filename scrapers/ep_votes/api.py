@@ -23,6 +23,8 @@ from .scrapers import (
     MemberGroupsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
+    SummaryIDScraper,
+    SummaryScraper,
 )
 
 load_dotenv()
@@ -135,3 +137,17 @@ def voting_lists(term: int, date: datetime.date) -> SimpleResponse:
 @params(term=int, date=datetime.date.fromisoformat)
 def vote_collections(term: int, date: datetime.date) -> SimpleResponse:
     return VoteCollectionsScraper(term=term, date=date).run()
+
+
+@app.route("/summary_id")
+@json_response
+@params(reference=str)
+def summary_id(reference: str) -> SimpleResponse:
+    return SummaryIDScraper(reference=reference).run()
+
+
+@app.route("/summary")
+@json_response
+@params(summary_id=str)
+def summary(summary_id: str) -> SimpleResponse:
+    return SummaryScraper(summary_id=summary_id).run()

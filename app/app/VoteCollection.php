@@ -29,4 +29,9 @@ class VoteCollection extends Model
     {
         return $this->hasMany(Vote::class);
     }
+
+    public function summary()
+    {
+        return $this->belongsTo(Summary::class, 'reference', 'reference');
+    }
 }

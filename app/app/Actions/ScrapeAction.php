@@ -16,7 +16,7 @@ class ScrapeAction extends Action
         $this->port = $port;
     }
 
-    public function execute(string $route, array $params): array
+    public function execute(string $route, array $params): mixed
     {
         $url = $this->url($route, $params);
 
