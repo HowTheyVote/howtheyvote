@@ -17,11 +17,13 @@ class Summary extends Model
 
     public function getExcerptAttribute(): string
     {
-        // Remove the first paragraph as it almost always only contains
-        // the title and the vote result, which is redundant information.
         $text = Str::of($this->text)
             ->explode("\n\n")
+            // Remove the first paragraph as it almost always only contains
+            // the title and the vote result, which is redundant information.
             ->splice(1)
+            // Remove headings from excerpt
+            ->filter(fn ($block) => ! Str::startsWith($block, '## '))
             ->join("\n\n");
 
         return Str::words($text, 50);
