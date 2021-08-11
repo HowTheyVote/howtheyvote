@@ -2,6 +2,7 @@
 
 use App\Actions\ScrapeVoteCollectionsAction;
 use App\Enums\VoteTypeEnum;
+use App\Summary;
 use App\Term;
 use App\Vote;
 use App\VoteCollection;
@@ -16,6 +17,8 @@ beforeEach(function () {
     $this->date = new Carbon('2021-03-08');
 
     Http::fakeJsonFromFile('*/vote_collections?term=9&date=2021-03-08', 'vote_collections.json');
+    Http::fakeJsonFromFile('*/summary_id?reference=A9-0019%2F2021', 'summary_id.json');
+    Http::fakeJsonFromFile('*/summary?summary_id=1234567', 'summary.json');
 });
 
 it('creates new vote collection records', function () {
@@ -65,4 +68,24 @@ it('does not create duplicate votes when scraping voting list multiple times', f
     $voteCollection = VoteCollection::first();
 
     expect(Vote::count())->toEqual(28);
+});
+
+it('scrapes summary for reference', function () {
+    $this->action->execute($this->term, $this->date);
+    $voteCollection = VoteCollection::first();
+
+    expect($voteCollection->summary->reference)->toBe('A9-0019/2021');
+});
+
+it('does not scrape summary if summary exists', function () {
+    Summary::factory([
+        'reference' => 'A9-0019/2021',
+        'text' => 'This summary already exists',
+    ])->create();
+
+    $this->action->execute($this->term, $this->date);
+    $voteCollection = VoteCollection::first();
+
+    expect(Summary::count())->toEqual(1);
+    expect($voteCollection->summary->text)->toEqual('This summary already exists');
 });
