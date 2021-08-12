@@ -27,3 +27,8 @@ it('shows a vote card for each existing vote', function () {
     $response = $this->get('/votes');
     expect($response)->toHaveSelector('.vote-card', 2);
 });
+
+it('renders the session titles', function () {
+    $response = $this->get('/votes');
+    expect($response)->toHaveSelectorWithText('.beta', 'Session from');
+});
