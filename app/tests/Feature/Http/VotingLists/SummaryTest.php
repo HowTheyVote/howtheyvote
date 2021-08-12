@@ -21,7 +21,7 @@ beforeEach(function () {
 it('returns 404 if summary does not exist', function () {
     $response = $this->get("/votes/{$this->votingList->id}/summary");
     expect($response)->toHaveStatus(404);
-})->only();
+});
 
 it('renders successfully if summary exists', function () {
     Summary::factory([
