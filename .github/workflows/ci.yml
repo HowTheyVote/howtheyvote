@@ -146,6 +146,7 @@ jobs:
     needs: [app, scrapers, frontend]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    concurrency: deployment
 
     defaults:
       run:
