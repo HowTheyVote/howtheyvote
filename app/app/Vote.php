@@ -78,11 +78,6 @@ class Vote extends Model
         }
     }
 
-    public function getFormattedDateAttribute()
-    {
-        return $this->votingList->date->isoFormat('dddd, MMMM D, YYYY');
-    }
-
     public function relatedVotes()
     {
         return $this
