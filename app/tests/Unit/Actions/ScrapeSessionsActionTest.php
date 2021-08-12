@@ -30,3 +30,19 @@ it('creates new session records', function () {
     expect($session->end_date)->toEqual('2021-11-25');
     expect($session->location)->toEqual(LocationEnum::STRASBOURG());
 });
+
+it('updates existing session records when scraping repeatedly', function () {
+    Session::factory([
+        'start_date' => '2021-11-10',
+        'end_date' => '2021-11-11',
+        'location' => LocationEnum::STRASBOURG(),
+    ])->make();
+
+    $this->action->execute(2021, 11);
+
+    expect(Session::count())->toEqual(2);
+
+    $session = Session::first();
+    expect($session->location)->toEqual(LocationEnum::BRUSSELS());
+    expect($session->start_date)->toEqual('2021-11-10');
+});
