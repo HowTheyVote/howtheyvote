@@ -21,6 +21,7 @@ it('returns primary votes', function () {
     Vote::factory([
         'type' => VoteTypeEnum::PRIMARY(),
         'session_id' => $this->session,
+        'id' => 1,
     ])->create();
 
     Vote::factory([
