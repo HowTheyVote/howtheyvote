@@ -54,4 +54,9 @@ class VotingList extends Model
     {
         return Hashids::encode($this->id);
     }
+
+    public function getFormattedDateAttribute()
+    {
+        return $this->date->isoFormat('dddd, MMMM D, YYYY');
+    }
 }

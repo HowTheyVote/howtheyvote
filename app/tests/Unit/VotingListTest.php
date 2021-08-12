@@ -30,3 +30,11 @@ it('has display title based on associated vote title', function () {
 
     expect($votingList->display_title)->toEqual('Blub');
 });
+
+it('has a formatted date', function () {
+    $votingList = VotingList::factory([
+        'date' => '2021-01-01',
+    ])->make();
+
+    expect($votingList->formatted_date)->toEqual('Friday, January 1, 2021');
+});
