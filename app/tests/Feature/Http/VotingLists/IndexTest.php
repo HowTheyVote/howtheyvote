@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\VoteTypeEnum;
+use App\Session;
 use App\Vote;
 use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,6 +11,7 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     VotingList::factory([
         'vote_id' => Vote::factory([
+            'session_id' => Session::factory()->create(),
             'type' => VoteTypeEnum::PRIMARY(),
         ]),
     ])->count(2)
