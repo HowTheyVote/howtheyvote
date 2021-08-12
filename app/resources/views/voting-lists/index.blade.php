@@ -2,12 +2,15 @@
     <x-wrapper>
         <x-stack>
             <h1 class="alpha">Votes</h1>
-
             <x-stack space="xs">
-                @foreach ($votingLists as $votingList)
+                @foreach ($sessions as $session)
+                    <h2 class="beta">{{ $session->display_title }}</h2>
+
+                    @foreach ($session->primaryVotes()->with('votingList')->get() as $vote)
                     <x-vote-card
-                        :vote="$votingList->vote"
+                        :vote="$vote"
                     />
+                    @endforeach
                 @endforeach
             </x-stack>
 
