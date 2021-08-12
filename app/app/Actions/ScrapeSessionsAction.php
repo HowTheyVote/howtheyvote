@@ -22,10 +22,11 @@ class ScrapeSessionsAction extends Action
         ]);
 
         foreach ($data as $session) {
-            Session::create([
+            Session::updateOrCreate([
                 'start_date' => $session['start_date'],
                 'end_date' => $session['end_date'],
-                'location' => LocationEnum::make($session['location']),
+                ],
+            ['location' => LocationEnum::make($session['location']),
             ]);
         }
     }
