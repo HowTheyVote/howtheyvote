@@ -3,6 +3,7 @@ version: '3.7'
 volumes:
   scrapers_virtualenvs: {}
   mariadb_storage: {}
+  meilisearch_storage: {}
 
 services:
   scrapers:
@@ -21,7 +22,7 @@ services:
 
   app:
     build: ./app
-    depends_on: [scrapers, mariadb]
+    depends_on: [scrapers, mariadb, meilisearch]
     command: php artisan serve --host 0.0.0.0
     volumes:
       - ./app:/app
@@ -39,6 +40,8 @@ services:
       - LOG_CHANNEL=stack
       - SCRAPERS_HOST=scrapers
       - SCRAPERS_PORT=5000
+      - SCOUT_DRIVER=meilisearch
+      - MEILISEARCH_HOST=http://meilisearch:7700
     stdin_open: true
     tty: true
     extra_hosts:
@@ -62,3 +65,10 @@ services:
     stdin_open: true
     tty: true
     restart: always
+
+  meilisearch:
+    image: getmeili/meilisearch
+    volumes:
+      - meilisearch_storage:/data.ms
+    ports:
+      - '7700:7700'

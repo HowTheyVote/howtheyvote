@@ -6,10 +6,12 @@ use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Vote extends Model
 {
     use HasFactory;
+    use Searchable;
 
     protected $fillable = [
         'author',
@@ -30,6 +32,31 @@ class Vote extends Model
         'result' => VoteResultEnum::class,
         'type' => VoteTypeEnum::class,
     ];
+
+    public function shouldBeSearchable()
+    {
+        return $this->isPrimaryVote();
+    }
+
+    public function makeAllSearchableUsing($query)
+    {
+        return $query->with([
+            'voteCollection',
+            'voteCollection.summary',
+            'votingList',
+        ]);
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'display_title' => $this->display_title,
+            'date' => $this->votingList->date,
+            'result' => $this->result->label,
+            'summary' => $this->voteCollection->summary?->text,
+        ];
+    }
 
     public function voteCollection()
     {
