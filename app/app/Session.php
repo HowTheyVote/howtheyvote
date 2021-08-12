@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Enums\LocationEnum;
+use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,5 +30,10 @@ class Session extends Model
     public function votes()
     {
         return $this->hasMany(Vote::class);
+    }
+
+    public function primaryVotes()
+    {
+        return $this->votes()->where('type', VoteTypeEnum::PRIMARY());
     }
 }

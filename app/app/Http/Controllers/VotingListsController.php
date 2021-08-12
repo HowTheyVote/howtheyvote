@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CountryEnum;
-use App\Enums\VoteTypeEnum;
 use App\Group;
+use App\Session;
 use App\VotingList;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Spatie\Url\Url;
 
@@ -14,13 +13,11 @@ class VotingListsController extends Controller
 {
     public function index()
     {
-        $votingLists = VotingList::whereHas('vote', function (Builder $query) {
-            $query->where('type', 'equals', VoteTypeEnum::PRIMARY());
-        })->orderByDesc('date')->get();
+        $sessions = Session::all();
 
         return view('voting-lists.index', [
-            'votingLists' => $votingLists,
-        ]);
+            'sessions' => $sessions,
+           ]);
     }
 
     public function show(VotingList $votingList)
