@@ -1,0 +1,16 @@
+---
+
+- name: Create temporary file
+  tempfile:
+    state: file
+  register: tempfile
+
+- name: Create database dump
+  shell:
+    cmd: "mysqldump {{ database.name }} > {{ tempfile.path }}"
+
+- name: Copy dump from remote host
+  fetch:
+    src: "{{ tempfile.path }}"
+    dest: ../mariadb/dump/dump-production.sql
+    flat: yes

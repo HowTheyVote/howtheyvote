@@ -1,0 +1,38 @@
+name: Dump
+on:
+  schedule:
+    - cron:  '0 3 * * *'
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v2
+
+      - run: |
+          mkdir ~/.ssh
+          echo "${{ secrets.EPVPROD_PUBLIC}}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Install Ansible
+        run: pip3 install ansible
+
+      - name: Create Ansible Vault password file
+        run: echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > ansible-vault.pass
+
+      - name: Run Ansible playbook
+        run: ansible-playbook ansible/dump.yml -i ./ansible/hosts --vault-password-file ansible-vault.pass
+
+      - name: Delete secret files
+        run: rm ansible-vault.pass && rm ~/.ssh/id_rsa
+
+      - name: Commit and push changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Add latest production database dump"
+          git push
