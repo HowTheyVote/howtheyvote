@@ -6,6 +6,7 @@ use App\Actions\MatchVotesAndVotingListsAction;
 use App\Actions\ScrapeMemberGroupsAction;
 use App\Actions\ScrapeMemberInfoAction;
 use App\Actions\ScrapeMembersAction;
+use App\Actions\ScrapeSessionsAction;
 use App\Actions\ScrapeVoteCollectionsAction;
 use App\Actions\ScrapeVotingListsAction;
 use App\Member;
@@ -81,6 +82,14 @@ Artisan::command('scrape:members-groups {--term=}', function (
     $this->output->writeln('');
 })->describe('Scrape and save group info for all saved members for the given term.');
 
+Artisan::command('scrape:sessions {--year=} {--month=}', function (
+    int $month,
+    int $year,
+    ScrapeSessionsAction $action
+) {
+    $action->execute($year, $month);
+});
+
 Artisan::command('scrape:voting-lists {--term=} {--date=}', function (
     int $term,
     string $date,
@@ -119,6 +128,14 @@ Artisan::command('scrape:all {--term=} {--from=} {--to=}', function (
     Artisan::call('scrape:members', ['--term' => $term]);
     Artisan::call('scrape:members-groups', ['--term' => $term]);
     Artisan::call('scrape:members-info');
+
+    $from = Carbon::parse($from);
+    $month = $from->month;
+    $year = $from->year;
+    Artisan::call('scrape:sessions', [
+        '--year' => $year,
+        '--month' => $month,
+    ]);
 
     $count = VoteCollection::count();
 
