@@ -83,6 +83,7 @@ jobs:
       DB_USERNAME: laravel
       DB_PASSWORD: laravel
       DB_HOST: '127.0.0.1'
+      SCOUT_DRIVER: collection
 
     steps:
     - name: Setup PHP
