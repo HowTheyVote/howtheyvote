@@ -20,7 +20,9 @@ body {
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
 
+.padding {
     padding: var(--space) var(--space-sm);
 }
 

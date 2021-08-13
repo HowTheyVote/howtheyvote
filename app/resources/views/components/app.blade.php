@@ -1,4 +1,7 @@
-@props(['title' => null])
+@props([
+    'title' => null,
+    'padding' => false,
+])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -14,7 +17,7 @@
 
         <title>{{ $title }}</title>
     </head>
-    <body>
+    <body {{ $padding == true ? 'class=padding' : ""}}>
         {{ $slot }}
     </body>
 </html>

@@ -1,4 +1,4 @@
-<x-app title="Votes">
+<x-app title="Votes" padding="true">
     <x-wrapper>
         <x-stack>
             <h1 class="alpha">Votes</h1>
