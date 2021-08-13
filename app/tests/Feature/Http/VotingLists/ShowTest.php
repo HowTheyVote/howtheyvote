@@ -194,6 +194,10 @@ it('shows a panel for link to related votes if associated vote is final', functi
 });
 
 it('only has meta tags for sharing if vote is final', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('share-pictures/vote-sharepic-1.png', 'test');
+    Storage::disk('public')->put('share-pictures/vote-sharepic-2.png', 'test');
+
     $response = $this->get('/votes/1');
     expect($response)->toHaveSelector('[property="twitter:card"]');
 

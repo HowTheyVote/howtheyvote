@@ -10,7 +10,7 @@ class GenerateVoteSharePicAction extends Action
 {
     public function execute(VotingList $votingList): void
     {
-        $exists = Storage::disk('public')->exists("vote-sharepic-{$votingList->id}.png");
+        $exists = Storage::disk('public')->exists("share-pictures/vote-sharepic-{$votingList->id}.png");
 
         if ($exists) {
             return;
@@ -33,6 +33,6 @@ class GenerateVoteSharePicAction extends Action
             ],
         ]);
 
-        Storage::disk('public')->put("vote-sharepic-{$votingList->id}.png", $response->getBody());
+        Storage::disk('public')->put("share-pictures/vote-sharepic-{$votingList->id}.png", $response->getBody());
     }
 }

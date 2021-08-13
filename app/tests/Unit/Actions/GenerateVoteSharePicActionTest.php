@@ -20,15 +20,15 @@ beforeEach(function () {
 it('uploads an image', function () {
     $this->action->execute($this->votingList);
 
-    expect(Storage::disk('public')->exists("vote-sharepic-{$this->votingList->id}.png"))->toEqual(true);
+    expect(Storage::disk('public')->exists("share-pictures/vote-sharepic-{$this->votingList->id}.png"))->toEqual(true);
 });
 
 it('does not create a new one if a share-pic already exists', function () {
     $this->action->execute($this->votingList);
 
-    $modifiedTimestamp = Storage::disk('public')->lastModified("vote-sharepic-{$this->votingList->id}.png");
+    $modifiedTimestamp = Storage::disk('public')->lastModified("share-pictures/vote-sharepic-{$this->votingList->id}.png");
 
     $this->action->execute($this->votingList);
 
-    expect(Storage::disk('public')->lastModified("vote-sharepic-{$this->votingList->id}.png"))->toEqual($modifiedTimestamp);
+    expect(Storage::disk('public')->lastModified("share-pictures/vote-sharepic-{$this->votingList->id}.png"))->toEqual($modifiedTimestamp);
 });

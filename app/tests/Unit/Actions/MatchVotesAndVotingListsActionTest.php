@@ -156,5 +156,5 @@ it('generates share-pictures for matched primary votes', function () {
 
     $this->action->execute();
 
-    expect(Storage::disk('public')->exists("vote-sharepic-{$votingList->id}.png"))->toEqual(true);
+    expect(Storage::disk('public')->exists("share-pictures/vote-sharepic-{$votingList->id}.png"))->toEqual(true);
 });
