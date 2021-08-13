@@ -1,6 +1,7 @@
 @props([
     'title' => null,
     'padding' => false,
+    'sharePicture' => null,
 ])
 
 <!DOCTYPE html>
@@ -8,6 +9,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        @if ($sharePicture)
+            <meta property="og:image" content="{{ $sharePicture }}" />
+            <meta property="twitter:card" content="summary_large_imag" />
+            <meta property="twitter:image" content="{{ $sharePicture }}" />
+        @endif
 
         <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
         <link rel="preconnect" href="https://fonts.gstatic.com">

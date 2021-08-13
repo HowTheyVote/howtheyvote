@@ -1,4 +1,8 @@
-<x-app title="{{ $votingList->displayTitle }} · Vote Result" padding="true">
+<x-app
+    title="{{ $votingList->displayTitle }} · Vote Result"
+    padding="true"
+    sharePicture="{{ $votingList->sharePictureUrl() }}"
+>
     <x-wrapper>
 
         <x-stack space="xl">

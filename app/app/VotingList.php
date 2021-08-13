@@ -65,7 +65,7 @@ class VotingList extends Model
     {
         if ($this->vote?->isPrimaryVote()) {
             if (Storage::disk('public')->exists("vote-sharepic-{$this->id}.png")) {
-                return url("/vote-sharepic-{$this->id}.png");
+                return Storage::disk('public')->url("vote-sharepic-{$this->id}.png");
             }
         }
 

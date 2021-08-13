@@ -184,13 +184,21 @@ it('shows all countries of which MEPs participated sorted descending by number o
     ]);
 });
 
-it('shows a panel for link to related votes if associated vote is final ', function () {
+it('shows a panel for link to related votes if associated vote is final', function () {
     $response = $this->get('/votes/1');
     expect($response)->toHaveSelectorWithText('.action-panel', 'Related Votes');
 
     $response = $this->get('/votes/2');
 
     expect($response)->not()->toHaveSelectorWithText('.action-panel', 'Related Votes');
+});
+
+it('only has meta tags for sharing if vote is final', function () {
+    $response = $this->get('/votes/1');
+    expect($response)->toHaveSelector('[property="twitter:card"]');
+
+    $response = $this->get('/votes/2');
+    expect($response)->not()->toHaveSelector('[property="twitter:card"]');
 });
 
 it('shows a callout if associated vote is not final', function () {
