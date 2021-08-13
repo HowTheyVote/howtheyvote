@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Vinkla\Hashids\Facades\Hashids;
 
 class VotingList extends Model
@@ -58,5 +59,16 @@ class VotingList extends Model
     public function getFormattedDateAttribute()
     {
         return $this->date->isoFormat('dddd, MMMM D, YYYY');
+    }
+
+    public function sharePictureUrl(): string
+    {
+        if ($this->vote?->isPrimaryVote()) {
+            if (Storage::disk('public')->exists("vote-sharepic-{$this->id}.png")) {
+                return url("/vote-sharepic-{$this->id}.png");
+            }
+        }
+
+        return '';
     }
 }

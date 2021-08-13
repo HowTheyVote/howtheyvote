@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\VoteTypeEnum;
+use App\Vote;
+use App\VoteCollection;
 use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Vinkla\Hashids\Facades\Hashids;
@@ -25,7 +28,11 @@ it('has display title based on description', function () {
 it('has display title based on associated vote title', function () {
     $votingList = VotingList::factory([
         'description' => 'Content of the description',
-        'vote' => $this->mock(Vote::class, fn ($mock) => $mock->display_title = 'Blub'),
+        'vote_id' => Vote::factory([
+            'vote_collection_id' => VoteCollection::factory([
+                'title' => 'Blub',
+            ]),
+        ]),
     ])->make();
 
     expect($votingList->display_title)->toEqual('Blub');
@@ -37,4 +44,40 @@ it('has a formatted date', function () {
     ])->make();
 
     expect($votingList->formatted_date)->toEqual('Friday, January 1, 2021');
+});
+
+it('does not return a sharepic link if it has no vote', function () {
+    $votingList = VotingList::factory([
+        'date' => '2021-01-01',
+    ])->make();
+
+    expect($votingList->sharePictureUrl())->toEqual('');
+});
+
+it('does not return a sharepic link if it the picture does not exist', function () {
+    Storage::fake('public');
+
+    $votingList = VotingList::factory([
+        'date' => '2021-01-01',
+        'id' => 1,
+        'vote_id' => Vote::factory([
+            'type' => VoteTypeEnum::PRIMARY(),
+        ]),
+    ])->make();
+
+    expect($votingList->sharePictureUrl())->toEqual('');
+});
+
+it('returns link to sharepic if vote is primary and picture does exist', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('vote-sharepic-1.png', 'test');
+    $votingList = VotingList::factory([
+        'date' => '2021-01-01',
+        'id' => 1,
+        'vote_id' => Vote::factory([
+            'type' => VoteTypeEnum::PRIMARY(),
+        ]),
+    ])->make();
+
+    expect($votingList->sharePictureUrl())->toContain('vote-sharepic-1.png');
 });
