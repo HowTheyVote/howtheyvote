@@ -35,7 +35,7 @@ class Vote extends Model
 
     public function shouldBeSearchable()
     {
-        return $this->isPrimaryVote();
+        return $this->votingList && $this->isPrimaryVote();
     }
 
     public function makeAllSearchableUsing($query)
