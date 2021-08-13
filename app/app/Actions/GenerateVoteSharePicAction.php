@@ -10,6 +10,12 @@ class GenerateVoteSharePicAction extends Action
 {
     public function execute(VotingList $votingList): void
     {
+        $exists = Storage::disk('public')->exists("vote-sharepic-{$votingList->id}.png");
+
+        if ($exists) {
+            return;
+        }
+
         $token = config('browserless.token');
         $response = Http::post("https://chrome.browserless.io/screenshot?token={$token}", [
             'url' => route('voting-list.share-picture', ['votingList' => $votingList->id]),
