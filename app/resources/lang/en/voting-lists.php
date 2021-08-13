@@ -51,4 +51,8 @@ return [
     'summary' => [
         'read-more' => 'Read more',
     ],
+
+    'share' => [
+        'text' => 'Result of the vote in the European Parliament',
+    ],
 ];

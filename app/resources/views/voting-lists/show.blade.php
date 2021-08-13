@@ -31,6 +31,14 @@
                     </p>
                 @endif
 
+                @if ($votingList->vote && $votingList->vote->isPrimaryVote())
+                    <x-share-button
+                        :title="$votingList->display_title"
+                        :text="__('voting-lists.share.text')"
+                        :url="route('voting-list.show', ['votingList' => $votingList])"
+                    />
+                @endif
+
                 @if ($votingList->vote && !$votingList->vote->isPrimaryVote())
                     <x-callout style="warning" :heading="__('voting-lists.non-primary-callout.heading')">
                         @if ($votingList->vote->isAmendmentVote())
