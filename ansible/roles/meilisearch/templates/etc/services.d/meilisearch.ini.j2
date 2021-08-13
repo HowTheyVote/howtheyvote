@@ -1,0 +1,10 @@
+[program:meilisearch]
+directory={{ ansible_facts.env.HOME }}
+command=meilisearch-{{ meilisearch_version }}
+    --env production
+    --master-key {{ meilisearch_master_key }}
+    --no-analytics true
+    --no-sentry true
+    --db-path {{ meilisearch_db_dir }}
+startsecs=30
+stderr_logfile={{ ansible_facts.env.HOME }}/logs/meilisearch.log

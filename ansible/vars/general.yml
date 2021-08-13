@@ -12,6 +12,6 @@ epvotes_domains:
     - howtheyvoted.eu
     - how-they-voted.eu
     - ep-votes.eu
-meilisearch_install_dir: "/meilisearch-source"
-meilisearch_version: v0.20.0
+meilisearch_install_dir: "~/meilisearch-source"
+meilisearch_version: 0.20.0
 meilisearch_db_dir: "~/meilisearch-database"
