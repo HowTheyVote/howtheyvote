@@ -2,17 +2,17 @@
 
 namespace App\Actions;
 
-use App\Vote;
+use App\VotingList;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class GenerateVoteSharePicAction extends Action
 {
-    public function execute(Vote $vote): void
+    public function execute(VotingList $votingList): void
     {
         $token = config('browserless.token');
         $response = Http::post("https://chrome.browserless.io/screenshot?token={$token}", [
-            'url' => route('vote.share-picture', ['vote' => $vote->id]),
+            'url' => route('voting-list.share-picture', ['votingList' => $votingList->id]),
             'options' => [
                 'type' => 'png',
                 'fullPage' => true,
@@ -27,6 +27,6 @@ class GenerateVoteSharePicAction extends Action
             ],
         ]);
 
-        Storage::disk('public')->put("vote-sharepic-{$vote->id}.png", $response->getBody());
+        Storage::disk('public')->put("vote-sharepic-{$votingList->id}.png", $response->getBody());
     }
 }

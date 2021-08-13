@@ -12,6 +12,7 @@ use App\Actions\ScrapeVotingListsAction;
 use App\Member;
 use App\Term;
 use App\VoteCollection;
+use App\VotingList;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 
@@ -169,11 +170,10 @@ Artisan::command('scrape:match', function (MatchVotesAndVotingListsAction $actio
     $action->execute();
 })->describe('Matches all available votes to their voting lists.');
 
-// TODO: fixup
-Artisan::command('share-picture:vote {--vote=}', function (
-    int $vote,
+Artisan::command('share-picture:vote {--votingList=}', function (
+    int $votingList,
     GenerateVoteSharePicAction $action
 ) {
-    $vote = Vote::find($vote);
-    $action->execute($vote);
+    $votingList = VotingList::find($votingList);
+    $action->execute($votingList);
 })->describe('Generates a picture showing the overall result for a given vote.');
