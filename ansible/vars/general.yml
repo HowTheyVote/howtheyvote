@@ -3,13 +3,15 @@ php_version: 8.0
 node_version: 14
 python_version: 3.8
 poetry_executable: "{{ ansible_facts.env.HOME }}/.poetry/bin/poetry"
-epvotes:
-  version: main
-  install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
-  domains:
+epvotes_version: main
+epvotes_install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
+epvotes_domains:
     - howtheyvote.eu
     - how-they-vote.eu
     - abstimmungen.eu
     - howtheyvoted.eu
     - how-they-voted.eu
     - ep-votes.eu
+meilisearch_install_dir: "/meilisearch-source"
+meilisearch_version: v0.20.0
+meilisearch_db_dir: "~/meilisearch-database"

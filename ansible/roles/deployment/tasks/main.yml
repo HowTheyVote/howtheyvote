@@ -2,37 +2,37 @@
 
 - name: Check if this is the first install
   stat:
-    path: "{{ epvotes.install_dir }}/app/artisan"
+    path: "{{ epvotes_install_dir }}/app/artisan"
   register: artisan_command
 
 - name: Enable Laravel maintenance mode
   shell:
     cmd: php artisan down --render="errors::503"
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
   when: artisan_command.stat.exists
 
 - name: Clone Repository
   git:
     repo: https://github.com/ep-votes/epvotes.git
-    dest: "{{ epvotes.install_dir }}"
-    version: "{{ epvotes.version }}"
+    dest: "{{ epvotes_install_dir }}"
+    version: "{{ epvotes_version }}"
   notify:
     - Restart scrapers service
 
 - name: Set Python version
   shell:
     cmd: "{{ poetry_executable }} env use python3.8"
-    chdir: "{{ epvotes.install_dir }}/scrapers"
+    chdir: "{{ epvotes_install_dir }}/scrapers"
 
 - name: Install poetry dependencies
   shell:
     cmd: "{{ poetry_executable }} install"
-    chdir: "{{ epvotes.install_dir }}/scrapers"
+    chdir: "{{ epvotes_install_dir }}/scrapers"
 
 - name: Create env file for scrapers
   template:
     src: epvotes/scrapers/.env.j2
-    dest: "{{ epvotes.install_dir }}/scrapers/.env"
+    dest: "{{ epvotes_install_dir }}/scrapers/.env"
 
 - name: Copy scrapers service configuration
   notify:
@@ -44,57 +44,57 @@
 - name: Install composer dependencies
   shell:
     cmd: "composer install"
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Create env file for app
   template:
     src: epvotes/app/.env.j2
-    dest: "{{ epvotes.install_dir }}/app/.env"
+    dest: "{{ epvotes_install_dir }}/app/.env"
 
 - name: Cache Laravel config
   shell:
     cmd: php artisan config:cache
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Run migrations
   shell:
     cmd: "php artisan migrate --force"
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Install node dependencies
   shell:
     cmd: "npm ci"
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Build CSS and JS
   shell:
     cmd: "npm run prod --scripts-prepend-node-path"
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Setup webserver document root
   file:
     state: link
     dest: "/var/www/virtual/{{ uberspace_user }}/html"
-    src: "{{ epvotes.install_dir }}/app/public"
+    src: "{{ epvotes_install_dir }}/app/public"
 
 - name: Setup symlink for public storage disk
   file:
     state: link
-    dest: "{{ epvotes.install_dir }}/app/public/storage"
-    src: "{{ epvotes.install_dir }}/app/storage/app/public"
+    dest: "{{ epvotes_install_dir }}/app/public/storage"
+    src: "{{ epvotes_install_dir }}/app/storage/app/public"
 
 - name: Enable Laravel Scheduler
   cron:
     name: Laravel Scheduler
     minute: "*"
-    job: "cd {{ epvotes.install_dir }}/app && php artisan schedule:run >> /dev/null 2>&1"
+    job: "cd {{ epvotes_install_dir }}/app && php artisan schedule:run >> /dev/null 2>&1"
 
 - name: Clear static page cache
   shell:
     cmd: php artisan page-cache:clear
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Disable Laravel maintenance mode
   shell:
     cmd: php artisan up
-    chdir: "{{ epvotes.install_dir }}/app"
+    chdir: "{{ epvotes_install_dir }}/app"
