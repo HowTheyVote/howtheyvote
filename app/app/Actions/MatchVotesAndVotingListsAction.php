@@ -28,11 +28,13 @@ class MatchVotesAndVotingListsAction extends Action
             $count = $votingLists->count();
 
             if ($count > 1) {
-                throw CouldNotMatchVoteException::multipleMatchingVotingLists($vote);
+                report(CouldNotMatchVoteException::multipleMatchingVotingLists($vote));
+                continue;
             }
 
             if ($count === 0) {
-                throw CouldNotMatchVoteException::noMatchingVotingList($vote);
+                report(CouldNotMatchVoteException::noMatchingVotingList($vote));
+                continue;
             }
 
             $votingList = $votingLists->first();
@@ -41,7 +43,8 @@ class MatchVotesAndVotingListsAction extends Action
             $resultString = $stats['FOR'].$stats['AGAINST'].$stats['ABSTENTION'];
 
             if ($resultString !== $vote->remarks) {
-                throw CouldNotMatchVoteException::resultsDoNotMatch($vote, $votingList);
+                report(CouldNotMatchVoteException::resultsDoNotMatch($vote, $votingList));
+                continue;
             }
 
             $votingList = $votingList->update([
