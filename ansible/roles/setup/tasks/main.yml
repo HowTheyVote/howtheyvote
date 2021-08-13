@@ -35,10 +35,10 @@
 
 - name: Add new domains
   command: "uberspace web domain add {{ item }}"
-  with_items: "{{ epvotes.domains }}"
+  with_items: "{{ epvotes_domains }}"
   when: "item not in current_domains.stdout_lines"
 
 - name: Remove outdated domains
   command: "uberspace web domain del {{ item }}"
   with_items: "{{ current_domains.stdout_lines }}"
-  when: "item not in epvotes.domains and not item.endswith('uber.space')"
+  when: "item not in epvotes_domains and not item.endswith('uber.space')"
