@@ -1,4 +1,4 @@
-<x-app title="{{ $votingList->displayTitle }} · Related Votes">
+<x-app title="{{ $votingList->displayTitle }} · Related Votes" padding="true">
     <x-wrapper>
         <x-stack>
             <h1 class="alpha">{{ $votingList->display_title }}</h1>

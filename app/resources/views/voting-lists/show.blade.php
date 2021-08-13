@@ -1,4 +1,4 @@
-<x-app title="{{ $votingList->displayTitle }} · Vote Result">
+<x-app title="{{ $votingList->displayTitle }} · Vote Result" padding="true">
     <x-wrapper>
 
         <x-stack space="xl">
