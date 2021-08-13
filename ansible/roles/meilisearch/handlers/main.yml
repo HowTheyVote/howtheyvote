@@ -1,0 +1,10 @@
+---
+- name: Reread meilisearch service
+  community.general.supervisorctl:
+    name: meilisearch
+    state: present
+
+- name: Restart meilisearch service
+  community.general.supervisorctl:
+    name: meilisearch
+    state: restarted

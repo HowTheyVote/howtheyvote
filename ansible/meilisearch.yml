@@ -1,0 +1,6 @@
+---
+- hosts: all
+  vars_files:
+    - vars/general.yml
+  roles:
+    - meilisearch
