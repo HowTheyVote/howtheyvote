@@ -417,6 +417,25 @@ def test_vote_collections_scraper_include_row_lapsed():
     assert scraper._include_row(rows[2]) is True
 
 
+# The indication for lapsed votes is sometimes in the wrong column.
+# https://www.europarl.europa.eu/doceo/document/PV-9-2021-06-07-VOT_EN.html No 24
+def test_vote_collections_scraper_include_row_lapsed_in_remarks():
+    scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
+
+    rows = [
+        {
+            "Subject": "B9-0317/2021",
+            "Am No": "",
+            "Author": "ID",
+            "RCV etc.": "RCV",
+            "Vote": "",
+            "RCV/EV – remarks": "↓",
+        }
+    ]
+
+    assert scraper._include_row(rows[0]) is False
+
+
 def test_vote_collections_scraper_include_row_no_rcv():
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
