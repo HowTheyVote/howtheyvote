@@ -30,4 +30,4 @@ Route::get('/votes/{votingList}/related', [VotingListsController::class, 'relate
 Route::get('/votes/{votingList}/share-picture', [VotingListsController::class, 'sharePicture'])->name('voting-list.share-picture');
 
 // Handles short URLs and should be registered as the last route
-Route::get('/{hashId}', fn ($hashId) => null)->name('voting-list.short');
+Route::get('/{hashId}', [VotingListsController::class, 'short'])->name('voting-list.short');

@@ -8,6 +8,7 @@ use App\Session;
 use App\VotingList;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Spatie\Url\Url;
+use Vinkla\Hashids\Facades\Hashids;
 
 class VotingListsController extends Controller
 {
@@ -140,5 +141,12 @@ class VotingListsController extends Controller
             // `members.id`.
             ->select('members.*', 'votings.position', 'group_memberships.group_id')
             ->get();
+    }
+
+    public function short(string $hashId)
+    {
+        $votingList = VotingList::find(Hashids::decode($hashId))->first();
+
+        return redirect()->route('voting-list.show', ['votingList' => $votingList->id]);
     }
 }
