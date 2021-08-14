@@ -4,7 +4,7 @@
     'url'=>null,
 ])
 
-<x-button
+<x-button {{ $attributes->bem('share-button') }}
     x-data="{
         isVisible: 'share' in navigator,
         title: '{{ $title }}',
