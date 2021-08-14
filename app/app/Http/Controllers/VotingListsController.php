@@ -13,11 +13,15 @@ class VotingListsController extends Controller
 {
     public function index()
     {
-        $sessions = Session::all();
+        $sessions = Session::with([
+            'primaryVotes',
+            'primaryVotes.votingList',
+            'primaryVotes.voteCollection',
+        ])->get();
 
         return view('voting-lists.index', [
             'sessions' => $sessions,
-           ]);
+        ]);
     }
 
     public function show(VotingList $votingList)
