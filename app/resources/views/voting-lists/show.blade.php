@@ -34,7 +34,7 @@
                 @if ($votingList->vote && $votingList->vote->isPrimaryVote())
                     <x-share-button
                         :title="$votingList->display_title"
-                        :text="__('voting-lists.share.text')"
+                        :text="$votingList->display_title"
                         :url="route('voting-list.show', ['votingList' => $votingList])"
                     />
                 @endif
