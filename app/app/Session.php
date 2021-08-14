@@ -22,9 +22,17 @@ class Session extends Model
         'location' => LocationEnum::class,
     ];
 
+    protected $dates = [
+        'start_date',
+        'end_date',
+    ];
+
     public function getDisplayTitleAttribute()
     {
-        return __('session.title', ['start' => $this->start_date, 'end' => $this->end_date]);
+        return __('session.title', [
+            'date' => $this->start_date->format('F Y'),
+            'location' => $this->location->label,
+        ]);
     }
 
     public function votes()

@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'title' => 'Session from :start to :end',
+    'title' => ':date · :location',
 ];
