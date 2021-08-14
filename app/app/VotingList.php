@@ -61,14 +61,19 @@ class VotingList extends Model
         return $this->date->isoFormat('dddd, MMMM D, YYYY');
     }
 
-    public function sharePictureUrl(): string
+    public function sharePictureUrl(): ?string
     {
-        if ($this->vote?->isPrimaryVote()) {
-            if (Storage::disk('public')->exists("share-pictures/vote-sharepic-{$this->id}.png")) {
-                return Storage::disk('public')->url("share-pictures/vote-sharepic-{$this->id}.png");
-            }
+        if (! $this->vote?->isPrimaryVote()) {
+            return null;
         }
 
-        return '';
+        $path = "share-pictures/vote-sharepic-{$this->id}.png";
+        $disk = Storage::disk('public');
+
+        if (! $disk->exists($path)) {
+            return null;
+        }
+
+        return $disk->url($path);
     }
 }
