@@ -17,7 +17,8 @@ class VotingListsController extends Controller
             'primaryVotes',
             'primaryVotes.votingList',
             'primaryVotes.voteCollection',
-        ])->get();
+        ])->orderByDesc('start_date')
+            ->get();
 
         return view('voting-lists.index', [
             'sessions' => $sessions,
