@@ -41,6 +41,8 @@ services:
       - SCRAPERS_PORT=5000
     stdin_open: true
     tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mariadb:
     build: ./mariadb
