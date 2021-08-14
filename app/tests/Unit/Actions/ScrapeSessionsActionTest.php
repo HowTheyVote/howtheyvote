@@ -4,6 +4,7 @@ use App\Actions\ScrapeSessionsAction;
 use App\Enums\LocationEnum;
 use App\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -20,14 +21,14 @@ it('creates new session records', function () {
 
     $session = Session::find(1);
 
-    expect($session->start_date)->toEqual('2021-11-10');
-    expect($session->end_date)->toEqual('2021-11-11');
+    expect($session->start_date)->toEqual(Carbon::create('2021-11-10'));
+    expect($session->end_date)->toEqual(Carbon::create('2021-11-11'));
     expect($session->location)->toEqual(LocationEnum::BRUSSELS());
 
     $session = Session::find(2);
 
-    expect($session->start_date)->toEqual('2021-11-22');
-    expect($session->end_date)->toEqual('2021-11-25');
+    expect($session->start_date)->toEqual(Carbon::create('2021-11-22'));
+    expect($session->end_date)->toEqual(Carbon::create('2021-11-25'));
     expect($session->location)->toEqual(LocationEnum::STRASBOURG());
 });
 
@@ -44,5 +45,5 @@ it('updates existing session records when scraping repeatedly', function () {
 
     $session = Session::first();
     expect($session->location)->toEqual(LocationEnum::BRUSSELS());
-    expect($session->start_date)->toEqual('2021-11-10');
+    expect($session->start_date)->toEqual(Carbon::create('2021-11-10'));
 });

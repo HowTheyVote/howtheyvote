@@ -17,4 +17,12 @@ class LocationEnum extends Enum
             'STRASBOURG' => 1,
         ];
     }
+
+    protected static function labels(): array
+    {
+        return [
+            'BRUSSELS' => 'Brussels',
+            'STRASBOURG' => 'Strasbourg',
+        ];
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\LocationEnum;
 use App\Enums\VoteTypeEnum;
 use App\Session;
 use App\Vote;
@@ -11,7 +12,11 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     VotingList::factory([
         'vote_id' => Vote::factory([
-            'session_id' => Session::factory()->create(),
+            'session_id' => Session::factory([
+                'start_date' => '2021-01-01',
+                'end_date' => '2021-01-05',
+                'location' => LocationEnum::BRUSSELS(),
+            ])->create(),
             'type' => VoteTypeEnum::PRIMARY(),
         ]),
     ])->count(2)
@@ -30,5 +35,5 @@ it('shows a vote card for each existing vote', function () {
 
 it('renders the session titles', function () {
     $response = $this->get('/votes');
-    expect($response)->toHaveSelectorWithText('.beta', 'Session from');
+    expect($response)->toHaveSelectorWithText('.beta', 'January 2021 · Brussels');
 });
