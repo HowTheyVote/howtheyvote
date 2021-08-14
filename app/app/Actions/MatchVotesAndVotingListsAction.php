@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Enums\VoteTypeEnum;
 use App\Exceptions\CouldNotMatchVoteException;
 use App\Vote;
 use App\VotingList;
@@ -11,6 +12,8 @@ class MatchVotesAndVotingListsAction extends Action
     public function execute(): void
     {
         $votesToMatch = Vote::whereDoesntHave('votingList')->get();
+
+        $sharePicAction = new GenerateVoteSharePicAction();
 
         foreach ($votesToMatch as $vote) {
             $votingLists = null;
@@ -47,9 +50,13 @@ class MatchVotesAndVotingListsAction extends Action
                 continue;
             }
 
-            $votingList = $votingList->update([
+            $votingList->update([
                 'vote_id' => $vote->id,
             ]);
+
+            if ($vote->type->equals(VoteTypeEnum::PRIMARY())) {
+                $sharePicAction->execute($votingList);
+            }
         }
     }
 }
