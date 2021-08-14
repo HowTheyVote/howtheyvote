@@ -297,7 +297,7 @@ class VoteCollectionsScraper(Scraper):
             return False
 
         # lapsed votes
-        if row.get("Vote") == "↓":
+        if row.get("Vote") == "↓" or row.get("RCV/EV – remarks") == "↓":
             return False
 
         return True
