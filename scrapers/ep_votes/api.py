@@ -82,6 +82,20 @@ def json_response(handler: SimpleHandler) -> Callable[..., Response]:
     return wrapped_handler
 
 
+def handle_exceptions(handler: SimpleHandler) -> Callable[..., SimpleResponse]:
+    @wraps(handler)
+    def wrapped_handler() -> SimpleResponse:
+        try:
+            return handler()
+        except Exception as e:
+            sentry_sdk.capture_exception(e)
+            message = f"{e.__class__.__name__}: {str(e)}"
+
+            return { "message": message }, 500
+
+    return wrapped_handler
+
+
 def params(**params: Callable) -> Callable:
     def decorator(handler: SimpleHandler) -> Callable[..., SimpleResponse]:
         @wraps(handler)
@@ -135,6 +149,7 @@ def voting_lists(term: int, date: datetime.date) -> SimpleResponse:
 
 @app.route("/vote_collections")
 @json_response
+@handle_exceptions
 @params(term=int, date=datetime.date.fromisoformat)
 def vote_collections(term: int, date: datetime.date) -> SimpleResponse:
     return VoteCollectionsScraper(term=term, date=date).run()
