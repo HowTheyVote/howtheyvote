@@ -121,13 +121,9 @@ class CompileStatsAction extends Action
 
         $positions = $rows
             ->map(function ($row) {
-                // We're explicitly casting to integer here as the in-
-                // memory SQLite database used in test will always return
-                // string values (ignoring the column type).
-                // See comment App\Casts\EnumCast for additional explanation.
                 return [
-                    VotePositionEnum::make((int) $row->position)->label,
-                    intval($row->count),
+                    VotePositionEnum::make($row->position)->label,
+                    $row->count,
                 ];
             })
             ->toAssoc();
