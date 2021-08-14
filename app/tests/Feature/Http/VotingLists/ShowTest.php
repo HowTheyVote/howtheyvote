@@ -205,6 +205,14 @@ it('only has meta tags for sharing if vote is final', function () {
     expect($response)->not()->toHaveSelector('[property="twitter:card"]');
 });
 
+it('displays share button for final votes', function () {
+    $response = $this->get('/votes/1');
+    expect($response)->toHaveSelector('.share-button');
+
+    $response = $this->get('/votes/2');
+    expect($response)->not()->toHaveSelector('.share-button');
+});
+
 it('shows a callout if associated vote is not final', function () {
     $response = $this->get('/votes/2');
 
