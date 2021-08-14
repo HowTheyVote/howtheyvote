@@ -15,5 +15,5 @@
     x-show="isVisible"
     x-cloak
 >
-Share this vote!
+    Share this vote!
 </x-button>

@@ -1,6 +1,7 @@
 @props([
     'size' => null,
     'href' => null,
+    'style' => null,
 ])
 
 @if ($href)
@@ -8,7 +9,7 @@
         {{ $slot }}
     </a>
 @else
-    <button {{ $attributes->bem('button', $size) }}>
+    <button {{ $attributes->bem('button', [$size, $style]) }}>
         {{ $slot }}
     </button>
 @endif

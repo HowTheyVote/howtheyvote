@@ -23,3 +23,8 @@
 .button--lg {
     padding: var(--space-xs) var(--space-sm);
 }
+
+.button--block {
+    display: block;
+    width: 100%;
+}
