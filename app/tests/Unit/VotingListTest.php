@@ -51,7 +51,7 @@ it('does not return a sharepic link if it has no vote', function () {
         'date' => '2021-01-01',
     ])->make();
 
-    expect($votingList->sharePictureUrl())->toEqual('');
+    expect($votingList->share_picture_url)->toBeNull();
 });
 
 it('does not return a sharepic link if it the picture does not exist', function () {
@@ -65,12 +65,13 @@ it('does not return a sharepic link if it the picture does not exist', function 
         ]),
     ])->make();
 
-    expect($votingList->sharePictureUrl())->toEqual('');
+    expect($votingList->share_picture_url)->toBeNull();
 });
 
 it('returns link to sharepic if vote is primary and picture does exist', function () {
     Storage::fake('public');
     Storage::disk('public')->put('share-pictures/vote-sharepic-1.png', 'test');
+
     $votingList = VotingList::factory([
         'date' => '2021-01-01',
         'id' => 1,
@@ -79,5 +80,5 @@ it('returns link to sharepic if vote is primary and picture does exist', functio
         ]),
     ])->make();
 
-    expect($votingList->sharePictureUrl())->toContain('share-pictures/vote-sharepic-1.png');
+    expect($votingList->share_picture_url)->toContain('share-pictures/vote-sharepic-1.png');
 });

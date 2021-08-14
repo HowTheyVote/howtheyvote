@@ -56,12 +56,12 @@ class VotingList extends Model
         return Hashids::encode($this->id);
     }
 
-    public function getFormattedDateAttribute()
+    public function getFormattedDateAttribute(): string
     {
         return $this->date->isoFormat('dddd, MMMM D, YYYY');
     }
 
-    public function sharePictureUrl(): ?string
+    public function getSharePictureUrlAttribute(): ?string
     {
         if (! $this->vote?->isPrimaryVote()) {
             return null;
