@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
+use App\Exceptions\NoResponseException;
 use App\Session;
 use App\Term;
 use App\Vote;
@@ -27,6 +28,10 @@ class ScrapeVoteCollectionsAction extends Action
             'term' => $term->number,
             'date' => $date->toDateString(),
         ]);
+
+        if (! $response) {
+            report(NoResponseException::forVVoteCollections($date));
+        }
 
         $total = count($response);
 

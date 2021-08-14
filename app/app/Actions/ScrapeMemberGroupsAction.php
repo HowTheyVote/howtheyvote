@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Exceptions\NoResponseException;
 use App\Group;
 use App\GroupMembership;
 use App\Member;
@@ -22,6 +23,10 @@ class ScrapeMemberGroupsAction extends Action
             'web_id' => $member->web_id,
             'term' => $term->number,
         ]);
+
+        if (! $response) {
+            report(NoResponseException::forMembersGroupmemberships());
+        }
 
         $total = count($response);
 

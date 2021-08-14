@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Exceptions\NoResponseException;
 use App\Member;
 use App\Term;
 
@@ -19,6 +20,10 @@ class ScrapeMembersAction extends Action
         $response = $this->scrapeAction->execute('members', [
             'term' => $term->number,
         ]);
+
+        if (! $response) {
+            report(NoResponseException::forMembers());
+        }
 
         $total = count($response);
 
