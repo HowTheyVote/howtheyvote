@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Exceptions\NoResponseException;
+use App\Exceptions\ScrapingException;
 use App\Group;
 use App\GroupMembership;
 use App\Member;
@@ -19,13 +19,15 @@ class ScrapeMemberGroupsAction extends Action
 
     public function execute(Member $member, Term $term): void
     {
-        $response = $this->scrapeAction->execute('member_groups', [
-            'web_id' => $member->web_id,
-            'term' => $term->number,
-        ]);
+        try {
+            $response = $this->scrapeAction->execute('member_groups', [
+                'web_id' => $member->web_id,
+                'term' => $term->number,
+            ]);
+        } catch (ScrapingException $exception) {
+            report($exception);
 
-        if (! $response) {
-            report(NoResponseException::forMembersGroupmemberships());
+            return;
         }
 
         $total = count($response);

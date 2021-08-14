@@ -91,7 +91,7 @@ def handle_exceptions(handler: SimpleHandler) -> Callable[..., SimpleResponse]:
             sentry_sdk.capture_exception(e)
             message = f"{e.__class__.__name__}: {str(e)}"
 
-            return { "message": message }, 500
+            return {"message": message}, 500
 
     return wrapped_handler
 

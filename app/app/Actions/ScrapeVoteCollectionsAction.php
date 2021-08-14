@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
-use App\Exceptions\NoResponseException;
+use App\Exceptions\ScrapingException;
 use App\Session;
 use App\Term;
 use App\Vote;
@@ -24,13 +24,15 @@ class ScrapeVoteCollectionsAction extends Action
 
     public function execute(Term $term, Carbon $date): void
     {
-        $response = $this->scrapeAction->execute('vote_collections', [
-            'term' => $term->number,
-            'date' => $date->toDateString(),
-        ]);
+        try {
+            $response = $this->scrapeAction->execute('vote_collections', [
+                'term' => $term->number,
+                'date' => $date->toDateString(),
+            ]);
+        } catch (ScrapingException $exception) {
+            report($exception);
 
-        if (! $response) {
-            report(NoResponseException::forVVoteCollections($date));
+            return;
         }
 
         $total = count($response);

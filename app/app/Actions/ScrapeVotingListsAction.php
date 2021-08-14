@@ -3,7 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
-use App\Exceptions\NoResponseException;
+use App\Exceptions\ScrapingException;
 use App\Member;
 use App\Term;
 use App\VotingList;
@@ -25,13 +25,15 @@ class ScrapeVotingListsAction extends Action
 
     public function execute(Term $term, Carbon $date): void
     {
-        $response = $this->scrapeAction->execute('voting_lists', [
-            'term' => $term->number,
-            'date' => $date->toDateString(),
-        ]);
+        try {
+            $response = $this->scrapeAction->execute('voting_lists', [
+                'term' => $term->number,
+                'date' => $date->toDateString(),
+            ]);
+        } catch (ScrapingException $exception) {
+            report($exception);
 
-        if (! $response) {
-            report(NoResponseException::forVotingLists($date));
+            return;
         }
 
         // Preload a list of all active members on the day
