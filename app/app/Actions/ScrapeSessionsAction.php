@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\LocationEnum;
+use App\Exceptions\ScrapingException;
 use App\Session;
 
 class ScrapeSessionsAction extends Action
@@ -16,10 +17,16 @@ class ScrapeSessionsAction extends Action
 
     public function execute(int $year, int $month): void
     {
-        $data = $this->scrapeAction->execute('sessions', [
-            'year' => $year,
-            'month' => $month,
-        ]);
+        try {
+            $data = $this->scrapeAction->execute('sessions', [
+                'year' => $year,
+                'month' => $month,
+            ]);
+        } catch (ScrapingException $exception) {
+            report($exception);
+
+            return;
+        }
 
         foreach ($data as $session) {
             Session::updateOrCreate([

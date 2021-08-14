@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Exceptions\ScrapingException;
 use Illuminate\Support\Facades\Http;
 use Spatie\Url\Url;
 
@@ -19,10 +20,14 @@ class ScrapeAction extends Action
     public function execute(string $route, array $params): mixed
     {
         $url = $this->url($route, $params);
-
         $this->log("Fetching {$url}");
+        $response = Http::get($url);
 
-        return Http::get($url)->json();
+        if ($response->status() !== 200) {
+            throw new ScrapingException($route, $params);
+        }
+
+        return $response->json();
     }
 
     protected function url(string $route, array $params = []): string

@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Exceptions\ScrapingException;
 use App\Summary;
 use App\VoteCollection;
 
@@ -16,17 +17,19 @@ class ScrapeSummaryAction extends Action
 
     public function execute(VoteCollection $voteCollection): void
     {
-        $summaryId = $this->scrapeAction->execute('summary_id', [
-            'reference' => $voteCollection->reference,
-        ]);
+        try {
+            $summaryId = $this->scrapeAction->execute('summary_id', [
+                'reference' => $voteCollection->reference,
+            ]);
 
-        if (! $summaryId) {
+            $text = $this->scrapeAction->execute('summary', [
+                'summary_id' => $summaryId,
+            ]);
+        } catch (ScrapingException $exception) {
+            report($exception);
+
             return;
         }
-
-        $text = $this->scrapeAction->execute('summary', [
-            'summary_id' => $summaryId,
-        ]);
 
         $summary = Summary::query()
             ->where('reference', $voteCollection->reference)
