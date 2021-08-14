@@ -199,10 +199,10 @@ it('only has meta tags for sharing if vote is final', function () {
     Storage::disk('public')->put('share-pictures/vote-sharepic-2.png', 'test');
 
     $response = $this->get('/votes/1');
-    expect($response)->toHaveSelector('[property="twitter:card"]');
+    expect($response)->toHaveSelector('meta[property="twitter:card"]');
 
     $response = $this->get('/votes/2');
-    expect($response)->not()->toHaveSelector('[property="twitter:card"]');
+    expect($response)->not()->toHaveSelector('meta[property="twitter:card"]');
 });
 
 it('displays share button for final votes', function () {
