@@ -20,6 +20,8 @@ beforeEach(function () {
 
     $this->exceptionHandler = $this->mock(App\Exceptions\Handler::class);
     app()->bind(ExceptionHandler::class, fn () => $this->exceptionHandler);
+
+    Storage::fake('public');
 });
 
 it('matches vote with title', function () {
@@ -137,4 +139,22 @@ it('reports an error when a vote and its matched voting list have different resu
         ->withArgs(fn ($arg) => $arg->getMessage() === $message);
 
     $this->action->execute();
+});
+
+it('generates share-pictures for matched primary votes', function () {
+    $vote = Vote::factory([
+        'type' => VoteTypeEnum::PRIMARY(),
+        'vote_collection_id' => $this->voteCollection->id,
+        'formatted' => 'Am 1/2',
+        'remarks' => '102030',
+    ])->create();
+
+    $votingList = VotingList::factory([
+        'description' => 'Quelques textes en français - Some English text - Irgendein deutscher Text - A9-0123/2021 - Name of rapporteur - Am 1/2',
+        'reference' => 'A9-0123/2021',
+    ])->withStats(10, 20, 30)->create();
+
+    $this->action->execute();
+
+    expect(Storage::disk('public')->exists("vote-sharepic-{$votingList->id}.png"))->toEqual(true);
 });
