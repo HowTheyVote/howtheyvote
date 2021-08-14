@@ -246,3 +246,9 @@ it('displays summary', function () {
 
     expect($response)->toHaveSelectorWithText('p', 'This is the summary.');
 });
+
+it('is reachable with short url', function () {
+    $hashId = VotingList::find(1)->hash_id;
+    $response = $this->get("/{$hashId}");
+    expect($response)->toHaveSelectorWithText('title', 'Redirecting to http://localhost:8000/votes/1');
+});
