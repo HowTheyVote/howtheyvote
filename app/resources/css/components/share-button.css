@@ -1,0 +1,10 @@
+.share-button {
+    display: none;
+    width: 100%;
+}
+
+@media screen and (max-width: 1024px) {
+    .share-button {
+        display: block;
+    }
+}

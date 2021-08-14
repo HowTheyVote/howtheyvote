@@ -16,6 +16,7 @@
 @import './components/callout.css';
 @import './components/markdown.css';
 
+@import './components/share-button.css';
 @import './components/action-panel.css';
 @import './components/list.css';
 @import './components/list-item.css';
