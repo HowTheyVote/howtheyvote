@@ -3,6 +3,7 @@
 namespace App\Actions;
 
 use App\Enums\VotePositionEnum;
+use App\Exceptions\NoResponseException;
 use App\Member;
 use App\Term;
 use App\VotingList;
@@ -28,6 +29,10 @@ class ScrapeVotingListsAction extends Action
             'term' => $term->number,
             'date' => $date->toDateString(),
         ]);
+
+        if (! $response) {
+            report(NoResponseException::forVotingLists($date));
+        }
 
         // Preload a list of all active members on the day
         $members = $this->buildMembersLookup($date);
