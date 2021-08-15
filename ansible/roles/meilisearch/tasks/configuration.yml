@@ -1,0 +1,40 @@
+---
+- name: Update displayed attributes
+  uri:
+    url: "http://localhost:7700/indexes/votes/settings/displayed-attributes"
+    method: POST
+    headers:
+      X-Meili-API-KEY: "{{ meilisearch_master_key }}"
+    body_format: json
+    body: "{{ meilisearch_displayed_attributes }}"
+    status_code: [202]
+
+- name: Update searchable attributes
+  uri:
+    url: "http://localhost:7700/indexes/votes/settings/searchable-attributes"
+    method: POST
+    headers:
+      X-Meili-API-KEY: "{{ meilisearch_master_key }}"
+    body_format: json
+    body: "{{ meilisearch_searchable_attributes }}"
+    status_code: [202]
+
+- name: Update searchable attributes
+  uri:
+    url: "http://localhost:7700/indexes/votes/settings/stop-words"
+    method: POST
+    headers:
+      X-Meili-API-KEY: "{{ meilisearch_master_key }}"
+    body_format: json
+    body: "{{ meilisearch_stop_words }}"
+    status_code: [202]
+
+- name: Update synonyms
+  uri:
+    url: "http://localhost:7700/indexes/votes/settings/stop-words"
+    method: POST
+    headers:
+      X-Meili-API-KEY: "{{ meilisearch_master_key }}"
+    body_format: json
+    body: "{{ meilisearch_synonyms }}"
+    status_code: [202]
