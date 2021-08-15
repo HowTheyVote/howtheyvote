@@ -1,0 +1,19 @@
+meilisearch_displayed_attributes:
+  - display_title
+  - result
+meilisearch_searchable_attributes:
+  - display_title
+  - summary
+meilisearch_stop_words:
+  - European Parliament
+  - European Union
+  - EU
+  - adopted
+  - votes
+  - abstentions
+  - resolution
+meilisearch_synonyms:
+  "covid-19":
+    - corona
+  "human rights":
+    - humanitarian situation
