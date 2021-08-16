@@ -75,6 +75,7 @@ class Country(Enum):
 
 
 GROUP_NAMES = {
+    # 9th parliamentary term
     "Group of the European People's Party (Christian Democrats)": "EPP",
     "Non-attached Members": "NI",
     "Identity and Democracy Group": "ID",
@@ -82,10 +83,13 @@ GROUP_NAMES = {
     "European Conservatives and Reformists Group": "ECR",
     "Group of the Greens/European Free Alliance": "GREENS",
     "Renew Europe Group": "RENEW",
-    "Group of the European United Left - Nordic Green Left": "GUE",
-    "The Left group in the European Parliament - GUE/NGL": "GUE",
-    "Confederal Group of the European United Left - Nordic Green Left": "GUE",
+    "The Left group in the European Parliament - GUE/NGL": "LEFT",
+    # 8th parliamentary term
     "Europe of Freedom and Direct Democracy Group": "EFDD",
+    "Group of the Alliance of Liberals and Democrats for Europe": "ALDE",
+    "Confederal Group of the European United Left - Nordic Green Left": "GUE",
+    "Group of the European United Left - Nordic Green Left": "GUE",
+    "Europe of Nations and Freedom Group": "ENF",
 }
 
 
@@ -94,11 +98,15 @@ class Group(Enum):
     SD = auto()
     GREENS = auto()
     RENEW = auto()
-    GUE = auto()
+    LEFT = auto()
     ECR = auto()
     ID = auto()
     NI = auto()
+
+    ALDE = auto()
+    GUE = auto()
     EFDD = auto()
+    ENF = auto()
 
     @classmethod
     def from_str(cls, name: str) -> "Group":

@@ -44,14 +44,29 @@ class GroupSeeder extends Seeder
             'abbreviation' => 'Renew',
         ],
         [
-            'code' => 'GUE',
+            'code' => 'LEFT',
             'name' => 'The Left in the European Parliament – GUE/NGL',
             'abbreviation' => 'The Left',
+        ],
+        [
+            'code' => 'GUE',
+            'name' => 'Group of the European United Left - Nordic Green Left',
+            'abbreviation' => 'GUE/NGL',
         ],
         [
             'code' => 'EFDD',
             'name' => 'Europe of Freedom and Direct Democracy',
             'abbreviation' => 'EFDD',
+        ],
+        [
+            'code' => 'ALDE',
+            'name' => 'Alliance of Liberals and Democrats for Europe',
+            'abbreviation' => 'ALDE',
+        ],
+        [
+            'code' => 'EFN',
+            'name' => 'Europe of Nations and Freedom',
+            'abbreviation' => 'ENF',
         ],
     ];
 
@@ -63,7 +78,7 @@ class GroupSeeder extends Seeder
     public function run()
     {
         foreach (self::GROUPS as $group) {
-            DB::table('groups')->insert($group);
+            DB::table('groups')->upsert($group, 'code');
         }
     }
 }
