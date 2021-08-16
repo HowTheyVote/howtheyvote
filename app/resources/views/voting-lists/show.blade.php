@@ -49,7 +49,7 @@
                             }}
                         @endif
 
-                        @if ($votingList->vote->primaryVote)
+                        @if ($votingList->vote->primaryVote?->votingList)
                         {!!
                             __('voting-lists.non-primary-callout.text', [
                                 'url' => route('voting-list.show', $votingList->vote->primaryVote->votingList),
