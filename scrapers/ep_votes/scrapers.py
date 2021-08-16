@@ -156,10 +156,12 @@ class MemberGroupsScraper(Scraper):
         positions = [
             "President",
             "Co-President",
+            "Vice-President",
             "Chair",
             "Co-Chair",
             "Vice-Chair",
             "First Vice-Chair",
+            "Chair of the Bureau",
             "Member of the Bureau",
             "Treasurer",
             "Co-treasurer",
