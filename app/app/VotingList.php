@@ -103,4 +103,9 @@ class VotingList extends Model
 
         return $disk->url($path);
     }
+
+    public function getUrlAttribute(): ?string
+    {
+        return route('voting-list.show', ['votingList' => $this->id]);
+    }
 }

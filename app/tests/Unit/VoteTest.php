@@ -3,6 +3,7 @@
 use App\Enums\VoteTypeEnum;
 use App\Vote;
 use App\VoteCollection;
+use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
@@ -126,4 +127,16 @@ it('checks if related votes exist', function () {
     ])->make();
 
     expect($primary->hasRelatedVotes())->toBe(true);
+});
+
+it('returns url for voting list if it is matched', function () {
+    $votingList = VotingList::factory([
+        'vote_id' => Vote::factory([]),
+    ])->create();
+
+    expect($votingList->vote->url)->toContain('votes/');
+
+    $vote = Vote::factory()->create();
+
+    expect($vote->url)->toBe(null);
 });
