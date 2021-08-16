@@ -235,6 +235,27 @@ it('callout shows appropriate text for non-final votes', function () {
     expect($response)->toHaveSelectorWithText('.callout--warning', 'amendment');
 });
 
+it('does not show a url in callout for a non-matched primary vote', function () {
+    $collection = VoteCollection::factory()->create();
+
+    VotingList::factory([
+        'id' => 10,
+        'vote_id' => Vote::factory([
+            'vote_collection_id' => $collection,
+            'type' => VoteTypeEnum::SEPARATE(),
+        ]),
+    ])->withStats()->create();
+
+    Vote::factory([
+        'vote_collection_id' => $collection,
+            'type' => VoteTypeEnum::PRIMARY(),
+    ])->create();
+
+    $response = $this->get('/votes/10');
+    expect($response)->toHaveStatus(200);
+    expect($response)->not()->toHaveSelectorWithText('.callout--warning', 'result of the final vote');
+});
+
 it('displays summary', function () {
     Summary::factory([
         'reference' => $this->votingList->vote->voteCollection->reference,
