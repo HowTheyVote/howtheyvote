@@ -12,7 +12,7 @@
 
         @if ($sharePicture)
             <meta property="og:image" content="{{ $sharePicture }}" />
-            <meta property="twitter:card" content="summary_large_imag" />
+            <meta property="twitter:card" content="summary_large_image" />
             <meta property="twitter:image" content="{{ $sharePicture }}" />
         @endif
 
