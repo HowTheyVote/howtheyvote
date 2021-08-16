@@ -113,4 +113,13 @@ class Vote extends Model
     {
         return $this->relatedVotes()->exists();
     }
+
+    public function getUrlAttribute(): ?string
+    {
+        if (! $this->votingList) {
+            return null;
+        }
+
+        return $this->votingList->url;
+    }
 }
