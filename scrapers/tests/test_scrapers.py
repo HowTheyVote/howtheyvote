@@ -51,6 +51,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2021-03-09-RCV_FR.xml": "pv-9-2021-09-03-rcv-fr.xml",
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
         "/oeil/popups/ficheprocedure.do?reference=B9-0116/2021": "ficheprocedure_b9-0116-2021.html",
+        "/oeil/popups/ficheprocedure.do?reference=A9-0115/2021": "ficheprocedure_a9-0115-2021.html",
         "/oeil/popups/summary.do?id=1651118&t=e&l=en": "summary-1651118.html",
         "/oeil/srvc/calendar.json?y=2021&m=11": "calendar_2021_11.json",
     }
@@ -477,6 +478,11 @@ def test_vote_collections_scraper_include_row_no_rcv():
 def test_summary_id_scraper_run():
     scraper = SummaryIDScraper(reference="B9-0116/2021")
     assert scraper.run() == "1651118"
+
+
+def test_summary_id_scraper_run_no_summary():
+    scraper = SummaryIDScraper(reference="A9-0115/2021")
+    assert scraper.run() is None
 
 
 def test_summary_id_scraper_url():
