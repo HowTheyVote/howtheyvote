@@ -252,3 +252,8 @@ it('is reachable with short url', function () {
     $response = $this->get("/{$hashId}");
     expect($response)->toRedirectTo(route('voting-list.show', ['votingList' => 1]));
 });
+
+it('returns 404 for non-existent short-url', function () {
+    $response = $this->get('hash01');
+    expect($response)->toHaveStatus(404);
+});
