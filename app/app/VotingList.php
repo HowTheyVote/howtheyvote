@@ -5,11 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
 use Vinkla\Hashids\Facades\Hashids;
 
 class VotingList extends Model
 {
     use HasFactory;
+    use Searchable;
 
     protected $fillable = [
         'doceo_vote_id',
@@ -28,6 +30,31 @@ class VotingList extends Model
     protected $casts = [
         'stats' => 'array',
     ];
+
+    public function shouldBeSearchable()
+    {
+        return $this->vote && $this->vote->isPrimaryVote();
+    }
+
+    public function makeAllSearchableUsing($query)
+    {
+        return $query->with([
+            'vote',
+            'vote.voteCollection',
+            'vote.voteCollection.summary',
+        ]);
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'display_title' => $this->display_title,
+            'date' => $this->date,
+            'result' => $this->vote->result->label,
+            'summary' => $this->vote->voteCollection->summary?->text,
+        ];
+    }
 
     public function term()
     {
