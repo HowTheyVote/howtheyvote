@@ -84,6 +84,7 @@ GROUP_NAMES = {
     "Renew Europe Group": "RENEW",
     "Group of the European United Left - Nordic Green Left": "GUE",
     "The Left group in the European Parliament - GUE/NGL": "GUE",
+    "Confederal Group of the European United Left - Nordic Green Left": "GUE",
     "Europe of Freedom and Direct Democracy Group": "EFDD",
 }
 
