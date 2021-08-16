@@ -348,14 +348,17 @@ class SummaryIDScraper(Scraper):
         return f"{self.BASE_URL}{popup}"
 
     def _extract_data(self) -> Optional[str]:
-        section = self._resource.select_one("#key_events-data")
-        rows = section.select(".ep-table-row")
+        rows = self._resource.select("#key_events-data .ep-table-row")
         row = self._summary_row(rows)
 
         if not row:
             return None
 
         button = row.select_one("button[onclick]")
+
+        if not button:
+            return None
+
         regex = r"\/oeil\/popups\/summary\.do\?id=(\d*)"
         match = re.search(regex, button["onclick"])
 
