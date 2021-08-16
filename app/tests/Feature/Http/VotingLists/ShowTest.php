@@ -250,5 +250,5 @@ it('displays summary', function () {
 it('is reachable with short url', function () {
     $hashId = VotingList::find(1)->hash_id;
     $response = $this->get("/{$hashId}");
-    expect($response)->toHaveSelectorWithText('title', 'Redirecting to http://localhost:8000/votes/1');
+    expect($response)->toRedirectTo(route('voting-list.show', ['votingList' => 1]));
 });

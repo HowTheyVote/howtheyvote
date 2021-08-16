@@ -31,3 +31,7 @@ expect()->extend('toHaveSelectorWithText', function (string $selector, string $t
 expect()->extend('toHaveHeader', function (string $headerName, mixed $value = null) {
     return $this->value->assertHeader($headerName, $value);
 });
+
+expect()->extend('toRedirectTo', function (string $uri) {
+    return $this->value->assertRedirect($uri);
+});
