@@ -147,6 +147,10 @@ class VotingListsController extends Controller
     {
         $votingList = VotingList::find(Hashids::decode($hashId))->first();
 
+        if (! $votingList) {
+            abort(404);
+        }
+
         return redirect()->route('voting-list.show', ['votingList' => $votingList->id]);
     }
 }
