@@ -1,7 +1,7 @@
 ---
 - name: Update displayed attributes
   uri:
-    url: "http://localhost:7700/indexes/votes/settings/displayed-attributes"
+    url: "http://localhost:7700/indexes/voting_lists/settings/displayed-attributes"
     method: POST
     headers:
       X-Meili-API-KEY: "{{ meilisearch_master_key }}"
@@ -11,7 +11,7 @@
 
 - name: Update searchable attributes
   uri:
-    url: "http://localhost:7700/indexes/votes/settings/searchable-attributes"
+    url: "http://localhost:7700/indexes/voting_lists/settings/searchable-attributes"
     method: POST
     headers:
       X-Meili-API-KEY: "{{ meilisearch_master_key }}"
@@ -19,9 +19,9 @@
     body: "{{ meilisearch_searchable_attributes }}"
     status_code: [202]
 
-- name: Update searchable attributes
+- name: Update stop words
   uri:
-    url: "http://localhost:7700/indexes/votes/settings/stop-words"
+    url: "http://localhost:7700/indexes/voting_lists/settings/stop-words"
     method: POST
     headers:
       X-Meili-API-KEY: "{{ meilisearch_master_key }}"
@@ -31,7 +31,7 @@
 
 - name: Update synonyms
   uri:
-    url: "http://localhost:7700/indexes/votes/settings/stop-words"
+    url: "http://localhost:7700/indexes/voting_lists/settings/synonyms"
     method: POST
     headers:
       X-Meili-API-KEY: "{{ meilisearch_master_key }}"
