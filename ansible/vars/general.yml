@@ -6,12 +6,14 @@ poetry_executable: "{{ ansible_facts.env.HOME }}/.poetry/bin/poetry"
 epvotes_version: main
 epvotes_install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
 epvotes_domains:
-    - howtheyvote.eu
-    - how-they-vote.eu
-    - abstimmungen.eu
-    - howtheyvoted.eu
-    - how-they-voted.eu
-    - ep-votes.eu
+  - howtheyvote.eu
+  - how-they-vote.eu
+  - abstimmungen.eu
+  - howtheyvoted.eu
+  - how-they-voted.eu
+  - ep-votes.eu
+  - search.howtheyvote.eu
+meilisearch_domain: search.howtheyvote.eu
 meilisearch_install_dir: "~/meilisearch-source"
 meilisearch_version: 0.20.0
 meilisearch_db_dir: "~/meilisearch-database"
