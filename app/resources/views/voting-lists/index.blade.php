@@ -7,7 +7,7 @@
                 @foreach ($sessions as $session)
                     <h2 class="beta">{{ $session->display_title }}</h2>
 
-                    @foreach ($session->primaryVotes as $vote)
+                    @foreach ($session->matchedPrimaryVotes as $vote)
                         <x-vote-card :vote="$vote" />
                     @endforeach
                 @endforeach

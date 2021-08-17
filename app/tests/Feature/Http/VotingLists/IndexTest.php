@@ -37,3 +37,13 @@ it('renders the session titles', function () {
     $response = $this->get('/votes');
     expect($response)->toHaveSelectorWithText('.beta', 'January 2021 · Brussels');
 });
+
+it('does not include primary votes that have not been matched to a voting list', function () {
+    Vote::factory([
+            'session_id' => Session::first(),
+            'type' => VoteTypeEnum::PRIMARY(),
+    ])->create();
+
+    $response = $this->get('/votes');
+    expect($response)->toHaveSelector('.vote-card', 2);
+});
