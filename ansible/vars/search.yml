@@ -1,4 +1,5 @@
 meilisearch_displayed_attributes:
+  - id
   - display_title
   - result
 meilisearch_searchable_attributes:
