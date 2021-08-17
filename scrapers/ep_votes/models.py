@@ -192,7 +192,7 @@ class Voting:
 class VotingList:
     description: str
     reference: Optional[str]
-    doceo_vote_id: int
+    doceo_vote_id: Optional[int]
     votings: List[Voting]
 
 
