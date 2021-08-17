@@ -3,7 +3,7 @@ import requests
 import re
 from datetime import date, datetime
 import random
-from typing import Any, List, Optional, Tuple, Dict
+from typing import Any, List, Optional, Tuple, Dict, Union
 from abc import ABC, abstractmethod
 from .helpers import (
     removeprefix,
@@ -58,13 +58,21 @@ class Scraper(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _url(self) -> str:
+    def _url(self) -> Union[str, List[str]]:
         raise NotImplementedError
 
     def _load(self) -> None:
-        url = self._url()
-        raw = requests.get(url, headers=self._headers()).text
-        self._resource = BeautifulSoup(raw, self.BS_PARSER)
+        self.url = self._url()
+
+        if isinstance(self.url, str):
+            self.url = [self.url]
+
+        for url in self.url:
+            res = requests.get(url, headers=self._headers())
+            if res.ok:
+                raw = res.text
+                self._resource = BeautifulSoup(raw, self.BS_PARSER)
+                return
 
     def _headers(self) -> Dict[str, str]:
         return {
