@@ -9,7 +9,6 @@
 
     display: flex;
     margin-bottom: var(--space-sm);
-    gap: var(--space-sm);
 
     background-color: white;
     border-bottom: 1px solid var(--gray-light);
@@ -21,4 +20,8 @@
      * margin-top to normalize that effect when unstuck. */
     padding-top: var(--space);
     margin-top: calc(-1 * var(--space));
+}
+
+.tabs__tablist > * + * {
+    margin-left: var(--space-sm);
 }
