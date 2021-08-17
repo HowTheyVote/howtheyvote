@@ -157,9 +157,9 @@ def vote_collections(term: int, date: datetime.date) -> SimpleResponse:
 
 @app.route("/summary_id")
 @json_response
-@params(reference=str)
-def summary_id(reference: str) -> SimpleResponse:
-    return SummaryIDScraper(reference=reference).run()
+@params(reference=str, week_of_year=int)
+def summary_id(week_of_year: int, reference: str) -> SimpleResponse:
+    return SummaryIDScraper(week_of_year=week_of_year, reference=reference).run()
 
 
 @app.route("/summary")

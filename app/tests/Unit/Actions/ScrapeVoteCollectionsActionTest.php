@@ -18,7 +18,7 @@ beforeEach(function () {
     $this->date = new Carbon('2021-03-08');
 
     Http::fakeJsonFromFile('*/vote_collections?term=9&date=2021-03-08', 'vote_collections.json');
-    Http::fakeJsonFromFile('*/summary_id?reference=A9-0019%2F2021', 'summary_id.json');
+    Http::fakeJsonFromFile('*/summary_id?reference=A9-0019%2F2021&week_of_year=10', 'summary_id.json');
     Http::fakeJsonFromFile('*/summary?summary_id=1234567', 'summary.json');
 });
 

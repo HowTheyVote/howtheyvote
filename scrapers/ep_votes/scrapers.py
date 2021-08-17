@@ -342,7 +342,8 @@ class VoteCollectionsScraper(Scraper):
 class SummaryIDScraper(Scraper):
     BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/popups/"
 
-    def __init__(self, reference: str):
+    def __init__(self, week_of_year: int, reference: str):
+        self.week_of_year = week_of_year
         self.reference = reference
 
     def _url(self) -> str:
@@ -376,10 +377,21 @@ class SummaryIDScraper(Scraper):
             if len(header_cells) < 2:
                 continue
 
+            date = datetime.strptime(header_cells[0].text.strip(), "%d/%m/%Y")
+            week_of_year = int(date.strftime("%W"))
             description = header_cells[1].text.strip()
 
-            if description.startswith("Decision by Parliament"):
-                return row
+            if not description.startswith("Decision by Parliament"):
+                continue
+
+            # When scraping summaries, we don't know the exact date
+            # when the vote took place. Instead, we know the week
+            # of the vote. We *think* it's safe to assume that there
+            # won't be two votes on the same subject in the same week.
+            if week_of_year != self.week_of_year:
+                continue
+
+            return row
 
         return None
 
