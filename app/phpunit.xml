@@ -30,5 +30,7 @@
 
         <server name="SCRAPERS_HOST" value="localhost"/>
         <server name="SCRAPERS_PORT" value="5000"/>
+
+        <server name="SCOUT_DRIVER" value="collection" force="true"/>
     </php>
 </phpunit>
