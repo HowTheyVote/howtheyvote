@@ -2,8 +2,10 @@
     <x-share-picture>
         <x-stack space="sm">
             <x-stack space="xxs">
-                <h1 class="beta">{{ $votingList->display_title }}</h1>
-                <p class="text--xs">
+                <h1 class="alpha">
+                    {{ $votingList->display_title }}
+                </h1>
+                <p class="text--sm">
                     @lang('voting-lists.share-picture.subtitle', [
                         'date' => $votingList->date->formatLocalized('%b %e, %Y'),
                     ])
