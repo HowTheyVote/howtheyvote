@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup, Tag
+import html
 import requests
 import re
 from datetime import date, datetime
@@ -69,10 +70,19 @@ class Scraper(ABC):
 
         for url in self.url:
             res = requests.get(url, headers=self._headers())
-            if res.ok:
-                raw = res.text
-                self._resource = BeautifulSoup(raw, self.BS_PARSER)
-                return
+
+            if not res.ok:
+                continue
+
+            raw = res.text
+
+            # Handle HTML-encoded special-characters, as BeautifulSoup
+            # seems to decode them to incorrect Unicode characters
+            if self.BS_PARSER != "lxml-xml":
+                raw = html.unescape(raw)
+
+            self._resource = BeautifulSoup(raw, self.BS_PARSER)
+            return
 
     def _headers(self) -> Dict[str, str]:
         return {
