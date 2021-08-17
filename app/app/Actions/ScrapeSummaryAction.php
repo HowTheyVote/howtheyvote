@@ -20,6 +20,7 @@ class ScrapeSummaryAction extends Action
         try {
             $summaryId = $this->scrapeAction->execute('summary_id', [
                 'reference' => $voteCollection->reference,
+                'week_of_year' => $voteCollection->date->isoWeek(),
             ]);
 
             $text = $this->scrapeAction->execute('summary', [
