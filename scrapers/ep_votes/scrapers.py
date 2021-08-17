@@ -211,25 +211,36 @@ class VotingListsScraper(Scraper):
 
     def _url(self) -> List[str]:
         date = self.date.strftime("%Y-%m-%d")
-        parliament_url = f"{self.BASE_URL_EP}/PV-{self.term}-{date}-RCV_FR.xml"
+        doceo_url = f"{self.BASE_URL_EP}/PV-{self.term}-{date}-RCV_FR.xml"
+
         year = self.date.strftime("%Y")
         month = self.date.strftime("%m")
         day = self.date.strftime("%d")
         document_register_url = (
             f"{self.BASE_URL_DR}/{year}/{month}-{day}/liste_presence/"
-            f"P{self.term}_PV({year}){month}-{year}(RCV)_XC.xml"
+            f"P{self.term}_PV({year}){month}-{day}(RCV)_XC.xml"
         )
-        return [parliament_url, document_register_url]
+
+        return [doceo_url, document_register_url]
 
     def _extract_data(self) -> List[VotingList]:
         tags = self._resource.find_all("RollCallVote.Result")
         return [self._voting_list(tag) for tag in tags]
 
     def _voting_list(self, tag: Tag) -> VotingList:
+
+        doceo_vote_id = None
+
+        try:
+            doceo_vote_id = int(tag["Identifier"])
+
+        except KeyError:
+            pass
+
         return VotingList(
             description=self._description(tag),
             reference=self._reference(tag),
-            doceo_vote_id=int(tag["Identifier"]),
+            doceo_vote_id=doceo_vote_id,
             votings=self._votings(tag),
         )
 
@@ -251,7 +262,7 @@ class VotingListsScraper(Scraper):
         return votings
 
     def _votings_by_position(self, tag: Tag, position: Position) -> List[Voting]:
-        tags = tag.find_all("PoliticalGroup.Member.Name")
+        tags = tag.find_all("PoliticalGroup.Member.Name") + tag.find_all("Member.Name")
         return [self._voting(tag, position) for tag in tags]
 
     def _voting(self, tag: BeautifulSoup, position: Position) -> Voting:
@@ -268,7 +279,7 @@ class VotingListsScraper(Scraper):
 
 class VoteCollectionsScraper(Scraper):
     BS_PARSER = "lxml-xml"
-    BASE_URL_EP = "https://europarl.europa.eu/doceo/document/"
+    BASE_URL_EP = "https://www.europarl.europa.eu/doceo/document/"
     BASE_URL_DR = (
         "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/"
     )
@@ -280,7 +291,7 @@ class VoteCollectionsScraper(Scraper):
 
     def _url(self) -> List[str]:
         date = self.date.strftime("%Y-%m-%d")
-        parliament_url = f"{self.BASE_URL_EP}PV-{self.term}-{date}-VOT_EN.xml"
+        doceo_url = f"{self.BASE_URL_EP}PV-{self.term}-{date}-VOT_EN.xml"
         year = self.date.strftime("%Y")
         month = self.date.strftime("%m")
         day = self.date.strftime("%d")
@@ -289,7 +300,7 @@ class VoteCollectionsScraper(Scraper):
             f"_PV({year}){month}-{day}(VOT)_EN.xml"
         )
 
-        return [parliament_url, document_register_url]
+        return [doceo_url, document_register_url]
 
     def _extract_data(self) -> List[VoteCollection]:
         tags = self._resource.find_all("Vote.Result")
@@ -338,6 +349,11 @@ class VoteCollectionsScraper(Scraper):
         return True
 
     def _vote(self, row: Row) -> Vote:
+
+        remarks = row.get("RCV/EV – remarks")
+        if remarks:
+            remarks = remarks.replace(" ", "")
+
         return Vote(
             subject=row.get("Subject"),
             author=row.get("Author"),
@@ -345,7 +361,7 @@ class VoteCollectionsScraper(Scraper):
             split_part=self._split_part(row.get("RCV etc.")),
             amendment=self._amendment(row.get("Am No")),
             type=self._type(row),
-            remarks=row.get("RCV/EV – remarks"),
+            remarks=remarks,
             subheading=row.get("Subheading"),
         )
 

@@ -50,13 +50,19 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2020-07-23-RCV_FR.xml": "pv-9-2020-07-23-rcv-fr.xml",
         "/doceo/document/PV-9-2019-10-22-RCV_FR.xml": "pv-9-2019-10-22-rcv-fr.xml",
         "/doceo/document/PV-9-2021-03-09-RCV_FR.xml": "pv-9-2021-09-03-rcv-fr.xml",
+        "/RegData/seance_pleniere/proces_verbal/2019/03-26/liste_presence/P8_PV(2019)03-26(RCV)_XC.xml": "p8_pv(2019)03-26(rcv)_xc.xml",
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
+        "/RegData/seance_pleniere/proces_verbal/2019/03-26/liste_presence/P8_PV(2019)03-26(VOT)_EN.xml": "p8_pv(2019)03-26(vot)_en.xml",
         "/oeil/popups/ficheprocedure.do?reference=B9-0116/2021": "ficheprocedure_b9-0116-2021.html",
         "/oeil/popups/ficheprocedure.do?reference=A9-0115/2021": "ficheprocedure_a9-0115-2021.html",
         "/oeil/popups/ficheprocedure.do?reference=A9-0149/2021": "ficheprocedure_a9-0149-2021.html",
         "/oeil/popups/summary.do?id=1651118&t=e&l=en": "summary-1651118.html",
-        "/oeil/srvc/calendar.json?y=2021&m=11": "calendar_2021_11.json",
+        "/oeil/srvc/calendar.json?y=2021&m=11": "calendar-2021-11.json",
     }
+
+    if url not in MOCK_RESPONSES:
+        context.status_code = 404
+        return "No content"
 
     file = MOCK_RESPONSES[url]
     path = TEST_DATA_DIR / file
@@ -176,6 +182,23 @@ def test_voting_lists_scraper_run(mock_request):
     assert scraper.run() == expected
 
 
+def test_voting_lists_scraper_run_document_register_url_votings(mock_request):
+    scraper = VotingListsScraper(term=8, date=date(2019, 3, 26))
+    result = scraper.run()
+
+    expected = [
+        Voting(doceo_member_id=5682, name="Ali", position=Position.FOR),
+        Voting(doceo_member_id=6407, name="Arthuis", position=Position.FOR),
+        Voting(doceo_member_id=6097, name="van Baalen", position=Position.FOR),
+        Voting(doceo_member_id=6110, name="Bearder", position=Position.FOR),
+        Voting(
+            doceo_member_id=6646, name="Becerra Basterrechea", position=Position.FOR
+        ),
+    ]
+
+    assert result[0].votings[:5] == expected
+
+
 def test_voting_lists_scraper_run_positions_missing(mock_request):
     scraper = VotingListsScraper(term=9, date=date(2019, 10, 22))
 
@@ -189,20 +212,20 @@ def test_voting_lists_scraper_run_positions_missing(mock_request):
     assert voting_lists[0].votings == votings
 
 
-def test_vote_collections_scraper_url():
+def test_vote_collections_scraper_url(mock_request):
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
-    expected_parliament = (
-        "https://europarl.europa.eu/doceo/document/PV-9-2021-03-09-VOT_EN.xml"
+    expected_doceo = (
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2021-03-09-VOT_EN.xml"
     )
     expected_document_register = (
         "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/"
         "2021/03-09/liste_presence/P9_PV(2021)03-09(VOT)_EN.xml"
     )
-    assert scraper._url() == [expected_parliament, expected_document_register]
+    assert scraper._url() == [expected_doceo, expected_document_register]
 
 
-def test_vote_collections_scraper_run():
+def test_vote_collections_scraper_run(mock_request):
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
     assert len(result) == 22
@@ -218,10 +241,50 @@ def test_vote_collections_scraper_run():
     assert result[21].reference == "B9-0164/2021"
 
 
-def test_vote_collections_scraper_run_vote_items():
+def test_vote_collections_scraper_run_document_register_url_vote_items(mock_request):
+    scraper = VoteCollectionsScraper(term=8, date=date(2019, 3, 26))
+    result = scraper.run()
+    assert len(result[17].votes) == 3
+
+    expected_votes = [
+        Vote(
+            subject="§ 1, after point g",
+            subheading=None,
+            author="EFDD",
+            result=VoteResult.REJECTED,
+            split_part=None,
+            amendment="1",
+            type=VoteType.AMENDMENT,
+            remarks="19044315",
+        ),
+        Vote(
+            subject="§ 1, point m",
+            subheading=None,
+            author="Verts/ALE",
+            result=VoteResult.REJECTED,
+            split_part=None,
+            amendment="3",
+            type=VoteType.AMENDMENT,
+            remarks="26435230",
+        ),
+        Vote(
+            subject="Vote: recommendation (as a whole)",
+            subheading=None,
+            author=None,
+            result=VoteResult.ADOPTED,
+            split_part=None,
+            amendment=None,
+            type=VoteType.PRIMARY,
+            remarks="39313281",
+        ),
+    ]
+
+    assert result[17].votes == expected_votes
+
+
+def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
     result = scraper.run()
-
     assert len(result[3].votes) == 8
 
     expected_votes = [
@@ -617,7 +680,7 @@ def test_summary_id_scraper_is_summary_row_in_week_multiple_candidates(mock_requ
     assert scraper._is_summary_row_in_week(rows[1]) is True
 
 
-def test_summary_scraper_run():
+def test_summary_scraper_run(mock_request):
     scraper = SummaryScraper(summary_id="1651118")
 
     summary = "\n\n".join(
@@ -662,7 +725,7 @@ def test_summary_scraper_format_paragraph():
     assert scraper._format_paragraph(tag) == "## This is a heading"
 
 
-def test_sessions_scraper_run():
+def test_sessions_scraper_run(mock_request):
     scraper = SessionsScraper(month=11, year=2021)
     result = scraper.run()
 
