@@ -12,6 +12,7 @@ from ep_votes.scrapers import (
     VoteCollectionsScraper,
     SummaryIDScraper,
     SummaryScraper,
+    ScrapingException,
 )
 from ep_votes.models import (
     Location,
@@ -52,6 +53,7 @@ def mock_response(req, context):
         "/doceo/document/PV-9-2021-03-09-VOT_EN.xml": "pv-9-2021-09-03-vot-en.xml",
         "/oeil/popups/ficheprocedure.do?reference=B9-0116/2021": "ficheprocedure_b9-0116-2021.html",
         "/oeil/popups/ficheprocedure.do?reference=A9-0115/2021": "ficheprocedure_a9-0115-2021.html",
+        "/oeil/popups/ficheprocedure.do?reference=A9-0149/2021": "ficheprocedure_a9-0149-2021.html",
         "/oeil/popups/summary.do?id=1651118&t=e&l=en": "summary-1651118.html",
         "/oeil/srvc/calendar.json?y=2021&m=11": "calendar_2021_11.json",
     }
@@ -475,24 +477,29 @@ def test_vote_collections_scraper_include_row_no_rcv():
     assert scraper._include_row(rows[3]) is True
 
 
-def test_summary_id_scraper_run():
+def test_summary_id_scraper_run(mock_request):
     scraper = SummaryIDScraper(week_of_year=6, reference="B9-0116/2021")
     assert scraper.run() == "1651118"
 
 
-def test_summary_id_scraper_run_no_summary():
+def test_summary_id_scraper_run_no_summary(mock_request):
     scraper = SummaryIDScraper(week_of_year=20, reference="A9-0115/2021")
     assert scraper.run() is None
 
 
-def test_summary_id_scraper_url():
+def test_summary_id_scraper_run_multiple_candidates_in_same_week(mock_request):
+    with pytest.raises(ScrapingException):
+        SummaryIDScraper(week_of_year=20, reference="A9-0149/2021").run()
+
+
+def test_summary_id_scraper_url(mock_request):
     scraper = SummaryIDScraper(week_of_year=6, reference="B9-0116/2021")
     expected = "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=B9-0116/2021"
 
     assert scraper._url() == expected
 
 
-def test_summary_id_scraper_summary_row():
+def test_summary_id_scraper_is_summary_row(mock_request):
     scraper = SummaryIDScraper(week_of_year=6, reference="B9-0116/2021")
 
     html = "".join(
@@ -538,10 +545,11 @@ def test_summary_id_scraper_summary_row():
 
     rows = BeautifulSoup(html, "lxml-html").select(".ep-table-row")
 
-    assert scraper._summary_row(rows) == rows[1]
+    assert scraper._is_summary_row(rows[0]) is False
+    assert scraper._is_summary_row(rows[1]) is True
 
 
-def test_summary_id_scraper_summary_row_multiple_candidates():
+def test_summary_id_scraper_is_summary_row_multiple_candidates(mock_request):
     scraper = SummaryIDScraper(week_of_year=6, reference="B9-0116/2021")
 
     html = "".join(
@@ -599,7 +607,8 @@ def test_summary_id_scraper_summary_row_multiple_candidates():
 
     rows = BeautifulSoup(html, "lxml-html").select(".ep-table-row")
 
-    assert scraper._summary_row(rows) == rows[1]
+    assert scraper._is_summary_row(rows[0]) is False
+    assert scraper._is_summary_row(rows[1]) is True
 
 
 def test_summary_scraper_run():

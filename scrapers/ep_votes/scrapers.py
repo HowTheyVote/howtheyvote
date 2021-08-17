@@ -38,6 +38,10 @@ USER_AGENTS = [
 ]
 
 
+class ScrapingException(Exception):
+    pass
+
+
 class Scraper(ABC):
     BS_PARSER = "lxml"
 
@@ -352,12 +356,16 @@ class SummaryIDScraper(Scraper):
 
     def _extract_data(self) -> Optional[str]:
         rows = self._resource.select("#key_events-data .ep-table-row")
-        row = self._summary_row(rows)
+        summary_rows = [row for row in rows if self._is_summary_row(row) is True]
 
-        if not row:
+        if len(summary_rows) > 1:
+            raise ScrapingException("Multiple summaries available for the given week.")
+
+        if len(summary_rows) <= 0:
             return None
 
-        button = row.select_one("button[onclick]")
+        summary_row = summary_rows[0]
+        button = summary_row.select_one("button[onclick]")
 
         if not button:
             return None
@@ -370,30 +378,27 @@ class SummaryIDScraper(Scraper):
 
         return match.group(1)
 
-    def _summary_row(self, rows: List[Tag]) -> Optional[Tag]:
-        for row in rows:
-            header_cells = row.select(".ep-table-column-head")
+    def _is_summary_row(self, row: Tag) -> bool:
+        header_cells = row.select(".ep-table-column-head")
 
-            if len(header_cells) < 2:
-                continue
+        if len(header_cells) < 2:
+            return False
 
-            date = datetime.strptime(header_cells[0].text.strip(), "%d/%m/%Y")
-            week_of_year = int(date.strftime("%W"))
-            description = header_cells[1].text.strip()
+        date = datetime.strptime(header_cells[0].text.strip(), "%d/%m/%Y")
+        week_of_year = int(date.strftime("%W"))
+        description = header_cells[1].text.strip()
 
-            if not description.startswith("Decision by Parliament"):
-                continue
+        if not description.startswith("Decision by Parliament"):
+            return False
 
-            # When scraping summaries, we don't know the exact date
-            # when the vote took place. Instead, we know the week
-            # of the vote. We *think* it's safe to assume that there
-            # won't be two votes on the same subject in the same week.
-            if week_of_year != self.week_of_year:
-                continue
+        # When scraping summaries, we don't know the exact date
+        # when the vote took place. Instead, we know the week
+        # of the vote. We *think* it's safe to assume that there
+        # won't be two votes on the same subject in the same week.
+        if week_of_year != self.week_of_year:
+            return False
 
-            return row
-
-        return None
+        return True
 
 
 class SummaryScraper(Scraper):
