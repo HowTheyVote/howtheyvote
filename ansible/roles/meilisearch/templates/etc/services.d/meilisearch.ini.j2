@@ -6,5 +6,6 @@ command=meilisearch-{{ meilisearch_version }}
     --no-analytics true
     --no-sentry true
     --db-path {{ meilisearch_db_dir }}
+    --http-addr 0.0.0.0:7700
 startsecs=30
 stderr_logfile={{ ansible_facts.env.HOME }}/logs/meilisearch.log

@@ -7,6 +7,7 @@
 - name: Copy service configuration
   notify:
     - Reread meilisearch service
+    - Restart meilisearch service
   template:
     src: etc/services.d/meilisearch.ini.j2
     dest: "{{ ansible_facts.env.HOME }}/etc/services.d/meilisearch.ini"
@@ -44,6 +45,9 @@
       X-Meili-API-Key: "{{ meilisearch_master_key }}"
     return_content: yes
   register: keys
+
+- name: Route traffic on subdomain to Meilisearch
+  command: "uberspace web backend set {{ meilisearch_domain }} --http --port 7700"
 
 - name: Print keys
   debug:

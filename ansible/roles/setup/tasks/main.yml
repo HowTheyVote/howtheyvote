@@ -42,3 +42,6 @@
   command: "uberspace web domain del {{ item }}"
   with_items: "{{ current_domains.stdout_lines }}"
   when: "item not in epvotes_domains and not item.endswith('uber.space')"
+
+- name: Route traffic to Apache
+  command: "uberspace web backend set / --apache"
