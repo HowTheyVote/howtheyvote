@@ -192,8 +192,14 @@ def test_voting_lists_scraper_run_positions_missing(mock_request):
 def test_vote_collections_scraper_url():
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
-    expected = "https://europarl.europa.eu/doceo/document/PV-9-2021-03-09-VOT_EN.xml"
-    assert scraper._url() == expected
+    expected_parliament = (
+        "https://europarl.europa.eu/doceo/document/PV-9-2021-03-09-VOT_EN.xml"
+    )
+    expected_document_register = (
+        "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/"
+        "2021/03-09/liste_presence/P9_PV(2021)03-09(VOT)_EN.xml"
+    )
+    assert scraper._url() == [expected_parliament, expected_document_register]
 
 
 def test_vote_collections_scraper_run():

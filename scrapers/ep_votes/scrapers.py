@@ -201,16 +201,25 @@ class MemberGroupsScraper(Scraper):
 
 
 class VotingListsScraper(Scraper):
-    BASE_URL = "https://www.europarl.europa.eu/doceo/document"
+    BASE_URL_EP = "https://www.europarl.europa.eu/doceo/document"
+    BASE_URL_DR = "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal"
     BS_PARSER = "lxml-xml"
 
     def __init__(self, date: date, term: int):
         self.date = date
         self.term = term
 
-    def _url(self) -> str:
+    def _url(self) -> List[str]:
         date = self.date.strftime("%Y-%m-%d")
-        return f"{self.BASE_URL}/PV-{self.term}-{date}-RCV_FR.xml"
+        parliament_url = f"{self.BASE_URL_EP}/PV-{self.term}-{date}-RCV_FR.xml"
+        year = self.date.strftime("%Y")
+        month = self.date.strftime("%m")
+        day = self.date.strftime("%d")
+        document_register_url = (
+            f"{self.BASE_URL_DR}/{year}/{month}-{day}/liste_presence/"
+            f"P{self.term}_PV({year}){month}-{year}(RCV)_XC.xml"
+        )
+        return [parliament_url, document_register_url]
 
     def _extract_data(self) -> List[VotingList]:
         tags = self._resource.find_all("RollCallVote.Result")
@@ -259,16 +268,28 @@ class VotingListsScraper(Scraper):
 
 class VoteCollectionsScraper(Scraper):
     BS_PARSER = "lxml-xml"
-    BASE_URL = "https://europarl.europa.eu/doceo/document/"
+    BASE_URL_EP = "https://europarl.europa.eu/doceo/document/"
+    BASE_URL_DR = (
+        "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/"
+    )
     # PV-9-2021-03-09-VOT_EN.xml
 
     def __init__(self, term: int, date: date):
         self.term = term
         self.date = date
 
-    def _url(self) -> str:
-        document = f"PV-{self.term}-{self.date}-VOT_EN.xml"
-        return f"{self.BASE_URL}{document}"
+    def _url(self) -> List[str]:
+        date = self.date.strftime("%Y-%m-%d")
+        parliament_url = f"{self.BASE_URL_EP}PV-{self.term}-{date}-VOT_EN.xml"
+        year = self.date.strftime("%Y")
+        month = self.date.strftime("%m")
+        day = self.date.strftime("%d")
+        document_register_url = (
+            f"{self.BASE_URL_DR}{year}/{month}-{day}/liste_presence/P{self.term}"
+            f"_PV({year}){month}-{day}(VOT)_EN.xml"
+        )
+
+        return [parliament_url, document_register_url]
 
     def _extract_data(self) -> List[VoteCollection]:
         tags = self._resource.find_all("Vote.Result")
