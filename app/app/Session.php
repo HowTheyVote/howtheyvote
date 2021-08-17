@@ -44,4 +44,9 @@ class Session extends Model
     {
         return $this->votes()->where('type', VoteTypeEnum::PRIMARY());
     }
+
+    public function matchedPrimaryVotes()
+    {
+        return $this->primaryVotes()->whereHas('votingList');
+    }
 }
