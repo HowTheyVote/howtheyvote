@@ -5,7 +5,7 @@
     ])
 
 <article {{ $attributes->bem('vote-card') }}>
-    <a href="{{ route('voting-list.show', $vote->votingList) }}">
+    <a href="{{ $vote->url }}">
         <x-thumb
             class="vote-card__thumb"
             :result="$vote->result"
