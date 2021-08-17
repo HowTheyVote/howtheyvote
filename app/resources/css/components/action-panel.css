@@ -2,7 +2,6 @@
     display: flex;
     padding: var(--space);
     flex-direction: column;
-    gap: var(--space-sm);
     align-items: start;
 
     border-radius: 4px;
@@ -11,11 +10,14 @@
 
 .action-panel__action {
     flex-shrink: 0;
+    margin-top: var(--space-sm);
 }
 
 @media screen and (min-width: 540px) {
     .action-panel {
         flex-direction: row;
         align-items: center;
+        margin-top: 0;
+        margin-left: var(--space-sm);
     }
 }

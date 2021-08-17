@@ -1,8 +1,11 @@
 .vote-result-chart {
     display: flex;
-    gap: 1px;
     border-radius: 2px;
     overflow: hidden;
+}
+
+.vote-result-chart > * + * {
+    margin-left: 1px;
 }
 
 .vote-result-chart__bar {

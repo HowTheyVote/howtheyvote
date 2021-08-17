@@ -1,8 +1,11 @@
 .list-item {
     display: flex;
     width: 100%;
-    gap: var(--space-xs);
     align-items: center;
+}
+
+.list-item > * + * {
+    margin-left: var(--space-xs);
 }
 
 .list-item__avatar,
