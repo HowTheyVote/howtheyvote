@@ -499,7 +499,7 @@ def test_summary_id_scraper_url(mock_request):
     assert scraper._url() == expected
 
 
-def test_summary_id_scraper_is_summary_row(mock_request):
+def test_summary_id_scraper_is_summary_row_in_week(mock_request):
     scraper = SummaryIDScraper(week_of_year=6, reference="B9-0116/2021")
 
     html = "".join(
@@ -545,11 +545,11 @@ def test_summary_id_scraper_is_summary_row(mock_request):
 
     rows = BeautifulSoup(html, "lxml-html").select(".ep-table-row")
 
-    assert scraper._is_summary_row(rows[0]) is False
-    assert scraper._is_summary_row(rows[1]) is True
+    assert scraper._is_summary_row_in_week(rows[0]) is False
+    assert scraper._is_summary_row_in_week(rows[1]) is True
 
 
-def test_summary_id_scraper_is_summary_row_multiple_candidates(mock_request):
+def test_summary_id_scraper_is_summary_row_in_week_multiple_candidates(mock_request):
     scraper = SummaryIDScraper(week_of_year=6, reference="B9-0116/2021")
 
     html = "".join(
@@ -607,8 +607,8 @@ def test_summary_id_scraper_is_summary_row_multiple_candidates(mock_request):
 
     rows = BeautifulSoup(html, "lxml-html").select(".ep-table-row")
 
-    assert scraper._is_summary_row(rows[0]) is False
-    assert scraper._is_summary_row(rows[1]) is True
+    assert scraper._is_summary_row_in_week(rows[0]) is False
+    assert scraper._is_summary_row_in_week(rows[1]) is True
 
 
 def test_summary_scraper_run():

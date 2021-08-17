@@ -356,15 +356,17 @@ class SummaryIDScraper(Scraper):
 
     def _extract_data(self) -> Optional[str]:
         rows = self._resource.select("#key_events-data .ep-table-row")
-        summary_rows = [row for row in rows if self._is_summary_row(row) is True]
+        summary_rows_in_week = [
+            row for row in rows if self._is_summary_row_in_week(row) is True
+        ]
 
-        if len(summary_rows) > 1:
+        if len(summary_rows_in_week) > 1:
             raise ScrapingException("Multiple summaries available for the given week.")
 
-        if len(summary_rows) <= 0:
+        if len(summary_rows_in_week) <= 0:
             return None
 
-        summary_row = summary_rows[0]
+        summary_row = summary_rows_in_week[0]
         button = summary_row.select_one("button[onclick]")
 
         if not button:
@@ -378,7 +380,7 @@ class SummaryIDScraper(Scraper):
 
         return match.group(1)
 
-    def _is_summary_row(self, row: Tag) -> bool:
+    def _is_summary_row_in_week(self, row: Tag) -> bool:
         header_cells = row.select(".ep-table-column-head")
 
         if len(header_cells) < 2:
