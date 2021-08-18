@@ -212,6 +212,20 @@ def test_voting_lists_scraper_run_positions_missing(mock_request):
     assert voting_lists[0].votings == votings
 
 
+def test_voting_lists_scraper_voting_alternate_name():
+    scraper = VotingListsScraper(term=9, date=date(2021, 1, 1))
+
+    xml = '<Member.Name MepId="6644">Pagazaurtundúa Ruiz</Member.Name>'
+    tag = BeautifulSoup(xml, "lxml-xml").find("Member.Name")
+
+    expected = Voting(
+        doceo_member_id=6644, name="Pagazaurtundúa", position=Position.FOR
+    )
+    actual = scraper._voting(tag, position=Position.FOR)
+
+    assert actual == expected
+
+
 def test_vote_collections_scraper_url(mock_request):
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 
