@@ -150,10 +150,16 @@ class MemberInfo:
 
     @staticmethod
     def parse_full_name(name: str) -> Tuple[Optional[str], Optional[str]]:
-        first = r"(?P<first>[A-Za-z\-\'\s\.]+?)"
+        # Last names are indicated on the parliament with upper case letters.
+        # If we find two upper case letters following each other we found the end of the first name.
+        # There are also suffixes like "del" that are not part of the first name.
+        # Since names always start with a capital letter, we also found the end of the first name
+        # when we find a word starting with a lower case letter.
+        first = r"(?P<first>^(?:(?!\s((?:[A-Z]){2}|[a-z])).)+)"
+
         affix = r"(?:\s|" + "|".join(NAME_AFFIXES) + r")*"
         aristocratic_title = r"(?:\(.*\)\s)?"
-        last = r"(?P<last>" + aristocratic_title + affix + r"[A-Z\-\'\s]+)"
+        last = r"(?P<last>" + aristocratic_title + affix + r"[[A-Za-z\-\'\s]+)"
 
         regex = r"^" + first + r"\s" + last + r"$"
         match = re.search(regex, unidecode(name))
