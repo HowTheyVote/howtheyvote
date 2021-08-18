@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dc2027f81fab8923ede250ab36e6a283",
+    "content-hash": "92c221c9154e78180e37a3468dbfead4",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -4475,16 +4475,16 @@
         },
         {
             "name": "silber/page-cache",
-            "version": "v1.0.7",
+            "version": "dev-csv-support",
             "source": {
                 "type": "git",
-                "url": "https://github.com/JosephSilber/page-cache.git",
-                "reference": "cea67525d8407988d8fecfb0c87901546e39754c"
+                "url": "https://github.com/HowTheyVote/page-cache.git",
+                "reference": "e2e265fa0d100896eacd1e9108399545a9a5893f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/page-cache/zipball/cea67525d8407988d8fecfb0c87901546e39754c",
-                "reference": "cea67525d8407988d8fecfb0c87901546e39754c",
+                "url": "https://api.github.com/repos/HowTheyVote/page-cache/zipball/e2e265fa0d100896eacd1e9108399545a9a5893f",
+                "reference": "e2e265fa0d100896eacd1e9108399545a9a5893f",
                 "shasum": ""
             },
             "require": {
@@ -4515,7 +4515,11 @@
                     "Silber\\PageCache\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Silber\\PageCache\\Tests\\": "tests"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -4531,10 +4535,9 @@
                 "laravel"
             ],
             "support": {
-                "issues": "https://github.com/JosephSilber/page-cache/issues",
-                "source": "https://github.com/JosephSilber/page-cache/tree/v1.0.7"
+                "source": "https://github.com/HowTheyVote/page-cache/tree/csv-support"
             },
-            "time": "2020-09-10T13:52:10+00:00"
+            "time": "2021-08-18T10:09:28+00:00"
         },
         {
             "name": "spatie/backtrace",
@@ -11630,12 +11633,14 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "silber/page-cache": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }

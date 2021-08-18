@@ -7,6 +7,12 @@
         "laravel"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/HowTheyVote/page-cache"
+        }
+    ],
     "require": {
         "php": "^8",
         "doctrine/dbal": "^3.0",
@@ -20,7 +26,7 @@
         "laravel/tinker": "^2.0",
         "meilisearch/meilisearch-php": "^0.18.3",
         "sentry/sentry-laravel": "^2.4",
-        "silber/page-cache": "^1.0",
+        "silber/page-cache": "dev-csv-support",
         "spatie/laravel-enum": "^2",
         "spatie/laravel-ray": "^1.24",
         "spatie/simple-excel": "^1.13",
