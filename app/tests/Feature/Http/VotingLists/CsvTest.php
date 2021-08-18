@@ -37,7 +37,7 @@ it('creates a csv with one row per member', function () {
 
     expect(Member::count())->toEqual(1);
 
-    expect($response->streamedContent())->toEqual($expected);
+    expect($response->content())->toEqual($expected);
 });
 
 it('sets correct content type', function () {
