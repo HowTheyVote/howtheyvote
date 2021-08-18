@@ -1,5 +1,5 @@
-<x-app title="Votes" padding="true">
-    <x-wrapper>
+<x-app title="Votes">
+    <x-base-layout>
         <x-stack>
             <h1 class="alpha">Votes</h1>
 
@@ -13,5 +13,5 @@
                 @endforeach
             </x-stack>
         </x-stack>
-    </x-wrapper>
+    </x-base-layout>
 </x-app>

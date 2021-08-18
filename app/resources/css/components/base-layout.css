@@ -1,0 +1,14 @@
+.base-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.base-layout__main {
+    padding: var(--space) var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.base-layout__footer {
+    margin-top: auto;
+}

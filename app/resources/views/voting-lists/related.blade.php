@@ -1,5 +1,5 @@
-<x-app title="{{ $votingList->displayTitle }} · Related Votes" padding="true">
-    <x-wrapper>
+<x-app title="{{ $votingList->displayTitle }} · Related Votes">
+    <x-base-layout>
         <x-stack>
             <h1 class="alpha">{{ $votingList->display_title }}</h1>
 
@@ -17,5 +17,5 @@
                 @endforeach
             </x-stack>
         </x-stack>
-    </x-wrapper>
+    </x-base-layout>
 </x-app>

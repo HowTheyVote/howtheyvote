@@ -22,10 +22,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.padding {
-    padding: var(--space) var(--space-sm);
-}
-
 a {
     color: inherit;
 }

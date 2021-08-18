@@ -1,0 +1,16 @@
+.footer {
+    padding: var(--space-sm) 0;
+    border-top: var(--gray-light) 1px solid;
+    display: flex;
+    justify-content: center;
+}
+
+.footer > ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+.footer > ul > li + li {
+    margin-left: var(--space-lg);
+}
