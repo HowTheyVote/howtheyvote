@@ -126,31 +126,33 @@
                 </x-tab-panel>
             </x-tabs>
 
-            @if ($votingList->vote && $votingList->vote->isPrimaryVote() && $votingList->vote->hasRelatedVotes())
-            <x-action-panel
-                :heading="__('voting-lists.related-votes-list.heading')"
-                :text="__('voting-lists.related-votes-list.text')"
-            >
-                <x-button
-                    size="lg"
-                    href="{{ route('voting-list.related', $votingList) }}"
-                >
-                    {{ __('voting-lists.related-votes-list.button-label') }}
-                </x-button>
-            </x-action-panel>
-            @endif
+            <x-stack>
+                @if ($votingList->vote && $votingList->vote->isPrimaryVote() && $votingList->vote->hasRelatedVotes())
+                    <x-action-panel
+                        :heading="__('voting-lists.related-votes-list.heading')"
+                        :text="__('voting-lists.related-votes-list.text')"
+                    >
+                        <x-button
+                            size="lg"
+                            href="{{ route('voting-list.related', $votingList) }}"
+                        >
+                            {{ __('voting-lists.related-votes-list.button-label') }}
+                        </x-button>
+                    </x-action-panel>
+                @endif
 
-            <x-action-panel
-                :heading="__('voting-lists.download.heading')"
-                :text="__('voting-lists.download.text')"
-            >
-                <x-button
-                    size="lg"
-                    href="{{ route('voting-list.csv', $votingList) }}"
+                <x-action-panel
+                    :heading="__('voting-lists.download.heading')"
+                    :text="__('voting-lists.download.text')"
                 >
-                    {{ __('voting-lists.download.button-label') }}
-                </x-button>
-            </x-action-panel>
+                    <x-button
+                        size="lg"
+                        href="{{ route('voting-list.csv', $votingList) }}"
+                    >
+                        {{ __('voting-lists.download.button-label') }}
+                    </x-button>
+                </x-action-panel>
+            </x-stack>
 
         </x-stack>
     </x-base-layout>
