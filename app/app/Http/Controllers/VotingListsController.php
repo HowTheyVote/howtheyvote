@@ -124,10 +124,12 @@ class VotingListsController extends Controller
             ];
         })->toArray();
 
-        return response()->stream(function () use ($votingList, $rows) {
-            $writer = SimpleExcelWriter::createWithoutBom('php://output', 'csv');
-            $writer->addRows($rows)->close();
-        }, 200, ['Content-Type' => 'text/csv']);
+        ob_start();
+        $writer = SimpleExcelWriter::createWithoutBom('php://output', 'csv');
+        $writer->addRows($rows)->close();
+        $csv = ob_get_clean();
+
+        return response($csv, 200, ['Content-Type' => 'text/csv']);
     }
 
     private function members(VotingList $votingList)
