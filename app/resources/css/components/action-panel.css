@@ -17,6 +17,9 @@
     .action-panel {
         flex-direction: row;
         align-items: center;
+    }
+
+    .action-panel__action {
         margin-top: 0;
         margin-left: var(--space-sm);
     }
