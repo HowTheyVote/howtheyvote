@@ -1,5 +1,6 @@
 @import './variables.css';
 
+@import './global/fonts.css';
 @import './global/base.css';
 @import './global/typography.css';
 @import './global/utils.css';
