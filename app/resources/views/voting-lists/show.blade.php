@@ -4,8 +4,7 @@
     :sharePicture="$votingList->share_picture_url"
     :shareUrl="$votingList->url"
 >
-    <x-wrapper>
-
+    <x-base-layout>
         <x-stack space="xl">
             <x-stack space="xs">
                 <h1 class="alpha">{{ $votingList->display_title }}</h1>
@@ -154,5 +153,5 @@
             </x-action-panel>
 
         </x-stack>
-    </x-wrapper>
+    </x-base-layout>
 </x-app>

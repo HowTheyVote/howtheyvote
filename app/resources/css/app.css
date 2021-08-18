@@ -8,7 +8,9 @@
 
 @import './components/stack.css';
 @import './components/wrapper.css';
+@import './components/base-layout.css';
 
+@import './components/footer.css';
 @import './components/button.css';
 @import './components/input.css';
 @import './components/avatar.css';
@@ -17,6 +19,7 @@
 @import './components/callout.css';
 @import './components/markdown.css';
 
+@import './components/logos.css';
 @import './components/share-button.css';
 @import './components/action-panel.css';
 @import './components/list.css';

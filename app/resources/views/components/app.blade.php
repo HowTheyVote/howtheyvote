@@ -1,6 +1,5 @@
 @props([
     'title' => null,
-    'padding' => false,
     'sharePicture' => null,
     'shareUrl' => null,
 ])
@@ -34,7 +33,7 @@
             <meta property="twitter:image" content="{{ $sharePicture }}" />
         @endif
     </head>
-    <body {{ $padding == true ? 'class=padding' : ""}}>
+    <body>
         {{ $slot }}
     </body>
 </html>
