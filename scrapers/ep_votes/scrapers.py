@@ -230,6 +230,7 @@ class VotingListsScraper(Scraper):
     # on the official website of the Parliament.
     ALTERNATE_NAMES = {
         "Pagazaurtundúa Ruiz": "Pagazaurtundúa",
+        "Lechevalier": "Letard-Lechevalier",
     }
 
     def __init__(self, date: date, term: int):
