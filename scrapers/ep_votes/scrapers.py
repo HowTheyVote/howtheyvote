@@ -44,7 +44,8 @@ class ScrapingException(Exception):
 
 
 class Scraper(ABC):
-    BS_PARSER = "lxml"
+    BS_PARSER: str = "lxml"
+    RESPONSE_ENCODING: Optional[str] = None
 
     @abstractmethod
     def __init__(self, *args: Any, **kwds: Any):
@@ -74,7 +75,13 @@ class Scraper(ABC):
             if not res.ok:
                 continue
 
-            raw = res.text
+            # Some sources do not return the correct character encoding in the
+            # HTTP headers which confuses request when trying to decode the
+            # response. In those cases, we need to force the correct encoding.
+            if self.RESPONSE_ENCODING:
+                raw = res.content.decode(self.RESPONSE_ENCODING)
+            else:
+                raw = res.text
 
             # Handle HTML-encoded special-characters, as BeautifulSoup
             # seems to decode them to incorrect Unicode characters
@@ -82,6 +89,7 @@ class Scraper(ABC):
                 raw = html.unescape(raw)
 
             self._resource = BeautifulSoup(raw, self.BS_PARSER)
+
             return
 
     def _headers(self) -> Dict[str, str]:
@@ -214,6 +222,7 @@ class VotingListsScraper(Scraper):
     BASE_URL_EP = "https://www.europarl.europa.eu/doceo/document"
     BASE_URL_DR = "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal"
     BS_PARSER = "lxml-xml"
+    RESPONSE_ENCODING = "utf-8"
 
     def __init__(self, date: date, term: int):
         self.date = date
