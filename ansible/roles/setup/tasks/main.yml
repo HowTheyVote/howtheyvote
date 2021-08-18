@@ -48,5 +48,5 @@
 
 - name: Disable web server logs
   shell: |
-    uberspace web logs access disable
-    uberspace web logs apache_error disable
+    uberspace web log access disable
+    uberspace web log apache_error disable
