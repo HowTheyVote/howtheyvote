@@ -224,6 +224,14 @@ class VotingListsScraper(Scraper):
     BS_PARSER = "lxml-xml"
     RESPONSE_ENCODING = "utf-8"
 
+    # Some members are also known by alternate names which are
+    # sometimes used in voting lists. We use this dict to replace
+    # alternate names with the names listed in the MEP profiles
+    # on the official website of the Parliament.
+    ALTERNATE_NAMES = {
+        "Pagazaurtundúa Ruiz": "Pagazaurtundúa",
+    }
+
     def __init__(self, date: date, term: int):
         self.date = date
         self.term = term
@@ -286,7 +294,9 @@ class VotingListsScraper(Scraper):
 
     def _voting(self, tag: BeautifulSoup, position: Position) -> Voting:
         doceo_id = int(tag.get("MepId"))
-        return Voting(doceo_member_id=doceo_id, name=tag.text, position=position)
+        name = self.ALTERNATE_NAMES.get(tag.text, tag.text)
+
+        return Voting(doceo_member_id=doceo_id, name=name, position=position)
 
     def _reference(self, tag: Tag) -> Optional[str]:
         return extract_reference(tag.find("RollCallVote.Description.Text").text)
