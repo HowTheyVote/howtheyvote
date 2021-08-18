@@ -49,6 +49,6 @@ return [
     ],
 
     'summary' => [
-        'read-more' => 'Read more',
+        'read-more' => 'Read more',
     ],
 ];
