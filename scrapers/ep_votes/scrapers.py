@@ -231,6 +231,7 @@ class VotingListsScraper(Scraper):
     ALTERNATE_NAMES = {
         "Pagazaurtundúa Ruiz": "Pagazaurtundúa",
         "Lechevalier": "Letard-Lechevalier",
+        "Gambús": "Gambus Millet",
     }
 
     def __init__(self, date: date, term: int):
