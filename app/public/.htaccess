@@ -26,8 +26,8 @@
     RewriteRule . page-cache%{REQUEST_URI}.html [L]
     RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}.json -f
     RewriteRule . page-cache%{REQUEST_URI}.json [L]
-    RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}.xml -f
-    RewriteRule . page-cache%{REQUEST_URI}.xml [L]
+    RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}.csv -f
+    RewriteRule . page-cache%{REQUEST_URI}.csv [L]
 
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
