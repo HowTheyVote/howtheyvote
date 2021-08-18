@@ -45,3 +45,8 @@
 
 - name: Route traffic to Apache
   command: "uberspace web backend set / --apache"
+
+- name: Disable web server logs
+  shell: |
+    uberspace web logs access disable
+    uberspace web logs apache_error disable
