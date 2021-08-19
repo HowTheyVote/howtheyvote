@@ -227,6 +227,23 @@ def test_voting_lists_scraper_voting_alternate_name():
     assert actual == expected
 
 
+def test_voting_lists_scraper_description_remove_date():
+    scraper = VotingListsScraper(term=9, date=date(2021, 1, 1))
+
+    xml = (
+        "<RollCallVote.Description.Text>"
+        "   Description 01/01/2021 12:34:56.000"
+        "</RollCallVote.Description.Text>"
+    )
+
+    tag = BeautifulSoup(xml, "lxml-xml")
+
+    expected = "Description"
+    actual = scraper._description(tag)
+
+    assert actual == expected
+
+
 def test_vote_collections_scraper_url(mock_request):
     scraper = VoteCollectionsScraper(term=9, date=date(2021, 3, 9))
 

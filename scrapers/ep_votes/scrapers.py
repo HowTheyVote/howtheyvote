@@ -312,7 +312,19 @@ class VotingListsScraper(Scraper):
 
     def _description(self, tag: Tag) -> str:
         desc_tag = tag.find("RollCallVote.Description.Text")
-        return normalize_whitespace(removeprefix(desc_tag.text.strip(), "- "))
+
+        description = removeprefix(desc_tag.text.strip(), "- ")
+
+        # Some older voting lists contain the full formatted date and time
+        # of the vote in the description tag. Newer voting lists store this
+        # information in a separate attribute.
+        date = r"{}".format(self.date.strftime("%d/%m/%Y"))
+        time = r"\s\d{2}:\d{2}:\d{2}\.\d{3}"
+        regex = r"\s+" + date + time + r"$"
+
+        description = re.sub(regex, "", description)
+
+        return normalize_whitespace(description)
 
 
 class VoteCollectionsScraper(Scraper):
