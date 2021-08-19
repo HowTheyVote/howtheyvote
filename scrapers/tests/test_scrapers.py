@@ -56,6 +56,7 @@ def mock_response(req, context):
         "/oeil/popups/ficheprocedure.do?reference=B9-0116/2021": "ficheprocedure_b9-0116-2021.html",
         "/oeil/popups/ficheprocedure.do?reference=A9-0115/2021": "ficheprocedure_a9-0115-2021.html",
         "/oeil/popups/ficheprocedure.do?reference=A9-0149/2021": "ficheprocedure_a9-0149-2021.html",
+        "/oeil/popups/ficheprocedure.do?reference=A8-0141/2019": "ficheprocedure_a9-0141-2019.html",
         "/oeil/popups/summary.do?id=1651118&t=e&l=en": "summary-1651118.html",
         "/oeil/srvc/calendar.json?y=2021&m=11": "calendar-2021-11.json",
     }
@@ -574,6 +575,12 @@ def test_summary_id_scraper_run_no_summary(mock_request):
 def test_summary_id_scraper_run_multiple_candidates_in_same_week(mock_request):
     with pytest.raises(ScrapingException):
         SummaryIDScraper(week_of_year=20, reference="A9-0149/2021").run()
+
+
+def test_summary_id_scraper_run_iso_week_numbers(mock_request):
+    # It's important to use ISO-standard week numbers!
+    scraper = SummaryIDScraper(week_of_year=13, reference="A8-0141/2019")
+    assert scraper.run() == "1579841"
 
 
 def test_summary_id_scraper_url(mock_request):
