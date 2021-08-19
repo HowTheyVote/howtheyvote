@@ -32,7 +32,7 @@ it('creates new voting list record including relations', function () {
     expect($votingList->term->id)->toEqual($this->term->id);
 });
 
-it('updates existing voting list record', function () {
+it('updates existing voting list record based on doceo_vote_id', function () {
     Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists.json');
 
     $votingList = VotingList::factory([
@@ -45,6 +45,18 @@ it('updates existing voting list record', function () {
     $this->action->execute($this->term, $this->date);
 
     expect(VotingList::count())->toEqual(1);
+});
+
+it('updates existing voting lists based on description and reference if doceo_vote_id is null', function () {
+    Http::fakeJsonFromFile('*/voting_lists?term=9&date=2019-10-24', 'voting_lists-7.json');
+
+    $this->action->execute($this->term, $this->date);
+
+    expect(VotingList::count())->toEqual(2);
+    expect(VotingList::pluck('description'))->toMatchArray([
+        'Lorem Ipsum - Am 1',
+        'Lorem Ipsum - Am 2',
+    ]);
 });
 
 it('finds and relates members with position', function () {
