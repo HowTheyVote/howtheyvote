@@ -92,6 +92,8 @@ class Scraper(ABC):
 
             return
 
+        raise ScrapingException("No working URL found.")
+
     def _headers(self) -> Dict[str, str]:
         return {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
