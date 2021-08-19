@@ -5,6 +5,7 @@ use App\Vote;
 use App\VoteCollection;
 use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Vinkla\Hashids\Facades\Hashids;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
@@ -83,4 +84,14 @@ it('returns link to sharepic if vote is final and picture does exist', function 
     ])->make();
 
     expect($votingList->share_picture_url)->toContain('share-pictures/vote-sharepic-1.png');
+});
+
+it('returns description of share pic', function () {
+    $votingList = VotingList::factory()
+        ->withStats()
+        ->withDate(Carbon::create('1993-02-02'))
+        ->create();
+
+    $expected = 'A barchart visualizing the result of the European Parliaments vote on "§ 1/2". The vote was held on Feb 2, 1993. The barchart has three bars, representing the 10 MEPs who voted in favor (17%), the 20 MEPs who votes against (33%), and the 30 MEPs who did abstain (50%). In total, 60 MEPs participated in the vote and 40 MEPs did not vote.';
+    expect($votingList->share_picture_description)->toBe($expected);
 });
