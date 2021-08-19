@@ -151,11 +151,15 @@ class MemberInfo:
     @staticmethod
     def parse_full_name(name: str) -> Tuple[Optional[str], Optional[str]]:
         # Last names are indicated on the parliament with upper case letters.
-        # If we find two upper case letters following each other we found the end of the first name.
-        # There are also suffixes like "del" that are not part of the first name.
-        # Since names always start with a capital letter, we also found the end of the first name
-        # when we find a word starting with a lower case letter.
-        first = r"(?P<first>^(?:(?!\s((?:[A-Z]){2}|[a-z])).)+)"
+        # If we find two upper case letters following each other we found the
+        # end of the first name. There are also parts like "de" that can be
+        # part of the first or the last name. If we find two capitalized letters
+        # after such a word, it belongs to the last name. Otherwise it belongs to
+        # the first name. Affixes of last names can also contain special characters
+        # and have multiple parts (see NAME_AFFIXES).
+        # Brackets are always an indicator for the end of the first name.
+        # e.g. William -- (The Earl of) DARTMOUTH
+        first = r"(?P<first>^(?:(?!\s((?:[\(A-Z]){2}|['a-z\s]*(?:[A-Z]){2})).)+)"
 
         affix = r"(?:\s|" + "|".join(NAME_AFFIXES) + r")*"
         aristocratic_title = r"(?:\(.*\)\s)?"
