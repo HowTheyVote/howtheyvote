@@ -2,6 +2,7 @@
     'title' => null,
     'sharePicture' => null,
     'shareUrl' => null,
+    'sharePictureAlt' => null,
 ])
 
 <!DOCTYPE html>
@@ -28,9 +29,11 @@
 
         @if ($sharePicture)
             <meta property="og:image" content="{{ $sharePicture }}" />
+            <meta property="og:image:alt" content="{{ $sharePictureAlt }}" />
 
             <meta property="twitter:card" content="summary_large_image" />
             <meta property="twitter:image" content="{{ $sharePicture }}" />
+            <meta property="twitter:image:alt" content="{{ $sharePictureAlt }}" />
         @endif
     </head>
     <body>
