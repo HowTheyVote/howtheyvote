@@ -234,6 +234,7 @@ class VotingListsScraper(Scraper):
         "Gambús": "Gambus Millet",
         "Kozłowska-Rajewicz": "Kozłowska",
         "Aguilera García": "Aguilera",
+        "Rodríguez-Piñero Fernández": "Rodríguez-Piñero",
     }
 
     def __init__(self, date: date, term: int):
