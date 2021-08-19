@@ -567,7 +567,8 @@ def test_summary_id_scraper_run(mock_request):
 
 def test_summary_id_scraper_run_no_summary(mock_request):
     scraper = SummaryIDScraper(week_of_year=20, reference="A9-0115/2021")
-    assert scraper.run() is None
+    with pytest.raises(ScrapingException):
+        scraper.run()
 
 
 def test_summary_id_scraper_run_multiple_candidates_in_same_week(mock_request):
