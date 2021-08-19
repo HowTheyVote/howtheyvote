@@ -62,13 +62,30 @@ class ScrapeVotingListsAction extends Action
         Carbon $date,
         array $data
     ): VotingList {
-        $votingList = VotingList::firstOrNew([
+        // Try to find an existing voting list based on the
+        // doceo_vote_id first, as it uniquely identifies a vote.
+        // However, some older sources do not include the id,
+        // so we fallback to the description and reference in
+        // those cases.
+        if ($data['doceo_vote_id']) {
+            $votingList = VotingList::firstOrNew([
+                'doceo_vote_id' => $data['doceo_vote_id'],
+                'term_id' => $term->id,
+                'date' => $date,
+            ]);
+        } else {
+            $votingList = VotingList::firstOrNew([
+                'term_id' => $term->id,
+                'date' => $date,
+                'description' => $data['description'],
+                'reference' => $data['reference'],
+            ]);
+        }
+
+        $votingList->fill([
             'doceo_vote_id' => $data['doceo_vote_id'],
             'term_id' => $term->id,
             'date' => $date,
-        ]);
-
-        $votingList->fill([
             'description' => $data['description'],
             'reference' => $data['reference'],
         ]);
