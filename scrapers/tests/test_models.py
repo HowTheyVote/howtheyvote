@@ -53,6 +53,13 @@ def test_member_info_parse_full_name_not_all_caps_last_name():
     )
 
 
+def test_member_info_parse_full_name_all_lowercase_word_in_first_name():
+    assert MemberInfo.parse_full_name("Francisco de Paula GAMBUS MILLET") == (
+        "Francisco de Paula",
+        "GAMBUS MILLET",
+    )
+
+
 def test_member_info_parse_full_name_middle_initial():
     assert MemberInfo.parse_full_name("Jakop G. DALUNDE") == ("Jakop G.", "DALUNDE")
 
