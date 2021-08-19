@@ -446,19 +446,19 @@ class SummaryIDScraper(Scraper):
             raise ScrapingException("Multiple summaries available for the given week.")
 
         if len(summary_rows_in_week) <= 0:
-            return None
+            raise ScrapingException("No summary found.")
 
         summary_row = summary_rows_in_week[0]
         button = summary_row.select_one("button[onclick]")
 
         if not button:
-            return None
+            raise ScrapingException("No summary found.")
 
         regex = r"\/oeil\/popups\/summary\.do\?id=(\d*)"
         match = re.search(regex, button["onclick"])
 
         if not match:
-            return None
+            raise ScrapingException("No summary found.")
 
         return match.group(1)
 
