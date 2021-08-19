@@ -319,6 +319,7 @@ class VoteCollectionsScraper(Scraper):
     BASE_URL_DR = (
         "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/"
     )
+    RESPONSE_ENCODING = "utf-8"
     # PV-9-2021-03-09-VOT_EN.xml
 
     def __init__(self, term: int, date: date):
