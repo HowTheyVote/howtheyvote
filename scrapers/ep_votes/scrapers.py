@@ -359,11 +359,16 @@ class VoteCollectionsScraper(Scraper):
         return [collection for collection in collections if len(collection.votes) > 0]
 
     def _collection(self, tag: Tag) -> VoteCollection:
-        return VoteCollection(
+        collection = VoteCollection(
             title=self._title(tag),
             reference=self._reference(tag),
             votes=self._votes(tag),
         )
+
+        if len(collection.votes) > 0:
+            collection.votes[-1].final = True
+
+        return collection
 
     def _reference(self, tag: Tag) -> Optional[str]:
         return extract_reference(tag.find("Vote.Result.Description.Text").text)
@@ -414,6 +419,7 @@ class VoteCollectionsScraper(Scraper):
             type=self._type(row),
             remarks=remarks,
             subheading=row.get("Subheading"),
+            final=False,
         )
 
     def _type(self, row: Row) -> VoteType:

@@ -110,6 +110,7 @@ def _vote_factory(**data):
         "amendment": None,
         "split_part": None,
         "remarks": None,
+        "final": False,
     }
 
     return Vote(**(default | data))

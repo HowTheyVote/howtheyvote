@@ -288,6 +288,7 @@ def test_vote_collections_scraper_run_document_register_url_vote_items(mock_requ
             amendment="1",
             type=VoteType.AMENDMENT,
             remarks="19044315",
+            final=False,
         ),
         Vote(
             subject="§ 1, point m",
@@ -298,6 +299,7 @@ def test_vote_collections_scraper_run_document_register_url_vote_items(mock_requ
             amendment="3",
             type=VoteType.AMENDMENT,
             remarks="26435230",
+            final=False,
         ),
         Vote(
             subject="Vote: recommendation (as a whole)",
@@ -308,6 +310,7 @@ def test_vote_collections_scraper_run_document_register_url_vote_items(mock_requ
             amendment=None,
             type=VoteType.PRIMARY,
             remarks="39313281",
+            final=True,
         ),
     ]
 
@@ -329,6 +332,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="1-65, 67-76",
             type=VoteType.AMENDMENT,
             remarks="5624094",
+            final=False,
         ),
         Vote(
             subject="§ 5, sub§ 1",
@@ -339,6 +343,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="66",
             type=VoteType.AMENDMENT,
             remarks="53614713",
+            final=False,
         ),
         Vote(
             subject="After recital 2",
@@ -349,6 +354,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="77",
             type=VoteType.AMENDMENT,
             remarks="8758423",
+            final=False,
         ),
         Vote(
             subject="Recital 3",
@@ -359,6 +365,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="78",
             type=VoteType.AMENDMENT,
             remarks="5858650",
+            final=False,
         ),
         Vote(
             subject="Recital 8",
@@ -369,6 +376,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="79",
             type=VoteType.AMENDMENT,
             remarks="9757819",
+            final=False,
         ),
         Vote(
             subject="Recital 15",
@@ -379,6 +387,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="80",
             type=VoteType.AMENDMENT,
             remarks="9458911",
+            final=False,
         ),
         Vote(
             subject="Recital 25",
@@ -389,6 +398,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment="81",
             type=VoteType.AMENDMENT,
             remarks="8759115",
+            final=False,
         ),
         Vote(
             subject="Commission proposal",
@@ -399,6 +409,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment=None,
             type=VoteType.PRIMARY,
             remarks="5686364",
+            final=True,
         ),
     ]
 
@@ -414,6 +425,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment=None,
             type=VoteType.SEPARATE,
             remarks="6612015",
+            final=False,
         ),
         Vote(
             subject="§ 1",
@@ -424,6 +436,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment=None,
             type=VoteType.SEPARATE,
             remarks="5401488",
+            final=False,
         ),
         Vote(
             subject="§ 1",
@@ -434,6 +447,7 @@ def test_vote_collections_scraper_run_doceo_url_vote_items(mock_request):
             amendment=None,
             type=VoteType.SEPARATE,
             remarks="53215212",
+            final=False,
         ),
     ]
 
