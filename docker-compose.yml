@@ -42,6 +42,7 @@ services:
       - SCRAPERS_PORT=5000
       - SCOUT_DRIVER=meilisearch
       - MEILISEARCH_HOST=http://meilisearch:7700
+      - MEILISEARCH_PUBLIC_ENDPOINT=http://localhost:7700/
     stdin_open: true
     tty: true
     extra_hosts:

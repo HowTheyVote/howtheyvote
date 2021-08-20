@@ -1,11 +1,15 @@
-const ENDPOINT = 'http://localhost:7700/indexes/voting_lists/search';
 const LIMIT = 10;
 
-export default () => ({
+export default (endpoint, index) => ({
+  endpoint,
+  index,
+
   query: '',
+  page: 0,
+
   results: [],
   totalResults: null,
-  page: 0,
+
   abortController: null,
 
   init() {
@@ -58,12 +62,14 @@ export default () => ({
   },
 
   get searchUrl() {
-    const params = new URLSearchParams({
-      q: this.query,
-      limit: LIMIT,
-      offset: this.page * LIMIT,
-    });
+    const url = new URL(this.endpoint);
 
-    return ENDPOINT + '?' + params;
+    url.pathname = `/indexes/${this.index}/search`;
+
+    url.searchParams.set('q', this.query);
+    url.searchParams.set('limit', LIMIT);
+    url.searchParams.set('offset', this.page * LIMIT);
+
+    return url.toString();
   },
 });
