@@ -11,15 +11,15 @@ class FillFinalCollumnOnVotesTable extends Migration
      */
     public function up()
     {
-        $collections = DB::select('select * from vote_collections');
+        $collections = DB::table('vote_collections')->get();
 
         foreach ($collections as $collection) {
             $finalVote = DB::table('votes')
                 ->select('id')
                 ->where('vote_collection_id', $collection->id)
                 ->orderByDesc('id')
-                ->take(1)
-                ->get();
+                ->first()
+                ->id;
 
             DB::update('update votes set final = 1 where id = ?', [$finalVote]);
         }
