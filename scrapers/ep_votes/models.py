@@ -237,6 +237,7 @@ class Vote:
     type: VoteType
     remarks: Optional[str]
     subheading: Optional[str]
+    final: bool
 
     @property
     def formatted(self) -> str:
