@@ -6,6 +6,7 @@ export default () => ({
   results: [],
   totalResults: null,
   page: 0,
+  abortController: null,
 
   init() {
     this.search();
@@ -42,7 +43,17 @@ export default () => ({
   },
 
   async getResults() {
-    const response = await fetch(this.searchUrl);
+    // Cancel any pending requests
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+
+    this.abortController = new AbortController();
+
+    const response = await fetch(this.searchUrl, {
+      signal: this.abortController.signal,
+    });
+
     return await response.json();
   },
 
