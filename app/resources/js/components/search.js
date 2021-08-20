@@ -51,6 +51,11 @@ export default (endpoint, index) => ({
     this.persistToUrl();
   },
 
+  reset() {
+    this.query = '';
+    this.search();
+  },
+
   get hasMoreResults() {
     return this.results.length < this.totalResults;
   },
