@@ -1,4 +1,6 @@
 const LIMIT = 10;
+const ATTRIBUTES = ['id', 'display_title', 'date', 'result'];
+const HIGHLIGHTS = ['display_title'];
 
 export default (endpoint, index) => ({
   endpoint,
@@ -69,6 +71,8 @@ export default (endpoint, index) => ({
     url.searchParams.set('q', this.query);
     url.searchParams.set('limit', LIMIT);
     url.searchParams.set('offset', this.page * LIMIT);
+    url.searchParams.set('attributesToRetrieve', ATTRIBUTES.join(','));
+    url.searchParams.set('attributesToHighlight', HIGHLIGHTS.join(','));
 
     return url.toString();
   },

@@ -3,7 +3,10 @@
     'index' => null,
 ])
 
-<div x-data="search('{{ $endpoint }}', '{{ $index }}')">
+<div
+    {{ $attributes->bem('search') }}
+    x-data="search('{{ $endpoint }}', '{{ $index }}')"
+>
     <x-stack space="xs">
         <x-input
             type="search"
@@ -37,7 +40,7 @@
                     />
 
                     <div>
-                        <strong x-text="vote.display_title"></strong>
+                        <strong x-html="vote._formatted.display_title"></strong>
                         <p x-text="formatDate(vote.date)"></p>
                     </div>
                 </a>
