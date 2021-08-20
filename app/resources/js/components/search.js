@@ -15,6 +15,7 @@ export default (endpoint, index) => ({
   abortController: null,
 
   init() {
+    this.restoreFromUrl();
     this.search();
   },
 
@@ -36,12 +37,16 @@ export default (endpoint, index) => ({
     const data = await this.getResults();
     this.results = data.hits;
     this.totalResults = data.nbHits;
+
+    this.persistToUrl();
   },
 
   async loadMore() {
     this.page += 1;
     const data = await this.getResults();
     this.results.push(...data.hits);
+
+    this.persistToUrl();
   },
 
   get hasMoreResults() {
@@ -61,6 +66,27 @@ export default (endpoint, index) => ({
     });
 
     return await response.json();
+  },
+
+  persistToUrl() {
+    const url = new URL(window.location.href);
+
+    if (this.query) {
+      url.searchParams.set('q', this.query);
+    } else {
+      url.searchParams.delete('q');
+    }
+
+    window.history.pushState({}, '', url);
+  },
+
+  restoreFromUrl() {
+    const url = new URL(window.location.href);
+    const query = url.searchParams.get('q');
+
+    if (query) {
+      this.query = query;
+    }
   },
 
   get searchUrl() {
