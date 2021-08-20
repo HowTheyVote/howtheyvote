@@ -1,6 +1,8 @@
 const LIMIT = 10;
 const ATTRIBUTES = ['id', 'display_title', 'date', 'result'];
-const HIGHLIGHTS = ['display_title'];
+const HIGHLIGHT_ATTRIBUTES = ['display_title'];
+const CROP_ATTRIBUTES = ['display_title'];
+const CROP_LENGTH = 150;
 
 export default (endpoint, index) => ({
   endpoint,
@@ -98,7 +100,12 @@ export default (endpoint, index) => ({
     url.searchParams.set('limit', LIMIT);
     url.searchParams.set('offset', this.page * LIMIT);
     url.searchParams.set('attributesToRetrieve', ATTRIBUTES.join(','));
-    url.searchParams.set('attributesToHighlight', HIGHLIGHTS.join(','));
+    url.searchParams.set(
+      'attributesToHighlight',
+      HIGHLIGHT_ATTRIBUTES.join(',')
+    );
+    url.searchParams.set('attributesToCrop', CROP_ATTRIBUTES.join(','));
+    url.searchParams.set('cropLength', CROP_LENGTH);
 
     return url.toString();
   },
