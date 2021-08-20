@@ -16,7 +16,7 @@
                 x-on:input="search()"
             />
 
-            <template x-if="totalResults > 0">
+            <template x-if="query && totalResults > 0">
                 <p>
                     <span x-text="totalResults"></span>
                     {{ __('components.search.results') }}
