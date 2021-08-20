@@ -7,12 +7,15 @@
     <x-stack space="xs">
         <x-input
             type="search"
-            placeholder="Search votes by subject, e.g. COVID-19 or Copyright"
+            :placeholder="__('components.search.placeholder')"
             x-model="query"
             x-on:input="search()"
         />
 
-        <p><span x-text="totalResults"></span> Results</p>
+        <p>
+            <span x-text="totalResults"></span>
+            {{ __('components.search.results') }}
+        </p>
     </x-stack>
 
     <x-stack>
@@ -47,7 +50,7 @@
                 size="lg"
                 style="block"
             >
-                Load more
+                {{ __('components.search.load-more') }}
             </x-button>
         </template>
     </x-stack>
