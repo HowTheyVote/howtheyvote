@@ -69,7 +69,18 @@ export default (endpoint, index) => ({
     this.abortController = new AbortController();
 
     const response = await fetch(this.searchUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       signal: this.abortController.signal,
+      body: JSON.stringify({
+        q: this.query,
+        limit: LIMIT,
+        offset: this.page * LIMIT,
+        attributesToRetrieve: ATTRIBUTES,
+        attributesToHighlight: HIGHLIGHT_ATTRIBUTES,
+        attributesToCrop: CROP_ATTRIBUTES,
+        cropLength: CROP_LENGTH,
+      }),
     });
 
     return await response.json();
@@ -98,19 +109,7 @@ export default (endpoint, index) => ({
 
   get searchUrl() {
     const url = new URL(this.endpoint);
-
     url.pathname = `/indexes/${this.index}/search`;
-
-    url.searchParams.set('q', this.query);
-    url.searchParams.set('limit', LIMIT);
-    url.searchParams.set('offset', this.page * LIMIT);
-    url.searchParams.set('attributesToRetrieve', ATTRIBUTES.join(','));
-    url.searchParams.set(
-      'attributesToHighlight',
-      HIGHLIGHT_ATTRIBUTES.join(',')
-    );
-    url.searchParams.set('attributesToCrop', CROP_ATTRIBUTES.join(','));
-    url.searchParams.set('cropLength', CROP_LENGTH);
 
     return url.toString();
   },
