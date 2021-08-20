@@ -54,3 +54,28 @@ it('does not include final votes that have not been matched to a voting list', f
     $response = $this->get('/votes');
     expect($response)->toHaveSelector('.vote-card', 2);
 });
+
+it('does not show session-headings for sessions without matched final votes', function () {
+    // matched but not final
+    VotingList::factory([
+        'vote_id' => Vote::factory([
+            'session_id' => Session::factory([
+                'start_date' => '2021-01-05',
+                'end_date' => '2021-01-08',
+                'location' => LocationEnum::BRUSSELS(),
+            ])->create(),
+        ]),
+    ])->create();
+
+    // final but not matched
+    Vote::factory([
+            'session_id' => Session::factory([
+                'start_date' => '2021-03-05',
+                'end_date' => '2021-03-08',
+                'location' => LocationEnum::BRUSSELS(),
+            ]),
+    ])->create();
+
+    $response = $this->get('/votes');
+    expect($response)->toHaveSelector('.vote-card', 2);
+});

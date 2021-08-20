@@ -18,7 +18,8 @@ class VotingListsController extends Controller
             'finalVotes',
             'finalVotes.votingList',
             'finalVotes.voteCollection',
-        ])->orderByDesc('start_date')
+        ])->whereHas('matchedFinalVotes')
+            ->orderByDesc('start_date')
             ->get();
 
         return view('voting-lists.index', [
