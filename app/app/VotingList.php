@@ -33,7 +33,7 @@ class VotingList extends Model
 
     public function shouldBeSearchable()
     {
-        return $this->vote && $this->vote->isPrimaryVote();
+        return $this->vote && $this->vote->isFinalVote();
     }
 
     public function makeAllSearchableUsing($query)
@@ -90,7 +90,7 @@ class VotingList extends Model
 
     public function getSharePictureUrlAttribute(): ?string
     {
-        if (! $this->vote?->isPrimaryVote()) {
+        if (! $this->vote?->isFinalVote()) {
             return null;
         }
 

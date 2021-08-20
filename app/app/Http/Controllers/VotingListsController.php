@@ -15,9 +15,9 @@ class VotingListsController extends Controller
     public function index()
     {
         $sessions = Session::with([
-            'primaryVotes',
-            'primaryVotes.votingList',
-            'primaryVotes.voteCollection',
+            'finalVotes',
+            'finalVotes.votingList',
+            'finalVotes.voteCollection',
         ])->orderByDesc('start_date')
             ->get();
 
@@ -83,7 +83,7 @@ class VotingListsController extends Controller
             return abort(404);
         }
 
-        if (! $votingList->vote->isPrimaryVote()) {
+        if (! $votingList->vote->isFinalVote()) {
             return abort(404);
         }
 

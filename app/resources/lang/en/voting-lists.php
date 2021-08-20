@@ -41,7 +41,7 @@ return [
         'button-label' => 'View votes',
     ],
 
-    'non-primary-callout' => [
+    'non-final-callout' => [
         'heading' => 'This is not the final vote!',
         'amendment' => 'This is a vote on :amendment.',
         'separate' => 'This is a :separate.',

@@ -4,7 +4,7 @@
             <h1 class="alpha">{{ $votingList->display_title }}</h1>
 
             <x-callout :heading="__('votes.related.callout-heading')" >
-                {!! __('votes.related.primary-vote', ['url' => route('voting-list.show', $votingList)]) !!}
+                {!! __('votes.related.final-vote', ['url' => route('voting-list.show', $votingList)]) !!}
             </x-callout>
 
             <x-stack space="xs">

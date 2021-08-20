@@ -2,7 +2,6 @@
 
 namespace App\Actions;
 
-use App\Enums\VoteTypeEnum;
 use App\Exceptions\CouldNotMatchVoteException;
 use App\Vote;
 use App\VotingList;
@@ -54,7 +53,7 @@ class MatchVotesAndVotingListsAction extends Action
                 'vote_id' => $vote->id,
             ]);
 
-            if ($vote->type->equals(VoteTypeEnum::PRIMARY())) {
+            if ($vote->isFinalVote()) {
                 $sharePicAction->execute($votingList);
             }
         }

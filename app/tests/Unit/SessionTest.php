@@ -19,18 +19,18 @@ it('has a display title', function () {
     expect($this->session->display_title)->toEqual('August 2021 · Brussels');
 });
 
-it('returns primary votes', function () {
+it('returns final votes', function () {
+    $finalVote = Vote::factory([
+        'type' => VoteTypeEnum::SEPARATE(),
+        'final' => true,
+        'session_id' => $this->session,
+    ])->create();
+
     Vote::factory([
         'type' => VoteTypeEnum::PRIMARY(),
         'session_id' => $this->session,
-        'id' => 1,
     ])->create();
 
-    Vote::factory([
-        'type' => VoteTypeEnum::SEPARATE(),
-        'session_id' => $this->session,
-    ])->create();
-
-    expect($this->session->primaryVotes()->count())->toEqual(1);
-    expect($this->session->primaryVotes()->first())->toEqual(Vote::find(1));
+    expect($this->session->votes()->final()->count())->toEqual(1);
+    expect($this->session->votes()->final()->first()->id)->toEqual($finalVote->id);
 });

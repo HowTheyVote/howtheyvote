@@ -13,15 +13,16 @@ beforeEach(function () {
         'title' => 'The title',
     ])->create();
 
-    $this->primaryVotingList = VotingList::factory([
+    $this->finalVotingList = VotingList::factory([
         'id' => 1,
         'vote_id' => Vote::factory([
             'vote_collection_id' => $this->voteCollection,
             'type' => VoteTypeEnum::PRIMARY(),
+            'final' => true,
         ]),
     ]);
 
-    $this->nonPrimaryVotingList = VotingList::factory([
+    $this->nonFinalVotingList = VotingList::factory([
         'id' => 2,
         'vote_id' => Vote::factory([
             'vote_collection_id' => $this->voteCollection,
@@ -37,15 +38,15 @@ beforeEach(function () {
     ]);
 });
 
-it('renders successfully for primary votes', function () {
-    $this->primaryVotingList->create();
+it('renders successfully for final votes', function () {
+    $this->finalVotingList->create();
     $response = $this->get('/votes/1/related');
 
     expect($response)->toHaveStatus(200);
 });
 
-it('returns 404 for non-primary votes', function () {
-    $this->nonPrimaryVotingList->create();
+it('returns 404 for non-final votes', function () {
+    $this->nonFinalVotingList->create();
     $response = $this->get('/votes/2/related');
 
     expect($response)->toHaveStatus(404);
@@ -59,15 +60,15 @@ it('returns 404 for voting list without vote', function () {
 });
 
 it('contains voting list title', function () {
-    $this->primaryVotingList->create();
+    $this->finalVotingList->create();
     $response = $this->get('/votes/1/related');
 
     expect($response)->toHaveSelectorWithText('h1', 'The title');
 });
 
 it('contains list of related votes', function () {
-    $this->primaryVotingList->create();
-    $this->nonPrimaryVotingList->create();
+    $this->finalVotingList->create();
+    $this->nonFinalVotingList->create();
     $response = $this->get('/votes/1/related');
 
     expect($response)->toHaveSelectorWithText('article', 'Separate vote on § 3/1');
