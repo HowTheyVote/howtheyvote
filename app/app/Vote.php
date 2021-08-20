@@ -24,6 +24,7 @@ class Vote extends Model
         'reference',
         'subheading',
         'session_id',
+        'final',
     ];
 
     protected $casts = [

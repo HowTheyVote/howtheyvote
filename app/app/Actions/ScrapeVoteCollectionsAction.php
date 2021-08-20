@@ -87,6 +87,7 @@ class ScrapeVoteCollectionsAction extends Action
                 'reference' => $vote['reference'],
                 'subheading' => $vote['subheading'],
                 'session_id' => $session?->id,
+                'final' => $vote['final'],
             ]);
         }
 

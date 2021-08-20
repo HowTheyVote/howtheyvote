@@ -29,6 +29,7 @@ class VoteFactory extends Factory
             'result' =>  VoteResultEnum::ADOPTED(),
             'formatted' => 'Proposition de résolution',
             'vote_collection_id' => VoteCollection::factory(),
+            'final' => false,
         ];
     }
 }

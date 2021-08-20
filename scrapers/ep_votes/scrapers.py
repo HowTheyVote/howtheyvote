@@ -419,7 +419,6 @@ class VoteCollectionsScraper(Scraper):
             type=self._type(row),
             remarks=remarks,
             subheading=row.get("Subheading"),
-            final=False,
         )
 
     def _type(self, row: Row) -> VoteType:
