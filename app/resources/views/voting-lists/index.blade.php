@@ -7,7 +7,7 @@
                 @foreach ($sessions as $session)
                     <h2 class="beta">{{ $session->display_title }}</h2>
 
-                    @foreach ($session->matchedFinalVotes as $vote)
+                    @foreach ($session->votes()->final()->matched()->get() as $vote)
                         <x-vote-card :vote="$vote" />
                     @endforeach
                 @endforeach
