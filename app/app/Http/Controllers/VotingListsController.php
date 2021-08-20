@@ -15,10 +15,10 @@ class VotingListsController extends Controller
     public function index()
     {
         $sessions = Session::with([
-            'finalVotes',
-            'finalVotes.votingList',
-            'finalVotes.voteCollection',
-        ])->whereHas('matchedFinalVotes')
+            'votes',
+            'votes.votingList',
+            'votes.voteCollection',
+        ])->whereHas('votes', fn ($query) => $query->final()->matched())
             ->orderByDesc('start_date')
             ->get();
 

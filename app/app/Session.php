@@ -38,14 +38,4 @@ class Session extends Model
     {
         return $this->hasMany(Vote::class);
     }
-
-    public function finalVotes()
-    {
-        return $this->votes()->final();
-    }
-
-    public function matchedFinalVotes()
-    {
-        return $this->finalVotes()->whereHas('votingList');
-    }
 }

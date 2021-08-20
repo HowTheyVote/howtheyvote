@@ -77,5 +77,5 @@ it('does not show session-headings for sessions without matched final votes', fu
     ])->create();
 
     $response = $this->get('/votes');
-    expect($response)->toHaveSelector('.vote-card', 2);
+    expect($response)->toHaveSelector('.beta', 1);
 });

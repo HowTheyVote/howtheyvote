@@ -100,6 +100,11 @@ class Vote extends Model
         return $query->where('final', 1);
     }
 
+    public function scopeMatched($query)
+    {
+        return $query->whereHas('votingList');
+    }
+
     public function isFinalVote()
     {
         return $this->final;
