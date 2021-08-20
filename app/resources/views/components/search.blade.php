@@ -1,11 +1,16 @@
 @props([
     'endpoint' => null,
     'index' => null,
+    'apiKey' => null,
 ])
 
 <div
     {{ $attributes->bem('search') }}
-    x-data="search('{{ $endpoint }}', '{{ $index }}')"
+    x-data="search({{ json_encode([
+        'endpoint' => $endpoint,
+        'index' => $index,
+        'apiKey' => $apiKey,
+    ]) }})"
 >
     <x-stack>
         <x-stack space="xs">

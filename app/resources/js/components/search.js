@@ -4,9 +4,10 @@ const HIGHLIGHT_ATTRIBUTES = ['display_title'];
 const CROP_ATTRIBUTES = ['display_title'];
 const CROP_LENGTH = 150;
 
-export default (endpoint, index) => ({
-  endpoint,
-  index,
+export default (options = {}) => ({
+  endpoint: options.endpoint,
+  index: options.index,
+  apiKey: options.apiKey,
 
   query: '',
   page: 0,
@@ -70,7 +71,10 @@ export default (endpoint, index) => ({
 
     const response = await fetch(this.searchUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Meili-API-Key': this.apiKey,
+      },
       signal: this.abortController.signal,
       body: JSON.stringify({
         q: this.query,
