@@ -74,8 +74,8 @@ class Vote extends Model
             return __('votes.subtitle.separate', ['subject' => $subject]);
         }
 
-        if ($this->isPrimaryVote()) {
-            return __('votes.subtitle.primary');
+        if ($this->isFinalVote()) {
+            return __('votes.subtitle.final');
         }
     }
 
@@ -86,13 +86,23 @@ class Vote extends Model
             ->where('id', '!=', $this->id);
     }
 
-    public function primaryVote()
+    public function finalVote()
     {
         return $this
             ->hasOne(self::class, 'vote_collection_id', 'vote_collection_id')
             ->ofMany(['id' => 'max'], function ($query) {
-                return $query->where('type', VoteTypeEnum::PRIMARY());
+                return $query->final();
             });
+    }
+
+    public function scopeFinal($query)
+    {
+        return $query->where('final', 1);
+    }
+
+    public function isFinalVote()
+    {
+        return $this->final;
     }
 
     public function isPrimaryVote()

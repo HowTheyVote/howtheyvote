@@ -32,20 +32,20 @@ it('returns related votes', function () {
     expect($relatedVotes->pluck('id'))->not()->toContain($vote->id);
 });
 
-it('returns primary vote', function () {
+it('returns final vote', function () {
     $voteCollection = VoteCollection::factory()->create();
 
-    $nonPrimary = Vote::factory([
+    $nonFinal = Vote::factory([
         'vote_collection_id' => $voteCollection,
         'type' => VoteTypeEnum::AMENDMENT(),
     ])->create();
 
-    $primary = Vote::factory([
+    $final = Vote::factory([
         'vote_collection_id' => $voteCollection,
-        'type' => VoteTypeEnum::PRIMARY(),
+        'final' => true,
     ])->create();
 
-    expect($nonPrimary->primaryVote->id)->toEqual($primary->id);
+    expect($nonFinal->finalVote->id)->toEqual($final->id);
 });
 
 it('returns a subtitle for amendments', function () {
@@ -77,9 +77,9 @@ it('returns a subtitle for separate votes with split part', function () {
     expect($vote->subtitle)->toEqual('Separate vote on § 10/2');
 });
 
-it('returns a subtitle for primary votes', function () {
+it('returns a subtitle for final votes', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::PRIMARY(),
+        'final' => true,
     ])->make();
 
     expect($vote->subtitle)->toEqual('Final vote');
@@ -116,17 +116,18 @@ it('checks if related votes exist', function () {
     $voteCollection = VoteCollection::factory()
         ->create();
 
-    $nonPrimary = Vote::factory([
+    $nonFinal = Vote::factory([
         'vote_collection_id' => $voteCollection,
         'type' => VoteTypeEnum::AMENDMENT(),
     ])->create();
 
-    $primary = Vote::factory([
+    $final = Vote::factory([
         'vote_collection_id' => $voteCollection,
         'type' => VoteTypeEnum::PRIMARY(),
+        'final' => true,
     ])->make();
 
-    expect($primary->hasRelatedVotes())->toBe(true);
+    expect($final->hasRelatedVotes())->toBe(true);
 });
 
 it('returns url for voting list if it is matched', function () {

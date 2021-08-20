@@ -31,11 +31,11 @@
                     </p>
                 @endif
 
-                @if ($votingList->vote && !$votingList->vote->isPrimaryVote())
-                    <x-callout style="warning" :heading="__('voting-lists.non-primary-callout.heading')">
+                @if ($votingList->vote && !$votingList->vote->isFinalVote())
+                    <x-callout style="warning" :heading="__('voting-lists.non-final-callout.heading')">
                         @if ($votingList->vote->isAmendmentVote())
                             {{
-                                __('voting-lists.non-primary-callout.amendment', [
+                                __('voting-lists.non-final-callout.amendment', [
                                     'amendment' => lcfirst($votingList->vote->subtitle),
                                 ])
                             }}
@@ -43,16 +43,16 @@
 
                         @if ($votingList->vote->isSeparateVote())
                             {{
-                                __('voting-lists.non-primary-callout.separate', [
+                                __('voting-lists.non-final-callout.separate', [
                                     'separate' => lcfirst($votingList->vote->subtitle),
                                 ])
                             }}
                         @endif
 
-                        @if ($votingList->vote->primaryVote?->url)
+                        @if ($votingList->vote->finalVote?->url)
                         {!!
-                            __('voting-lists.non-primary-callout.text', [
-                                'url' => $votingList->vote->primaryVote->url,
+                            __('voting-lists.non-final-callout.text', [
+                                'url' => $votingList->vote->finalVote->url,
                             ])
                         !!}
                         @endif
@@ -60,7 +60,7 @@
                 @endif
             </x-stack>
 
-            @if ($votingList->vote && $votingList->vote->isPrimaryVote())
+            @if ($votingList->vote && $votingList->vote->isFinalVote())
                 <x-share-button
                     :title="$votingList->display_title"
                     :text="$votingList->display_title"
@@ -127,7 +127,7 @@
             </x-tabs>
 
             <x-stack>
-                @if ($votingList->vote && $votingList->vote->isPrimaryVote() && $votingList->vote->hasRelatedVotes())
+                @if ($votingList->vote && $votingList->vote->isFinalVote() && $votingList->vote->hasRelatedVotes())
                     <x-action-panel
                         :heading="__('voting-lists.related-votes-list.heading')"
                         :text="__('voting-lists.related-votes-list.text')"

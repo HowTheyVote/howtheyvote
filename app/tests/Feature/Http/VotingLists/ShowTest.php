@@ -51,6 +51,7 @@ beforeEach(function () {
             'type' => VoteTypeEnum::PRIMARY(),
             'result' => VoteResultEnum::ADOPTED(),
             'vote_collection_id' => $voteCollection,
+            'final' => true,
         ]),
     ];
 
@@ -62,7 +63,7 @@ beforeEach(function () {
 
     $votingListDataNotFinal = [
             'id' => 2,
-            'description' => 'Matched Voting List For Non Primary Vote',
+            'description' => 'Matched Voting List For Non Final Vote',
             'date'=> $date,
             'vote_id' => Vote::factory([
                 'type' => VoteTypeEnum::SEPARATE(),
@@ -235,7 +236,7 @@ it('callout shows appropriate text for non-final votes', function () {
     expect($response)->toHaveSelectorWithText('.callout--warning', 'amendment');
 });
 
-it('does not show a url in callout for a non-matched primary vote', function () {
+it('does not show a url in callout for a non-matched final vote', function () {
     $collection = VoteCollection::factory()->create();
 
     VotingList::factory([
@@ -249,6 +250,7 @@ it('does not show a url in callout for a non-matched primary vote', function () 
     Vote::factory([
         'vote_collection_id' => $collection,
             'type' => VoteTypeEnum::PRIMARY(),
+            'final' => true,
     ])->create();
 
     $response = $this->get('/votes/10');

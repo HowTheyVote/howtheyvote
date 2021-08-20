@@ -141,9 +141,10 @@ it('reports an error when a vote and its matched voting list have different resu
     $this->action->execute();
 });
 
-it('generates share-pictures for matched primary votes', function () {
+it('generates share-pictures for matched final votes', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::PRIMARY(),
+        'type' => VoteTypeEnum::SEPARATE(),
+        'final' => true,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
         'remarks' => '102030',
