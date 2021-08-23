@@ -17,6 +17,6 @@ class Term extends Model
 
     public function members()
     {
-        return $this->belongsToMany(Term::class);
+        return $this->belongsToMany(Member::class);
     }
 }
