@@ -199,8 +199,8 @@ it('has share meta tags', function () {
     Storage::disk('public')->put('share-pictures/vote-sharepic-1.png', 'test');
 
     $response = $this->get('/votes/1');
-    expect($response)->toHaveSelector('meta[property="twitter:image"][content$="vote-sharepic-1.png"]');
-    expect($response)->toHaveSelector('meta[property="twitter:image:alt"][content^="A barchart visualizing"]');
+    expect($response)->toHaveSelector('meta[property="og:image"][content$="vote-sharepic-1.png"]');
+    expect($response)->toHaveSelector('meta[property="og:image:alt"][content^="A barchart visualizing"]');
 });
 
 it('has default share meta tags if vote is not final', function () {
@@ -208,8 +208,8 @@ it('has default share meta tags if vote is not final', function () {
     Storage::disk('public')->put('share-pictures/vote-sharepic-2.png', 'test');
 
     $response = $this->get('/votes/2');
-    expect($response)->toHaveSelector('meta[property="twitter:image"][content$="default-share-picture.png"]');
-    expect($response)->toHaveSelector('meta[property="twitter:image:alt"][content^="A photo of the hemicycle"]');
+    expect($response)->toHaveSelector('meta[property="og:image"][content$="default-share-picture.png"]');
+    expect($response)->toHaveSelector('meta[property="og:image:alt"][content^="A photo of the hemicycle"]');
 });
 
 it('displays share button for final votes', function () {

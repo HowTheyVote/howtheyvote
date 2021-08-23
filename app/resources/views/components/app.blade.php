@@ -2,7 +2,6 @@
     'title' => null,
     'sharePicture' => null,
     'sharePictureAlt' => null,
-    'shareUrl' => null,
 ])
 
 @php
@@ -27,19 +26,11 @@
         <meta property="og:site_name" content="HowTheyVote.eu" />
         <meta property="og:title" content="{{ $title }}" />
 
+        <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:site" content="{{ '@HowTheyVoteEu' }}" />
-        <meta property="twitter:title" content="{{ $title }}" />
-
-        @if ($shareUrl)
-            <meta property="og:url" content="{{ $shareUrl }}" />
-        @endif
 
         <meta property="og:image" content="{{ $sharePicture }}" />
         <meta property="og:image:alt" content="{{ $sharePictureAlt }}" />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:image" content="{{ $sharePicture }}" />
-        <meta property="twitter:image:alt" content="{{ $sharePictureAlt }}" />
     </head>
     <body>
         {{ $slot }}
