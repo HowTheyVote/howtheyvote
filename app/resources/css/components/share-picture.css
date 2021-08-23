@@ -16,6 +16,15 @@
     padding: var(--space-sm);
 }
 
+.share-picture__result > * {
+    margin-left: var(--space-xxs);
+}
+
+.share-picture__result {
+    display: flex;
+    align-items: center;
+}
+
 .share-picture__title {
     display: -webkit-box;
     -webkit-box-orient: vertical;

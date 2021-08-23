@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -127,5 +128,15 @@ class VotingList extends Model
     public function getUrlAttribute(): ?string
     {
         return route('voting-list.show', ['votingList' => $this->id]);
+    }
+
+    public function getResultStringAttribute(): ?string
+    {
+        return Str::lower($this->vote?->result->label);
+    }
+
+    public function getResultAttribute()
+    {
+        return $this->vote?->result;
     }
 }

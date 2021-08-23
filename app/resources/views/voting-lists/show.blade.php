@@ -13,8 +13,8 @@
 
                         @if ($votingList->vote)
                             ·
-                            {{ Str::lower($votingList->vote->result->label) }}
-                            <x-thumb style="circle" :result="$votingList->vote->result" />
+                            {{ $votingList->result_string }}
+                            <x-thumb style="circle" :result="$votingList->result" />
                         @endif
                     </strong>
                 </p>
