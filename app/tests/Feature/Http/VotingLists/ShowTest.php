@@ -194,16 +194,22 @@ it('shows a panel for link to related votes if associated vote is final', functi
     expect($response)->not()->toHaveSelectorWithText('.action-panel', 'Related Votes');
 });
 
-it('only has meta tags for sharing if vote is final', function () {
+it('has share meta tags', function () {
     Storage::fake('public');
     Storage::disk('public')->put('share-pictures/vote-sharepic-1.png', 'test');
-    Storage::disk('public')->put('share-pictures/vote-sharepic-2.png', 'test');
 
     $response = $this->get('/votes/1');
-    expect($response)->toHaveSelector('meta[property="twitter:card"]');
+    expect($response)->toHaveSelector('meta[property="twitter:image"][content$="vote-sharepic-1.png"]');
+    expect($response)->toHaveSelector('meta[property="twitter:image:alt"][content^="A barchart visualizing"]');
+});
+
+it('has default share meta tags if vote is not final', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('share-pictures/vote-sharepic-2.png', 'test');
 
     $response = $this->get('/votes/2');
-    expect($response)->not()->toHaveSelector('meta[property="twitter:card"]');
+    expect($response)->toHaveSelector('meta[property="twitter:image"][content$="default-share-picture.png"]');
+    expect($response)->toHaveSelector('meta[property="twitter:image:alt"][content^="A photo of the hemicycle"]');
 });
 
 it('displays share button for final votes', function () {

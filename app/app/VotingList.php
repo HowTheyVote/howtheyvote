@@ -104,8 +104,12 @@ class VotingList extends Model
         return $disk->url($path);
     }
 
-    public function getSharePictureDescriptionAttribute(): string
+    public function getSharePictureDescriptionAttribute(): ?string
     {
+        if (! $this->vote?->isFinalVote()) {
+            return null;
+        }
+
         return __('voting-lists.share-picture.alt-text', [
            'title' => $this->display_title,
            'date' => $this->date->formatLocalized('%b%e, %Y'),

@@ -1,9 +1,16 @@
 @props([
     'title' => null,
     'sharePicture' => null,
-    'shareUrl' => null,
     'sharePictureAlt' => null,
+    'shareUrl' => null,
 ])
+
+@php
+    // Use default share picture if a falsy values is passed,
+    // even if it is passed explicitly.
+    $sharePicture = $sharePicture ?: asset('/assets/default-share-picture.png');
+    $sharePictureAlt = $sharePictureAlt ?: __('share.default-share-picture.alt');
+@endphp
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -27,14 +34,12 @@
             <meta property="og:url" content="{{ $shareUrl }}" />
         @endif
 
-        @if ($sharePicture)
-            <meta property="og:image" content="{{ $sharePicture }}" />
-            <meta property="og:image:alt" content="{{ $sharePictureAlt }}" />
+        <meta property="og:image" content="{{ $sharePicture }}" />
+        <meta property="og:image:alt" content="{{ $sharePictureAlt }}" />
 
-            <meta property="twitter:card" content="summary_large_image" />
-            <meta property="twitter:image" content="{{ $sharePicture }}" />
-            <meta property="twitter:image:alt" content="{{ $sharePictureAlt }}" />
-        @endif
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:image" content="{{ $sharePicture }}" />
+        <meta property="twitter:image:alt" content="{{ $sharePictureAlt }}" />
     </head>
     <body>
         {{ $slot }}
