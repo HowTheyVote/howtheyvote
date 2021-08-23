@@ -33,19 +33,11 @@ class ScrapeMembersAction extends Action
             $current = $key + 1;
             $this->log("Importing member {$current} of {$total}", $data);
 
-            $this->createOrMergeMember($data);
+            $member = Member::firstOrCreate([
+                'web_id' => $data['web_id'],
+            ]);
+
+            $member->terms()->syncWithoutDetaching($term);
         }
-    }
-
-    protected function createOrMergeMember(array $data): Member
-    {
-        $terms = Term::whereIn('number', $data['terms'])->first();
-        $member = Member::firstOrCreate([
-            'web_id' => $data['web_id'],
-        ]);
-
-        $member->mergeTerms($terms)->save();
-
-        return $member;
     }
 }
