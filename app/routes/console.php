@@ -37,11 +37,14 @@ Artisan::command('scrape:members {--term=}', function (
     $action->execute($term);
 })->describe('Scrape and save all members (without info) for a given term.');
 
-Artisan::command('scrape:members-info', function (ScrapeMemberInfoAction $action) {
-    $allMembers = Member::all();
-    $membersCount = $allMembers->count();
+Artisan::command('scrape:members-info {--term=}', function (
+    int $term,
+    ScrapeMemberInfoAction $action
+) {
+    $allMembersInTerm = Term::where('number', $term)->first()->members()->get();
+    $membersCount = $allMembersInTerm->count();
 
-    foreach ($allMembers as $index => $member) {
+    foreach ($allMembersInTerm as $index => $member) {
         $progress = ($index + 1).'/'.$membersCount;
         $this->output->write("\r<info>Scraping info for member: {$progress}</info>");
 
@@ -70,10 +73,11 @@ Artisan::command('scrape:members-groups {--term=}', function (
     ScrapeMemberGroupsAction $action
 ) {
     $term = Term::whereNumber($term)->first();
-    $allMembers = Member::all();
-    $membersCount = $allMembers->count();
+    $allMembersInTerm = $term->members()->get();
 
-    foreach ($allMembers as $index => $member) {
+    $membersCount = $allMembersInTerm->count();
+
+    foreach ($allMembersInTerm as $index => $member) {
         $progress = ($index + 1).'/'.$membersCount;
         $this->output->write("\r<info>Scraping groups for member {$progress}</info>");
 
@@ -128,7 +132,7 @@ Artisan::command('scrape:all {--term=} {--from=} {--to=}', function (
 
     Artisan::call('scrape:members', ['--term' => $term]);
     Artisan::call('scrape:members-groups', ['--term' => $term]);
-    Artisan::call('scrape:members-info');
+    Artisan::call('scrape:members-info', ['--term' => $term]);
 
     $from = Carbon::parse($from);
     $month = $from->month;
