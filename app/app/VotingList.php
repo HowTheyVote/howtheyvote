@@ -43,6 +43,7 @@ class VotingList extends Model
             'vote',
             'vote.voteCollection',
             'vote.voteCollection.summary',
+            'vote.session',
         ]);
     }
 
@@ -54,6 +55,8 @@ class VotingList extends Model
             'date' => $this->date->timestamp,
             'result' => $this->vote->result->label,
             'summary' => $this->vote->voteCollection->summary?->text,
+            'session_id' => $this->vote->session?->id,
+            'session_display_title' => $this->vote->session?->display_title,
         ];
     }
 

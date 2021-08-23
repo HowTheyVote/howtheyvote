@@ -1,5 +1,12 @@
 const LIMIT = 10;
-const ATTRIBUTES = ['id', 'display_title', 'date', 'result'];
+const ATTRIBUTES = [
+  'id',
+  'display_title',
+  'date',
+  'result',
+  'session_id',
+  'session_display_title',
+];
 const HIGHLIGHT_ATTRIBUTES = ['display_title'];
 const CROP_ATTRIBUTES = ['display_title'];
 const CROP_LENGTH = 150;
@@ -20,17 +27,6 @@ export default (options = {}) => ({
   init() {
     this.restoreFromUrl();
     this.search();
-  },
-
-  formatDate(isoString) {
-    const options = {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    };
-
-    return new Date(isoString).toLocaleString('en-US', options);
   },
 
   async search() {
@@ -57,8 +53,39 @@ export default (options = {}) => ({
     this.search();
   },
 
+  get resultsGroupedBySession() {
+    const sessions = this.results
+      // Sort by date descending first...
+      .sort((a, b) => b.date - a.date)
+
+      // ... then group by session id
+      .reduce((groups, result) => {
+        const sessionId = result.session_id;
+
+        groups[sessionId] = groups[sessionId] || {
+          displayTitle: result.session_display_title,
+          votes: [],
+        };
+
+        groups[sessionId].votes.push(result);
+
+        return groups;
+      }, {});
+
+    // Sort sessions by the date of first (i.e. the
+    // most recent) vote, as the order might be mixed
+    // up by grouping
+    return Object.values(sessions).sort((a, b) => {
+      return b.votes[0].date - a.votes[0].date;
+    });
+  },
+
   get hasMoreResults() {
     return this.results.length < this.totalResults;
+  },
+
+  get hasQuery() {
+    return this.query.length > 0;
   },
 
   async getResults() {

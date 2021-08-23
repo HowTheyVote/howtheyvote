@@ -1,7 +1,10 @@
 meilisearch_displayed_attributes:
   - id
   - display_title
+  - date
   - result
+  - session_id
+  - session_display_title
 meilisearch_searchable_attributes:
   - display_title
   - summary
@@ -11,9 +14,8 @@ meilisearch_stop_words:
   - abstentions
   - resolution
 meilisearch_synonyms:
-  covid:
-    - corona
-    - covid 19
+  corona:
+    - covid
   human:
     - humanitarian
   EU:
