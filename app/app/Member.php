@@ -21,6 +21,9 @@ class Member extends Model
         'last_name_normalized',
         'date_of_birth',
         'country',
+        'email',
+        'twitter',
+        'facebook',
     ];
 
     protected $dates = [
