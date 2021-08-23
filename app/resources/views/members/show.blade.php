@@ -2,15 +2,17 @@
     title="{{ $member->full_name }} · Votes Casted"
 >
     <x-base-layout>
-        <h1 class="alpha">{{ $member->full_name }}</h1>
-        <x-member-card :member="$member" />
         <x-stack>
-            @foreach ($votes as $vote)
-                <x-list-item
-                    :title="$vote->display_title"
-
-                />
-            @endforeach
+            <h1 class="alpha">{{ $member->full_name }}</h1>
+            <x-member-card :member="$member" />
+            <x-stack space="xs">
+                @foreach ($votingLists as $votingList)
+                    <x-vote-card
+                        :vote="$votingList->vote"
+                        :position="Str::lower($votingList->pivot->position->label)"
+                    />
+                @endforeach
+            </x-stack>
         </x-stack>
     </x-base-layout>
 </x-app>

@@ -10,7 +10,7 @@ class MemberController extends Controller
     {
         return view('members.show', [
             'member' => $member,
-            'votes' => $member->votes()
+            'votingLists' => $member->votes()
                 ->whereHas('vote', fn ($query) => $query->final()->matched())
                 ->get(),
         ]);
