@@ -5,10 +5,17 @@
                 <h1 class="alpha share-picture__title">
                     {{ $votingList->display_title }}
                 </h1>
-                <p class="text--sm">
+                <p class="text--sm share-picture__result">
                     @lang('voting-lists.share-picture.subtitle', [
                         'date' => $votingList->date->formatLocalized('%b %e, %Y'),
                     ])
+
+                    @if ($votingList->vote)
+                        <strong>
+                            {{ ucfirst($votingList->result_string) }}
+                        </strong>
+                        <x-thumb style="circle" :result="$votingList->result" />
+                    @endif
                 </p>
             </x-stack>
             <x-vote-result-chart :stats="$votingList->stats" />
