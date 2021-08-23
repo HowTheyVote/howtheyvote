@@ -15,9 +15,14 @@
     transition: 0.1s all ease-out;
 }
 
-.button:hover {
+.button:hover,
+.button:focus {
     background-color: var(--gray-dark);
     color: white;
+}
+
+.button:active {
+    transform: scale(0.975);
 }
 
 .button--lg {
