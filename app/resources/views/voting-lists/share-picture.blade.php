@@ -5,15 +5,14 @@
                 <h1 class="alpha share-picture__title">
                     {{ $votingList->display_title }}
                 </h1>
-                <p class="text--sm share-picture__result">
-                    @lang('voting-lists.share-picture.subtitle', [
-                        'date' => $votingList->date->formatLocalized('%b %e, %Y'),
-                    ])
+                <p class="text--sm share-picture__subtitle">
+                    {{ __('voting-lists.share-picture.subtitle') }}
+                    ·
+                    {{ $votingList->date->formatLocalized('%b %e, %Y') }}
 
                     @if ($votingList->vote)
-                        <strong>
-                            {{ ucfirst($votingList->result_string) }}
-                        </strong>
+                        ·
+                        {{ ucfirst($votingList->result_string) }}
                         <x-thumb style="circle" :result="$votingList->result" />
                     @endif
                 </p>

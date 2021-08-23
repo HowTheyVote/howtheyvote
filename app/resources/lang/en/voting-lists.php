@@ -4,7 +4,7 @@ return [
 
     'share-picture' => [
         'footer' => 'Find out how individual MEPs, political groups, and countries voted:',
-        'subtitle' => 'Result of the vote in the European Parliament on :date.',
+        'subtitle' => 'Result of the vote in the European Parliament',
         'summary' => 'In total, <strong>:voted MEPs</strong> voted. <strong>:did-not-vote MEPs</strong> didn’t vote.',
         'alt-text' => 'A barchart visualizing the result of the European Parliaments vote on ":title". The vote was held on :date. The barchart has three bars, representing the :for MEPs who voted in favor (:forpercent%), the :against MEPs who votes against (:againstpercent%), and the :abstention MEPs who did abstain (:abstentionpercent%). In total, :voted MEPs participated in the vote and :novote MEPs did not vote.',
     ],
