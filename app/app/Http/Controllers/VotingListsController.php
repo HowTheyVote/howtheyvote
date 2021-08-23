@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\CountryEnum;
 use App\Group;
-use App\Session;
 use App\VotingList;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Spatie\Url\Url;
@@ -14,17 +13,7 @@ class VotingListsController extends Controller
 {
     public function index()
     {
-        $sessions = Session::with([
-            'votes',
-            'votes.votingList',
-            'votes.voteCollection',
-        ])->whereHas('votes', fn ($query) => $query->final()->matched())
-            ->orderByDesc('start_date')
-            ->get();
-
-        return view('voting-lists.index', [
-            'sessions' => $sessions,
-        ]);
+        return view('voting-lists.index');
     }
 
     public function show(VotingList $votingList)
