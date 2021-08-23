@@ -84,13 +84,6 @@ class Member extends Model
         return $this->last_name_normalized = static::normalizeName($name);
     }
 
-    public function mergeTerms($newTerms): self
-    {
-        $this->terms()->syncWithoutDetaching($newTerms->pluck('id'));
-
-        return $this;
-    }
-
     public function scopeActiveAt(Builder $query, \DateTime $date, Term $term = null)
     {
         // While members are active members of parliament, they are

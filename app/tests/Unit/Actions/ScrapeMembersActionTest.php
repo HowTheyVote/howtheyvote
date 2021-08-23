@@ -24,6 +24,14 @@ it('creates new member records', function () {
     expect($termNumbers)->toEqualCanonicalizing([9]);
 });
 
+it('associates members only with the given terms', function () {
+    $term = Term::factory(['number' => 8])->create();
+
+    $this->action->execute($this->term);
+    expect(Member::count())->toEqual(1);
+    expect($term->members()->count())->toEqual(0);
+});
+
 it('merges terms with existing member records', function () {
     $member = Member::factory(['web_id' => 12345])
         ->has(Term::factory(['number' => 8]))
