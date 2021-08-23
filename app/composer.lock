@@ -2037,16 +2037,16 @@
         },
         {
             "name": "laravel/scout",
-            "version": "v9.2.5",
+            "version": "v9.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/scout.git",
-                "reference": "86c406cc1211237cff29e349851b21121c29d776"
+                "reference": "35db193a88f150e64951ebd29b4a294a91d87dbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/scout/zipball/86c406cc1211237cff29e349851b21121c29d776",
-                "reference": "86c406cc1211237cff29e349851b21121c29d776",
+                "url": "https://api.github.com/repos/laravel/scout/zipball/35db193a88f150e64951ebd29b4a294a91d87dbd",
+                "reference": "35db193a88f150e64951ebd29b4a294a91d87dbd",
                 "shasum": ""
             },
             "require": {
@@ -2105,7 +2105,7 @@
                 "issues": "https://github.com/laravel/scout/issues",
                 "source": "https://github.com/laravel/scout"
             },
-            "time": "2021-08-10T17:36:33+00:00"
+            "time": "2021-08-17T16:06:22+00:00"
         },
         {
             "name": "laravel/tinker",
