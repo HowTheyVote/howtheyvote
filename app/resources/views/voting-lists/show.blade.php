@@ -1,6 +1,5 @@
 <x-app
     title="{{ $votingList->display_title }} · Vote Result"
-    padding="true"
     :sharePicture="$votingList->share_picture_url"
     :sharePictureAlt="$votingList->share_picture_description"
     :shareUrl="$votingList->url"
