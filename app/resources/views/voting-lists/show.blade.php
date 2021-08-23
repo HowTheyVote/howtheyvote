@@ -2,7 +2,6 @@
     title="{{ $votingList->display_title }} · Vote Result"
     :sharePicture="$votingList->share_picture_url"
     :sharePictureAlt="$votingList->share_picture_description"
-    :shareUrl="$votingList->url"
 >
     <x-base-layout>
         <x-stack space="xl">
