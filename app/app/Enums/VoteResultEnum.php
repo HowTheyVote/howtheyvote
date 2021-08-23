@@ -17,4 +17,12 @@ class VoteResultEnum extends Enum
             'REJECTED' => 1,
         ];
     }
+
+    protected static function labels(): array
+    {
+        return [
+            'ADOPTED' => 'adopted',
+            'REJECTED' => 'rejected',
+        ];
+    }
 }

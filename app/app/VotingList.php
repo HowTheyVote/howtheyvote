@@ -2,10 +2,10 @@
 
 namespace App;
 
+use App\Enums\VoteResultEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -130,12 +130,7 @@ class VotingList extends Model
         return route('voting-list.show', ['votingList' => $this->id]);
     }
 
-    public function getResultStringAttribute(): ?string
-    {
-        return Str::lower($this->vote?->result->label);
-    }
-
-    public function getResultAttribute()
+    public function getResultAttribute(): ?VoteResultEnum
     {
         return $this->vote?->result;
     }
