@@ -2,5 +2,8 @@
     "first_name": "Jane",
     "last_name": "Doe",
     "date_of_birth": "1975-01-01",
-    "country": "GB"
+    "country": "GB",
+    "facebook": null,
+    "twitter": "EinTwitterLink",
+    "email": null
 }

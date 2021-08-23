@@ -31,5 +31,8 @@ it('updates member data', function () {
         'last_name_normalized' => 'doe',
         'country' => CountryEnum::GB(),
         'date_of_birth' => '1975-01-01',
+        'twitter' => 'EinTwitterLink',
+        'facebook' => null,
+        'email' => null,
     ]);
 });
