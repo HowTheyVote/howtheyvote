@@ -103,7 +103,6 @@ it('returns description of share pic', function () {
 it('returns result of matched vote', function () {
     $votingList = VotingList::factory()->make();
 
-    expect($votingList->result_string)->toEqual('');
     expect($votingList->result)->toBeNull();
 
     $votingList = VotingList::factory([
@@ -112,6 +111,5 @@ it('returns result of matched vote', function () {
         ]),
     ])->make();
 
-    expect($votingList->result_string)->toEqual(Str::lower(VoteResultEnum::ADOPTED()->label));
     expect($votingList->result)->toEqual(VoteResultEnum::ADOPTED());
 });
