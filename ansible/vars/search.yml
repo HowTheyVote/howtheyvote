@@ -23,3 +23,11 @@ meilisearch_synonyms:
   UK:
     - United Kingdom
     - Great Britian
+meilisearch_ranking_rules:
+  - typo
+  - words
+  - proximity
+  - attribute
+  - wordsPosition
+  - exactness
+  - desc(date)

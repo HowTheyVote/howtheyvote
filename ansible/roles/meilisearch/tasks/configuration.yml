@@ -38,3 +38,13 @@
     body_format: json
     body: "{{ meilisearch_synonyms }}"
     status_code: [202]
+
+- name: Update ranking rules
+  uri:
+    url: "http://localhost:7700/indexes/voting_lists/settings/ranking-rules"
+    method: POST
+    headers:
+      X-Meili-API-KEY: "{{ meilisearch_master_key }}"
+    body_format: json
+    body: "{{ meilisearch_ranking_rules }}"
+    status_code: [202]

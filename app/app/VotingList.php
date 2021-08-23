@@ -51,7 +51,7 @@ class VotingList extends Model
         return [
             'id' => $this->id,
             'display_title' => $this->display_title,
-            'date' => $this->date,
+            'date' => $this->date->timestamp,
             'result' => $this->vote->result->label,
             'summary' => $this->vote->voteCollection->summary?->text,
         ];

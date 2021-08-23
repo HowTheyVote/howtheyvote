@@ -117,4 +117,15 @@ export default (options = {}) => ({
 
     return url.toString();
   },
+
+  formatDate(timestamp) {
+    const options = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    };
+
+    return new Date(timestamp * 1000).toLocaleString('en-US', options);
+  },
 });
