@@ -51,6 +51,12 @@
             </x-stack>
         </template>
 
+        <template x-if="hasMoreResults">
+            <x-button x-on:click="loadMore()" size="lg" style="block">
+                {{ __('components.search.load-more') }}
+            </x-button>
+        </template>
+
         <template x-if="hasQuery && totalResults <= 0">
             <x-empty-state :title="__('components.search.empty-state.title')">
                 <p>
@@ -63,10 +69,10 @@
             </x-empty-state>
         </template>
 
-        <template x-if="hasMoreResults">
-            <x-button x-on:click="loadMore()" size="lg" style="block">
-                {{ __('components.search.load-more') }}
-            </x-button>
-        </template>
+        <noscript>
+            <x-empty-state :title="__('components.search.noscript.title')">
+                <p>{{ __('components.search.noscript.text') }}</p>
+            </x-empty-state>
+        </noscript>
     </x-stack>
 </div>
