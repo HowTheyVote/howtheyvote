@@ -15,5 +15,9 @@ return [
             'text' => 'Try rephrasing your search query or',
             'action' => 'view the most recent votes',
         ],
+        'noscript' => [
+            'title' => 'To search, please enable JavaScript.',
+            'text' => 'The search feature on this page relies on JavaScript in your browser. Didn’t disable JavaScript? An ad blocker or another browser extension might block JavaScript on HowTheyVote.eu.',
+        ],
     ],
 ];
