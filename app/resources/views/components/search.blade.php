@@ -29,32 +29,29 @@
             </template>
         </x-stack>
 
-        <template x-for="vote in results" :key="vote.id">
-            <article class="vote-card">
-                <a :href="`/votes/${vote.id}`">
-                    <x-thumb
-                        class="vote-card__thumb"
-                        result="adopted"
-                        style="circle"
-                        x-show="vote.result === 'ADOPTED'"
-                    />
-
-                    <x-thumb
-                        class="vote-card__thumb"
-                        result="rejected"
-                        style="circle"
-                        x-show="vote.result === 'REJECTED'"
-                    />
-
-                    <div>
-                        <strong x-html="vote._formatted.display_title"></strong>
-                        <p x-text="formatDate(vote.date)"></p>
-                    </div>
-                </a>
-            </article>
+        <template x-if="!hasQuery">
+            <template
+                x-for="session in resultsGroupedBySession"
+                v-bind:key="session.id"
+            >
+                <x-stack space="sm">
+                    <h2 class="beta" x-text="session.displayTitle"></h2>
+                    <template x-for="vote in session.votes" v-bind:key="vote.id">
+                        <x-search-result />
+                    </template>
+                </x-stack>
+            </template>
         </template>
 
-        <template x-if="totalResults <= 0">
+        <template x-if="hasQuery">
+            <x-stack space="sm">
+                <template x-for="vote in results" v-bind:key="vote.id">
+                    <x-search-result />
+                </template>
+            </x-stack>
+        </template>
+
+        <template x-if="hasQuery && totalResults <= 0">
             <x-empty-state :title="__('components.search.empty-state.title')">
                 <p>
                     {{ __('components.search.empty-state.text') }}
@@ -67,11 +64,7 @@
         </template>
 
         <template x-if="hasMoreResults">
-            <x-button
-                x-on:click="loadMore()"
-                size="lg"
-                style="block"
-            >
+            <x-button x-on:click="loadMore()" size="lg" style="block">
                 {{ __('components.search.load-more') }}
             </x-button>
         </template>
