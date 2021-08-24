@@ -6,6 +6,10 @@
     padding: var(--space-xxs) var(--space-xs);
 }
 
+.input--lg {
+    padding: var(--space-xs) var(--space-sm);
+}
+
 input[type='search'] {
     -webkit-appearance: none;
 }
