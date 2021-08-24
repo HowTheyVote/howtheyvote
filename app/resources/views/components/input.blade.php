@@ -1,3 +1,3 @@
-@props(['type' => 'text'])
+@props(['type' => 'text', 'size' => null])
 
-<input type="{{ $type }}" {{ $attributes->bem('input') }} />
+<input type="{{ $type }}" {{ $attributes->bem('input', $size) }} />

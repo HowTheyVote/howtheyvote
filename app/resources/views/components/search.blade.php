@@ -19,6 +19,8 @@
                 :placeholder="__('components.search.placeholder')"
                 x-model="query"
                 x-on:input="search()"
+                size="lg"
+                autofocus
             />
 
             <template x-if="query && totalNumberOfResults > 0">
