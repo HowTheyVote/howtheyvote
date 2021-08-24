@@ -17,6 +17,8 @@ We use Docker for our development setup. This setup is intended for development 
 We provide a dump in the `mariadb/dump` directory that can be imported using `mariadb/dump/import_database.sh`. 
 If you have scraped data the `mariadb/dump/export_database.sh` script can be used to create a new dump.
 
+To familiarize yourself with the schema of the database, the models in `app/app/*.php` are a good starting point. 
+
 ## Production Deployment
 
 We’re using [Ansible](https://ansible.org) to manage server provisioning and deployment to production environments. Currently, the Ansible playbook `ansible/site.yml` supports deploying EP-Votes to a fresh [Uberspace 7](https://uberspace.de) account.
