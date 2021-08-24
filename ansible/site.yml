@@ -7,3 +7,6 @@
   roles:
     - setup
     - deployment
+  environment:
+    # Pip user packages are installed here
+    PATH: "~/.local/bin:{{ ansible_env.PATH }}"
