@@ -105,6 +105,7 @@ export default (options = {}) => ({
       this.abortController.abort();
     }
 
+    this.loading = true;
     this.abortController = new AbortController();
 
     const response = await fetch(this.searchUrl, {
@@ -124,6 +125,8 @@ export default (options = {}) => ({
         cropLength: CROP_LENGTH,
       }),
     });
+
+    this.loading = false;
 
     return await response.json();
   },
