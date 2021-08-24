@@ -21,9 +21,9 @@
                 x-on:input="search()"
             />
 
-            <template x-if="query && totalResults > 0">
-                <p>
-                    <span x-text="totalResults"></span>
+            <template x-if="query && totalNumberOfResults > 0">
+                <p aria-live="polite">
+                    <span x-text="numberOfResults"></span>/<span x-text="totalNumberOfResults"></span>
                     {{ __('components.search.results') }}
                 </p>
             </template>
@@ -61,7 +61,7 @@
             </x-button>
         </template>
 
-        <template x-if="hasQuery && totalResults <= 0">
+        <template x-if="hasQuery && totalNumberOfResults <= 0">
             <x-empty-state :title="__('components.search.empty-state.title')">
                 <p>
                     {{ __('components.search.empty-state.text') }}
