@@ -27,9 +27,11 @@
             <x-search.load-more-button />
         </template>
 
-        <template x-if="hasQuery && totalNumberOfResults <= 0">
-            <x-search.empty-state />
-        </template>
+        <div aria-live="polite">
+            <template x-if="hasQuery && totalNumberOfResults <= 0">
+                <x-search.empty-state />
+            </template>
+        </div>
 
         <noscript>
             <x-search.noscript-fallback />
