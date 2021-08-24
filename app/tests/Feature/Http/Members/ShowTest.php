@@ -24,6 +24,7 @@ beforeEach(function () {
         'first_name' => 'Jane',
         'last_name' => 'DOE',
         'country' => CountryEnum::NL(),
+        'twitter' => '@handle',
     ])->activeAt($this->date, $greens)->count(1);
 
     $this->votingList = VotingList::factory(
@@ -59,4 +60,30 @@ it('renders successfully', function () {
 it('lists final votes with position of member', function () {
     $response = $this->get("/members/{$this->memberId}");
     expect($response)->toHaveSelector('.thumb--for.thumb--circle', 1);
+});
+
+it('shows an info box with contact links for active members', function () {
+    Carbon::setTestNow($this->date);
+
+    $response = $this->get("/members/{$this->memberId}");
+    expect($response)->toHaveSelector('.member-card', 1);
+    expect($response)->toSeeText('Netherlands');
+    expect($response)->toSeeText('Twitter');
+    expect($response)->not()->toSeeText('Facebook');
+    expect($response)->toSee("/members/{$this->memberId}");
+
+    expect($response)->toSeeText('Greens/European Free Alliance');
+
+    Carbon::setTestNow();
+});
+
+it('shows contact info for non-active members', function () {
+    $response = $this->get("/members/{$this->memberId}");
+    expect($response)->toHaveSelector('.member-card', 1);
+    expect($response)->toSeeText('Netherlands');
+    expect($response)->toSeeText('Twitter');
+    expect($response)->not()->toSeeText('Facebook');
+    expect($response)->toSee("/members/{$this->memberId}");
+
+    expect($response)->toSeeText('not affiliated');
 });
