@@ -113,7 +113,7 @@ def _vote_factory(**data):
         "final": False,
     }
 
-    return Vote(**(default | data))
+    return Vote(**{**default, **data})
 
 
 def test_vote_formatted_basic_split_vote():

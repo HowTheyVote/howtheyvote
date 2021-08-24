@@ -488,7 +488,7 @@ class SummaryIDScraper(Scraper):
             return False
 
         date = datetime.strptime(header_cells[0].text.strip(), "%d/%m/%Y")
-        week_of_year = int(date.isocalendar().week)
+        week_of_year = date.isocalendar()[1]
         description = header_cells[1].text.strip()
 
         if not description.startswith("Decision by Parliament"):
