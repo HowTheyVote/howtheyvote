@@ -41,11 +41,17 @@ export default (options = {}) => ({
   },
 
   async loadMore() {
+    const currentNumberOfResults = this.results.length;
+
     this.page += 1;
     const data = await this.getResults();
     this.results.push(...data.hits);
 
     this.persistToUrl();
+
+    this.$nextTick(() => {
+      this.focusResult(currentNumberOfResults + 1);
+    });
   },
 
   reset() {
@@ -115,6 +121,17 @@ export default (options = {}) => ({
     });
 
     return await response.json();
+  },
+
+  focusResult(n) {
+    const results = this.$refs.results.querySelectorAll('a');
+    const nthResult = results[n - 1];
+
+    if (!nthResult) {
+      return;
+    }
+
+    nthResult.focus();
   },
 
   persistToUrl() {
