@@ -12,12 +12,9 @@
     transition: 0.2s all ease-out;
 }
 
-.vote-card > a > * + * {
-    margin-left: var(--space-sm);
-}
-
 .vote-card__thumb {
     flex-shrink: 0;
+    margin-right: var(--space-sm);
 }
 
 .vote-card > a:hover {
