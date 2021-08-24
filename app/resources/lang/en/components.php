@@ -7,7 +7,7 @@ return [
         'search-placeholder' => 'Search',
     ],
     'search' => [
-        'results' => 'Results',
+        'results' => 'results',
         'load-more' => 'Load more',
         'placeholder' => 'Search votes by subject, e.g. COVID-19',
         'empty-state' => [

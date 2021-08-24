@@ -20,8 +20,9 @@ export default (options = {}) => ({
   page: 0,
 
   results: [],
-  totalResults: null,
+  totalNumberOfResults: null,
 
+  loading: false,
   abortController: null,
 
   init() {
@@ -35,13 +36,13 @@ export default (options = {}) => ({
 
     const data = await this.getResults();
     this.results = data.hits;
-    this.totalResults = data.nbHits;
+    this.totalNumberOfResults = data.nbHits;
 
     this.persistToUrl();
   },
 
   async loadMore() {
-    const currentNumberOfResults = this.results.length;
+    const currentNumberOfResults = this.numberOfResults;
 
     this.page += 1;
     const data = await this.getResults();
@@ -57,6 +58,10 @@ export default (options = {}) => ({
   reset() {
     this.query = '';
     this.search();
+  },
+
+  get numberOfResults() {
+    return this.results.length;
   },
 
   get resultsGroupedBySession() {
@@ -87,7 +92,7 @@ export default (options = {}) => ({
   },
 
   get hasMoreResults() {
-    return this.results.length < this.totalResults;
+    return this.numberOfResults < this.totalNumberOfResults;
   },
 
   get hasQuery() {
