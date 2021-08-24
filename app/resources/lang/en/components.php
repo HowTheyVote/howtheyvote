@@ -9,6 +9,7 @@ return [
     'search' => [
         'results' => 'results',
         'load-more' => 'Load more',
+        'loading' => 'Loading …',
         'placeholder' => 'Search votes by subject, e.g. COVID-19',
         'empty-state' => [
             'title' => 'No results found…',

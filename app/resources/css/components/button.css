@@ -16,9 +16,14 @@
 }
 
 .button:hover,
-.button:focus {
+.button:focus,
+.button[disabled] {
     background-color: var(--gray-dark);
     color: white;
+}
+
+.button[disabled] {
+    opacity: 0.5;
 }
 
 .button:active {
