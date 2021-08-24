@@ -1,6 +1,6 @@
 [program:epvotes-scrapers]
 directory={{ epvotes_install_dir }}/scrapers
-command={{ poetry_executable }} run python -m flask run
+command=poetry run python -m flask run
 environment=FLASK_APP="{{ epvotes_install_dir }}/scrapers/ep_votes/api.py"
 startsecs=30
 stderr_logfile={{ ansible_facts.env.HOME }}/logs/epvotes-scrapers.log

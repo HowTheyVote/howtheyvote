@@ -21,12 +21,12 @@
 
 - name: Set Python version
   shell:
-    cmd: "{{ poetry_executable }} env use python3.8"
+    cmd: "poetry env use python{{ python_version }}"
     chdir: "{{ epvotes_install_dir }}/scrapers"
 
 - name: Install poetry dependencies
   shell:
-    cmd: "{{ poetry_executable }} install"
+    cmd: "poetry install"
     chdir: "{{ epvotes_install_dir }}/scrapers"
 
 - name: Create env file for scrapers

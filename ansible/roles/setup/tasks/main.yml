@@ -5,26 +5,12 @@
 - name: Setup node version
   command: "uberspace tools version use node {{ node_version }}"
 
-- name: Check if Poetry is installed
-  shell: "{{ ansible_facts.env.HOME }}/.poetry/bin/poetry --version"
-  register: poetry_version
-  failed_when: false
-
 - name: Install Poetry
-  when: poetry_version.rc != 0
-  block:
-    - name: Get Poetry installer
-      get_url:
-        url: "https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py"
-        dest: "{{ ansible_facts.env.HOME }}/get-poetry.py"
-
-    - name: Run Poetry installer
-      command: "python{{ python_version }} {{ ansible_facts.env.HOME }}/get-poetry.py"
-
-    - name: Remove Poetry installer
-      file:
-        path: "{{ ansible_facts.env.HOME }}/get-poetry.py"
-        state: absent
+  pip:
+    name: poetry
+    executable: "pip{{ python_version }}"
+    extra_args: --user
+    state: present
 
 - name: Setup Google FLoC opt out header
   command: "uberspace web header set / Permissions-Policy \"interest-cohort=()\""
