@@ -17,8 +17,19 @@ class ComponentAttributeBagMixin
                 $modifiers = explode(' ', $modifiers);
             }
 
-            $modifiers = array_filter($modifiers);
-            $classes = array_map(fn ($modifier) => "{$base}--{$modifier}", $modifiers);
+            $classes = [];
+
+            // Optionally support constrained modifiers using associative arrays
+            foreach ($modifiers as $modifier => $constraint) {
+                if (is_numeric($modifier)) {
+                    $classes[] = $constraint;
+                } elseif ($constraint) {
+                    $classes[] = $modifier;
+                }
+            }
+
+            $classes = array_filter($classes);
+            $classes = array_map(fn ($class) => "{$base}--{$class}", $classes);
 
             return $this->class([$base, ...$classes]);
         };

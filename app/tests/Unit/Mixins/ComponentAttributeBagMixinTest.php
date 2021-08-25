@@ -19,3 +19,20 @@ it('accepts no modifier', function () {
 
     expect($actual)->toEqual($expected);
 });
+
+it('filters falsy modifiers', function () {
+    $bag = new ComponentAttributeBag();
+    $actual = $bag->bem('button', ['', null, false, 'large'])->getAttributes();
+    $expected = ['class' => 'button button--large'];
+});
+
+it('appends modifier if constraint is true', function () {
+    $bag = new ComponentAttributeBag();
+    $expected = ['class' => 'button button--large'];
+    $actual = $bag->bem('button', [
+        'large' => true,
+        'pink' => false,
+    ])->getAttributes();
+
+    expect($actual)->toEqual($expected);
+});
