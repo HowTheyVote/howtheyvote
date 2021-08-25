@@ -2,6 +2,7 @@
 
 return [
     'title' => 'All Votes',
+    'subtitle' => 'Explore recent votes or search our database by subject.',
 
     'share-picture' => [
         'footer' => 'Find out how individual MEPs, political groups, and countries voted:',

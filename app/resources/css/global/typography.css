@@ -1,6 +1,7 @@
 .alpha,
 .beta,
-.gamma {
+.gamma,
+.delta {
     font-weight: 600;
     line-height: 1.2;
     color: var(--blue-darker);
@@ -19,6 +20,12 @@
 .gamma,
 .markdown h2 {
     font-size: var(--text-size);
+}
+
+.delta {
+    font-size: var(--text-size);
+    text-transform: uppercase;
+    letter-spacing: 0.075em;
 }
 
 strong {
