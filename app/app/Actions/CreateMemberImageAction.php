@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\Facades\Image;
 
-class CreateMemberThumbnailAction extends Action
+class CreateMemberImageAction extends Action
 {
     public function execute(Member $member): void
     {
@@ -16,15 +16,20 @@ class CreateMemberThumbnailAction extends Action
         $width = 104;
         $quality = 50;
 
-        $path = "members/{$member->id}-{$width}px.jpg";
+        $pathSmall = "members/{$member->id}-{$width}px.jpg";
+        $pathOrig = "members/{$member->id}.jpg";
 
         try {
-            $thumb = Image::make($url)
+            $thumbSmall = Image::make($url)
                 ->widen($width)
                 ->crop($width, $width)
                 ->encode('jpg', $quality);
 
-            Storage::disk('public')->put($path, $thumb);
+            $original = Image::make($url)
+                ->encode('jpg', 65);
+
+            Storage::disk('public')->put($pathSmall, $thumbSmall);
+            Storage::disk('public')->put($pathOrig, $original);
         } catch (NotReadableException $exception) {
             // It’s most likely that the parliament website returned a
             // 404 error code when requesting the original image.
