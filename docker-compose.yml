@@ -28,6 +28,7 @@ services:
       - ./app:/app
     ports:
       - '8000:8000'
+      - '3000:3000'
     environment:
       - APP_NAME=epvotes
       - APP_ENV=local
