@@ -66,19 +66,18 @@ export default (options = {}) => ({
 
   get resultsGroupedBySession() {
     const sessions = this.results
-      // Sort by date descending first...
+      // Sort by descending date...
       .sort((a, b) => b.date - a.date)
 
       // ... then group by session id
       .reduce((groups, result) => {
-        const sessionId = result.session_id;
-
-        groups[sessionId] = groups[sessionId] || {
+        groups[result.session_id] = groups[result.session_id] || {
+          id: result.session_id,
           displayTitle: result.session_display_title,
           votes: [],
         };
 
-        groups[sessionId].votes.push(result);
+        groups[result.session_id].votes.push(result);
 
         return groups;
       }, {});
