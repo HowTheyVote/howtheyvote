@@ -4,6 +4,7 @@
     display: block;
     width: 100%;
     padding: var(--space-xxs) var(--space-xs);
+    background-color: #fff;
 }
 
 .input--lg {
