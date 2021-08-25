@@ -5,7 +5,6 @@
 }
 
 .base-layout__main {
-    padding: var(--space) var(--space-sm);
     margin-bottom: var(--space-lg);
 }
 

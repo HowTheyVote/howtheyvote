@@ -7,3 +7,8 @@
     position: absolute;
     white-space: nowrap;
 }
+
+.padding--h {
+    padding-left: var(--space-sm);
+    padding-right: var(--space-sm);
+}

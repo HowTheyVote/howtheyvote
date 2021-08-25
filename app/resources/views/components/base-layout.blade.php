@@ -2,9 +2,7 @@
     <x-header/>
 
     <main class="base-layout__main">
-        <x-wrapper>
-            {{ $slot }}
-        </x-wrapper>
+        {{ $slot }}
     </main>
     <x-wrapper class="base-layout__footer">
         <x-footer />

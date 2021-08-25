@@ -23,7 +23,9 @@
             <x-search-results-page.results-count />
         </template>
 
-        <x-search-results-page.results />
+        <template x-if="totalNumberOfResults > 0">
+            <x-search-results-page.results />
+        </template>
 
         <template x-if="hasMoreResults">
             <x-search-results-page.load-more-button />
