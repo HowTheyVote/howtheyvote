@@ -1,23 +1,26 @@
-.stack > * + * {
-    margin-top: var(--space);
+.stack {
+    --gap: var(--space);
+
+    display: grid;
+    gap: var(--gap);
 }
 
-.stack--sm > * + * {
-    margin-top: var(--space-sm);
+.stack--sm {
+    --gap: var(--space-sm);
 }
 
-.stack--xs > * + * {
-    margin-top: var(--space-xs);
+.stack--xs {
+    --gap: var(--space-xs);
 }
 
-.stack--xxs > * + * {
-    margin-top: var(--space-xxs);
+.stack--xxs {
+    --gap: var(--space-xxs);
 }
 
-.stack--lg > * + * {
-    margin-top: var(--space-lg);
+.stack--lg {
+    --gap: var(--space-lg);
 }
 
-.stack--xl > * + * {
-    margin-top: var(--space-xl);
+.stack--xl {
+    --gap: var(--space-xl);
 }
