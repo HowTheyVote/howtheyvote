@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@github/tab-container-element": "^3.1.2",
-        "alpinejs": "^3.2.3"
+        "alpinejs": "^3.2.3",
+        "quicklink": "^2.2.0"
     }
 }
