@@ -25,6 +25,9 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
+
+    font-family: var(--font-family-condensed);
+    font-weight: 500;
 }
 
 .share-picture__footer {
