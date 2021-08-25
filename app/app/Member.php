@@ -49,7 +49,7 @@ class Member extends Model
         return $this->belongsTo(Group::class);
     }
 
-    public function votes()
+    public function votingLists()
     {
         return $this->belongsToMany(VotingList::class, 'votings')
             ->using(Voting::class)
