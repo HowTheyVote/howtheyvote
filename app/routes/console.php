@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\CreateMemberThumbnailAction;
+use App\Actions\CreateMemberImageAction;
 use App\Actions\GenerateVoteSharePicAction;
 use App\Actions\MatchVotesAndVotingListsAction;
 use App\Actions\ScrapeMemberGroupsAction;
@@ -54,7 +54,7 @@ Artisan::command('scrape:members-info {--term=}', function (
     $this->output->writeln('');
 })->describe('Scrape and save info for all saved members.');
 
-Artisan::command('scrape:members-photos', function (CreateMemberThumbnailAction $action) {
+Artisan::command('scrape:members-photos', function (CreateMemberImageAction $action) {
     $allMembers = Member::all();
     $membersCount = $allMembers->count();
 

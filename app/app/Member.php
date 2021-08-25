@@ -110,4 +110,9 @@ class Member extends Model
     {
         return Storage::disk('public')->url("members/{$this->id}-104px.jpg");
     }
+
+    public function getProfilePictureUrlAttribute(): string
+    {
+        return Storage::disk('public')->url("members/{$this->id}.jpg");
+    }
 }
