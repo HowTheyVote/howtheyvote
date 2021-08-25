@@ -16,9 +16,7 @@ class MemberController extends Controller
 
         return view('members.show', [
             'member' => $memberWithGroup,
-            'votingLists' => $member->votes()
-                ->whereHas('vote', fn ($query) => $query->final()->matched())
-                ->get(),
+            'votingLists' => $member->votingLists()->final()->matched()->get(),
         ]);
     }
 }

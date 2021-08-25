@@ -77,6 +77,18 @@ class VotingList extends Model
         return $this->belongsTo(Vote::class);
     }
 
+    public function scopeMatched($query)
+    {
+        return $query->whereHas('vote');
+    }
+
+    public function scopeFinal($query)
+    {
+        return $query->whereHas('vote', function ($query) {
+            return $query->where('final', true);
+        });
+    }
+
     public function getDisplayTitleAttribute(): string
     {
         return $this->vote?->display_title ?: $this->description;

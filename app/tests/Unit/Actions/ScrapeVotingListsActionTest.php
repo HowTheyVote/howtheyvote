@@ -71,10 +71,10 @@ it('finds and relates members with position', function () {
 
     $votingList = VotingList::first();
 
-    expect($member->votes()->count())->toEqual(1);
+    expect($member->votingLists()->count())->toEqual(1);
     expect($votingList->members()->count())->toEqual(1);
 
-    $position = $member->votes()->first()->pivot->position;
+    $position = $member->votingLists()->first()->pivot->position;
     expect($position)->toEqual(VotePositionEnum::FOR());
 });
 
