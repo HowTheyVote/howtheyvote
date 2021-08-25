@@ -137,8 +137,40 @@ class MemberInfoScraper(Scraper):
             first_name=first,
             last_name=last,
             date_of_birth=self._date_of_birth(),
+            facebook=self._facebook(),
+            twitter=self._twitter(),
+            email=self._email(),
             country=self._country(),
         )
+
+    def _facebook(self) -> Optional[str]:
+        tag = self._resource.select_one("#presentationmep a.link_fb")
+        if tag is None:
+            return None
+        return tag["href"]
+
+    def _twitter(self) -> Optional[str]:
+        tag = self._resource.select_one("#presentationmep a.link_twitt")
+        if tag is None:
+            return None
+        return tag["href"]
+
+    def _email(self) -> Optional[str]:
+        # The e-mail addresses are reversed in the page-source for spam detection
+        # reasons. The reversal is undone using java script on page-load,
+        # which does not happen when scraping
+        tag = self._resource.select_one(".link_email[href*='aporue.lraporue']")
+        if tag is None:
+            return None
+
+        address = (
+            tag["href"]
+            .replace("mailto:", "")
+            .replace("[dot]", ".")
+            .replace("[at]", "@")
+        )
+        address = address[::-1]
+        return address
 
     def _name(self) -> Tuple[Optional[str], Optional[str]]:
         tag = self._resource.select_one("#presentationmep div.erpl_title-h1")
