@@ -2,3 +2,7 @@
     padding: var(--space-lg) var(--space-sm);
     background-color: var(--gray-lightest);
 }
+
+.voting-list-header__share {
+    margin-top: var(--space);
+}

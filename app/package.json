@@ -12,6 +12,8 @@
         "prettier-fix": "prettier --write resources/**/*.{js,css}"
     },
     "devDependencies": {
+        "browser-sync": "^2.27.5",
+        "browser-sync-webpack-plugin": "^2.2.2",
         "laravel-mix": "^6.0.6",
         "postcss": "^8.2.10",
         "prettier": "^2.2.1"

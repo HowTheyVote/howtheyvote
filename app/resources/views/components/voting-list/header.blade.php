@@ -26,16 +26,17 @@
                     </a>
                 </p>
             @endif
-
-            @if ($votingList->vote && $votingList->vote->isFinalVote())
-                <x-share-button
-                    :title="$votingList->display_title"
-                    :text="$votingList->display_title"
-                    :url="route('voting-list.show', ['votingList' => $votingList])"
-                    style="block"
-                    size="lg"
-                />
-            @endif
         </x-stack>
+
+        @if ($votingList->vote && $votingList->vote->isFinalVote())
+            <x-share-button
+                class="voting-list-header__share"
+                :title="$votingList->display_title"
+                :text="$votingList->display_title"
+                :url="route('voting-list.show', ['votingList' => $votingList])"
+                style="block"
+                size="lg"
+            />
+        @endif
     </x-wrapper>
 </div>
