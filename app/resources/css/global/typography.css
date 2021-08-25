@@ -8,12 +8,12 @@
 
 .alpha {
     font-family: var(--font-family-heading);
-    font-size: var(--text-xl);
+    font-size: var(--text-xxl);
 }
 
 .beta,
 .markdown h1 {
-    font-size: var(--text-lg);
+    font-size: var(--text-xl);
 }
 
 .gamma,

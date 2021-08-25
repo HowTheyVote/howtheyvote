@@ -21,6 +21,7 @@
 @import './components/markdown.css';
 @import './components/empty-state.css';
 
+@import './components/hero.css';
 @import './components/logos.css';
 @import './components/share-button.css';
 @import './components/action-panel.css';
