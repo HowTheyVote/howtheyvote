@@ -31,6 +31,8 @@
 
         <meta property="og:image" content="{{ $sharePicture }}" />
         <meta property="og:image:alt" content="{{ $sharePictureAlt }}" />
+
+        @stack('head')
     </head>
     <body>
         {{ $slot }}
