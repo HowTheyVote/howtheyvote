@@ -1,5 +1,5 @@
 .input {
-    border: 1px solid var(--gray-light);
+    border: 1px solid rgba(0, 0, 0, .3);
     border-radius: 4px;
     display: block;
     width: 100%;
@@ -18,5 +18,5 @@ input[type='search'] {
 .input:focus {
     outline: none;
     border-color: var(--blue);
-    box-shadow: 0 0 0 2px var(--blue-lightest);
+    box-shadow: 0 0 0 3px var(--color-focus-outline);
 }
