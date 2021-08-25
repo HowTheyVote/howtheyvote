@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Member;
 use Illuminate\Support\Carbon;
 
-class MemberController extends Controller
+class MembersController extends Controller
 {
     public function show(Member $member)
     {
