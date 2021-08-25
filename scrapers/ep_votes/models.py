@@ -147,6 +147,9 @@ class MemberInfo:
     last_name: Optional[str]
     country: Country
     date_of_birth: Optional[date]
+    email: Optional[str]
+    twitter: Optional[str]
+    facebook: Optional[str]
 
     @staticmethod
     def parse_full_name(name: str) -> Tuple[Optional[str], Optional[str]]:

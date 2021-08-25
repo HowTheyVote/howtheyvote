@@ -41,6 +41,7 @@ def mock_response(req, context):
     MOCK_RESPONSES = {
         "/meps/en/directory/xml/?leg=8": "directory_term_8.xml",
         "/meps/en/directory/xml/?leg=9": "directory_term_9.xml",
+        "/meps/en/28229/NAME/home": "weber_home.html",
         "/meps/en/124834/NAME/home": "sonneborn_home.html",
         "/meps/en/124834/NAME/history/8": "sonneborn_term_8.html",
         "/meps/en/124834/NAME/history/9": "sonneborn_term_9.html",
@@ -96,6 +97,9 @@ def test_member_info_scraper_run(mock_request):
         last_name="SONNEBORN",
         date_of_birth=date(1965, 5, 15),
         country=Country.DE,
+        facebook="https://www.facebook.com/Martin-Sonneborn-178442508884215",
+        twitter="https://twitter.com/MartinSonneborn",
+        email="martin.sonneborn@europarl.europa.eu",
     )
 
     assert scraper.run() == expected
@@ -105,6 +109,39 @@ def test_member_info_scraper_date_of_birth_without(mock_request):
     scraper = MemberInfoScraper(web_id=124831)
     scraper._load()
     assert scraper._date_of_birth() is None
+
+
+def test_member_info_scraper_facebook(mock_request):
+    scraper = MemberInfoScraper(web_id=124834)
+    scraper._load()
+    assert (
+        scraper._facebook()
+        == "https://www.facebook.com/Martin-Sonneborn-178442508884215"
+    )
+
+
+def test_member_info_scraper_twitter(mock_request):
+    scraper = MemberInfoScraper(web_id=124834)
+    scraper._load()
+    assert scraper._twitter() == "https://twitter.com/MartinSonneborn"
+
+
+def test_member_info_scraper_email(mock_request):
+    scraper = MemberInfoScraper(web_id=124834)
+    scraper._load()
+    assert scraper._email() == "martin.sonneborn@europarl.europa.eu"
+
+
+def test_members_info_scraper_multiple_emails():
+    scraper = MemberInfoScraper(web_id=28229)
+    scraper._load()
+    assert scraper._email() == "manfred.weber@europarl.europa.eu"
+
+
+def test_members_info_scraper_no_social_media():
+    scraper = MemberInfoScraper(web_id=124831)
+    scraper._load()
+    assert scraper._facebook() is None
 
 
 def test_member_groups_scraper_run(mock_request):
