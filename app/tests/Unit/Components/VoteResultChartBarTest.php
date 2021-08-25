@@ -7,11 +7,6 @@ it('contains correct percentage value', function () {
     expect($view)->toSeeText('10%');
 });
 
-it('contains no percentage value if it would be below 5%', function () {
-    $view = $this->blade('<x-vote-result-chart-bar :value="4" :total="100" position="for" />');
-    expect($view)->not()->toSeeText('4%');
-});
-
 it('shows the correct thumb', function () {
     $view = $this->blade('<x-vote-result-chart-bar :value="10" :total="100" position="for" />');
     expect($view)->toHaveSelector('.thumb--for');
@@ -23,9 +18,16 @@ it('shows the correct thumb', function () {
     expect($view)->toHaveSelector('.thumb--abstention');
 });
 
-it('shows no thumb if percentage is below 10', function () {
+it('appends medium modifier if percentage is below 15', function () {
+    $view = $this->blade('<x-vote-result-chart-bar :value="14" :total="100" position="for" />');
+    expect($view)->toHaveSelector('.vote-result-chart__bar--medium');
+    expect($view)->not()->toHaveSelector('.vote-result-chart__bar--small');
+});
+
+it('appends small modifier if percentage is below 10', function () {
     $view = $this->blade('<x-vote-result-chart-bar :value="9" :total="100" position="for" />');
-    expect($view)->not()->toHaveSelector('.thumb');
+    expect($view)->toHaveSelector('.vote-result-chart__bar--small');
+    expect($view)->not()->toHaveSelector('.vote-result-chart__bar--medium');
 });
 
 it('has the correct width depending on its percentage value', function () {
