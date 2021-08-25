@@ -5,4 +5,5 @@
     :placeholder="__('components.search-input.placeholder')"
     size="lg"
     autofocus
+    style="elevated"
 />
