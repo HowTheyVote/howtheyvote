@@ -1,5 +1,5 @@
 :root {
-    --text-size: 1rem;
+    --text-size: 1.1rem;
     --line-height: 1.4;
 
     --text-scale-ratio: 1.25;
@@ -23,11 +23,11 @@
     --space-xl: calc(2 * var(--space));
     --space-xxl: calc(3 * var(--space));
 
-    --max-width: 42rem;
+    --max-width: 45rem;
 
     --font-family: IBM Plex Sans, system-ui;
     --font-family-condensed: IBM Plex Sans Condensed, system-ui;
-    --font-family-heading: var(--font-family-condensed);
+    --font-family-heading: var(--font-family);
 
     --green-h: 170;
     --green-s: 90%;
