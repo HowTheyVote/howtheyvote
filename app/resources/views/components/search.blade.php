@@ -4,6 +4,12 @@
     'apiKey' => null,
 ])
 
+@once
+    @push('head')
+        <link rel="preconnect" href="{{ $endpoint }}" />
+    @endpush
+@endonce
+
 <div
     {{ $attributes->bem('search') }}
     x-data="search({{ json_encode([
