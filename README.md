@@ -27,6 +27,12 @@ We’re using [Ansible](https://ansible.org) to manage server provisioning and d
 2. Run `ansible-playbook -i ansible/hosts --ask-vault-pass ansible/site.yml` to set up the Uberspace and deploy the application.
 3. Run `ansible-playbook -i ansible/hosts --ask-vault-pass ansible/meilisearch.yml` to compile and configure the MeiliSearch search server. This may take some time and it’s *not* necessary to run this playbook on every deployment. 
 
+## Licenses
+
+This software is licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). Data exports accessible via the web interface on <HowTheyVote.eu> and database dumps are made available under the [Creative Commons Attribution License 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+The contents of the database are sourced from the [plenary minutes](https://www.europarl.europa.eu/plenary/en/minutes.html) of the European Parliament, [MEP profiles](http://europarl.europa.eu/meps/en/home) on the Parliament’s website, and the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/home/home.do).
+
 ---
 
 This work is sponsored by the [Federal Ministry of Education and Research](https://bmbf.de) in the 9th round of the [Prototype Fund](https://prototypefund.de/) (Reference: 01IS21818).
