@@ -5,12 +5,14 @@ namespace App\Providers;
 use App\Actions\ScrapeAction;
 use App\Mixins\CollectionMixin;
 use App\Mixins\ComponentAttributeBagMixin;
+use App\Mixins\StrMixin;
 use App\Mixins\TestResponseMixin;
 use App\Mixins\TestViewMixin;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Testing\TestView;
 use Illuminate\View\ComponentAttributeBag;
@@ -55,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
 
         Collection::mixin(new CollectionMixin);
         ComponentAttributeBag::mixin(new ComponentAttributeBagMixin);
+        Str::mixin(new StrMixin);
         TestView::mixin(new TestViewMixin);
         TestResponse::mixin(new TestResponseMixin);
     }
