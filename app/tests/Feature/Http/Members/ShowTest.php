@@ -13,6 +13,7 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
     $this->date = new Carbon('2020-01-01');
+    Carbon::setTestNow($this->date);
 
     $greens = Group::factory([
         'code' => 'GREENS',
@@ -52,6 +53,10 @@ beforeEach(function () {
     $this->memberId = Member::first()->id;
 });
 
+afterEach(function () {
+    Carbon::setTestNow();
+});
+
 it('renders successfully', function () {
     $response = $this->get("/members/{$this->memberId}");
     expect($response)->toHaveStatus(200);
@@ -63,8 +68,6 @@ it('lists final votes with position of member', function () {
 });
 
 it('shows an info box with contact links for active members', function () {
-    Carbon::setTestNow($this->date);
-
     $response = $this->get("/members/{$this->memberId}");
     expect($response)->toHaveSelector('.member-card', 1);
     expect($response)->toSeeText('Netherlands');
@@ -73,11 +76,11 @@ it('shows an info box with contact links for active members', function () {
     expect($response)->toSee("/members/{$this->memberId}");
 
     expect($response)->toSeeText('Greens/European Free Alliance');
-
-    Carbon::setTestNow();
 });
 
 it('shows contact info for non-active members', function () {
+    Carbon::setTestNow();
+
     $response = $this->get("/members/{$this->memberId}");
     expect($response)->toHaveSelector('.member-card', 1);
     expect($response)->toSeeText('Netherlands');
@@ -85,5 +88,5 @@ it('shows contact info for non-active members', function () {
     expect($response)->not()->toSeeText('Facebook');
     expect($response)->toSee("/members/{$this->memberId}");
 
-    expect($response)->toSeeText('not affiliated');
+    expect($response)->toSeeText('No longer a member of parliament');
 });

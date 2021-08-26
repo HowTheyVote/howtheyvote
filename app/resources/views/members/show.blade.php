@@ -3,7 +3,7 @@
 >
     <x-base-layout>
         <x-stack>
-            <x-member-card :member="$member" />
+            <x-member-card :member="$member" :group="$group" />
             <section>
                 <x-stack space="xs">
                     @foreach ($votingLists as $votingList)
