@@ -10,6 +10,22 @@ use Laravel\Scout\Searchable;
 use Vinkla\Hashids\Facades\Hashids;
 
 class VotingList extends Model
+/*
+ * VotingLists hold a collection of Votings that MEPs casted during
+ * one specific vote. VotingLists are based on the voting lists provided
+ * by the parliament that list each MEP by name and how they voted in a
+ * specific roll-call-vote. An example can be found under
+ * https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/
+ * 2021/01-20/liste_presence/P9_PV(2021)01-20(RCV)_XC.pdf.
+ *
+ * The headings of each voting list are stored in separate parts, e.g. list 1
+ * of above example:
+ * 1. A9-0248/2020 - Javier Zarzalejos - Proposition de résolution
+ *     REFERENCE   |                   DESCRIPTION
+ *
+ * VotingLists should correspond to exactly one Vote. Allocating this is
+ * the responsibility of the MatchVotesAndVotingListsAction.
+ */
 {
     use HasFactory;
     use Searchable;

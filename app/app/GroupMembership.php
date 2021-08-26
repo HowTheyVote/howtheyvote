@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class GroupMembership extends Model
+/*
+ * GroupMemberships connect Members and Groups. An active Member always
+ * has an active GroupMembership (i.e. one with a start date before the
+ * current date and no end date). A Member without an active Group-
+ * Membership thus is no longer an active MEP.
+ *
+ * Members can have multiple GroupMemberships if they change their affiliation.
+ * All Members that are not part of an "actual" group are members of the
+ * NI (Non-attached members) group.
+ */
 {
     use HasFactory;
 
