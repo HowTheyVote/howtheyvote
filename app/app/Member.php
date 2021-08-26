@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Member extends Model
+/*
+ * Represents a Member of Parliament. Members cast their Votings to
+ * subjects in parliament. These are stored in VotingLists.
+ *
+ * A member is part of a Group via a GroupMembership.
+ */
 {
     use HasFactory;
 

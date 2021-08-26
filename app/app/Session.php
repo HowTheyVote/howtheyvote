@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Session extends Model
+/*
+ * A Session represents a session week of parliament, i.e., subsequent
+ * days at which plenary sessions in parliament took place. Roll call
+ * votes (i.e., votes we are interested in) can only happen on those days.
+ * During each Session, many votes can take place.
+ *
+ * Plenary sessions can take place in Brussels or Strasbourg.
+ */
 {
     use HasFactory;
 

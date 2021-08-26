@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Summary extends Model
+/*
+ * A summary references one text or procedure that can be subject
+ * to a vote in the plenary. This connection happens on the basis
+ * of its reference.
+ *
+ * It is a textual summary of the subject matter at hand.
+ * Summaries may not be available for some votes/subjects.
+ */
 {
     use HasFactory;
 
