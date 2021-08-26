@@ -6,10 +6,12 @@ return [
         'show-less' => 'Show less',
         'search-placeholder' => 'Search',
     ],
-    'search' => [
+    'search-input' => [
+        'placeholder' => 'Search by subject, e.g. COVID-19',
+    ],
+    'search-results-page' => [
         'load-more' => 'Load more',
         'loading' => 'Loading …',
-        'placeholder' => 'Search votes by subject, e.g. COVID-19',
         'empty-state' => [
             'title' => 'No results found…',
             'text' => 'Try rephrasing your search query or',
