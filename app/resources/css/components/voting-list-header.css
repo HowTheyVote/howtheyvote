@@ -1,0 +1,4 @@
+.voting-list-header {
+    padding: var(--space-lg) var(--space-sm);
+    background-color: var(--gray-lightest);
+}
