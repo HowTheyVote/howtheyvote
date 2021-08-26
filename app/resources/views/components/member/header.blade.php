@@ -25,31 +25,19 @@
                 @endif
             </p>
 
-            @if ($member->email || $member->twitter || $member->facebook)
+            @if ($member->links->isNotEmpty())
                 <ul class="member-header__social">
-                    @if ($member->email)
+                    @foreach ($member->links as $type => $link)
                         <li>
-                            <a href="mailto:{{ $member->email }}">
-                                E-Mail
+                            <a
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="{!! $link !!}"
+                            >
+                                {{ ucfirst($type) }}
                             </a>
                         </li>
-                    @endif
-
-                    @if ($member->twitter)
-                        <li>
-                            <a href="{{ $member->twitter }}" target="_blank" rel="noopener noreferrer">
-                                Twitter
-                            </a>
-                        </li>
-                    @endif
-
-                    @if ($member->facebook)
-                        <li>
-                            <a href="{{ $member->facebook }}" target="_blank" rel="noopener noreferrer">
-                                Facebook
-                            </a>
-                        </li>
-                    @endif
+                    @endforeach
                 </ul>
             @endif
         </div>

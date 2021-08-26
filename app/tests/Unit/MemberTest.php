@@ -6,6 +6,7 @@ use App\Member;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -95,4 +96,19 @@ it('loads with group membership at date', function () {
     // As the member’s not active tomorrow, they don’t have an
     // associated group for that day
     expect($tomorrow->group_id)->toBeNull();
+});
+
+it('has list of contact links', function () {
+    $member = Member::factory([
+        'email' => 'test@example.org',
+        'facebook' => 'https://facebook.com/test',
+        'twitter' => null,
+    ])->make();
+
+    $expected = [
+        'email' => Str::obfuscate('mailto:test@example.org'),
+        'facebook' => 'https://facebook.com/test',
+    ];
+
+    expect($member->links->toArray())->toEqual($expected);
 });
