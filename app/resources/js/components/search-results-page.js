@@ -16,9 +16,7 @@ export default (options = {}) => ({
   index: options.index,
   apiKey: options.apiKey,
 
-  query: '',
   page: 0,
-
   results: [],
   totalNumberOfResults: null,
 
@@ -28,6 +26,8 @@ export default (options = {}) => ({
   init() {
     this.restoreFromUrl();
     this.search();
+
+    this.$watch('$store.searchQuery', () => this.search());
   },
 
   async search() {
@@ -56,7 +56,7 @@ export default (options = {}) => ({
   },
 
   reset() {
-    this.query = '';
+    this.$store.searchQuery = '';
     this.search();
   },
 
@@ -95,7 +95,7 @@ export default (options = {}) => ({
   },
 
   get hasQuery() {
-    return this.query.length > 0;
+    return this.$store.searchQuery.length > 0;
   },
 
   async getResults() {
@@ -115,7 +115,7 @@ export default (options = {}) => ({
       },
       signal: this.abortController.signal,
       body: JSON.stringify({
-        q: this.query,
+        q: this.$store.searchQuery,
         limit: LIMIT,
         offset: this.page * LIMIT,
         attributesToRetrieve: ATTRIBUTES,
@@ -144,8 +144,8 @@ export default (options = {}) => ({
   persistToUrl() {
     const url = new URL(window.location.href);
 
-    if (this.query) {
-      url.searchParams.set('q', this.query);
+    if (this.$store.searchQuery) {
+      url.searchParams.set('q', this.$store.searchQuery);
     } else {
       url.searchParams.delete('q');
     }
@@ -158,7 +158,7 @@ export default (options = {}) => ({
     const query = url.searchParams.get('q');
 
     if (query) {
-      this.query = query;
+      this.$store.searchQuery = query;
     }
   },
 
