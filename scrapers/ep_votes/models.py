@@ -252,6 +252,9 @@ class Vote:
             if subject == "Commission proposal":
                 return "Proposition de la Commission"
 
+            if "recommendation" in subject:
+                return "Recommandation"
+
             if "(as a whole)" in subject:
                 return "Proposition de résolution"
 
