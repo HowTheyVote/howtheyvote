@@ -280,6 +280,14 @@ def test_vote_formatted_recommendation():
     assert vote.formatted == "Recommandation"
 
 
+def test_vote_formatted_decision():
+    vote = _vote_factory(
+        type=VoteType.PRIMARY, subject="Vote: decision (text as a whole)"
+    )
+
+    assert vote.formatted == "Décision"
+
+
 def test_vote_reference_in_subject():
     vote = _vote_factory(subject="A9-0123/2021", subheading="B9-4567/2021")
 

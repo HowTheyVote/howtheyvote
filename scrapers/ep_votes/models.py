@@ -255,6 +255,9 @@ class Vote:
             if "recommendation" in subject:
                 return "Recommandation"
 
+            if "decision" in subject:
+                return "Décision"
+
             if "(as a whole)" in subject:
                 return "Proposition de résolution"
 
