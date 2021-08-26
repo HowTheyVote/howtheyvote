@@ -69,24 +69,21 @@ it('lists final votes with position of member', function () {
 
 it('shows an info box with contact links for active members', function () {
     $response = $this->get("/members/{$this->memberId}");
-    expect($response)->toHaveSelector('.member-card', 1);
-    expect($response)->toSeeText('Netherlands');
-    expect($response)->toSeeText('Twitter');
-    expect($response)->not()->toSeeText('Facebook');
-    expect($response)->toSee("/members/{$this->memberId}");
 
-    expect($response)->toSeeText('Greens/European Free Alliance');
+    expect($response)->toHaveSelector("img[src$='/members/{$this->memberId}.jpg']");
+    expect($response)->toHaveSelectorWithText('.member-header', 'Greens/European Free Alliance');
+    expect($response)->toHaveSelectorWithText('.member-header', 'Netherlands');
+
+    expect($response)->toHaveSelectorWithText('.member-header', 'Twitter');
+    expect($response)->not()->toHaveSelectorWithText('member-header', 'Facebook');
 });
 
 it('shows contact info for non-active members', function () {
     Carbon::setTestNow();
-
     $response = $this->get("/members/{$this->memberId}");
-    expect($response)->toHaveSelector('.member-card', 1);
-    expect($response)->toSeeText('Netherlands');
-    expect($response)->toSeeText('Twitter');
-    expect($response)->not()->toSeeText('Facebook');
-    expect($response)->toSee("/members/{$this->memberId}");
 
-    expect($response)->toSeeText('No longer a member of parliament');
+    expect($response)->toHaveSelector("img[src$='/members/{$this->memberId}.jpg']");
+    expect($response)->toHaveSelectorWithText('.member-header', 'Netherlands');
+    expect($response)->toHaveSelectorWithText('.member-header', 'Twitter');
+    expect($response)->not()->toHaveSelectorWithText('.member-header', 'Facebook');
 });
