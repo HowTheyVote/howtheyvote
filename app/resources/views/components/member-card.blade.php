@@ -1,4 +1,7 @@
-@props(['member' => null])
+@props([
+    'member' => null,
+    'group' => null
+])
 
 <section {{ $attributes->bem('member-card') }}>
     <img src="{{ $member->profile_picture_url }}"/>
@@ -10,8 +13,8 @@
                 <strong>
                     {{ __('members.headings.group') }}
                 </strong>
-                @if($member->group)
-                    {{ $member->group->name }}
+                @if($group)
+                    {{ $group->name }}
                 @else
                     {{ __('members.no-group') }}
                 @endif

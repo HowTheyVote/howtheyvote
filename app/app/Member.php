@@ -113,8 +113,6 @@ class Member extends Model
 
     public function getProfilePictureUrlAttribute(): string
     {
-        $id = $this->member_id ?: $this->id;
-
-        return Storage::disk('public')->url("members/{$id}.jpg");
+        return Storage::disk('public')->url("members/{$this->id}.jpg");
     }
 }

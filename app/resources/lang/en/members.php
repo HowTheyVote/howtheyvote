@@ -5,5 +5,5 @@ return [
         'group' => 'Group:',
         'country' => 'Country:',
     ],
-    'no-group' => 'Currently not affiliated with any group.',
+    'no-group' => 'No longer a member of parliament.',
 ];
