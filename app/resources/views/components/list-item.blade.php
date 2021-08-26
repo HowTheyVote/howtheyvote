@@ -7,6 +7,7 @@
     'position' => null,
     'stats' => null,
     'searchKey' => null,
+    'url' => null
 ])
 
 <li
@@ -24,7 +25,13 @@
 
     <div class="list-item__text">
         <strong>
-            {{ $title }} {{ $emoji }}
+            @if ($url)
+                <a href="{{$url}}">
+                    {{ $title }} {{ $emoji }}
+                </a>
+            @else
+                {{ $title }} {{ $emoji }}
+            @endif
         </strong>
 
         <div class="list-item__subtitle">

@@ -95,6 +95,7 @@
                             <x-member-list-item
                                 :member="$member"
                                 :position="$member->pivot->position"
+                                :url="route('member.show', ['member' => $member])"
                             />
                         @endforeach
                     </x-list>

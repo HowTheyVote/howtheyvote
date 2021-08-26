@@ -50,6 +50,10 @@
     border: 4px solid var(--gray);
 }
 
+.thumb--novote > svg {
+    display: none;
+}
+
 .thumb--circle > svg {
     color: #fff;
     vertical-align: 0;
