@@ -6,6 +6,7 @@ use App\Enums\CountryEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -120,5 +121,16 @@ class Member extends Model
     public function getProfilePictureUrlAttribute(): string
     {
         return Storage::disk('public')->url("members/{$this->id}.jpg");
+    }
+
+    public function getLinksAttribute(): Collection
+    {
+        return collect([
+            'email' => $this->email
+                ? Str::obfuscate("mailto:{$this->email}")
+                : null,
+            'twitter' => $this->twitter,
+            'facebook' => $this->facebook,
+        ])->filter();
     }
 }
