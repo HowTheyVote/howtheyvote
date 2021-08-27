@@ -1,21 +1,32 @@
 <x-app title="{{ $votingList->displayTitle }} · Related Votes">
     <x-base-layout>
-        <x-stack>
-            <h1 class="alpha">{{ $votingList->display_title }}</h1>
+        <x-stack space="lg">
+            <x-voting-list.header
+                :votingList="$votingList"
+                :minimal="true"
+            />
 
-            <x-callout :heading="__('votes.related.callout-heading')" >
-                {!! __('votes.related.final-vote', ['url' => route('voting-list.show', $votingList)]) !!}
-            </x-callout>
+            <div class="padding--h">
+                <x-wrapper>
+                    <x-callout :heading="__('votes.related.callout-heading')" >
+                        {!! __('votes.related.final-vote', ['url' => route('voting-list.show', $votingList)]) !!}
+                    </x-callout>
+                </x-wrapper>
+            </div>
 
-            <x-stack space="xs">
-                @foreach ($relatedVotes as $relatedVote)
-                    <x-vote-card
-                        :vote="$relatedVote"
-                        :heading="$relatedVote->subtitle"
-                        text=""
-                    />
-                @endforeach
-            </x-stack>
+            <div class="padding--h">
+                <x-wrapper>
+                    <x-stack space="xs">
+                        @foreach ($relatedVotes as $relatedVote)
+                            <x-vote-card
+                                :vote="$relatedVote"
+                                :heading="$relatedVote->subtitle"
+                                text=""
+                            />
+                        @endforeach
+                    </x-stack>
+                </x-wrapper>
+            </div>
         </x-stack>
     </x-base-layout>
 </x-app>
