@@ -1,4 +1,6 @@
-<div {{ $attributes->bem('footer') }}>
+@props(['style'])
+
+<div {{ $attributes->bem('footer', $style) }}>
     <ul>
         <li>
             <a

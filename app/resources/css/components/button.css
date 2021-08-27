@@ -22,6 +22,18 @@
     color: white;
 }
 
+.button--fill {
+    background-color: var(--gray-dark);
+    color: #fff;
+    border: none;
+}
+
+.button--fill:hover,
+.button--fill:focus {
+    background-color: var(--gray-light);
+    color: var(--color-text);
+}
+
 .button[disabled] {
     opacity: 0.5;
 }

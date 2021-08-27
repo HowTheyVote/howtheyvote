@@ -4,6 +4,10 @@
     color: #fff;
 }
 
+.header--dark {
+    background-color: transparent;
+}
+
 .header__wrapper {
     display: flex;
     justify-content: space-between;
@@ -20,6 +24,15 @@
 
 .header a:hover {
     text-decoration: underline;
+}
+
+.header--dark .header__nav a {
+    font-weight: 600;
+    opacity: 0.65;
+}
+
+.header--dark .header__nav a:hover {
+    opacity: 1;
 }
 
 .header__nav ul {

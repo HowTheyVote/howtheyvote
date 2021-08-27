@@ -3,6 +3,15 @@
     border-top: var(--gray-light) 1px solid;
     display: flex;
     justify-content: center;
+    font-size: var(--text-sm);
+}
+
+.footer--dark {
+    border-top: none;
+}
+
+.footer--dark a {
+    text-decoration: none;
 }
 
 .footer > ul {
