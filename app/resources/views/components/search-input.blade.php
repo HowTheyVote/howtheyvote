@@ -5,5 +5,7 @@
     :placeholder="__('components.search-input.placeholder')"
     size="lg"
     autofocus
+    name="q"
     style="elevated"
+    {{ $attributes }}
 />

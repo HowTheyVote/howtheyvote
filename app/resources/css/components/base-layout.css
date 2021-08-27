@@ -4,8 +4,25 @@
     min-height: 100vh;
 }
 
+.base-layout--dark {
+    background-color: var(--blue-darkest);
+    color: var(--blue-lightest);
+
+    background-image: linear-gradient(
+            to bottom,
+            transparent,
+            var(--blue-darkest)
+        ),
+        url(/assets/home.jpg);
+    background-size: cover;
+    background-position: top center;
+}
+
 .base-layout__main {
+    display: flex;
+    flex-direction: column;
     margin-bottom: var(--space-lg);
+    flex-grow: 1;
 }
 
 .base-layout__footer {

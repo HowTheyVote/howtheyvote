@@ -1,4 +1,6 @@
-<header class="header">
+@props(['style' => null])
+
+<header {{ $attributes->bem('header', $style) }}>
     <x-wrapper class="header__wrapper">
         <a class="header__logotype" href="{{ url('') }}">
             {{ __('components.header.logotype') }}

@@ -10,7 +10,10 @@ return [
         'search-placeholder' => 'Search',
     ],
     'search-input' => [
-        'placeholder' => 'Search by subject, e.g. COVID-19',
+        'placeholder' => 'Search by subject, e.g. Covid-19',
+    ],
+    'search-form' => [
+        'submit' => 'Go!',
     ],
     'search-results-page' => [
         'load-more' => 'Load more',
@@ -24,5 +27,9 @@ return [
             'title' => 'To search, please enable JavaScript.',
             'text' => 'The search feature on this page relies on JavaScript in your browser. Didn’t disable JavaScript? An ad blocker or another browser extension might block JavaScript on HowTheyVote.eu.',
         ],
+    ],
+    'home' => [
+        'title' => 'Find out how the Members of the European Parliament vote.',
+        'hint' => 'Try <a href="/votes?q=Covid-19">Covid-19</a>, <a href="/votes?q=Copyright">Copyright</a>, or <a href="/votes?q=Transparency+Register">Transparency Register</a>. <br> Or view <a href="/votes">recent votes</a>.',
     ],
 ];
