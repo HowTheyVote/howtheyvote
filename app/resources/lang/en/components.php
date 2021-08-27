@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'header' => [
+        'logotype' => 'HowTheyVote.eu',
+    ],
     'list' => [
         'show-more' => 'Show more',
         'show-less' => 'Show less',
