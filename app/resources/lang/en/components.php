@@ -37,6 +37,5 @@ return [
         'current' => 'Parliament is meeting in :location this week.',
         'last' => 'The last plenary session was held <strong>from :start to :end</strong> in :location.',
         'next' => 'The next plenary session will be held in :location <strong>from :start to :end</strong>.',
-        'unknown' => 'We currently do not have the dates for the next plenary session.',
     ],
 ];
