@@ -4,8 +4,8 @@ use App\Enums\LocationEnum;
 use App\Session;
 use App\Vote;
 use App\VotingList;
-use Illuminate\Support\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -61,7 +61,7 @@ it('displays date of next session', function () {
     expect($view)->toSeeText('The next plenary session is held from Sep 1st to Sep 4th in Brussels.');
 });
 
-it('displays date of last session if vote results are not yet avaiable' , function () {
+it('displays date of last session if vote results are not yet avaiable', function () {
     $view = $this->blade('<x-session-display :currentSession="$currentSession" :lastSession="$lastSession" :nextSession="$nextSession" />', [
         'currentSession' => null,
         'lastSession' => $this->lastSession,
@@ -70,4 +70,3 @@ it('displays date of last session if vote results are not yet avaiable' , functi
 
     expect($view)->toSeeText('The last plenary session was held from Jul 1st to Jul 4th in Strasbourg.');
 });
-
