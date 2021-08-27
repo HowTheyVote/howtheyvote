@@ -5,6 +5,7 @@ namespace App;
 use App\Enums\LocationEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Session extends Model
 /*
@@ -33,6 +34,30 @@ class Session extends Model
         'start_date',
         'end_date',
     ];
+
+    public static function next()
+    {
+        return static::query()
+            ->where('start_date', '>', Carbon::now())
+            ->orderBy('start_date')
+            ->first();
+    }
+
+    public static function last()
+    {
+        return static::query()
+            ->where('end_date', '<', Carbon::now())
+            ->orderByDesc('start_date')
+            ->first();
+    }
+
+    public static function current()
+    {
+        return static::query()
+            ->where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now())
+            ->first();
+    }
 
     public function getDisplayTitleAttribute()
     {
