@@ -42,6 +42,25 @@ it('matches vote with title', function () {
     expect($votingList->fresh()->vote->id)->toEqual($vote->id);
 });
 
+it('ignores votes marked as unmatched', function () {
+    $vote = Vote::factory([
+        'type' => VoteTypeEnum::AMENDMENT(),
+        'vote_collection_id' => $this->voteCollection->id,
+        'formatted' => 'Am 1/2',
+        'remarks' => '102030',
+        'unmatched' => true,
+    ])->create();
+
+    $votingList = VotingList::factory([
+        'description' => 'Quelques textes en français - Some English text - Irgendein deutscher Text - A9-0123/2021 - Name of rapporteur - Am 1/2',
+        'reference' => 'A9-0123/2021',
+    ])->withStats(10, 20, 30)->create();
+
+    $this->action->execute();
+
+    expect($votingList->fresh()->vote?->id)->toBeNull();
+});
+
 it('matches vote without title', function () {
     $vote = Vote::factory([
         'type' => VoteTypeEnum::AMENDMENT(),

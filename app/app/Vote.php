@@ -35,6 +35,9 @@ class Vote extends Model
         'subheading',
         'session_id',
         'final',
+        'unmatched',
+        'notes',
+
     ];
 
     protected $casts = [

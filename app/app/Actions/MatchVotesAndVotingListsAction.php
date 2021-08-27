@@ -10,7 +10,9 @@ class MatchVotesAndVotingListsAction extends Action
 {
     public function execute(): void
     {
-        $votesToMatch = Vote::whereDoesntHave('votingList')->get();
+        $votesToMatch = Vote::whereDoesntHave('votingList')
+            ->where('unmatched', false)
+            ->get();
 
         $sharePicAction = new GenerateVoteSharePicAction();
 
