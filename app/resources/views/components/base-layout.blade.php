@@ -1,4 +1,6 @@
 <div class="base-layout">
+    <x-header/>
+
     <main class="base-layout__main">
         <x-wrapper>
             {{ $slot }}

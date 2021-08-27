@@ -10,6 +10,7 @@
 @import './components/wrapper.css';
 @import './components/base-layout.css';
 
+@import './components/header.css';
 @import './components/footer.css';
 @import './components/button.css';
 @import './components/input.css';

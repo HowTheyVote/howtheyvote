@@ -61,6 +61,11 @@
     );
     --blue-dark: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 10%));
     --blue-darker: hsl(var(--blue-h), var(--blue-s), calc(var(--blue-l) - 20%));
+    --blue-darkest: hsl(
+        var(--blue-h),
+        var(--blue-s),
+        calc(var(--blue-l) - 25%)
+    );
 
     --orange-h: 39;
     --orange-s: 100%;

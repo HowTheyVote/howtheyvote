@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'title' => 'All Votes',
 
     'share-picture' => [
         'footer' => 'Find out how individual MEPs, political groups, and countries voted:',

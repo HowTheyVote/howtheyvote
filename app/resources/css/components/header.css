@@ -1,0 +1,37 @@
+.header {
+    padding: var(--space-sm);
+    background-color: var(--blue-darkest);
+    color: #fff;
+}
+
+.header__wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header__logotype {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.header a {
+    text-decoration: none;
+}
+
+.header a:hover {
+    text-decoration: underline;
+}
+
+.header__nav ul {
+    margin-right: calc(-1 * var(--space-xs));
+}
+
+.header__nav li {
+    display: inline-block;
+    list-style: none;
+}
+
+.header__nav a {
+    display: inline-block;
+    padding: 0 var(--space-xs);
+}
