@@ -58,7 +58,7 @@ it('displays date of next session', function () {
         'nextSession' => $this->nextSession,
     ]);
 
-    expect($view)->toSeeText('The next plenary session is held from Sep 1st to Sep 4th in Brussels.');
+    expect($view)->toSeeText('The next plenary session will be held in Brussels from Sep 1st to Sep 4th.');
 });
 
 it('displays date of last session if vote results are not yet avaiable', function () {
