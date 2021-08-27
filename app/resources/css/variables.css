@@ -107,6 +107,6 @@
         var(--blue-h),
         var(--blue-s),
         calc(var(--blue-l) + 30%),
-        0.2
+        0.5
     );
 }

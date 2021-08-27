@@ -22,7 +22,5 @@ input[type='search'] {
 }
 
 .input:focus {
-    outline: none;
     border-color: var(--blue);
-    box-shadow: 0 0 0 3px var(--color-focus-outline);
 }

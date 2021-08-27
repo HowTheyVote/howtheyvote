@@ -39,3 +39,8 @@ textarea {
 noscript {
     display: block;
 }
+
+:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-focus-outline);
+}
