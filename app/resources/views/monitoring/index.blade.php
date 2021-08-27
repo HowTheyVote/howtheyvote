@@ -18,7 +18,7 @@
                     <li>
                         <a href="{{route('monitoring.showVotes', [
                             'vote' => $vote])}}">
-                            {{ $vote->id }} - Subject: {{ $vote-subject }} - Collection: {{ $vote->vote_collection_id }} - Reference: {{ $vote->reference }} - Notes: {{ $vote->notes }}
+                            {{ $vote->id }} - Subject: {{ $vote->subject }} - Collection: {{ $vote->vote_collection_id }} - Reference: {{ $vote->reference }} - Notes: {{ $vote->notes }}
                         </a>
                     </li>
                 @endforeach
