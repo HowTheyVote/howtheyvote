@@ -1,4 +1,7 @@
-@props(['votingList'])
+@props([
+    'votingList',
+    'minimal' => false,
+])
 
 <div class="voting-list-header">
     <x-wrapper>
@@ -16,7 +19,7 @@
                 </strong>
             </p>
 
-            @if ($votingList->vote && $votingList->vote->summary)
+            @if (! $minimal && $votingList->vote && $votingList->vote->summary)
                 <p>
                     {{ $votingList->vote->summary->excerpt }}
                     <a href="{{ route('voting-list.summary', [
@@ -28,7 +31,7 @@
             @endif
         </x-stack>
 
-        @if ($votingList->vote && $votingList->vote->isFinalVote())
+        @if (! $minimal && $votingList->vote && $votingList->vote->isFinalVote())
             <x-share-button
                 class="voting-list-header__share"
                 :title="$votingList->display_title"
