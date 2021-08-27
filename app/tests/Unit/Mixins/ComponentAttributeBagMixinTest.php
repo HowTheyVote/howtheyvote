@@ -24,6 +24,8 @@ it('filters falsy modifiers', function () {
     $bag = new ComponentAttributeBag();
     $actual = $bag->bem('button', ['', null, false, 'large'])->getAttributes();
     $expected = ['class' => 'button button--large'];
+
+    expect($actual)->toEqual($expected);
 });
 
 it('appends modifier if constraint is true', function () {
