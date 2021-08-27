@@ -2,7 +2,7 @@
     <x-share-picture>
         <x-stack space="sm">
             <x-stack space="xxs">
-                <h1 class="alpha share-picture__title">
+                <h1 class="beta share-picture__title">
                     {{ $votingList->display_title }}
                 </h1>
                 <p class="text--sm share-picture__subtitle">
