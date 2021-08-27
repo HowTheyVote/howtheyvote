@@ -31,6 +31,14 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.home__session-display {
+    margin-top: var(--space-lg);
+}
+
+.home__session-display strong {
+    color: #fff;
+}
+
 @media screen and (min-width: 1024px) {
     .home__title {
         margin-bottom: var(--space-lg);
