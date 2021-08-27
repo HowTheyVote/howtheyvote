@@ -32,7 +32,7 @@ Artisan::command('scrape:members {--term=}', function (
     ScrapeMembersAction $action
 ) {
     $term = Term::whereNumber($term)->first();
-    $this->info("Scraping list of members for term {$term}");
+    $this->info("Scraping list of members for term {$term->number}");
 
     $action->execute($term);
 })->describe('Scrape and save all members (without info) for a given term.');
@@ -41,7 +41,7 @@ Artisan::command('scrape:members-info {--term=}', function (
     int $term,
     ScrapeMemberInfoAction $action
 ) {
-    $allMembersInTerm = Term::where('number', $term)->first()->members()->get();
+    $allMembersInTerm = Term::whereNumber($term)->first()->members()->get();
     $membersCount = $allMembersInTerm->count();
 
     foreach ($allMembersInTerm as $index => $member) {
