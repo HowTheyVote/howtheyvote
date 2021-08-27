@@ -7,7 +7,7 @@
 
 - name: Create database dump
   shell:
-    cmd: "mysqldump {{ database.name }} > {{ tempfile.path }}"
+    cmd: "mysqldump {{ database_name }} > {{ tempfile.path }}"
 
 - name: Copy dump from remote host
   fetch:
