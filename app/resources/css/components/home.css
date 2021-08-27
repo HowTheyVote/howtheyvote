@@ -10,11 +10,10 @@
     height: 100%;
     max-width: 36rem;
     margin: 0 auto;
-    text-align: center;
 }
 
 .home__title {
-    margin-bottom: var(--space);
+    margin-bottom: var(--space-lg);
     font-size: var(--text-xxl);
     color: #fff;
 }
@@ -39,13 +38,19 @@
     color: #fff;
 }
 
-@media screen and (min-width: 1024px) {
-    .home__title {
-        margin-bottom: var(--space-lg);
-        font-size: calc(1.15 * var(--text-xxl));
+@media screen and (min-width: 640px) {
+    .home__wrapper {
+        padding-top: var(--space-lg);
+        text-align: center;
     }
 
     .home__hint {
         margin-top: var(--space-sm);
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .home__title {
+        font-size: calc(1.15 * var(--text-xxl));
     }
 }
