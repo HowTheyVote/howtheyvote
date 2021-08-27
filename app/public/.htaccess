@@ -45,4 +45,6 @@
     ExpiresByType text/css "access plus 6 months"
     ExpiresByType text/javascript "access plus 6 months"
     ExpiresByType application/javascript "access plus 6 months"
+    ExpiresByType font/woff "access plus 6 month"
+    ExpiresByType font/woff2 "access plus 6 month"
 </IfModule>
