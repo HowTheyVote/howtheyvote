@@ -1,8 +1,7 @@
 .footer {
+    text-align: center;
     padding: var(--space-sm) 0;
     border-top: var(--gray-light) 1px solid;
-    display: flex;
-    justify-content: center;
     font-size: var(--text-sm);
 }
 
@@ -14,12 +13,14 @@
     text-decoration: none;
 }
 
-.footer > ul {
-    display: flex;
-    align-items: center;
+.footer ul {
     list-style: none;
 }
 
-.footer > ul > li + li {
-    margin-left: var(--space-lg);
+.footer li {
+    display: inline-block;
+}
+
+.footer li + li {
+    margin-left: var(--space-sm);
 }

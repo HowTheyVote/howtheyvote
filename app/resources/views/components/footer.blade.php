@@ -1,6 +1,6 @@
 @props(['style'])
 
-<div {{ $attributes->bem('footer', $style) }}>
+<x-stack space="xxs" {{ $attributes->bem('footer', $style) }}>
     <ul>
         <li>
             <a
@@ -22,4 +22,6 @@
             </a>
         </li>
     </ul>
-</div>
+
+    {{ $slot }}
+</x-stack>
