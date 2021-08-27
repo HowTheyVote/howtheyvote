@@ -21,6 +21,8 @@ Route::get('/about', fn () => view('about'));
 Route::get('/imprint', fn () => view('imprint'));
 
 Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+Route::get('/monitoring/lists/{votingList}', [MonitoringController::class, 'showLists'])->name('monitoring.showLists');
+Route::get('/monitoring/votes/{vote}', [MonitoringController::class, 'showVotes'])->name('monitoring.showVotes');
 
 Route::get('/votes', [VotingListsController::class, 'index'])->name('voting-lists.index');
 Route::get('/votes/{votingList}.csv', [VotingListsController::class, 'csv'])->name('voting-list.csv');
