@@ -150,7 +150,7 @@ export default (options = {}) => ({
       url.searchParams.delete('q');
     }
 
-    window.history.pushState({}, '', url);
+    window.history.replaceState({}, '', url);
   },
 
   restoreFromUrl() {
