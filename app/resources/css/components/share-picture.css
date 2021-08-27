@@ -30,6 +30,13 @@
 
     font-family: var(--font-family-condensed);
     font-weight: 500;
+
+    /* We need `overflow:  hidden` to truncate the title after
+     * 3 lines. However, this also cuts off descenders of letters
+     * like "g" and "j" on the last line, so we add some extra
+     * space at the bottom.
+     */
+    padding-bottom: 0.05em;
 }
 
 .share-picture__footer {
