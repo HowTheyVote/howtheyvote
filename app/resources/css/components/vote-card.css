@@ -1,15 +1,16 @@
-.vote-card > a {
-    display: flex;
-    align-items: center;
-    padding: var(--space-xs) var(--space-sm);
-
+.vote-card {
     border: 1px solid var(--gray-lightest);
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 
-    text-decoration: none;
-
     transition: 0.2s all ease-out;
+}
+
+.vote-card > a {
+    display: flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    text-decoration: none;
 }
 
 .vote-card__thumb {
