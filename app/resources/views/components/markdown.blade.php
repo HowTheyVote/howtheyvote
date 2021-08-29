@@ -1,3 +1,5 @@
-<x-stack space="xs" {{ $attributes->bem('markdown') }}>
-    {!! Str::markdown($slot) !!}
-</x-stack>
+@props(['parse' => true])
+
+<div space="xs" {{ $attributes->bem('markdown') }}>
+    {!! $parse ? Str::markdown($slot) : $slot !!}
+</div>

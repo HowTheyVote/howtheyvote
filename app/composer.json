@@ -29,6 +29,7 @@
         "silber/page-cache": "dev-csv-support",
         "spatie/laravel-enum": "^2",
         "spatie/laravel-ray": "^1.24",
+        "spatie/sheets": "^1.7",
         "spatie/simple-excel": "^1.13",
         "spatie/url": "^2.0",
         "symfony/css-selector": "^5.2",
