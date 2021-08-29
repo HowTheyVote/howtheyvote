@@ -13,8 +13,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('/about') }}">
-                        {{ __('about.title') }}
+                    <a href="{{ url('/pages/about') }}">
+                        {{ __('components.header.nav.about') }}
                     </a>
                 </li>
             </ul>
