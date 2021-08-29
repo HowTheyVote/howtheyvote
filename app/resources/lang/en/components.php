@@ -3,6 +3,14 @@
 return [
     'header' => [
         'logotype' => 'HowTheyVote.eu',
+        'nav' => [
+            'about' => 'About',
+        ],
+    ],
+    'footer' => [
+        'nav' => [
+            'imprint' => 'Imprint',
+        ],
     ],
     'list' => [
         'show-more' => 'Show more',

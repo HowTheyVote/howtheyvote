@@ -12,13 +12,8 @@
             </a>
         </li>
         <li>
-            <a href="{{ url('/about') }}">
-                {{ __('about.title') }}
-            </a>
-        </li>
-        <li>
-            <a href="{{ url('/imprint') }}">
-                {{ __('imprint.title') }}
+            <a href="{{ url('/pages/imprint') }}">
+                {{ __('components.footer.nav.imprint') }}
             </a>
         </li>
     </ul>
