@@ -7,18 +7,19 @@
     color: var(--blue-darker);
 }
 
-.alpha {
+.alpha,
+.markdown h1 {
     font-family: var(--font-family-heading);
     font-size: var(--text-xxl);
 }
 
 .beta,
-.markdown h1 {
+.markdown h2 {
     font-size: var(--text-xl);
 }
 
 .gamma,
-.markdown h2 {
+.markdown h3 {
     font-size: var(--text-size);
 }
 
