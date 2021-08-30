@@ -258,7 +258,8 @@ class Vote:
             if "decision" in subject:
                 return "Décision"
 
-            if "(as a whole)" in subject:
+            # can be (as a whole) or (text as a whole)
+            if "as a whole)" in subject or "Motion for a resolution" == subject:
                 return "Proposition de résolution"
 
             if subject == "Single vote":
