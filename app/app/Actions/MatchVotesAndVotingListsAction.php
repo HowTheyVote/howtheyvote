@@ -16,6 +16,8 @@ class MatchVotesAndVotingListsAction extends Action
 
         $sharePicAction = new GenerateVoteSharePicAction();
 
+        $totalUnmatched = $votesToMatch->count();
+
         foreach ($votesToMatch as $vote) {
             $votingLists = null;
 
@@ -59,5 +61,14 @@ class MatchVotesAndVotingListsAction extends Action
                 $sharePicAction->execute($votingList);
             }
         }
+
+        $remainingUnmatched = Vote::query()
+            ->whereDoesntHave('votingList')
+            ->where('unmatched', false)
+            ->count();
+
+        $recentlyMatched = $totalUnmatched - $remainingUnmatched;
+
+        $this->log("Matched {$recentlyMatched} votes. {$remainingUnmatched} votes are still unmatched.");
     }
 }
