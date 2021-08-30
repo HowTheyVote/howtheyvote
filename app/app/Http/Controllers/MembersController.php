@@ -19,7 +19,12 @@ class MembersController extends Controller
                 ->first()
                 ->group ?? null,
 
-            'votingLists' => $member->votingLists()->final()->matched()->get(),
+            'votingLists' => $member->
+                votingLists()
+                ->final()
+                ->matched()
+                ->orderByDesc('date')
+                ->get(),
         ]);
     }
 }
