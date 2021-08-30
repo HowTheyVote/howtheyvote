@@ -1,4 +1,4 @@
-<x-app title="Votes">
+<x-app title="{{ __('voting-lists.title') }}">
     <x-base-layout>
         <x-stack space="lg">
             <x-hero>
