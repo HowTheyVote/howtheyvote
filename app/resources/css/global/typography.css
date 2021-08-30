@@ -52,3 +52,7 @@ strong {
 .text--blue {
     color: var(--blue-dark);
 }
+
+.text--center {
+    text-align: center;
+}

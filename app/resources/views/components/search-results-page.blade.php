@@ -31,12 +31,16 @@
             <x-search-results-page.load-more-button />
         </template>
 
-        <template x-if="hasQuery && totalNumberOfResults <= 0">
+        <template x-if="initialLoadCompleted && hasQuery && totalNumberOfResults <= 0">
             <x-search-results-page.empty-state />
         </template>
 
         <noscript>
             <x-search-results-page.noscript-fallback />
         </noscript>
+
+        <div x-show="!initialLoadCompleted" class="text--center">
+            <x-loading-spinner />
+        </div>
     </x-stack>
 </div>
