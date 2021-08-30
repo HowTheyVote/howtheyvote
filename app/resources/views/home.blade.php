@@ -1,4 +1,4 @@
-<x-app title="HowTheyVote.eu">
+<x-app title="HowTheyVote.eu · {{ __('components.home.title') }}">
     <x-base-layout style="dark">
         <div class="home">
             <div class="home__wrapper">

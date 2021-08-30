@@ -8,7 +8,16 @@
                 target="_blank"
                 rel="noopener noreferrer"
             >
-                Source Code
+                GitHub
+            </a>
+        </li>
+        <li>
+            <a
+                href="https://twitter.com/HowTheyVoteEU"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Twitter
             </a>
         </li>
         <li>
