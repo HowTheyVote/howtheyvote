@@ -1,4 +1,8 @@
-# EP-Votes
+# HowTheyVote.eu
+
+[HowTheyVote.eu](https://howtheyvote.eu) allows anyone to easily find out how Members of the European Parliament vote in plenary.
+
+Although the results of roll-call votes are generally available on the website of the European Parliament, it is rather difficult to find out what MEPs voted on or how a particular vote turned out. This is because the necessary information has to be gathered from various websites of the Parliament. HowTheyVote.eu automatically scrapes information from multiple official sources and presents them in a simple UI.
 
 ## Development Setup
 
@@ -26,6 +30,14 @@ We’re using [Ansible](https://ansible.org) to manage server provisioning and d
 1. Install Ansible 2.10 or later. Update `ansible/hosts` and the respective host variables.
 2. Run `ansible-playbook -i ansible/hosts --ask-vault-pass ansible/site.yml` to set up the Uberspace and deploy the application.
 3. Run `ansible-playbook -i ansible/hosts --ask-vault-pass ansible/meilisearch.yml` to compile and configure the MeiliSearch search server. This may take some time and it’s *not* necessary to run this playbook on every deployment. 
+
+## Related Work
+
+* [**Parltrack**](https://github.com/parltrack/parltrack) is an open source project that improves access to information about legislative processes, including (but not limited to) vote results.
+
+* [**abgeordnetenwatch.eu**](https://www.abgeordnetenwatch.de/eu/abstimmungen) is a German NGO that allows citizen to publicly ask questions elected representatives in the federal and state parliaments as well as the European Parliament questions. abgeordnetenwatch.eu also includes voting records for editorially selected votes in the European Parliament. Those are however limited to German MEPs.
+
+* [**VoteWatch Europe**](https://votewatch.eu) maintains a database of vote results for the current and many past legislatures. However, not all vote results are publicly accessible.
 
 ## Licenses
 
