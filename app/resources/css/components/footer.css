@@ -1,5 +1,6 @@
 .footer {
     text-align: center;
+    margin-bottom: env(safe-area-inset-bottom);
     padding: var(--space-sm);
     border-top: var(--gray-light) 1px solid;
     font-size: var(--text-sm);
