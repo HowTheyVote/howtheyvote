@@ -8,6 +8,8 @@ use App\VoteCollection;
 use App\VotingList;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -177,4 +179,24 @@ it('generates share-pictures for matched final votes', function () {
     $this->action->execute();
 
     expect(Storage::disk('public')->exists("share-pictures/vote-sharepic-{$votingList->id}.png"))->toEqual(true);
+});
+
+it('logs how many votes were matched and how many unmatched votes remain', function () {
+    $vote = Vote::factory([
+        'type' => VoteTypeEnum::AMENDMENT(),
+        'vote_collection_id' => $this->voteCollection->id,
+        'formatted' => 'Am 1/2',
+        'remarks' => '102030',
+    ])->create();
+
+    $votingList = VotingList::factory([
+        'description' => 'Quelques textes en français - Some English text - Irgendein deutscher Text - A9-0123/2021 - Name of rapporteur - Am 1/2',
+        'reference' => 'A9-0123/2021',
+    ])->withStats(10, 20, 30)->create();
+
+    Log::shouldReceive('info')->once()->withArgs(function ($message) {
+        return Str::endsWith($message, 'Matched 1 votes. 0 votes are still unmatched.');
+    });
+
+    $this->action->execute();
 });
