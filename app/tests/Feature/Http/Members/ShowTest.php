@@ -12,8 +12,9 @@ use Illuminate\Support\Carbon;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->date = new Carbon('2020-01-01');
-    Carbon::setTestNow($this->date);
+    $this->firstJan = new Carbon('2020-01-01');
+    $this->thirdJan = new Carbon('2020-01-03');
+    Carbon::setTestNow($this->thirdJan);
 
     $greens = Group::factory([
         'code' => 'GREENS',
@@ -21,34 +22,50 @@ beforeEach(function () {
         'abbreviation' => 'Greens/EFA',
     ])->create();
 
-    $this->greensFor = Member::factory([
+    $this->member = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'DOE',
         'country' => CountryEnum::NL(),
         'twitter' => '@handle',
-    ])->activeAt($this->date, $greens)->count(1);
+    ])->activeAt($this->firstJan, $greens)
+        ->activeAt($this->thirdJan, $greens)
+        ->create();
 
-    $this->votingList = VotingList::factory(
+    VotingList::factory(
         [
-            'date' => $this->date,
+            'date' => $this->firstJan,
             'vote_id' => Vote::factory([
                 'final' => true,
                 'result' => VoteResultEnum::REJECTED(),
             ]),
         ])
-        ->withMembers('FOR', $this->greensFor)
-        ->create();
+        ->create()
+        ->members()
+        ->attach($this->member->id, ['position' => 'AGAINST']);
 
-    $this->votingList = VotingList::factory(
-            [
-                'date' => $this->date,
-                'vote_id' => Vote::factory([
-                    'final' => false,
-                    'result' => VoteResultEnum::ADOPTED(),
-                ]),
-            ])
-            ->withMembers('FOR', $this->greensFor)
-            ->create();
+    VotingList::factory(
+        [
+            'date' => $this->thirdJan,
+            'vote_id' => Vote::factory([
+                'final' => true,
+                'result' => VoteResultEnum::REJECTED(),
+            ]),
+        ])
+        ->create()
+        ->members()
+        ->attach($this->member->id, ['position' => 'FOR']);
+
+    VotingList::factory(
+        [
+            'date' => $this->firstJan,
+            'vote_id' => Vote::factory([
+                'final' => false,
+                'result' => VoteResultEnum::ADOPTED(),
+            ]),
+        ])
+        ->create()
+        ->members()
+        ->attach($this->member->id, ['position' => 'FOR']);
 
     $this->memberId = Member::first()->id;
 });
@@ -69,7 +86,6 @@ it('lists final votes with position of member', function () {
 
 it('shows an info box with contact links for active members', function () {
     $response = $this->get("/members/{$this->memberId}");
-
     expect($response)->toHaveSelector("img[src$='/members/{$this->memberId}.jpg']");
     expect($response)->toHaveSelectorWithText('.member-header', 'Greens/European Free Alliance');
     expect($response)->toHaveSelectorWithText('.member-header', 'Netherlands');
@@ -86,4 +102,12 @@ it('shows contact info for non-active members', function () {
     expect($response)->toHaveSelectorWithText('.member-header', 'Netherlands');
     expect($response)->toHaveSelectorWithText('.member-header', 'Twitter');
     expect($response)->not()->toHaveSelectorWithText('.member-header', 'Facebook');
+});
+
+it('shows votes in reverse chronological order', function () {
+    $response = $this->get("/members/{$this->memberId}");
+    expect($response)->toSeeInOrder([
+        'Friday, January 3, 2020',
+        'Wednesday, January 1, 2020',
+    ]);
 });
