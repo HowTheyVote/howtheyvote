@@ -6,11 +6,17 @@ python_version: 3.8
 epvotes_install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
 epvotes_domains:
   - howtheyvote.eu
+  - www.howtheyvote.eu
   - how-they-vote.eu
+  - www.how-they-vote.eu
   - abstimmungen.eu
+  - www.abstimmungen.eu
   - howtheyvoted.eu
+  - www.howtheyvoted.eu
   - how-they-voted.eu
+  - www.how-they-voted.eu
   - ep-votes.eu
+  - www.ep-votes.eu
   - search.howtheyvote.eu
 meilisearch_domain: search.howtheyvote.eu
 meilisearch_install_dir: "~/meilisearch-source"
