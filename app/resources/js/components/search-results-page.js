@@ -21,6 +21,7 @@ export default (options = {}) => ({
   totalNumberOfResults: null,
 
   loading: false,
+  initialLoadCompleted: false,
   abortController: null,
 
   init() {
@@ -126,6 +127,7 @@ export default (options = {}) => ({
     });
 
     this.loading = false;
+    this.initialLoadCompleted = true;
 
     return await response.json();
   },
