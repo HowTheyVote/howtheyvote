@@ -15,7 +15,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
         <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
         <script src="{{ mix('js/app.js') }}" async defer></script>
@@ -31,6 +31,14 @@
 
         <meta property="og:image" content="{{ $sharePicture }}" />
         <meta property="og:image:alt" content="{{ $sharePictureAlt }}" />
+
+        <meta name="apple-mobile-web-app-title" content="HowTheyVote">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="theme-color" content="#002F4D">
+
+        <link rel="icon" href="{{ asset('/assets/icon-32px.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('/assets/icon-180px.png') }}">
 
         @stack('head')
     </head>

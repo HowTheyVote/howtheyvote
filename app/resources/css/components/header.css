@@ -1,4 +1,5 @@
 .header {
+    margin-top: env(safe-area-inset-top);
     padding: var(--space-sm);
     background-color: var(--blue-darkest);
     color: #fff;
