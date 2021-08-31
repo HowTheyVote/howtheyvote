@@ -38,4 +38,5 @@
 @import './components/search-results-page.css';
 @import './components/search-form.css';
 @import './components/home.css';
+@import './components/error-page.css';
 @import './components/session-display.css';
