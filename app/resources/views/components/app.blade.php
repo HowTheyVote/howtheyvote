@@ -35,7 +35,7 @@
         <meta name="apple-mobile-web-app-title" content="HowTheyVote">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <meta name="theme-color" content="#002F4D">
+        <meta name="theme-color" content="var(--blue-darkest)">
 
         <link rel="icon" href="{{ asset('/assets/icon-32px.png') }}">
         <link rel="apple-touch-icon" href="{{ asset('/assets/icon-180px.png') }}">
