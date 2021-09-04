@@ -3,7 +3,7 @@
 return [
     '404' => [
         'title' => 'We can’t find this page',
-        'message' => 'Would you like to <a href="/votes">search our database</a> or view <a href=\"/votes\">recent votes</a> instead?',
+        'message' => 'Would you like to <a href="/votes">search our database</a> or view <a href="/votes">recent votes</a> instead?',
     ],
     '500' => [
         'title' => 'Internal Server Error',
