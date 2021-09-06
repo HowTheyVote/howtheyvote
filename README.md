@@ -14,7 +14,7 @@ We use Docker for our development setup. This setup is intended for development 
 4. Run `docker-compose up`.
 5. Create `.env` files based on `scrapers/.env.example` and `app/.env.example`.
 6. When creating a fresh development environment with a clean DB, execute `php artisan migrate`, `php artisan db:seed --class=GroupSeeder`, and `php artisan db:seed --class=TermSeeder` inside the `app` container (e.g. with `docker-compose exec`).
-7. Run `php artisan scout:import '\App\VotingList` to initialize the search index.
+7. Run `php artisan scout:import '\App\VotingList'` to initialize the search index.
 
 ### Database Dumps
 
