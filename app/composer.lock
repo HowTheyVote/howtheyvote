@@ -2345,16 +2345,16 @@
         },
         {
             "name": "meilisearch/meilisearch-php",
-            "version": "v0.19.0",
+            "version": "v0.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/meilisearch/meilisearch-php.git",
-                "reference": "71c1899beff8ad36a2beca7a63d82b05b57d31d2"
+                "reference": "ad359d6a7ec391435375d91e22e1e84b01586c2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/meilisearch/meilisearch-php/zipball/71c1899beff8ad36a2beca7a63d82b05b57d31d2",
-                "reference": "71c1899beff8ad36a2beca7a63d82b05b57d31d2",
+                "url": "https://api.github.com/repos/meilisearch/meilisearch-php/zipball/ad359d6a7ec391435375d91e22e1e84b01586c2d",
+                "reference": "ad359d6a7ec391435375d91e22e1e84b01586c2d",
                 "shasum": ""
             },
             "require": {
@@ -2406,9 +2406,9 @@
             ],
             "support": {
                 "issues": "https://github.com/meilisearch/meilisearch-php/issues",
-                "source": "https://github.com/meilisearch/meilisearch-php/tree/v0.19.0"
+                "source": "https://github.com/meilisearch/meilisearch-php/tree/v0.19.1"
             },
-            "time": "2021-08-24T14:11:09+00:00"
+            "time": "2021-09-13T16:59:04+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -2874,16 +2874,16 @@
         },
         {
             "name": "php-http/discovery",
-            "version": "1.14.0",
+            "version": "1.14.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/discovery.git",
-                "reference": "778f722e29250c1fac0bbdef2c122fa5d038c9eb"
+                "reference": "de90ab2b41d7d61609f504e031339776bc8c7223"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/discovery/zipball/778f722e29250c1fac0bbdef2c122fa5d038c9eb",
-                "reference": "778f722e29250c1fac0bbdef2c122fa5d038c9eb",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/de90ab2b41d7d61609f504e031339776bc8c7223",
+                "reference": "de90ab2b41d7d61609f504e031339776bc8c7223",
                 "shasum": ""
             },
             "require": {
@@ -2936,9 +2936,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/discovery/issues",
-                "source": "https://github.com/php-http/discovery/tree/1.14.0"
+                "source": "https://github.com/php-http/discovery/tree/1.14.1"
             },
-            "time": "2021-06-01T14:30:21+00:00"
+            "time": "2021-09-18T07:57:46+00:00"
         },
         {
             "name": "php-http/httplug",
