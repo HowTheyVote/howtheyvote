@@ -10,6 +10,7 @@ use App\Actions\ScrapeSessionsAction;
 use App\Actions\ScrapeVoteCollectionsAction;
 use App\Actions\ScrapeVotingListsAction;
 use App\Member;
+use App\Session;
 use App\Term;
 use App\VoteCollection;
 use App\VotingList;
@@ -123,24 +124,28 @@ Artisan::command('scrape:vote-collections {--term=} {--date=}', function (
     $this->output->writeln('');
 })->describe('Scrape and save all vote collections for the given date and term.');
 
-Artisan::command('scrape:all {--term=} {--from=} {--to=}', function (
-    int $term,
-    string $from,
-    string $to
-) {
-    $period = Carbon::parse($from)->toPeriod($to);
-
+Artisan::command('scrape:all {--term=}', function (int $term) {
     Artisan::call('scrape:members', ['--term' => $term]);
     Artisan::call('scrape:members-groups', ['--term' => $term]);
     Artisan::call('scrape:members-info', ['--term' => $term]);
 
-    $from = Carbon::parse($from);
-    $month = $from->month;
-    $year = $from->year;
     Artisan::call('scrape:sessions', [
-        '--year' => $year,
-        '--month' => $month,
+        '--month' => Carbon::now()->month,
+        '--year' => Carbon::now()->year,
     ]);
+
+    // Get the oldest session without associated votes and try to
+    // scrape voting lists and votes for the days of the session.
+    $session = Session::query()
+        ->whereDoesntHave('votes')
+        ->orderBy('start_date', 'asc')
+        ->first();
+
+    if (! $session) {
+        return $this->info('Exiting as all sessions already have associated votes.');
+    }
+
+    $period = $session->start_date->toPeriod($session->end_date);
 
     $count = VoteCollection::count();
 
