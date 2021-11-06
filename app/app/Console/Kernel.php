@@ -4,7 +4,6 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Carbon;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,10 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $to = Carbon::today()->toDateString();
-        $from = Carbon::today()->subDays(6)->toDateString();
-
-        $schedule->command("scrape:all --term=9 --from={$from} --to={$to}")
+        $schedule->command('scrape:all --term=9')
             ->weeklyOn(0, '18:00')
             ->pingOnSuccess(config('pings.scrapers'));
     }
