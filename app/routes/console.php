@@ -33,7 +33,7 @@ Artisan::command('scrape:members {--term=}', function (
     ScrapeMembersAction $action
 ) {
     $term = Term::whereNumber($term)->first();
-    $this->info("Scraping list of members for term {$term->number}");
+    $this->info("Scraping list of members for term {$term->number}.");
 
     $action->execute($term);
 })->describe('Scrape and save all members (without info) for a given term.');
@@ -42,31 +42,18 @@ Artisan::command('scrape:members-info {--term=}', function (
     int $term,
     ScrapeMemberInfoAction $action
 ) {
-    $allMembersInTerm = Term::whereNumber($term)->first()->members()->get();
-    $membersCount = $allMembersInTerm->count();
+    $term = Term::whereNumber($term)->first();
+    $members = $term->members()->get();
 
-    foreach ($allMembersInTerm as $index => $member) {
-        $progress = ($index + 1).'/'.$membersCount;
-        $this->output->write("\r<info>Scraping info for member: {$progress}</info>");
-
-        $action->execute($member);
-    }
-
-    $this->output->writeln('');
+    $this->info("Scraping info for all members in term {$term->number}.");
+    $this->withProgressBar($members, fn ($member) => $action->execute($member));
 })->describe('Scrape and save info for all saved members.');
 
 Artisan::command('scrape:members-photos', function (CreateMemberImageAction $action) {
-    $allMembers = Member::all();
-    $membersCount = $allMembers->count();
+    $members = Member::all();
 
-    foreach ($allMembers as $index => $member) {
-        $progress = ($index + 1).'/'.$membersCount;
-        $this->output->write("\r<info>Creating thumbnail for member: {$progress}</info>");
-
-        $action->execute($member);
-    }
-
-    $this->output->writeln('');
+    $this->info('Scraping profile photos for all members.');
+    $this->withProgressBar($members, fn ($member) => $action->execute($member));
 });
 
 Artisan::command('scrape:members-groups {--term=}', function (
@@ -74,18 +61,10 @@ Artisan::command('scrape:members-groups {--term=}', function (
     ScrapeMemberGroupsAction $action
 ) {
     $term = Term::whereNumber($term)->first();
-    $allMembersInTerm = $term->members()->get();
+    $members = $term->members()->get();
 
-    $membersCount = $allMembersInTerm->count();
-
-    foreach ($allMembersInTerm as $index => $member) {
-        $progress = ($index + 1).'/'.$membersCount;
-        $this->output->write("\r<info>Scraping groups for member {$progress}</info>");
-
-        $action->execute($member, $term);
-    }
-
-    $this->output->writeln('');
+    $this->info("Scraping group memberships for all members in term {$term->number}");
+    $this->withProgressBar($members, fn ($member) => $action->execute($member, $term));
 })->describe('Scrape and save group info for all saved members for the given term.');
 
 Artisan::command('scrape:sessions {--year=} {--month=}', function (
@@ -106,8 +85,6 @@ Artisan::command('scrape:voting-lists {--term=} {--date=}', function (
 
     $this->info("Scraping voting lists for {$date}");
     $action->execute($term, $date);
-
-    $this->output->writeln('');
 })->describe('Scrape and save all voting lists with compiled stats for the given date and term.');
 
 Artisan::command('scrape:vote-collections {--term=} {--date=}', function (
@@ -120,8 +97,6 @@ Artisan::command('scrape:vote-collections {--term=} {--date=}', function (
 
     $this->info("Scraping vote collections for {$date}");
     $action->execute($term, $date);
-
-    $this->output->writeln('');
 })->describe('Scrape and save all vote collections for the given date and term.');
 
 Artisan::command('scrape:all {--term=}', function (int $term) {
