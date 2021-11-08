@@ -18,6 +18,7 @@ beforeEach(function () {
     $this->date = new Carbon('2021-03-08');
 
     Http::fakeJsonFromFile('*/vote_collections?term=9&date=2021-03-08', 'vote_collections.json');
+    Http::fakeJsonFromFile('*/vote_collections?term=9&date=2021-10-19', 'vote_collections-no-reference.json');
     Http::fakeJsonFromFile('*/summary_id?reference=A9-0019%2F2021&week_of_year=10', 'summary_id.json');
     Http::fakeJsonFromFile('*/summary?summary_id=1234567', 'summary.json');
 });
@@ -76,6 +77,13 @@ it('scrapes summary for reference', function () {
     $voteCollection = VoteCollection::first();
 
     expect($voteCollection->summary->reference)->toBe('A9-0019/2021');
+});
+
+it('does not scrape summary if there is no reference', function () {
+    $this->action->execute($this->term, new Carbon('2021-10-19'));
+    $voteCollection = VoteCollection::first();
+
+    expect($voteCollection->summary)->toBe(null);
 });
 
 it('does not scrape summary if summary exists', function () {
