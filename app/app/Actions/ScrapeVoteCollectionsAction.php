@@ -96,7 +96,7 @@ class ScrapeVoteCollectionsAction extends Action
 
     private function createSummary(VoteCollection $voteCollection): void
     {
-        if (! $voteCollection->summary) {
+        if (! $voteCollection->summary && $voteCollection->reference) {
             $this->summaryAction->execute($voteCollection);
         }
     }
