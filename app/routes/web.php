@@ -28,6 +28,7 @@ Route::get('/monitoring/votes/{vote}', [MonitoringController::class, 'showVotes'
 
 Route::get('/votes', [VotingListsController::class, 'index'])->name('voting-lists.index');
 Route::get('/votes/{votingList}.csv', [VotingListsController::class, 'csv'])->name('voting-list.csv');
+Route::get('/votes/{votingList}.json', [VotingListsController::class, 'json'])->name('voting-list.json');
 Route::get('/votes/{votingList}', [VotingListsController::class, 'show'])->name('voting-list.show');
 Route::get('/votes/{votingList}/summary', [VotingListsController::class, 'summary'])->name('voting-list.summary');
 Route::get('/votes/{votingList}/related', [VotingListsController::class, 'related'])->name('voting-list.related');
