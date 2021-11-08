@@ -122,6 +122,35 @@ class VotingListsController extends Controller
         return response($csv, 200, ['Content-Type' => 'text/csv']);
     }
 
+    public function json(VotingList $votingList)
+    {
+        $members = $this->members($votingList)->map(function ($member) {
+            return [
+                'member_id' => $member->id,
+                'last_name' => $member->last_name,
+                'first_name' => $member->first_name,
+                'group' => [
+                    'abbreviation' => $member->group->abbreviation,
+                    'name' => $member->group->name,
+                ],
+                'country' => [
+                    'code' => $member->country->value,
+                    'name' => $member->country->label,
+                ],
+                'position' => $member->pivot->position->label,
+                ];
+        })->toArray();
+
+        $vote = [
+            'title' => $votingList->display_title,
+            'date' => $votingList->date,
+            'result' => $votingList->result->label,
+            'members' => $members,
+        ];
+
+        return response()->json($vote);
+    }
+
     private function members(VotingList $votingList)
     {
         return $votingList
