@@ -15,7 +15,7 @@ werkzeug = "^2.0.2"
 sentry-sdk = {extras = ["flask"], version = "^1.4.2"}
 python-dotenv = "^0.19.0"
 coverage = "^6.1"
-pytest-cov = "^2.12.1"
+pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
