@@ -35,6 +35,7 @@ Route::get('/votes/{votingList}/related', [VotingListsController::class, 'relate
 
 Route::get('/votes/{votingList}/share-picture', [VotingListsController::class, 'sharePicture'])->name('voting-list.share-picture');
 
+Route::get('/members.csv', [MembersController::class, 'csv'])->name('members.csv');
 Route::get('/members/{member}', [MembersController::class, 'show'])->name('members.show');
 // Handles short URLs and should be registered as the last route
 Route::get('/{hashId}', [VotingListsController::class, 'short'])->name('voting-list.short');
