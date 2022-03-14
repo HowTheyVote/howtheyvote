@@ -22,7 +22,7 @@ pytest = "^6.2.5"
 flake8 = "^4.0.1"
 black = "^21.10b0"
 requests-mock = "^1.9.3"
-mypy = "^0.910"
+mypy = "^0.940"
 
 [build-system]
 requires = ["poetry>=0.12"]
