@@ -43,7 +43,7 @@
 
 - name: Install composer dependencies
   shell:
-    cmd: "composer install"
+    cmd: "composer install --no-interaction"
     chdir: "{{ epvotes_install_dir }}/app"
 
 - name: Create env file for app
