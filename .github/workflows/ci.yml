@@ -1,5 +1,7 @@
 name: CI
-on: [push]
+on:
+  - push
+  - workflow_dispatch
 
 jobs:
   scrapers:
@@ -144,7 +146,7 @@ jobs:
 
   deploy:
     needs: [app, scrapers, frontend]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     concurrency: deployment
 
