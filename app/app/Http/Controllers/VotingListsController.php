@@ -61,6 +61,10 @@ class VotingListsController extends Controller
             return abort(404);
         }
 
+        if (! $votingList->vote->isFinalVote()) {
+            return abort(404);
+        }
+
         return view('voting-lists.summary', [
             'votingList' => $votingList,
             'summary' => $votingList->vote->summary,
