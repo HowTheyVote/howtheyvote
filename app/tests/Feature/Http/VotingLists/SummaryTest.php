@@ -11,6 +11,7 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     $this->votingList = VotingList::factory([
         'vote_id' => Vote::factory([
+            'final' => true,
             'vote_collection_id' => VoteCollection::factory([
                 'reference' => 'A9-1234/2021',
             ]),
@@ -19,6 +20,18 @@ beforeEach(function () {
 });
 
 it('returns 404 if summary does not exist', function () {
+    $response = $this->get("/votes/{$this->votingList->id}/summary");
+    expect($response)->toHaveStatus(404);
+});
+
+it('returns 404 if vote is not final', function () {
+    $this->votingList->vote->update(['final' => false]);
+
+    Summary::factory([
+        'reference' => 'A9-1234/2021',
+        'text' => 'Summary for A9-1234/2021',
+    ])->create();
+
     $response = $this->get("/votes/{$this->votingList->id}/summary");
     expect($response)->toHaveStatus(404);
 });
