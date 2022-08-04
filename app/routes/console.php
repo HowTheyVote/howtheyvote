@@ -109,11 +109,11 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
         '--year' => Carbon::now()->year,
     ]);
 
-    // Get the oldest session without associated votes and try to
+    // Get the newest session without associated votes and try to
     // scrape voting lists and votes for the days of the session.
     $session = Session::query()
         ->whereDoesntHave('votes')
-        ->orderBy('start_date', 'asc')
+        ->orderBy('start_date', 'desc')
         ->first();
 
     if (! $session) {
@@ -135,6 +135,8 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
         // vote collections that did not take place on the given
         // day, i.e. we have to make sure to import vote collections
         // only for the first day of the plenary session.
+        // It is necessary to loop over all days, since the actual first day where
+        // the collections are available is not always the first day of the session.
         if (VoteCollection::count() > $count) {
             break;
         }
