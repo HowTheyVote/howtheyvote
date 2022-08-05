@@ -15,10 +15,16 @@ class ScrapeSessionsAction extends Action
         $this->scrapeAction = $scrapeAction;
     }
 
-    public function execute(int $year, int $month): void
+    public function execute(int $term, int $year, int $month): void
     {
         try {
-            $data = $this->scrapeAction->execute('sessions', [
+            $parlData = $this->scrapeAction->execute('sessions_parl', [
+                'term' => $term,
+                'year' => $year,
+                'month' => $month,
+            ]);
+
+            $obsData = $this->scrapeAction->execute('sessions_obs', [
                 'year' => $year,
                 'month' => $month,
             ]);
@@ -28,7 +34,16 @@ class ScrapeSessionsAction extends Action
             return;
         }
 
-        foreach ($data as $session) {
+        foreach ($parlData as $session) {
+            Session::updateOrCreate([
+                'start_date' => $session['start_date'],
+                'end_date' => $session['end_date'],
+                ],
+            ['location' => LocationEnum::NONE(),
+            ]);
+        }
+
+        foreach ($obsData as $session) {
             Session::updateOrCreate([
                 'start_date' => $session['start_date'],
                 'end_date' => $session['end_date'],

@@ -7,6 +7,7 @@ use Spatie\Enum\Laravel\Enum;
 /**
  * @method static self BRUSSELS()
  * @method static self STRASBOURG()
+ * @method static self NONE()
  */
 class LocationEnum extends Enum
 {
@@ -15,6 +16,7 @@ class LocationEnum extends Enum
         return [
             'BRUSSELS' => 0,
             'STRASBOURG' => 1,
+            'NONE' => 2,
         ];
     }
 
@@ -23,6 +25,7 @@ class LocationEnum extends Enum
         return [
             'BRUSSELS' => 'Brussels',
             'STRASBOURG' => 'Strasbourg',
+            'NONE' => 'None',
         ];
     }
 }

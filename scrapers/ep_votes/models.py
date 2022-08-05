@@ -311,4 +311,7 @@ class Location(Enum):
 class Session:
     start_date: date
     end_date: date
-    location: Location
+    location: Optional[Location]
+
+    def __hash__(self) -> int:
+        return hash(str(self.start_date) + str(self.end_date))

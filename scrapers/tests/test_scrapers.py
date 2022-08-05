@@ -7,7 +7,8 @@ from ep_votes.scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
-    SessionsScraper,
+    ParliamentSessionsScraper,
+    ObservatorySessionsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
     SummaryIDScraper,
@@ -60,6 +61,7 @@ def mock_response(req, context):
         "/oeil/popups/ficheprocedure.do?reference=A8-0141/2019": "ficheprocedure_a9-0141-2019.html",
         "/oeil/popups/summary.do?id=1651118&t=e&l=en": "summary-1651118.html",
         "/oeil/srvc/calendar.json?y=2021&m=11": "calendar-2021-11.json",
+        "/plenary/en/ajax/getSessionCalendar.html?family=PV&termId=9": "calendar-term9.json",
     }
 
     if url not in MOCK_RESPONSES:
@@ -804,10 +806,20 @@ def test_summary_scraper_format_paragraph():
 
 
 def test_sessions_scraper_run(mock_request):
-    scraper = SessionsScraper(month=11, year=2021)
+    scraper = ObservatorySessionsScraper(month=11, year=2021)
     result = scraper.run()
 
     session_one = Session(date(2021, 11, 10), date(2021, 11, 11), Location.BRUSSELS)
     session_two = Session(date(2021, 11, 22), date(2021, 11, 25), Location.STRASBOURG)
 
     assert result == [session_one, session_two]
+
+
+def test_parliament_sessions_scraper_run(mock_request):
+    scraper = ParliamentSessionsScraper(term=9, month=11, year=2021)
+    result = scraper.run()
+
+    session_one = Session(date(2021, 11, 10), date(2021, 11, 11), None)
+    session_two = Session(date(2021, 11, 22), date(2021, 11, 25), None)
+
+    assert set(result) == set([session_two, session_one])

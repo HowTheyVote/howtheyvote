@@ -570,7 +570,51 @@ class SummaryScraper(Scraper):
         return text
 
 
-class SessionsScraper(Scraper):
+class ParliamentSessionsScraper(Scraper):
+    BASE_URL = (
+        "https://www.europarl.europa.eu/plenary/en/ajax/"
+        "getSessionCalendar.html?family=PV&termId="
+    )
+
+    def __init__(self, term: int, year: int, month: int):
+        self.term = term
+        self.year = year
+        self.month = month
+
+    def _load(self) -> None:
+        self._resource = requests.get(self._url()).json()
+
+    def _url(self) -> str:
+        return f"{self.BASE_URL}{self.term}"
+
+    def _extract_data(self) -> List[Session]:
+        sessions = self._resource["sessionCalendar"]
+
+        # This assumes that a session never spans multiple months or years
+        sessions_in_year = [
+            session for session in sessions if int(session["year"]) == self.year
+        ]
+        sessions_in_month = [
+            session
+            for session in sessions_in_year
+            if int(session["monthStartDateSession"]) == self.month
+        ]
+        session_objects = [self._session(session) for session in sessions_in_month]
+
+        return list(set(session_objects))
+
+    def _session(self, session: dict) -> Session:
+        return Session(
+            start_date=self._parse_date(session["dayStartDateSession"]),
+            end_date=self._parse_date(session["dayEndDateSession"]),
+            location=None,
+        )
+
+    def _parse_date(self, day: str) -> date:
+        return date.fromisoformat(str(self.year) + "-" + str(self.month) + "-" + day)
+
+
+class ObservatorySessionsScraper(Scraper):
     BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/srvc/calendar.json"
 
     def __init__(self, year: int, month: int):
