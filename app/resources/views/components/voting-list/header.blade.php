@@ -19,7 +19,7 @@
                 </strong>
             </p>
 
-            @if (! $minimal && $votingList->vote && $votingList->vote->summary)
+            @if (! $minimal && $votingList->vote && $votingList->vote->isFInalVote() && $votingList->vote->summary)
                 <p>
                     {{ $votingList->vote->summary->excerpt }}
                     <a href="{{ route('voting-list.summary', [
