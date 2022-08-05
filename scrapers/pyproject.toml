@@ -19,7 +19,7 @@ pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
-flake8 = "^4.0.1"
+flake8 = "^5.0.4"
 black = "^21.10b0"
 requests-mock = "^1.9.3"
 mypy = "^0.971"
