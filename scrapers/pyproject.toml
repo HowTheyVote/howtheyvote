@@ -13,7 +13,7 @@ beautifulsoup4 = "^4.10.0"
 lxml = "^4.9.1"
 werkzeug = "^2.0.2"
 sentry-sdk = {extras = ["flask"], version = "^1.9.1"}
-python-dotenv = "^0.19.1"
+python-dotenv = "^0.20.0"
 coverage = "^6.4"
 pytest-cov = "^3.0.0"
 
