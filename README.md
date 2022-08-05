@@ -10,11 +10,13 @@ We use Docker for our development setup. This setup is intended for development 
 
 1. Make sure ports 3306, 5000 and 8000 are free.
 2. Install `docker` and `docker-compose`. You can find instruction on how to install Docker on the [Docker website](https://docs.docker.com/get-docker/).
-3. Run `docker-compose run app composer install` inside the cloned folder.
-4. Run `docker-compose up`.
-5. Create `.env` files based on `scrapers/.env.example` and `app/.env.example`.
-6. When creating a fresh development environment with a clean DB, execute `php artisan migrate`, `php artisan db:seed --class=GroupSeeder`, and `php artisan db:seed --class=TermSeeder` inside the `app` container (e.g. with `docker-compose exec`).
-7. Run `php artisan scout:import '\App\VotingList'` to initialize the search index.
+3. Run `docker-compose run app composer install` to install PHP dependencies.
+4. Run `docker-compose run app npm install` to install Node.js dependencies.
+5. Run `docker-compose run app npm dev` to build the frontend assets. Alternatively, you can run `docker-compose run app npm watch`, to rebuild the assets automatically on file changes.
+5. Run `docker-compose up`.
+6. Create `.env` files based on `scrapers/.env.example` and `app/.env.example`.
+7. When creating a fresh development environment with a clean DB, execute `php artisan migrate`, `php artisan db:seed --class=GroupSeeder`, and `php artisan db:seed --class=TermSeeder` inside the `app` container (e.g. with `docker-compose exec`).
+8. Run `php artisan scout:import '\App\VotingList'` to initialize the search index.
 
 ### Database Dumps
 
