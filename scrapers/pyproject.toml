@@ -14,7 +14,7 @@ lxml = "^4.9.1"
 werkzeug = "^2.0.2"
 sentry-sdk = {extras = ["flask"], version = "^1.9.0"}
 python-dotenv = "^0.19.1"
-coverage = "^6.1"
+coverage = "^6.4"
 pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
