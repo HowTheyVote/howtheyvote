@@ -23,7 +23,7 @@ class MatchVotesAndVotingListsAction extends Action
 
             if ($vote->reference) {
                 $votingLists = VotingList::where('vote_id', null)
-                    ->where('description', 'like', "%{$vote->reference}%{$vote->formatted}");
+                    ->where('description', 'like', "%{$vote->reference}%{$vote->formatted}%");
             }
 
             if (! $votingLists || $votingLists->count() === 0) {
