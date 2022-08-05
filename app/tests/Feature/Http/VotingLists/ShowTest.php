@@ -264,16 +264,28 @@ it('does not show a url in callout for a non-matched final vote', function () {
     expect($response)->not()->toHaveSelectorWithText('.callout--warning', 'result of the final vote');
 });
 
-it('displays summary', function () {
+it('displays summary for final votes', function () {
     Summary::factory([
         'reference' => $this->votingList->vote->voteCollection->reference,
         'oeil_id' => 1234567,
         'text' => "First paragraph is stripped.\n\nThis is the summary.",
     ])->create();
 
-    $response = $this->get('/votes/2');
+    $response = $this->get('/votes/1');
 
     expect($response)->toHaveSelectorWithText('p', 'This is the summary.');
+});
+
+it('does not display summary for non-final votes', function () {
+    Summary::factory([
+        'reference' => $this->votingListNonFinal->vote->voteCollection->reference,
+        'oeil_id' => 1234567,
+        'text' => "First paragraph is stripped.\n\nThis is the summary.",
+    ])->create();
+
+    $response = $this->get('/votes/2');
+
+    expect($response)->not()->toHaveSelectorWithText('p', 'This is the summary.');
 });
 
 it('is reachable with short url', function () {
