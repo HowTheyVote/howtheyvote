@@ -38,7 +38,7 @@ return [
     ],
     'home' => [
         'title' => 'Find out how the Members of the European Parliament vote.',
-        'hint' => 'Try <a href="/votes?q=Covid-19">Covid-19</a>, <a href="/votes?q=Copyright">Copyright</a>, or <a href="/votes?q=Transparency+Register">Transparency Register</a>. <br> Or view <a href="/votes">recent votes</a>.',
+        'hint' => 'Try <a href="/votes?q=Ukraine">Ukraine</a>, <a href="/votes?q=Covid-19">Covid-19</a>, or <a href="/votes?q=Copyright">Copyright</a>. <br> Or view <a href="/votes">recent votes</a>.',
     ],
     'session-display' => [
         'availability' => 'Usually, vote results are available at the end of the following week.',
