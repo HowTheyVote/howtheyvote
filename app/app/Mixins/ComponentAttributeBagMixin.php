@@ -8,7 +8,7 @@ class ComponentAttributeBagMixin
 {
     public function bem()
     {
-        return function (string $base, array | string | null $modifiers = null): ComponentAttributeBag {
+        return function (string $base, array|string|null $modifiers = null): ComponentAttributeBag {
             if (! $modifiers) {
                 return $this->class($base);
             }
