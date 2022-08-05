@@ -2,6 +2,7 @@
     'endpoint' => null,
     'index' => null,
     'apiKey' => null,
+    'memberId' => null,
 ])
 
 @once
@@ -16,6 +17,7 @@
         'endpoint' => $endpoint,
         'index' => $index,
         'apiKey' => $apiKey,
+        'memberId' => $memberId,
     ]) }})"
 >
     <x-stack>
