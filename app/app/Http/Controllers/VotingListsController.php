@@ -142,7 +142,7 @@ class VotingListsController extends Controller
                     'name' => $member->country->label,
                 ],
                 'position' => $member->pivot->position->label,
-                ];
+            ];
         })->toArray();
 
         $vote = [

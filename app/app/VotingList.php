@@ -146,16 +146,16 @@ class VotingList extends Model
         }
 
         return __('voting-lists.share-picture.alt-text', [
-           'title' => $this->display_title,
-           'date' => $this->date->formatLocalized('%b%e, %Y'),
-           'for' => $this->stats['by_position']['FOR'],
-           'forpercent' => round(($this->stats['by_position']['FOR'] / $this->stats['voted'] * 100)),
-           'against' => $this->stats['by_position']['AGAINST'],
-           'againstpercent' => round(($this->stats['by_position']['AGAINST'] / $this->stats['voted'] * 100)),
-           'abstention' => $this->stats['by_position']['ABSTENTION'],
-           'abstentionpercent' => round(($this->stats['by_position']['ABSTENTION'] / $this->stats['voted'] * 100)),
-           'voted' => $this->stats['voted'],
-           'novote' => $this->stats['by_position']['NOVOTE'],
+            'title' => $this->display_title,
+            'date' => $this->date->formatLocalized('%b%e, %Y'),
+            'for' => $this->stats['by_position']['FOR'],
+            'forpercent' => round(($this->stats['by_position']['FOR'] / $this->stats['voted'] * 100)),
+            'against' => $this->stats['by_position']['AGAINST'],
+            'againstpercent' => round(($this->stats['by_position']['AGAINST'] / $this->stats['voted'] * 100)),
+            'abstention' => $this->stats['by_position']['ABSTENTION'],
+            'abstentionpercent' => round(($this->stats['by_position']['ABSTENTION'] / $this->stats['voted'] * 100)),
+            'voted' => $this->stats['voted'],
+            'novote' => $this->stats['by_position']['NOVOTE'],
         ]);
     }
 
