@@ -67,12 +67,13 @@ Artisan::command('scrape:members-groups {--term=}', function (
     $this->withProgressBar($members, fn ($member) => $action->execute($member, $term));
 })->describe('Scrape and save group info for all saved members for the given term.');
 
-Artisan::command('scrape:sessions {--year=} {--month=}', function (
+Artisan::command('scrape:sessions {--year=} {--year=} {--month=}', function (
+    int $term,
     int $month,
     int $year,
     ScrapeSessionsAction $action
 ) {
-    $action->execute($year, $month);
+    $action->execute($term, $year, $month);
 });
 
 Artisan::command('scrape:voting-lists {--term=} {--date=}', function (
@@ -105,6 +106,7 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
     Artisan::call('scrape:members-info', ['--term' => $term]);
 
     Artisan::call('scrape:sessions', [
+        '--term' => $term,
         '--month' => Carbon::now()->month,
         '--year' => Carbon::now()->year,
     ]);

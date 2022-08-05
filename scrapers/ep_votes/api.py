@@ -21,7 +21,8 @@ from .scrapers import (
     MembersScraper,
     MemberInfoScraper,
     MemberGroupsScraper,
-    SessionsScraper,
+    ParliamentSessionsScraper,
+    ObservatorySessionsScraper,
     VotingListsScraper,
     VoteCollectionsScraper,
     SummaryIDScraper,
@@ -169,8 +170,15 @@ def summary(summary_id: str) -> SimpleResponse:
     return SummaryScraper(summary_id=summary_id).run()
 
 
-@app.route("/sessions")
+@app.route("/sessions_parl")
+@json_response
+@params(term=int, year=int, month=int)
+def sessions_parl(term: int, year: int, month: int) -> SimpleResponse:
+    return ParliamentSessionsScraper(term=term, year=year, month=month).run()
+
+
+@app.route("/sessions_obs")
 @json_response
 @params(year=int, month=int)
-def sessions(year: int, month: int) -> SimpleResponse:
-    return SessionsScraper(year=year, month=month).run()
+def sessions_obs(year: int, month: int) -> SimpleResponse:
+    return ObservatorySessionsScraper(year=year, month=month).run()
