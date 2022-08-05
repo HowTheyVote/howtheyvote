@@ -18,13 +18,6 @@ class MembersController extends Controller
                 ->activeAt(Carbon::now())
                 ->first()
                 ->group ?? null,
-
-            'votingLists' => $member->
-                votingLists()
-                ->final()
-                ->matched()
-                ->orderByDesc('date')
-                ->get(),
         ]);
     }
 }

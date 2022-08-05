@@ -7,14 +7,12 @@
 
             <section class="padding--h">
                 <x-wrapper>
-                    <x-stack space="sm">
-                        @foreach ($votingLists as $votingList)
-                            <x-vote-card
-                                :vote="$votingList->vote"
-                                :position="Str::lower($votingList->pivot->position->label)"
-                            />
-                        @endforeach
-                    </x-stack>
+                    <x-search-results-page
+                        :endpoint="config('scout.meilisearch.public_endpoint')"
+                        :apiKey="config('scout.meilisearch.public_key')"
+                        :memberId="$member->id"
+                        index="voting_lists"
+                    />
                 </x-wrapper>
             </section>
         </x-stack>
