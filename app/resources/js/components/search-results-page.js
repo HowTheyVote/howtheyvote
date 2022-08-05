@@ -3,7 +3,6 @@ const ATTRIBUTES = [
   'id',
   'display_title',
   'date',
-  'result',
   'session_id',
   'session_display_title',
 ];
@@ -15,6 +14,7 @@ export default (options = {}) => ({
   endpoint: options.endpoint,
   index: options.index,
   apiKey: options.apiKey,
+  memberId: options.memberId,
 
   page: 0,
   results: [],
@@ -108,6 +108,11 @@ export default (options = {}) => ({
     this.loading = true;
     this.abortController = new AbortController();
 
+    const additionalAttributes =
+      this.memberId !== null ? [`members.${this.memberId}`] : ['result'];
+
+    console.log(this.memberId);
+
     const response = await fetch(this.searchUrl, {
       method: 'POST',
       headers: {
@@ -119,7 +124,7 @@ export default (options = {}) => ({
         q: this.$store.searchQuery,
         limit: LIMIT,
         offset: this.page * LIMIT,
-        attributesToRetrieve: ATTRIBUTES,
+        attributesToRetrieve: [...ATTRIBUTES, ...additionalAttributes],
         attributesToHighlight: HIGHLIGHT_ATTRIBUTES,
         attributesToCrop: CROP_ATTRIBUTES,
         cropLength: CROP_LENGTH,
