@@ -370,7 +370,7 @@ testing = ["virtualenv", "pytest-xdist", "six", "process-tests", "hunter", "fiel
 
 [[package]]
 name = "python-dotenv"
-version = "0.19.1"
+version = "0.20.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
 category = "main"
 optional = false
@@ -533,7 +533,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "85a64ab57a8c8911c86976b0a9dffee1b67baff3e91b87ca2fe2804a3485edc3"
+content-hash = "67cfb2440cca135355bb9e0e627dec6ec4f92f9352e1d995e9e9314ca7ec2f9f"
 
 [metadata.files]
 atomicwrites = [
@@ -842,8 +842,8 @@ pytest-cov = [
     {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6"},
 ]
 python-dotenv = [
-    {file = "python-dotenv-0.19.1.tar.gz", hash = "sha256:14f8185cc8d494662683e6914addcb7e95374771e707601dfc70166946b4c4b8"},
-    {file = "python_dotenv-0.19.1-py2.py3-none-any.whl", hash = "sha256:bbd3da593fc49c249397cbfbcc449cf36cb02e75afc8157fcc6a81df6fb7750a"},
+    {file = "python-dotenv-0.20.0.tar.gz", hash = "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f"},
+    {file = "python_dotenv-0.20.0-py3-none-any.whl", hash = "sha256:d92a187be61fe482e4fd675b6d52200e7be63a12b724abbf931a40ce4fa92938"},
 ]
 regex = [
     {file = "regex-2021.4.4-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:619d71c59a78b84d7f18891fe914446d07edd48dc8328c8e149cbe0929b4e000"},
