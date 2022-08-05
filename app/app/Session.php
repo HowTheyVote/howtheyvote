@@ -23,6 +23,7 @@ class Session extends Model
         'start_date',
         'end_date',
         'location',
+        'notes',
         'id',
     ];
 
