@@ -1,11 +1,8 @@
 <?php
 
 use App\Enums\CountryEnum;
-use App\Enums\VoteResultEnum;
 use App\Group;
 use App\Member;
-use App\Vote;
-use App\VotingList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
@@ -31,42 +28,6 @@ beforeEach(function () {
         ->activeAt($this->thirdJan, $greens)
         ->create();
 
-    VotingList::factory(
-        [
-            'date' => $this->firstJan,
-            'vote_id' => Vote::factory([
-                'final' => true,
-                'result' => VoteResultEnum::REJECTED(),
-            ]),
-        ])
-        ->create()
-        ->members()
-        ->attach($this->member->id, ['position' => 'AGAINST']);
-
-    VotingList::factory(
-        [
-            'date' => $this->thirdJan,
-            'vote_id' => Vote::factory([
-                'final' => true,
-                'result' => VoteResultEnum::REJECTED(),
-            ]),
-        ])
-        ->create()
-        ->members()
-        ->attach($this->member->id, ['position' => 'FOR']);
-
-    VotingList::factory(
-        [
-            'date' => $this->firstJan,
-            'vote_id' => Vote::factory([
-                'final' => false,
-                'result' => VoteResultEnum::ADOPTED(),
-            ]),
-        ])
-        ->create()
-        ->members()
-        ->attach($this->member->id, ['position' => 'FOR']);
-
     $this->memberId = Member::first()->id;
 });
 
@@ -77,11 +38,6 @@ afterEach(function () {
 it('renders successfully', function () {
     $response = $this->get("/members/{$this->memberId}");
     expect($response)->toHaveStatus(200);
-});
-
-it('lists final votes with position of member', function () {
-    $response = $this->get("/members/{$this->memberId}");
-    expect($response)->toHaveSelector('.thumb--for.thumb--circle', 1);
 });
 
 it('shows an info box with contact links for active members', function () {
@@ -102,12 +58,4 @@ it('shows contact info for non-active members', function () {
     expect($response)->toHaveSelectorWithText('.member-header', 'Netherlands');
     expect($response)->toHaveSelectorWithText('.member-header', 'Twitter');
     expect($response)->not()->toHaveSelectorWithText('.member-header', 'Facebook');
-});
-
-it('shows votes in reverse chronological order', function () {
-    $response = $this->get("/members/{$this->memberId}");
-    expect($response)->toSeeInOrder([
-        'Friday, January 3, 2020',
-        'Wednesday, January 1, 2020',
-    ]);
 });
