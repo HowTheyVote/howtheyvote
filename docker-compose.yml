@@ -16,7 +16,7 @@ services:
       - '5000:5000'
     environment:
       - FLASK_APP=ep_votes/api.py
-      - FLASK_ENV=development
+      - FLASK_DEBUG=true
     stdin_open: true
     tty: true
 

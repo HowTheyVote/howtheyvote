@@ -2,7 +2,7 @@
 php_version: 8.0
 node_version: 14
 epvotes_version: main
-python_version: 3.8
+python_version: 3.10
 epvotes_install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
 epvotes_domains:
   - howtheyvote.eu
