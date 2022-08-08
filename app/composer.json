@@ -17,7 +17,7 @@
         "php": "^8",
         "doctrine/dbal": "^3.0",
         "fideloper/proxy": "^4.2",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.6",
