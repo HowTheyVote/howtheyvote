@@ -18,7 +18,7 @@ return [
         'search-placeholder' => 'Search',
     ],
     'search-input' => [
-        'placeholder' => 'Search by subject, e.g. Covid-19',
+        'placeholder' => 'Search by subject, e.g. Ukraine',
     ],
     'search-form' => [
         'submit' => 'Go!',
