@@ -67,7 +67,7 @@ Artisan::command('scrape:members-groups {--term=}', function (
     $this->withProgressBar($members, fn ($member) => $action->execute($member, $term));
 })->describe('Scrape and save group info for all saved members for the given term.');
 
-Artisan::command('scrape:sessions {--year=} {--year=} {--month=}', function (
+Artisan::command('scrape:sessions {--term=} {--year=} {--month=}', function (
     int $term,
     int $month,
     int $year,
