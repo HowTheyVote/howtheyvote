@@ -72,4 +72,9 @@ class Session extends Model
     {
         return $this->hasMany(Vote::class);
     }
+
+    public function getAgendaLinkAttribute()
+    {
+        return "https://www.europarl.europa.eu/doceo/document/OJ-9-{$this->start_date->format('Y-m-d')}-SYN_EN.html";
+    }
 }

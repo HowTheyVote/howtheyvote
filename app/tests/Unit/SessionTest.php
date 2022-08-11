@@ -86,3 +86,12 @@ it('returns null if there is no current session', function () {
     Carbon::setTestNow('2021-10-01');
     expect(Session::current())->toBeNull();
 });
+
+it('has a link to its agenda', function () {
+    $session = Session::factory([
+        'start_date' => '2021-09-01',
+        'end_date' => '2021-09-05',
+    ])->create();
+
+    expect($session->agendaLink)->toEqual('https://www.europarl.europa.eu/doceo/document/OJ-9-2021-09-01-SYN_EN.html');
+});
