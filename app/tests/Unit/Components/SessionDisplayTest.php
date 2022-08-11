@@ -42,6 +42,16 @@ it('displays date of current session', function () {
     expect($view)->toSeeText('Parliament is meeting in Strasbourg this week.');
 });
 
+it('displays link to the agenda of the session', function () {
+    $view = $this->blade('<x-session-display :currentSession="$currentSession" :lastSession="$lastSession" :nextSession="$nextSession" />', [
+        'currentSession' => $this->currentSession,
+        'lastSession' => $this->lastSession,
+        'nextSession' => $this->nextSession,
+    ]);
+
+    expect($view)->toHaveSelectorWithText('a[href="https://www.europarl.europa.eu/doceo/document/OJ-9-2021-08-01-SYN_EN.html"]', 'agenda');
+});
+
 it('displays date of next session', function () {
     $vote = Vote::factory([
         'session_id' => $this->lastSession->id,

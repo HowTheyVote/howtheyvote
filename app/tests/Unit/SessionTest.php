@@ -93,5 +93,5 @@ it('has a link to its agenda', function () {
         'end_date' => '2021-09-05',
     ])->create();
 
-    expect($session->agendaLink)->toEqual('https://www.europarl.europa.eu/doceo/document/OJ-9-2021-09-01-SYN_EN.html');
+    expect($session->agenda_url)->toEqual('https://www.europarl.europa.eu/doceo/document/OJ-9-2021-09-01-SYN_EN.html');
 });

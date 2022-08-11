@@ -5,12 +5,15 @@
 ])
 
 
- @if ($currentSession)
+@if ($currentSession)
 
     <div {{ $attributes->bem('session-display') }}>
         {{ __('components.session-display.current', [
             'location' => $currentSession->location->label,
         ]) }}
+
+        {!! __('components.session-display.agenda', [
+            'agenda' => $currentSession->agenda_url]) !!}</br>
 
         {{ __('components.session-display.availability') }}
     </div>
@@ -24,6 +27,9 @@
             'location' => $lastSession->location->label,
         ]) !!}
 
+        {!! __('components.session-display.agenda', [
+            'agenda' => $lastSession->agenda_url]) !!}</br>
+
         {{ __('components.session-display.availability') }}
     </div>
 
@@ -36,6 +42,9 @@
             'location' => $nextSession->location->label,
         ]) !!}
 
+        {!! __('components.session-display.agenda', [
+            'agenda' => $nextSession->agenda_url]) !!}</br>
+        
         {{ __('components.session-display.availability') }}
     </div>
 
