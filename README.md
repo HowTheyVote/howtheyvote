@@ -12,9 +12,9 @@ We use Docker for our development setup. This setup is intended for development 
 2. Install `docker` and `docker-compose`. You can find instruction on how to install Docker on the [Docker website](https://docs.docker.com/get-docker/).
 3. Run `docker-compose run app composer install` to install PHP dependencies.
 4. Run `docker-compose run app npm install` to install Node.js dependencies.
-5. Run `docker-compose run app npm dev` to build the frontend assets. Alternatively, you can run `docker-compose run app npm watch`, to rebuild the assets automatically on file changes.
+5. Run `docker-compose run app npm run dev` to build the frontend assets. Alternatively, you can run `docker-compose run app npm run watch`, to rebuild the assets automatically on file changes.
 5. Run `docker-compose up`.
-6. Create `.env` files based on `scrapers/.env.example` and `app/.env.example`.
+6. Create `.env` files based on `scrapers/.env.example` and `app/.env.example`. Afterwards, run `php artisan key:generate` inside the `app` container.
 7. When creating a fresh development environment with a clean DB, execute `php artisan migrate`, `php artisan db:seed --class=GroupSeeder`, and `php artisan db:seed --class=TermSeeder` inside the `app` container (e.g. with `docker-compose exec`). Alternatively, you can also import e.g. the [HowTheyVote.eu](https://howtheyvote.eu) database dump that comes with this repository. Run `mariadb/import_database.sh` to import a database and change the `.sql` file's path inside of the script if necessary.
 8. Run `php artisan scout:import '\App\VotingList'` to initialize the search index.
 
