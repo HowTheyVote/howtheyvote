@@ -4,6 +4,7 @@
     'showLess' => __('components.list.show-less'),
     'searchable' => false,
     'searchPlaceholder' => __('components.list.search-placeholder'),
+    'actions' => null,
 ])
 
 @php
@@ -18,14 +19,19 @@
     x-data="{{ json_encode($initialState) }}"
     x-bind:class="(truncate && searchQuery === '') ? 'list--truncated' : ''"
 >
-    @if ($searchable)
-        <x-input class="list__search"
-            type="search"
-            x-model="searchQuery"
-            :placeholder="$searchPlaceholder"
-            x-cloak
-        />
-    @endif
+    <div class="list__action-bar" x-cloak>
+        @if ($searchable)
+            <x-input class="list__search"
+                type="search"
+                x-model="searchQuery"
+                :placeholder="$searchPlaceholder"
+            />
+        @endif
+
+        @if ($actions)
+            {{ $actions }}
+        @endif
+    </div>
 
     <ul>
         {{ $slot }}
