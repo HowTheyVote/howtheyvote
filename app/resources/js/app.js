@@ -1,4 +1,5 @@
 import '@github/tab-container-element';
+import '@github/details-menu-element';
 import { listen } from 'quicklink';
 import Alpine from 'alpinejs';
 import listItem from './components/list-item.js';
