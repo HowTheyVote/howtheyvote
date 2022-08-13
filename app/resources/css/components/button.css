@@ -1,7 +1,6 @@
 .button {
     display: inline-block;
     padding: var(--space-xxs) var(--space-xs);
-    line-height: 1;
 
     border: 2px solid var(--gray-dark);
     border-radius: 4px;
@@ -12,7 +11,7 @@
     text-decoration: none;
     text-align: center;
 
-    transition: 0.1s all ease-out;
+    transition: 0.1s background-color ease-out, 0.1s color ease-out;
 }
 
 .button:hover,
