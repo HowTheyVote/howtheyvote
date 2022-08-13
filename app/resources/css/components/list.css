@@ -1,9 +1,12 @@
-.list > ul > * + * {
-    margin-top: var(--space-sm);
+.list > ul {
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: var(--space-sm);
 }
 
 .list--truncated > ul {
-    position: relative;
     max-height: 75vh;
     overflow: hidden;
 }
