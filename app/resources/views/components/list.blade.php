@@ -11,6 +11,7 @@
     $initialState = [
         'truncate' => $truncate,
         'searchQuery' => '',
+        'filter' => '',
     ];
 @endphp
 

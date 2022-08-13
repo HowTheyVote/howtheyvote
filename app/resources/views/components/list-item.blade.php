@@ -7,13 +7,14 @@
     'position' => null,
     'stats' => null,
     'searchKey' => null,
+    'filterKey' => null,
     'url' => null
 ])
 
 <li
     {{ $attributes->bem('list-item') }}
-    x-data="listItem({{ json_encode($searchKey) }})"
-    x-show="matchesSearchQuery"
+    x-show="matches"
+    x-data="listItem({{ json_encode([$searchKey, $filterKey]) }})"
 >
     @if ($avatarUrl)
         <x-avatar
