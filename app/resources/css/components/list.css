@@ -40,6 +40,19 @@
     bottom: var(--space-sm);
 }
 
-.list__search {
+.list__action-bar {
+    display: flex;
+    width: 100%;
+    gap: var(--space-xxs);
     margin-bottom: var(--space-sm);
+}
+
+.list__search {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.list__action-bar > *:not(.list__search) {
+    flex-grow: 0;
+    flex-shrink: 0;
 }
