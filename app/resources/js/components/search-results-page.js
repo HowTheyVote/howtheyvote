@@ -111,8 +111,6 @@ export default (options = {}) => ({
     const additionalAttributes =
       this.memberId !== null ? [`members.${this.memberId}`] : ['result'];
 
-    console.log(this.memberId);
-
     const response = await fetch(this.searchUrl, {
       method: 'POST',
       headers: {
