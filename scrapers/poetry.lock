@@ -32,8 +32,8 @@ python-versions = ">=3.6.0"
 soupsieve = ">1.2"
 
 [package.extras]
-lxml = ["lxml"]
 html5lib = ["html5lib"]
+lxml = ["lxml"]
 
 [[package]]
 name = "black"
@@ -51,10 +51,10 @@ platformdirs = ">=2"
 tomli = {version = ">=1.1.0", markers = "python_full_version < \"3.11.0a7\""}
 
 [package.extras]
-uvloop = ["uvloop (>=0.15.2)"]
-jupyter = ["tokenize-rt (>=3.2.0)", "ipython (>=7.8.0)"]
-d = ["aiohttp (>=3.7.4)"]
 colorama = ["colorama (>=0.4.3)"]
+d = ["aiohttp (>=3.7.4)"]
+jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
+uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "blinker"
@@ -157,8 +157,8 @@ Jinja2 = ">=3.0"
 Werkzeug = ">=2.2.0"
 
 [package.extras]
-dotenv = ["python-dotenv"]
 async = ["asgiref (>=3.2)"]
+dotenv = ["python-dotenv"]
 
 [[package]]
 name = "gunicorn"
@@ -424,12 +424,12 @@ requests = ">=2.3,<3"
 six = "*"
 
 [package.extras]
-test = ["testtools", "testrepository (>=0.0.18)", "sphinx", "pytest", "purl", "mock", "fixtures"]
 fixture = ["fixtures"]
+test = ["fixtures", "mock", "purl", "pytest", "sphinx", "testrepository (>=0.0.18)", "testtools"]
 
 [[package]]
 name = "sentry-sdk"
-version = "1.9.4"
+version = "1.9.5"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -534,7 +534,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "a8f07d64fa8442236601484d472a3e5639b9afc472a1da1664e2177bae980522"
+content-hash = "3d0b0502bb68b43e991268376b734fc2e580ddba9de94e9ca58afaaf8b92a53e"
 
 [metadata.files]
 atomicwrites = [
@@ -868,8 +868,8 @@ requests-mock = [
     {file = "requests_mock-1.9.3-py2.py3-none-any.whl", hash = "sha256:0a2d38a117c08bb78939ec163522976ad59a6b7fdd82b709e23bb98004a44970"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.9.4.tar.gz", hash = "sha256:f1e2333d1922dca3f91e57dad872c73b3cc449ac8542867664fb898b2eec342f"},
-    {file = "sentry_sdk-1.9.4-py2.py3-none-any.whl", hash = "sha256:02b7bf195f209f51c9f9458098a8f541dbf82314d21477e68ad841668fcf9a46"},
+    {file = "sentry-sdk-1.9.5.tar.gz", hash = "sha256:2d7ec7bc88ebbdf2c4b6b2650b3257893d386325a96c9b723adcd31033469b63"},
+    {file = "sentry_sdk-1.9.5-py2.py3-none-any.whl", hash = "sha256:b4b41f90951ed83e7b4c176eef021b19ecba39da5b73aca106c97a9b7e279a90"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
