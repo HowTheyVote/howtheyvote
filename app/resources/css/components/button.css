@@ -3,7 +3,7 @@
     padding: var(--space-xxs) var(--space-xs);
 
     border: 2px solid var(--gray-dark);
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     background-color: white;
 
     font-weight: 600;
