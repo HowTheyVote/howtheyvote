@@ -38,6 +38,7 @@
         tabindex="0"
         role="menuitemradio"
         class="position-select__item"
+        aria-checked="false"
     >
         <input
             type="radio"
