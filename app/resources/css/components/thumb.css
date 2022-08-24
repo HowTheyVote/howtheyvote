@@ -18,7 +18,7 @@
 
 .thumb--neutral > svg,
 .thumb--abstention > svg {
-    transform: rotate(90deg) scale(-1, 1);
+    transform: rotate(90deg) scale(-1, 1) translateY(-7.5%);
 }
 
 .thumb--circle {
