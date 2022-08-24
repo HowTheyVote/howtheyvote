@@ -58,9 +58,18 @@ abstract class AbstractRenderedMixin
     public function assertSelectorText()
     {
         return function (string $selector, string $text, ?int $count = null): self {
+            // Replace multiple whitespace chars with a single space. In HTML, multiple
+            // whitespace characters will usually be rendered as a single space.
+            $normalizeText = fn (string $text) => preg_replace('/\s+/', ' ', $text);
+
             $elements = $this
                 ->select($selector)
-                ->filter(fn ($element) => Str::contains($element->textContent, $text));
+                ->filter(function ($element) use ($normalizeText, $text) {
+                    return Str::contains(
+                        $normalizeText($element->textContent),
+                        $normalizeText($text),
+                    );
+                });
 
             $actualCount = $elements->count();
 
