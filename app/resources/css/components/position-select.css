@@ -11,6 +11,7 @@
     border-width: 1px;
     border-color: transparent;
     color: var(--color-text-light);
+    cursor: default;
 }
 
 .position-select__button:hover {
