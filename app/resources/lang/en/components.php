@@ -47,4 +47,8 @@ return [
         'next' => 'The next plenary session will be held in :location <strong>from :start to :end</strong>.',
         'agenda' => 'Take a look at the <a href=":agenda" target="_blank" rel="noopener noreferrer">agenda</a> for this session.',
     ],
+    'position-select' => [
+        'label' => 'Filter',
+        'reset' => 'Show all',
+    ],
 ];

@@ -1,8 +1,8 @@
 @props([
     'name' => null,
     'xModel' => null,
-    'label' => 'Filter',
-    'reset' => 'Show all',
+    'label' => __('components.position-select.label'),
+    'reset' => __('components.position-select.reset'),
 ])
 
 <details class="position-select" {{ $attributes }}>
@@ -51,7 +51,7 @@
         <span data-menu-button-contents>
             <span class="position-select__label">
                 <x-thumb :position="$position" style="circle" />
-                {{ $position->label }}
+                {{ __("enums.position.{$position->label}") }}
             </span>
         </span>
       </label>
