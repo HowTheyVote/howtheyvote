@@ -5,7 +5,12 @@
     'reset' => __('components.position-select.reset'),
 ])
 
-<details class="position-select" {{ $attributes }}>
+<details
+    class="position-select"
+    x-data={}
+    x-on:click.outside="$el.open = false"
+    {{ $attributes }}
+>
   <x-button tag="summary" class="position-select__button">
     <span data-menu-button>{{ $label }}</span>
   </x-button>
