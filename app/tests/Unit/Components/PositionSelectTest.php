@@ -16,10 +16,10 @@ it('renders radio input and a label for every position', function () {
     expect($view)->toHaveSelector('details-menu input[type="radio"][value="ABSTENTION"]:not([checked])');
     expect($view)->toHaveSelector('details-menu input[type="radio"][value="NOVOTE"]:not([checked])');
 
-    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'FOR');
-    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'AGAINST');
-    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'ABSTENTION');
-    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'NOVOTE');
+    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'For');
+    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'Against');
+    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'Abstention');
+    expect($view)->toHaveSelectorWithText('details-menu label[aria-checked="false"] span[data-menu-button-contents]', text: 'No vote');
 });
 
 it('pre-checks the default option', function () {

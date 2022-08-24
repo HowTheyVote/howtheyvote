@@ -46,4 +46,8 @@ return [
         'last' => 'The last plenary session was held <strong>from :start to :end</strong> in :location.',
         'next' => 'The next plenary session will be held in :location <strong>from :start to :end</strong>.',
     ],
+    'position-select' => [
+        'label' => 'Filter',
+        'reset' => 'Show all',
+    ],
 ];
