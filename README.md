@@ -7,7 +7,6 @@ Although the results of roll-call votes are generally available on the website o
 ## Development Setup
 
 We use Docker for our development setup. This setup is intended for development purposes only!
-Please make sure that you have [`git LFS`](https://git-lfs.github.com/) installed.
 
 1. Make sure ports 3306, 5000 and 8000 are free.
 2. Install `docker` and `docker-compose`. You can find instruction on how to install Docker on the [Docker website](https://docs.docker.com/get-docker/).
