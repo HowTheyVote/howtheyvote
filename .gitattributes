@@ -1,3 +1,2 @@
 app/tests/data/* linguist-vendored
 scrapers/tests/data/* linguist-vendored
-mariadb/dump/*.sql filter=lfs diff=lfs merge=lfs -text
