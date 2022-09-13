@@ -49,10 +49,15 @@ Artisan::command('scrape:members-info {--term=}', function (
     $this->withProgressBar($members, fn ($member) => $action->execute($member));
 })->describe('Scrape and save info for all saved members.');
 
-Artisan::command('scrape:members-photos', function (CreateMemberImageAction $action) {
-    $members = Member::all();
+Artisan::command('scrape:members-photos {--all}', function (
+    bool $all,
+    CreateMemberImageAction $action
+) {
+    $members = $all ? Member::all() : Member::all()->filter(function ($member) {
+        return ! $member->hasProfilePicture();
+    });
 
-    $this->info('Scraping profile photos for all members.');
+    $this->info('Scraping profile photos for members.');
     $this->withProgressBar($members, fn ($member) => $action->execute($member));
 });
 
@@ -104,7 +109,7 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
     Artisan::call('scrape:members', ['--term' => $term]);
     Artisan::call('scrape:members-groups', ['--term' => $term]);
     Artisan::call('scrape:members-info', ['--term' => $term]);
-
+    Artisan::call('scrape:members-photos');
     Artisan::call('scrape:sessions', [
         '--term' => $term,
         '--month' => Carbon::now()->month,
