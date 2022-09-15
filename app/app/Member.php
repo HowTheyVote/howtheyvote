@@ -123,6 +123,11 @@ class Member extends Model
         return Storage::disk('public')->url("members/{$this->id}.jpg");
     }
 
+    public function hasProfilePicture(): bool
+    {
+        return Storage::disk('public')->exists("members/{$this->id}.jpg");
+    }
+
     public function getLinksAttribute(): Collection
     {
         return collect([

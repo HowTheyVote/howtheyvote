@@ -6,6 +6,7 @@ use App\Member;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
@@ -111,4 +112,19 @@ it('has list of contact links', function () {
     ];
 
     expect($member->links->toArray())->toEqual($expected);
+});
+
+it('knows when profile picture exists', function () {
+    $memberWithPicture = Member::factory([
+        'id' => 1,
+    ])->make();
+    $memberWithoutPicture = Member::factory([
+        'id' => 2,
+    ])->make();
+
+    Storage::fake('public');
+    Storage::disk('public')->put("members/{$memberWithPicture->id}.jpg", 'fake');
+
+    expect($memberWithPicture->hasProfilePicture())->toBeTrue();
+    expect($memberWithoutPicture->hasProfilePicture())->toBeFalse();
 });
