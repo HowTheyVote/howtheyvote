@@ -7,7 +7,7 @@
 
 - name: Install Poetry
   pip:
-    name: poetry
+    name: "poetry=={{ poetry_version }}"
     executable: "pip{{ python_version }}"
     extra_args: --user
     state: present
