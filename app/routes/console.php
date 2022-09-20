@@ -120,6 +120,7 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
     // scrape voting lists and votes for the days of the session.
     $session = Session::query()
         ->whereDoesntHave('votes')
+        ->whereNot('ignore_when_scraping_voting_lists')
         ->orderBy('start_date', 'desc')
         ->first();
 
