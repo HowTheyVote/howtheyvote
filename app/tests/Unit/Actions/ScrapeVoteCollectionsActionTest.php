@@ -101,8 +101,8 @@ it('does not scrape summary if summary exists', function () {
 
 it('references correct session in created votes', function () {
     $session = Session::factory([
-        'start_date' =>'2021-03-06',
-        'end_date' =>'2021-03-09',
+        'start_date' => '2021-03-06',
+        'end_date' => '2021-03-09',
         'id' => 1,
     ])->create();
 

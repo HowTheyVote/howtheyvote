@@ -46,7 +46,7 @@ beforeEach(function () {
     $votingListDataFinal = [
         'id' => 1,
         'description' => 'Matched Voting List',
-        'date'=> $date,
+        'date' => $date,
         'vote_id' => Vote::factory([
             'type' => VoteTypeEnum::PRIMARY(),
             'result' => VoteResultEnum::ADOPTED(),
@@ -62,15 +62,15 @@ beforeEach(function () {
         ->create();
 
     $votingListDataNotFinal = [
-            'id' => 2,
-            'description' => 'Matched Voting List For Non Final Vote',
-            'date'=> $date,
-            'vote_id' => Vote::factory([
-                'type' => VoteTypeEnum::SEPARATE(),
-                'result' => VoteResultEnum::ADOPTED(),
-                'vote_collection_id' => $voteCollection,
-            ]),
-        ];
+        'id' => 2,
+        'description' => 'Matched Voting List For Non Final Vote',
+        'date' => $date,
+        'vote_id' => Vote::factory([
+            'type' => VoteTypeEnum::SEPARATE(),
+            'result' => VoteResultEnum::ADOPTED(),
+            'vote_collection_id' => $voteCollection,
+        ]),
+    ];
 
     $this->votingListNonFinal = VotingList::factory($votingListDataNotFinal)
             ->withStats()
@@ -255,8 +255,8 @@ it('does not show a url in callout for a non-matched final vote', function () {
 
     Vote::factory([
         'vote_collection_id' => $collection,
-            'type' => VoteTypeEnum::PRIMARY(),
-            'final' => true,
+        'type' => VoteTypeEnum::PRIMARY(),
+        'final' => true,
     ])->create();
 
     $response = $this->get('/votes/10');

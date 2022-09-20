@@ -33,11 +33,11 @@ beforeEach(function () {
         'vote_id' => Vote::factory([
             'result' => VoteResultEnum::REJECTED(),
             'vote_collection_id' => VoteCollection::factory([
-            'title' => 'Budget 2020',
+                'title' => 'Budget 2020',
             ]),
         ]),
         'description' => 'Budged 2020',
-        ])
+    ])
         ->withMembers('FOR', $this->greensFor)
         ->create();
 });

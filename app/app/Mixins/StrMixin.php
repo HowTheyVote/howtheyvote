@@ -8,7 +8,7 @@ class StrMixin
 {
     public static function obfuscate()
     {
-        return function (string $string) : string {
+        return function (string $string): string {
             return Str::of($string)
                 ->split(1)
                 ->map(fn ($char) => '&#x'.dechex(ord($char)).';')

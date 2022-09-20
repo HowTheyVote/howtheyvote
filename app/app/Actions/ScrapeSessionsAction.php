@@ -38,18 +38,18 @@ class ScrapeSessionsAction extends Action
             Session::updateOrCreate([
                 'start_date' => $session['start_date'],
                 'end_date' => $session['end_date'],
-                ],
-            ['location' => LocationEnum::NONE(),
-            ]);
+            ],
+                ['location' => LocationEnum::NONE(),
+                ]);
         }
 
         foreach ($obsData as $session) {
             Session::updateOrCreate([
                 'start_date' => $session['start_date'],
                 'end_date' => $session['end_date'],
-                ],
-            ['location' => LocationEnum::make($session['location']),
-            ]);
+            ],
+                ['location' => LocationEnum::make($session['location']),
+                ]);
         }
     }
 }

@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-class Session extends Model
-/*
+class Session extends Model /*
  * A Session represents a session week of parliament, i.e., subsequent
  * days at which plenary sessions in parliament took place. Roll call
  * votes (i.e., votes we are interested in) can only happen on those days.

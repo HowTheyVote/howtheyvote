@@ -5,8 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class VoteCollection extends Model
-/*
+class VoteCollection extends Model /*
  * Votes are based on the tables found in the VOT annexes of the
  * official plenary minutes. An example can be found under
  * https://www.europarl.europa.eu/RegData/seance_pleniere/

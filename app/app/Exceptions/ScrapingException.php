@@ -7,6 +7,7 @@ use Exception;
 class ScrapingException extends Exception
 {
     protected string $route;
+
     protected array $params;
 
     public function __construct(string $route, array $params)

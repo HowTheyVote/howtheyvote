@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 class ScrapeVotingListsAction extends Action
 {
     private $scrapeAction;
+
     private $compileAction;
 
     public function __construct(

@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
 class ScrapeVoteCollectionsAction extends Action
 {
     private $scrapeAction;
+
     private $summaryAction;
 
     public function __construct(ScrapeAction $scrapeAction, ScrapeSummaryAction $summaryAction)
@@ -50,7 +51,7 @@ class ScrapeVoteCollectionsAction extends Action
         $this->log("Imported {$total} vote collections for {$date}");
     }
 
-    private function createOrUpdateVoteCollection(Term $term, Carbon $date, array $data) : VoteCollection
+    private function createOrUpdateVoteCollection(Term $term, Carbon $date, array $data): VoteCollection
     {
         $voteCollection = VoteCollection::firstOrNew([
             'title' => $data['title'],

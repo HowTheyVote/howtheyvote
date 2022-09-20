@@ -12,20 +12,20 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 beforeEach(function () {
     $this->currentSession = Session::factory([
         'start_date' => '2021-08-01',
-        'end_date' =>  '2021-08-04',
+        'end_date' => '2021-08-04',
         'location' => LocationEnum::STRASBOURG(),
     ])->create();
 
     $this->lastSession = Session::factory([
         'start_date' => '2021-07-01',
-        'end_date' =>  '2021-07-04',
+        'end_date' => '2021-07-04',
         'location' => LocationEnum::STRASBOURG(),
 
     ])->create();
 
     $this->nextSession = Session::factory([
         'start_date' => '2021-09-01',
-        'end_date' =>  '2021-09-04',
+        'end_date' => '2021-09-04',
         'location' => LocationEnum::BRUSSELS(),
     ])->create();
 

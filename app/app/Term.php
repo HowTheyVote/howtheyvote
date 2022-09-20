@@ -5,8 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Term extends Model
-/*
+class Term extends Model /*
  * Elections to the European Parliament take place every five years.
  * The time-frame between two of these elections is called a plenary
  * term, i.e. a term represents the time the Parliament is constituted.

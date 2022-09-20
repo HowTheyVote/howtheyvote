@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Summary extends Model
-/*
+class Summary extends Model /*
  * A summary references one text or procedure that can be subject
  * to a vote in the plenary. This connection happens on the basis
  * of its reference.

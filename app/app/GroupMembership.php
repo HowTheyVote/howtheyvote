@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GroupMembership extends Model
-/*
+class GroupMembership extends Model /*
  * GroupMemberships connect Members and Groups. An active Member always
  * has an active GroupMembership (i.e. one with a start date before the
  * current date and no end date). A Member without an active Group-

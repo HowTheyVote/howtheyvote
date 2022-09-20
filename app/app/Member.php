@@ -10,8 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class Member extends Model
-/*
+class Member extends Model /*
  * Represents a Member of Parliament. Members cast their Votings to
  * subjects in parliament. These are stored in VotingLists.
  *

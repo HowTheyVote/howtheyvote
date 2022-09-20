@@ -35,11 +35,13 @@ class MatchVotesAndVotingListsAction extends Action
 
             if ($count > 1) {
                 report(CouldNotMatchVoteException::multipleMatchingVotingLists($vote));
+
                 continue;
             }
 
             if ($count === 0) {
                 report(CouldNotMatchVoteException::noMatchingVotingList($vote));
+
                 continue;
             }
 
@@ -50,6 +52,7 @@ class MatchVotesAndVotingListsAction extends Action
 
             if ($resultString !== $vote->remarks) {
                 report(CouldNotMatchVoteException::resultsDoNotMatch($vote, $votingList));
+
                 continue;
             }
 

@@ -9,6 +9,7 @@ use Spatie\Url\Url;
 class ScrapeAction extends Action
 {
     private $host;
+
     private $port;
 
     public function __construct(string $host, int $port)

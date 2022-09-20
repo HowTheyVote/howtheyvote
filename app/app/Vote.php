@@ -7,8 +7,7 @@ use App\Enums\VoteTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Vote extends Model
-/*
+class Vote extends Model /*
  * A Vote takes place during one session. A Vote has exactly one
  * VotingList that matches with it.
  *
