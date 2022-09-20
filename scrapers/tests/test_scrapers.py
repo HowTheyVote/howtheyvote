@@ -816,10 +816,10 @@ def test_sessions_scraper_run(mock_request):
 
 
 def test_parliament_sessions_scraper_run(mock_request):
-    scraper = ParliamentSessionsScraper(term=9, month=11, year=2021)
+    scraper = ParliamentSessionsScraper(term=9, month=3, year=2021)
     result = scraper.run()
 
-    session_one = Session(date(2021, 11, 10), date(2021, 11, 11), None)
-    session_two = Session(date(2021, 11, 22), date(2021, 11, 25), None)
+    session_one = Session(date(2021, 3, 8), date(2021, 3, 11), None)
+    session_two = Session(date(2021, 3, 24), date(2021, 3, 25), None)
 
     assert set(result) == set([session_two, session_one])

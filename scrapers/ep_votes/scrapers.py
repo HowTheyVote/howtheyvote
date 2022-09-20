@@ -611,7 +611,13 @@ class ParliamentSessionsScraper(Scraper):
         )
 
     def _parse_date(self, day: str) -> date:
-        return date.fromisoformat(str(self.year) + "-" + str(self.month) + "-" + day)
+        return date.fromisoformat(
+            str(self.year).rjust(2, "0")
+            + "-"
+            + str(self.month).rjust(2, "0")
+            + "-"
+            + day.rjust(2, "0")
+        )
 
 
 class ObservatorySessionsScraper(Scraper):
