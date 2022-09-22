@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CountryEnum;
+use App\Enums\VotePositionEnum;
 use App\Enums\VoteResultEnum;
 use App\Group;
 use App\Member;
@@ -25,7 +26,7 @@ beforeEach(function () {
     $this->member = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'DOE',
-        'country' => CountryEnum::NL(),
+        'country' => CountryEnum::NL,
         'twitter' => '@handle',
     ])->activeAt($this->firstJan, $greens)
         ->activeAt($this->thirdJan, $greens)
@@ -36,36 +37,36 @@ beforeEach(function () {
             'date' => $this->firstJan,
             'vote_id' => Vote::factory([
                 'final' => true,
-                'result' => VoteResultEnum::REJECTED(),
+                'result' => VoteResultEnum::REJECTED,
             ]),
         ])
         ->create()
         ->members()
-        ->attach($this->member->id, ['position' => 'AGAINST']);
+        ->attach($this->member->id, ['position' => VotePositionEnum::AGAINST]);
 
     VotingList::factory(
         [
             'date' => $this->thirdJan,
             'vote_id' => Vote::factory([
                 'final' => true,
-                'result' => VoteResultEnum::REJECTED(),
+                'result' => VoteResultEnum::REJECTED,
             ]),
         ])
         ->create()
         ->members()
-        ->attach($this->member->id, ['position' => 'FOR']);
+        ->attach($this->member->id, ['position' => VotePositionEnum::FOR]);
 
     VotingList::factory(
         [
             'date' => $this->firstJan,
             'vote_id' => Vote::factory([
                 'final' => false,
-                'result' => VoteResultEnum::ADOPTED(),
+                'result' => VoteResultEnum::ADOPTED,
             ]),
         ])
         ->create()
         ->members()
-        ->attach($this->member->id, ['position' => 'FOR']);
+        ->attach($this->member->id, ['position' => VotePositionEnum::FOR]);
 
     $this->memberId = Member::first()->id;
 });

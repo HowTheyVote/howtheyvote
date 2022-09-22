@@ -50,13 +50,13 @@
             class="visually-hidden"
             name="{{ $name }}"
             x-model="{{ $xModel }}"
-            value="{{ $position->label }}"
+            value="{{ $position->label() }}"
         />
 
         <span data-menu-button-contents>
             <span class="position-select__label">
                 <x-thumb :position="$position" style="circle" />
-                {{ __("enums.position.{$position->label}") }}
+                {{ __("enums.position.{$position->label()}") }}
             </span>
         </span>
       </label>

@@ -6,10 +6,10 @@ use App\Enums\VoteResultEnum;
 uses(Tests\TestCase::class);
 
 it('accepts and maps result enums', function () {
-    $view = $this->blade('<x-thumb :result="$result" />', ['result' => VoteResultEnum::ADOPTED()]);
+    $view = $this->blade('<x-thumb :result="$result" />', ['result' => VoteResultEnum::ADOPTED]);
     expect($view)->toHaveSelector('.thumb--adopted');
 
-    $view = $this->blade('<x-thumb :result="$result" />', ['result' => VoteResultEnum::REJECTED()]);
+    $view = $this->blade('<x-thumb :result="$result" />', ['result' => VoteResultEnum::REJECTED]);
     expect($view)->toHaveSelector('.thumb--rejected');
 });
 
@@ -22,13 +22,13 @@ it('accepts and maps result string', function () {
 });
 
 it('accepts and maps position enums', function () {
-    $view = $this->blade('<x-thumb :position="$position" />', ['position' => VotePositionEnum::FOR()]);
+    $view = $this->blade('<x-thumb :position="$position" />', ['position' => VotePositionEnum::FOR]);
     expect($view)->toHaveSelector('.thumb--for');
 
-    $view = $this->blade('<x-thumb :position="$position" />', ['position' => VotePositionEnum::AGAINST()]);
+    $view = $this->blade('<x-thumb :position="$position" />', ['position' => VotePositionEnum::AGAINST]);
     expect($view)->toHaveSelector('.thumb--against');
 
-    $view = $this->blade('<x-thumb :position="$position" />', ['position' => VotePositionEnum::ABSTENTION()]);
+    $view = $this->blade('<x-thumb :position="$position" />', ['position' => VotePositionEnum::ABSTENTION]);
     expect($view)->toHaveSelector('.thumb--abstention');
 });
 

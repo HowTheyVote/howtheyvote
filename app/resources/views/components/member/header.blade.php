@@ -17,7 +17,7 @@
             </h1>
 
             <p class="member-header__subtitle">
-                {{ $member->country->label }} {{ $member->country->emoji }}
+                {{ $member->country->label() }} {{ $member->country->emoji() }}
 
                 @if ($group)
                     ·

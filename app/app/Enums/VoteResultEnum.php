@@ -2,27 +2,24 @@
 
 namespace App\Enums;
 
-use Spatie\Enum\Laravel\Enum;
-
-/**
- * @method static self ADOPTED()
- * @method static self REJECTED()
- */
-class VoteResultEnum extends Enum
+enum VoteResultEnum: int
 {
-    protected static function values(): array
+    case ADOPTED = 0;
+    case REJECTED = 1;
+
+    public function label()
     {
-        return [
-            'ADOPTED' => 0,
-            'REJECTED' => 1,
-        ];
+        return match ($this) {
+            self::ADOPTED => 'adopted',
+            self::REJECTED => 'rejected'
+        };
     }
 
-    protected static function labels(): array
+    public static function make(string $result): static
     {
-        return [
-            'ADOPTED' => 'adopted',
-            'REJECTED' => 'rejected',
-        ];
+        return match ($result) {
+            'ADOPTED' => static::ADOPTED,
+            'REJECTED' => static::REJECTED,
+        };
     }
 }

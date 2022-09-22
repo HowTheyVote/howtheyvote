@@ -32,13 +32,13 @@ beforeEach(function () {
     $greensFor = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'DOE',
-        'country' => CountryEnum::NL(),
+        'country' => CountryEnum::NL,
     ])->activeAt($date, $this->greens)->count(1);
 
     $sdAgainst = Member::factory([
         'first_name' => 'Martin',
         'last_name' => 'EISENBAHN',
-        'country' => CountryEnum::DE(),
+        'country' => CountryEnum::DE,
     ])->activeAt($date, $this->sd)->count(2);
 
     $voteCollection = VoteCollection::factory(['title' => 'My Title'])->create();
@@ -48,8 +48,8 @@ beforeEach(function () {
         'description' => 'Matched Voting List',
         'date' => $date,
         'vote_id' => Vote::factory([
-            'type' => VoteTypeEnum::PRIMARY(),
-            'result' => VoteResultEnum::ADOPTED(),
+            'type' => VoteTypeEnum::PRIMARY,
+            'result' => VoteResultEnum::ADOPTED,
             'vote_collection_id' => $voteCollection,
             'final' => true,
         ]),
@@ -66,8 +66,8 @@ beforeEach(function () {
         'description' => 'Matched Voting List For Non Final Vote',
         'date' => $date,
         'vote_id' => Vote::factory([
-            'type' => VoteTypeEnum::SEPARATE(),
-            'result' => VoteResultEnum::ADOPTED(),
+            'type' => VoteTypeEnum::SEPARATE,
+            'result' => VoteResultEnum::ADOPTED,
             'vote_collection_id' => $voteCollection,
         ]),
     ];
@@ -235,7 +235,7 @@ it('callout shows appropriate text for non-final votes', function () {
     expect($response)->toHaveSelectorWithText('.callout--warning', 'separate');
 
     $vote = VotingList::find(2)->vote;
-    $vote->type = VoteTypeEnum::AMENDMENT();
+    $vote->type = VoteTypeEnum::AMENDMENT;
     $vote->save();
 
     $response = $this->get('/votes/2');
@@ -249,13 +249,13 @@ it('does not show a url in callout for a non-matched final vote', function () {
         'id' => 10,
         'vote_id' => Vote::factory([
             'vote_collection_id' => $collection,
-            'type' => VoteTypeEnum::SEPARATE(),
+            'type' => VoteTypeEnum::SEPARATE,
         ]),
     ])->withStats()->create();
 
     Vote::factory([
         'vote_collection_id' => $collection,
-        'type' => VoteTypeEnum::PRIMARY(),
+        'type' => VoteTypeEnum::PRIMARY,
         'final' => true,
     ])->create();
 

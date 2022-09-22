@@ -12,7 +12,7 @@
 
                     @if ($votingList->vote)
                         ·
-                        {{ ucfirst($votingList->result->label) }}
+                        {{ ucfirst($votingList->result->label()) }}
                         <x-thumb style="circle" :result="$votingList->result" />
                     @endif
                 </p>

@@ -75,7 +75,7 @@ it('finds and relates members with position', function () {
     expect($votingList->members()->count())->toEqual(1);
 
     $position = $member->votingLists()->first()->pivot->position;
-    expect($position)->toEqual(VotePositionEnum::FOR());
+    expect($position)->toEqual(VotePositionEnum::FOR);
 });
 
 it('updates related members', function () {
@@ -93,7 +93,7 @@ it('updates related members', function () {
     ])->activeAt($this->date)->create();
 
     $votingList->members()->attach($member, [
-        'position' => VotePositionEnum::AGAINST(),
+        'position' => VotePositionEnum::AGAINST,
     ]);
 
     $this->action->execute($this->term, $this->date);
@@ -101,7 +101,7 @@ it('updates related members', function () {
     expect($votingList->members()->count())->toEqual(1);
 
     $position = $votingList->members()->first()->pivot->position;
-    $expected = VotePositionEnum::FOR();
+    $expected = VotePositionEnum::FOR;
 
     expect($position)->toEqual($expected);
 });
@@ -159,8 +159,8 @@ it('finds members by first and last name if ambiguous', function () {
         ->position;
 
     expect($members->count())->toEqual(2);
-    expect($positionJane)->toEqual(VotePositionEnum::FOR());
-    expect($positionJohn)->toEqual(VotePositionEnum::AGAINST());
+    expect($positionJane)->toEqual(VotePositionEnum::FOR);
+    expect($positionJohn)->toEqual(VotePositionEnum::AGAINST);
 });
 
 it('finds members using case-insensitive comparisons', function () {
@@ -210,5 +210,5 @@ it('handles members who did not vote', function () {
     $this->action->execute($this->term, $this->date);
 
     $position = VotingList::first()->members()->first()->pivot->position;
-    expect($position)->toEqual(VotePositionEnum::NOVOTE());
+    expect($position)->toEqual(VotePositionEnum::NOVOTE);
 });

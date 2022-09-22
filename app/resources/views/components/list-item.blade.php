@@ -50,7 +50,7 @@
 
     @if ($position)
         <span class="visually-hidden">
-            {{ Str::lower($position->label) }}
+            {{ Str::lower($position->label()) }}
         </span>
 
         <x-thumb :position="$position" style="circle" class="list-item__thumb"/>

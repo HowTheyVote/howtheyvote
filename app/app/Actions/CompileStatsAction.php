@@ -115,14 +115,14 @@ class CompileStatsAction extends Action
 
     protected function formatPositions(Collection $rows): Collection
     {
-        $defaults = collect(VotePositionEnum::toArray())
+        $defaults = collect(VotePositionEnum::toValues())
             ->map(fn ($position) => [$position, 0])
             ->toAssoc();
 
         $positions = $rows
             ->map(function ($row) {
                 return [
-                    VotePositionEnum::make($row->position)->label,
+                    VotePositionEnum::make($row->position)->label(),
                     $row->count,
                 ];
             })

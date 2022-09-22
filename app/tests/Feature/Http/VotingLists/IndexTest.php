@@ -14,7 +14,7 @@ beforeEach(function () {
             'session_id' => Session::factory([
                 'start_date' => '2021-01-01',
                 'end_date' => '2021-01-05',
-                'location' => LocationEnum::BRUSSELS(),
+                'location' => LocationEnum::BRUSSELS,
             ])->create(),
             'final' => true,
         ]),

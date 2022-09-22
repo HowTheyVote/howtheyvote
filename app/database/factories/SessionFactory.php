@@ -25,7 +25,7 @@ class SessionFactory extends Factory
         return [
             'start_date' => '2021-08-08',
             'end_date' => '2021-08-11',
-            'location' => LocationEnum::BRUSSELS(),
+            'location' => LocationEnum::BRUSSELS,
         ];
     }
 }

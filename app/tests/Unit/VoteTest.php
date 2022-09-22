@@ -37,7 +37,7 @@ it('returns final vote', function () {
 
     $nonFinal = Vote::factory([
         'vote_collection_id' => $voteCollection,
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
     ])->create();
 
     $final = Vote::factory([
@@ -50,7 +50,7 @@ it('returns final vote', function () {
 
 it('returns a subtitle for amendments', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
         'amendment' => 10,
         'author' => 'S&D',
     ])->make();
@@ -60,7 +60,7 @@ it('returns a subtitle for amendments', function () {
 
 it('returns a subtitle for separate votes', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::SEPARATE(),
+        'type' => VoteTypeEnum::SEPARATE,
         'subject' => '§ 10',
     ])->make();
 
@@ -69,7 +69,7 @@ it('returns a subtitle for separate votes', function () {
 
 it('returns a subtitle for separate votes with split part', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::SEPARATE(),
+        'type' => VoteTypeEnum::SEPARATE,
         'subject' => '§ 10',
         'split_part' => '2',
     ])->make();
@@ -86,7 +86,7 @@ it('returns a subtitle for final votes', function () {
 });
 
 it('checks primary type', function () {
-    $vote = Vote::factory(['type' => VoteTypeEnum::PRIMARY()])
+    $vote = Vote::factory(['type' => VoteTypeEnum::PRIMARY])
         ->make();
 
     expect($vote->isPrimaryVote())->toBe(true);
@@ -95,7 +95,7 @@ it('checks primary type', function () {
 });
 
 it('checks amendment type', function () {
-    $vote = Vote::factory(['type' => VoteTypeEnum::AMENDMENT()])
+    $vote = Vote::factory(['type' => VoteTypeEnum::AMENDMENT])
         ->make();
 
     expect($vote->isPrimaryVote())->toBe(false);
@@ -104,7 +104,7 @@ it('checks amendment type', function () {
 });
 
 it('checks separate type', function () {
-    $vote = Vote::factory(['type' => VoteTypeEnum::SEPARATE()])
+    $vote = Vote::factory(['type' => VoteTypeEnum::SEPARATE])
         ->make();
 
     expect($vote->isPrimaryVote())->toBe(false);
@@ -118,12 +118,12 @@ it('checks if related votes exist', function () {
 
     $nonFinal = Vote::factory([
         'vote_collection_id' => $voteCollection,
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
     ])->create();
 
     $final = Vote::factory([
         'vote_collection_id' => $voteCollection,
-        'type' => VoteTypeEnum::PRIMARY(),
+        'type' => VoteTypeEnum::PRIMARY,
         'final' => true,
     ])->make();
 

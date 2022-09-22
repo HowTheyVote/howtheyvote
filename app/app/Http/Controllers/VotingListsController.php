@@ -114,7 +114,7 @@ class VotingListsController extends Controller
                 'group.name' => $member->group->name,
                 'country.code' => $member->country->value,
                 'country.name' => $member->country->label(),
-                'position' => $member->pivot->position->label,
+                'position' => $member->pivot->position->label(),
             ];
         })->toArray();
 
@@ -141,14 +141,14 @@ class VotingListsController extends Controller
                     'code' => $member->country->value,
                     'name' => $member->country->label(),
                 ],
-                'position' => $member->pivot->position->label,
+                'position' => $member->pivot->position->label(),
             ];
         })->toArray();
 
         $vote = [
             'title' => $votingList->display_title,
             'date' => $votingList->date,
-            'result' => $votingList->result->label,
+            'result' => $votingList->result->label(),
             'members' => $members,
         ];
 

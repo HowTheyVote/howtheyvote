@@ -25,13 +25,13 @@ beforeEach(function () {
     $this->greensFor = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'DOE',
-        'country' => CountryEnum::NL(),
+        'country' => CountryEnum::NL,
     ])->activeAt($date, $greens)->count(1);
 
     $this->votingList = VotingList::factory([
         'date' => $date,
         'vote_id' => Vote::factory([
-            'result' => VoteResultEnum::REJECTED(),
+            'result' => VoteResultEnum::REJECTED,
             'vote_collection_id' => VoteCollection::factory([
                 'title' => 'Budget 2020',
             ]),

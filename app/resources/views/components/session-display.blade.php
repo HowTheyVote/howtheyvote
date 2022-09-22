@@ -9,7 +9,7 @@
 
     <div {{ $attributes->bem('session-display') }}>
         {{ __('components.session-display.current', [
-            'location' => $currentSession->location->label,
+            'location' => $currentSession->location->label(),
         ]) }}
 
         {!! __('components.session-display.agenda', [
@@ -24,7 +24,7 @@
         {!! __('components.session-display.last', [
             'start' => $lastSession->start_date->format('M jS'),
             'end' =>$lastSession->end_date->format('M jS'),
-            'location' => $lastSession->location->label,
+            'location' => $lastSession->location->label(),
         ]) !!}
 
         {!! __('components.session-display.agenda', [
@@ -39,7 +39,7 @@
         {!! __('components.session-display.next', [
             'start' => $nextSession->start_date->format('M jS'),
             'end' =>$nextSession->end_date->format('M jS'),
-            'location' => $nextSession->location->label,
+            'location' => $nextSession->location->label(),
         ]) !!}
 
         {!! __('components.session-display.agenda', [

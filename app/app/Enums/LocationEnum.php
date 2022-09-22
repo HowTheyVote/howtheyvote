@@ -2,30 +2,27 @@
 
 namespace App\Enums;
 
-use Spatie\Enum\Laravel\Enum;
-
-/**
- * @method static self BRUSSELS()
- * @method static self STRASBOURG()
- * @method static self NONE()
- */
-class LocationEnum extends Enum
+enum LocationEnum: int
 {
-    protected static function values(): array
+    case BRUSSELS = 0;
+    case STRASBOURG = 1;
+    case NONE = 2;
+
+    public function label(): string
     {
-        return [
-            'BRUSSELS' => 0,
-            'STRASBOURG' => 1,
-            'NONE' => 2,
-        ];
+        return match ($this) {
+            self::BRUSSELS => 'Brussels',
+            self::STRASBOURG => 'Strasbourg',
+            self::NONE => 'None',
+        };
     }
 
-    protected static function labels(): array
+    public static function make(string $location): static
     {
-        return [
-            'BRUSSELS' => 'Brussels',
-            'STRASBOURG' => 'Strasbourg',
-            'NONE' => 'None',
-        ];
+        return match ($location) {
+            'BRUSSELS' => static::BRUSSELS,
+            'STRASBOURG' => static::STRASBOURG,
+            'NONE' => static::NONE,
+        };
     }
 }

@@ -39,7 +39,7 @@ class ScrapeSessionsAction extends Action
                 'start_date' => $session['start_date'],
                 'end_date' => $session['end_date'],
             ],
-                ['location' => LocationEnum::NONE(),
+                ['location' => LocationEnum::NONE,
                 ]);
         }
 

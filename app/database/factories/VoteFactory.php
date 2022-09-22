@@ -25,8 +25,8 @@ class VoteFactory extends Factory
     public function definition()
     {
         return [
-            'type' => VoteTypeEnum::PRIMARY(),
-            'result' => VoteResultEnum::ADOPTED(),
+            'type' => VoteTypeEnum::PRIMARY,
+            'result' => VoteResultEnum::ADOPTED,
             'formatted' => 'Proposition de résolution',
             'vote_collection_id' => VoteCollection::factory(),
             'final' => false,

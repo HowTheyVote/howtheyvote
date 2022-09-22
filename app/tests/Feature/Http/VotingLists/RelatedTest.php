@@ -17,7 +17,7 @@ beforeEach(function () {
         'id' => 1,
         'vote_id' => Vote::factory([
             'vote_collection_id' => $this->voteCollection,
-            'type' => VoteTypeEnum::PRIMARY(),
+            'type' => VoteTypeEnum::PRIMARY,
             'final' => true,
         ]),
     ]);
@@ -26,7 +26,7 @@ beforeEach(function () {
         'id' => 2,
         'vote_id' => Vote::factory([
             'vote_collection_id' => $this->voteCollection,
-            'type' => VoteTypeEnum::SEPARATE(),
+            'type' => VoteTypeEnum::SEPARATE,
             'subject' => '§ 3',
             'split_part' => '1',
         ]),

@@ -124,17 +124,17 @@ class Vote extends Model /*
 
     public function isPrimaryVote()
     {
-        return VoteTypeEnum::PRIMARY()->equals($this->type);
+        return VoteTypeEnum::PRIMARY == ($this->type);
     }
 
     public function isSeparateVote()
     {
-        return VoteTypeEnum::SEPARATE()->equals($this->type);
+        return VoteTypeEnum::SEPARATE == ($this->type);
     }
 
     public function isAmendmentVote()
     {
-        return VoteTypeEnum::AMENDMENT()->equals($this->type);
+        return VoteTypeEnum::AMENDMENT == ($this->type);
     }
 
     public function hasRelatedVotes()

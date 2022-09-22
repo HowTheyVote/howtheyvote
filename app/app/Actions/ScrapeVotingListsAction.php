@@ -124,7 +124,7 @@ class ScrapeVotingListsAction extends Action
         foreach ($members as $member) {
             if (! in_array($member->id, $membersWhoVoted)) {
                 $membersMapping[$member->id] = [
-                    'position' => VotePositionEnum::NOVOTE(),
+                    'position' => VotePositionEnum::NOVOTE,
                 ];
             }
         }

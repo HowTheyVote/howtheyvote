@@ -2,21 +2,18 @@
 
 namespace App\Enums;
 
-use Spatie\Enum\Laravel\Enum;
-
-/**
- * @method static self PRIMARY()
- * @method static self AMENDMENT()
- * @method static self SEPARATE()
- */
-class VoteTypeEnum extends Enum
+enum VoteTypeEnum: int
 {
-    protected static function values(): array
+    case PRIMARY = 0;
+    case AMENDMENT = 1;
+    case SEPARATE = 2;
+
+    public static function make(string $type): static
     {
-        return [
-            'PRIMARY' => 0,
-            'AMENDMENT' => 1,
-            'SEPARATE' => 2,
-        ];
+        return match ($type) {
+            'PRIMARY' => static::PRIMARY,
+            'AMENDMENT' => static::AMENDMENT,
+            'SEPARATE' => static::SEPARATE,
+        };
     }
 }

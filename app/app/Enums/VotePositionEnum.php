@@ -2,23 +2,41 @@
 
 namespace App\Enums;
 
-use Spatie\Enum\Laravel\Enum;
-
-/**
- * @method static self FOR()
- * @method static self AGAINST()
- * @method static self ABSTENTION()
- * @method static self NOVOTE()
- */
-class VotePositionEnum extends Enum
+enum VotePositionEnum: int
 {
-    protected static function values(): array
+    case FOR = 0;
+    case AGAINST = 1;
+    case ABSTENTION = 2;
+    case NOVOTE = 3;
+
+    public function label(): string
     {
-        return [
-            'FOR' => 0,
-            'AGAINST' => 1,
-            'ABSTENTION' => 2,
-            'NOVOTE' => 3,
-        ];
+        return match ($this) {
+            self::FOR => 'FOR',
+            self::AGAINST => 'AGAINST',
+            self::ABSTENTION => 'ABSTENTION',
+            self::NOVOTE => 'NOVOTE',
+        };
+    }
+
+    public static function make(string|int $position): static
+    {
+        return match ($position) {
+            'FOR' => static::FOR,
+            'AGAINST' => static::AGAINST,
+            'ABSTENTION' => static::ABSTENTION,
+            'NOVOTE' => static::NOVOTE,
+            0 => static::FOR,
+            1 => static::AGAINST,
+            2 => static::ABSTENTION,
+            3 => static::NOVOTE,
+        };
+    }
+
+    public static function toValues()
+    {
+        return array_map(
+            fn (VotePositionEnum $c) => $c->name,
+            VotePositionEnum::cases());
     }
 }

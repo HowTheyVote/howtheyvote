@@ -30,7 +30,7 @@ class MemberFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'date_of_birth' => $this->faker->dateTimeThisCentury(),
-            'country' => CountryEnum::GB(),
+            'country' => CountryEnum::GB,
         ];
     }
 

@@ -63,7 +63,7 @@ class Session extends Model /*
     {
         return __('session.title', [
             'date' => $this->start_date->format('F Y'),
-            'location' => $this->location->label,
+            'location' => $this->location->label(),
         ]);
     }
 

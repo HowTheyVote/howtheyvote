@@ -13,7 +13,7 @@ it('has a display title', function () {
     $session = Session::factory([
         'start_date' => '2021-08-11',
         'end_date' => '2021-08-15',
-        'location' => LocationEnum::BRUSSELS(),
+        'location' => LocationEnum::BRUSSELS,
     ])->create();
 
     expect($session->display_title)->toEqual('August 2021 · Brussels');
@@ -23,13 +23,13 @@ it('returns final votes', function () {
     $session = Session::factory()->create();
 
     $finalVote = Vote::factory([
-        'type' => VoteTypeEnum::SEPARATE(),
+        'type' => VoteTypeEnum::SEPARATE,
         'final' => true,
         'session_id' => $session,
     ])->create();
 
     Vote::factory([
-        'type' => VoteTypeEnum::PRIMARY(),
+        'type' => VoteTypeEnum::PRIMARY,
         'session_id' => $session,
     ])->create();
 

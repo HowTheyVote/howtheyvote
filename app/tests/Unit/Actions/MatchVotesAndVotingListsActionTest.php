@@ -28,7 +28,7 @@ beforeEach(function () {
 
 it('matches vote with title', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
         'remarks' => '102030',
@@ -46,7 +46,7 @@ it('matches vote with title', function () {
 
 it('ignores votes marked as unmatched', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
         'remarks' => '102030',
@@ -65,7 +65,7 @@ it('ignores votes marked as unmatched', function () {
 
 it('matches vote without title', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
         'remarks' => '102030',
@@ -117,7 +117,7 @@ it('reports an error when a vote has multiple matching voting lists', function (
         'id' => 1,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
     ])->create();
 
     VotingList::factory([
@@ -141,7 +141,7 @@ it('reports an error when a vote and its matched voting list have different resu
         'id' => 1,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
         'remarks' => '102030',
     ])->create();
 
@@ -164,7 +164,7 @@ it('reports an error when a vote and its matched voting list have different resu
 
 it('generates share-pictures for matched final votes', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::SEPARATE(),
+        'type' => VoteTypeEnum::SEPARATE,
         'final' => true,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
@@ -183,7 +183,7 @@ it('generates share-pictures for matched final votes', function () {
 
 it('logs how many votes were matched and how many unmatched votes remain', function () {
     $vote = Vote::factory([
-        'type' => VoteTypeEnum::AMENDMENT(),
+        'type' => VoteTypeEnum::AMENDMENT,
         'vote_collection_id' => $this->voteCollection->id,
         'formatted' => 'Am 1/2',
         'remarks' => '102030',

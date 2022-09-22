@@ -17,7 +17,7 @@ it('renders successfully', function () {
 it('shows the result of the vote', function () {
     $votingList = VotingList::factory([
         'vote_id' => Vote::factory([
-            'result' => VoteResultEnum::REJECTED(),
+            'result' => VoteResultEnum::REJECTED,
         ]),
     ])->withStats()->create();
 

@@ -11,7 +11,7 @@
                         @foreach ($votingLists as $votingList)
                             <x-vote-card
                                 :vote="$votingList->vote"
-                                :position="Str::lower($votingList->pivot->position->label)"
+                                :position="Str::lower($votingList->pivot->position->label())"
                             />
                         @endforeach
                     </x-stack>

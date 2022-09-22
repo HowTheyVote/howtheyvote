@@ -29,7 +29,7 @@ it('updates member data', function () {
         'last_name' => 'Doe',
         'first_name_normalized' => 'jane',
         'last_name_normalized' => 'doe',
-        'country' => CountryEnum::GB(),
+        'country' => CountryEnum::GB->value,
         'date_of_birth' => '1975-01-01',
         'twitter' => 'EinTwitterLink',
         'facebook' => null,

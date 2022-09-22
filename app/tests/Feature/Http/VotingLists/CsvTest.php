@@ -21,7 +21,7 @@ beforeEach(function () {
     $this->greensFor = Member::factory([
         'first_name' => 'Jane',
         'last_name' => 'DOE',
-        'country' => CountryEnum::NL(),
+        'country' => CountryEnum::NL,
     ])->activeAt($date, $greens)->count(1);
 
     $this->votingList = VotingList::factory(['date' => $date])

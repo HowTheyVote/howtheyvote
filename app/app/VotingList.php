@@ -68,7 +68,7 @@ class VotingList extends Model /*
             'id' => $this->id,
             'display_title' => $this->display_title,
             'date' => $this->date->timestamp,
-            'result' => $this->vote->result->label,
+            'result' => $this->vote->result->label(),
             'summary' => $this->vote->voteCollection->summary?->text,
             'session_id' => $this->vote->session?->id,
             'session_display_title' => $this->vote->session?->display_title,

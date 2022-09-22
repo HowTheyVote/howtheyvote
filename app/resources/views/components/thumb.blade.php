@@ -7,12 +7,12 @@
 @php
     if (is_a($position, \App\Enums\VotePositionEnum::class))
     {
-        $position = Str::lower($position->label);
+        $position = Str::lower($position->label());
     }
 
     if (is_a($result, \App\Enums\VoteResultEnum::class))
     {
-        $result = Str::lower($result->label);
+        $result = Str::lower($result->label());
     }
 @endphp
 

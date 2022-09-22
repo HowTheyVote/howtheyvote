@@ -44,7 +44,7 @@ it('creates associated votes', function () {
 
     expect($vote->subject)->toEqual('§ 13');
     expect($vote->author)->toEqual('original text');
-    expect($vote->type)->toEqual(VoteTypeEnum::SEPARATE());
+    expect($vote->type)->toEqual(VoteTypeEnum::SEPARATE);
     expect($vote->amendment)->toEqual(null);
     expect($vote->split_part)->toEqual(1);
     expect($vote->formatted)->toEqual('§ 13/1');

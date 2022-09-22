@@ -37,7 +37,7 @@ class Member extends Model /*
     ];
 
     protected $casts = [
-        'country' => CountryEnum::class.':nullable',
+        'country' => CountryEnum::class,
     ];
 
     public function terms()

@@ -63,7 +63,7 @@ it('does not return a sharepic link if it the picture does not exist', function 
         'date' => '2021-01-01',
         'id' => 1,
         'vote_id' => Vote::factory([
-            'type' => VoteTypeEnum::PRIMARY(),
+            'type' => VoteTypeEnum::PRIMARY,
             'final' => true,
         ]),
     ])->make();
@@ -79,7 +79,7 @@ it('returns link to sharepic if vote is final and picture does exist', function 
         'date' => '2021-01-01',
         'id' => 1,
         'vote_id' => Vote::factory([
-            'type' => VoteTypeEnum::AMENDMENT(),
+            'type' => VoteTypeEnum::AMENDMENT,
             'final' => true,
         ]),
     ])->make();
@@ -107,9 +107,9 @@ it('returns result of matched vote', function () {
 
     $votingList = VotingList::factory([
         'vote_id' => Vote::factory([
-            'result' => VoteResultEnum::ADOPTED(),
+            'result' => VoteResultEnum::ADOPTED,
         ]),
     ])->make();
 
-    expect($votingList->result)->toEqual(VoteResultEnum::ADOPTED());
+    expect($votingList->result)->toEqual(VoteResultEnum::ADOPTED);
 });
