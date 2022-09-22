@@ -113,7 +113,7 @@ class VotingListsController extends Controller
                 'group.abbreviation' => $member->group->abbreviation,
                 'group.name' => $member->group->name,
                 'country.code' => $member->country->value,
-                'country.name' => $member->country->label,
+                'country.name' => $member->country->label(),
                 'position' => $member->pivot->position->label,
             ];
         })->toArray();
@@ -139,7 +139,7 @@ class VotingListsController extends Controller
                 ],
                 'country' => [
                     'code' => $member->country->value,
-                    'name' => $member->country->label,
+                    'name' => $member->country->label(),
                 ],
                 'position' => $member->pivot->position->label,
             ];
