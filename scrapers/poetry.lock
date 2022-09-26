@@ -423,7 +423,7 @@ test = ["fixtures", "mock", "purl", "pytest", "requests-futures", "sphinx", "tes
 
 [[package]]
 name = "sentry-sdk"
-version = "1.9.8"
+version = "1.9.9"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
@@ -538,7 +538,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6bcfc3769dd4277d6fde8b9d3dcb2934fe4c281edc8a3dd1cf7e9035019be409"
+content-hash = "36fda4b9f7cd23fe1416b686a509b92cb6889fafdf30aca1484c8778ca0cf8bb"
 
 [metadata.files]
 attrs = [
@@ -878,8 +878,8 @@ requests-mock = [
     {file = "requests_mock-1.10.0-py2.py3-none-any.whl", hash = "sha256:2fdbb637ad17ee15c06f33d31169e71bf9fe2bdb7bc9da26185be0dd8d842699"},
 ]
 sentry-sdk = [
-    {file = "sentry-sdk-1.9.8.tar.gz", hash = "sha256:ef4b4d57631662ff81e15c22bf007f7ce07c47321648c8e601fbd22950ed1a79"},
-    {file = "sentry_sdk-1.9.8-py2.py3-none-any.whl", hash = "sha256:7378c08d81da78a4860da7b4900ac51fef38be841d01bc5b7cb249ac51e070c6"},
+    {file = "sentry-sdk-1.9.9.tar.gz", hash = "sha256:d6c71d2f85710b66822adaa954af7912bab135d6c85febd5b0f3dfd4ab37e181"},
+    {file = "sentry_sdk-1.9.9-py2.py3-none-any.whl", hash = "sha256:ef925b5338625448645a778428d8f22a3d17de8b28cc8e6fba60b93393ad86fe"},
 ]
 setuptools = [
     {file = "setuptools-65.3.0-py3-none-any.whl", hash = "sha256:2e24e0bec025f035a2e72cdd1961119f557d78ad331bb00ff82efb2ab8da8e82"},
