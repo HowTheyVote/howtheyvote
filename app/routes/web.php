@@ -22,18 +22,21 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/pages/{slug}', [PagesController::class, 'show'])->name('pages.show');
 
-Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
-Route::get('/monitoring/lists/{votingList}', [MonitoringController::class, 'showLists'])->name('monitoring.showLists');
-Route::get('/monitoring/votes/{vote}', [MonitoringController::class, 'showVotes'])->name('monitoring.showVotes');
+Route::controller(MonitoringController::class)->group(function () {
+    Route::get('/monitoring', 'index')->name('monitoring.index');
+    Route::get('/monitoring/lists/{votingList}', 'showLists')->name('monitoring.showLists');
+    Route::get('/monitoring/votes/{vote}', 'showVotes')->name('monitoring.showVotes');
+});
 
-Route::get('/votes', [VotingListsController::class, 'index'])->name('voting-lists.index');
-Route::get('/votes/{votingList}.csv', [VotingListsController::class, 'csv'])->name('voting-list.csv');
-Route::get('/votes/{votingList}.json', [VotingListsController::class, 'json'])->name('voting-list.json');
-Route::get('/votes/{votingList}', [VotingListsController::class, 'show'])->name('voting-list.show');
-Route::get('/votes/{votingList}/summary', [VotingListsController::class, 'summary'])->name('voting-list.summary');
-Route::get('/votes/{votingList}/related', [VotingListsController::class, 'related'])->name('voting-list.related');
-
-Route::get('/votes/{votingList}/share-picture', [VotingListsController::class, 'sharePicture'])->name('voting-list.share-picture');
+Route::controller(VotingListsController::class)->group(function () {
+    Route::get('/votes', 'index')->name('voting-lists.index');
+    Route::get('/votes/{votingList}.csv', 'csv')->name('voting-list.csv');
+    Route::get('/votes/{votingList}.json', 'json')->name('voting-list.json');
+    Route::get('/votes/{votingList}', 'show')->name('voting-list.show');
+    Route::get('/votes/{votingList}/summary', 'summary')->name('voting-list.summary');
+    Route::get('/votes/{votingList}/related', 'related')->name('voting-list.related');
+    Route::get('/votes/{votingList}/share-picture', 'sharePicture')->name('voting-list.share-picture');
+});
 
 Route::get('/members/{member}', [MembersController::class, 'show'])->name('members.show');
 // Handles short URLs and should be registered as the last route
