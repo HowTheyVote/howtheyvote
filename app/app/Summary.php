@@ -25,7 +25,7 @@ class Summary extends Model /*
 
     public function getExcerptAttribute(): string
     {
-        $text = Str::of($this->text)
+        $text = str($this->text)
             ->explode("\n\n")
             // Remove the first paragraph as it almost always only contains
             // the title and the vote result, which is redundant information.

@@ -176,6 +176,6 @@ class VotingListsController extends Controller
             abort(404);
         }
 
-        return redirect()->route('voting-list.show', ['votingList' => $votingList->id]);
+        return to_route('voting-list.show', ['votingList' => $votingList->id]);
     }
 }
