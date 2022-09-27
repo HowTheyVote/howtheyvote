@@ -20,7 +20,7 @@
             <x-vote-result-chart :stats="$votingList->stats" />
         </x-stack>
 
-        <x-slot name="footer">
+        <x-slot:footer>
             {{ __('voting-lists.share-picture.footer') }}<br>
             <strong>{{ $shortDisplayUrl }}</strong>
         </x-slot>

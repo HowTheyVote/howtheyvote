@@ -2,15 +2,15 @@
     <x-base-layout>
         <x-stack space="lg">
             <x-hero>
-                <x-slot name="title">
+                <x-slot:title>
                     {{ __('voting-lists.title') }}
                 </x-slot>
 
-                <x-slot name="text">
+                <x-slot:text>
                     {{ __('voting-lists.subtitle') }}
                 </x-slot>
 
-                <x-slot name="action">
+                <x-slot:action>
                     <x-search-input />
                 </x-slot>
             </x-hero>

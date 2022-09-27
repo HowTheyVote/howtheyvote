@@ -24,7 +24,7 @@
             <div class="padding--h">
                 <x-wrapper>
                     <x-tabs>
-                        <x-slot name="list">
+                        <x-slot:list>
                             <x-tab-button id="members" :selected="true">
                                 {{ __('voting-lists.members.title') }}
                             </x-tab-button>

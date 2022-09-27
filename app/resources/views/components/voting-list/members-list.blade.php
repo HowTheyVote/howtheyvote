@@ -6,7 +6,7 @@
     :searchable="true"
     :search-placeholder="__('voting-lists.members.search-placeholder')"
 >
-    <x-slot name="actions">
+    <x-slot:actions>
         <x-position-select x-model="filter" />
     </x-slot>
 
