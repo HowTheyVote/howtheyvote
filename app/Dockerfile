@@ -1,4 +1,4 @@
-FROM php:8-alpine3.13
+FROM php:8-alpine3.14
 
 RUN apk --update add \
     build-base \

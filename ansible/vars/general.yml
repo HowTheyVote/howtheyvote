@@ -1,6 +1,6 @@
 ---
-php_version: 8.0
-node_version: 14
+php_version: '8.1'
+node_version: '14'
 epvotes_version: main
 python_version: '3.10'
 poetry_version: '1.2.0'
