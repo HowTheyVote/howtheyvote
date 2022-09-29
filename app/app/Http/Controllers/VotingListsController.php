@@ -155,7 +155,7 @@ class VotingListsController extends Controller
         return response()->json($vote);
     }
 
-    private function members(VotingList $votingList)
+private function members(VotingList $votingList)
     {
         return $votingList
             ->members()
@@ -165,6 +165,7 @@ class VotingListsController extends Controller
             // as otherwise e.g. `group_memberships.id` would overwrite
             // `members.id`.
             ->select('members.*', 'votings.position', 'group_memberships.group_id')
+            ->orderBy('last_name_normalized')
             ->get();
     }
 
