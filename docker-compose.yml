@@ -69,7 +69,7 @@ services:
     restart: always
 
   meilisearch:
-    image: getmeili/meilisearch
+    image: getmeili/meilisearch:v0.28.1
     volumes:
       - meilisearch_storage:/data.ms
     ports:
