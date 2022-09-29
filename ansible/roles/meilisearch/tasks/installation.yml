@@ -19,18 +19,12 @@
     version: "tags/v{{ meilisearch_version }}"
   when: not exec_stats.stat.exists
 
-- name: Compile from source
-  command:
-    cmd: cargo build --release
-    chdir: "{{ meilisearch_install_dir }}"
-  when: not exec_stats.stat.exists
-
-- name: Copy executable to bin directory
+- name: Download prebuilt binary
   notify:
+    - Reread meilisearch service
     - Restart meilisearch service
-  copy:
-    src: "{{ meilisearch_install_dir }}/target/release/meilisearch"
-    remote_src: yes
+  get_url:
+    url: "https://github.com/meilisearch/meilisearch/releases/download/v{{ meilisearch_version }}/meilisearch-linux-amd64"
     dest: "{{ ansible_facts.env.HOME }}/bin/meilisearch-{{ meilisearch_version }}"
     mode: "u+x"
   when: not exec_stats.stat.exists
