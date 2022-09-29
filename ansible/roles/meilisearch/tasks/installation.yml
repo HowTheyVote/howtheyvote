@@ -4,14 +4,6 @@
     path: "{{ ansible_facts.env.HOME }}/bin/meilisearch-{{ meilisearch_version }}"
   register: exec_stats
 
-- name: Copy service configuration
-  notify:
-    - Reread meilisearch service
-    - Restart meilisearch service
-  template:
-    src: etc/services.d/meilisearch.ini.j2
-    dest: "{{ ansible_facts.env.HOME }}/etc/services.d/meilisearch.ini"
-
 - name: Clone git repository
   git:
     repo: https://github.com/meilisearch/MeiliSearch
@@ -28,6 +20,14 @@
     dest: "{{ ansible_facts.env.HOME }}/bin/meilisearch-{{ meilisearch_version }}"
     mode: "u+x"
   when: not exec_stats.stat.exists
+
+- name: Copy service configuration
+  notify:
+    - Reread meilisearch service
+    - Restart meilisearch service
+  template:
+    src: etc/services.d/meilisearch.ini.j2
+    dest: "{{ ansible_facts.env.HOME }}/etc/services.d/meilisearch.ini"
 
 - meta: flush_handlers
 
