@@ -4,9 +4,9 @@ namespace App;
 
 use App\Enums\CountryEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -62,9 +62,11 @@ class Member extends Model /*
             ->withPivot('position');
     }
 
-    public function getFullNameAttribute(): string
+    public function fullName(): Attribute
     {
-        return "{$this->first_name} {$this->last_name}";
+        return new Attribute(
+            get: fn () => "{$this->first_name} {$this->last_name}"
+        );
     }
 
     public static function normalizeName(string $name): string
@@ -79,18 +81,22 @@ class Member extends Model /*
         return strtr($name, $replacements);
     }
 
-    public function setFirstNameAttribute($name)
+    public function firstName(): Attribute
     {
-        $this->attributes['first_name'] = $name;
-
-        return $this->first_name_normalized = static::normalizeName($name);
+        return new Attribute(
+            set: fn ($name) => [
+                'first_name' => $name,
+                'first_name_normalized' => static::normalizeName($name),
+            ]);
     }
 
-    public function setLastNameAttribute($name)
+    public function lastName(): Attribute
     {
-        $this->attributes['last_name'] = $name;
-
-        return $this->last_name_normalized = static::normalizeName($name);
+        return new Attribute(
+            set: fn ($name) => [
+                'last_name' => $name,
+                'last_name_normalized' => static::normalizeName($name),
+            ]);
     }
 
     public function scopeActiveAt(Builder $query, \DateTime $date, Term $term = null)
@@ -112,14 +118,18 @@ class Member extends Model /*
         });
     }
 
-    public function getThumbnailUrlAttribute(): string
+    public function thumbnailUrl(): Attribute
     {
-        return Storage::disk('public')->url("members/{$this->id}-104px.jpg");
+        return new Attribute(
+            get: fn () => Storage::disk('public')->url("members/{$this->id}-104px.jpg")
+        );
     }
 
-    public function getProfilePictureUrlAttribute(): string
+    public function profilePictureUrl(): Attribute
     {
-        return Storage::disk('public')->url("members/{$this->id}.jpg");
+        return new Attribute(
+            get: fn () => Storage::disk('public')->url("members/{$this->id}.jpg")
+        );
     }
 
     public function hasProfilePicture(): bool
@@ -127,14 +137,16 @@ class Member extends Model /*
         return Storage::disk('public')->exists("members/{$this->id}.jpg");
     }
 
-    public function getLinksAttribute(): Collection
+    public function links(): Attribute
     {
-        return collect([
-            'email' => $this->email
-                ? Str::obfuscate("mailto:{$this->email}")
-                : null,
-            'twitter' => $this->twitter,
-            'facebook' => $this->facebook,
-        ])->filter();
+        return new Attribute(
+            get: fn () => collect([
+                'email' => $this->email
+                    ? Str::obfuscate("mailto:{$this->email}")
+                    : null,
+                'twitter' => $this->twitter,
+                'facebook' => $this->facebook,
+            ])->filter()
+        );
     }
 }

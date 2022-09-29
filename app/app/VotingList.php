@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Enums\VoteResultEnum;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -104,64 +104,82 @@ class VotingList extends Model /*
         });
     }
 
-    public function getDisplayTitleAttribute(): string
+    public function displayTitle(): Attribute
     {
-        return $this->vote?->display_title ?: $this->description;
+        return new Attribute(
+            get: fn () => $this->vote?->display_title ?: $this->description
+        );
     }
 
-    public function getHashIdAttribute(): string
+    public function hashId(): Attribute
     {
-        return Hashids::encode($this->id);
+        return new Attribute(
+            get: fn () => Hashids::encode($this->id)
+        );
     }
 
-    public function getFormattedDateAttribute(): string
+    public function formattedDate(): Attribute
     {
-        return $this->date->isoFormat('dddd, MMMM D, YYYY');
+        return new Attribute(
+            get: fn () => $this->date->isoFormat('dddd, MMMM D, YYYY')
+        );
     }
 
-    public function getSharePictureUrlAttribute(): ?string
+    public function sharePictureUrl(): Attribute
     {
-        if (! $this->vote?->isFinalVote()) {
-            return null;
-        }
+        return new Attribute(
+            get: function () {
+                if (! $this->vote?->isFinalVote()) {
+                    return null;
+                }
 
-        $path = "share-pictures/vote-sharepic-{$this->id}.png";
-        $disk = Storage::disk('public');
+                $path = "share-pictures/vote-sharepic-{$this->id}.png";
+                $disk = Storage::disk('public');
 
-        if (! $disk->exists($path)) {
-            return null;
-        }
+                if (! $disk->exists($path)) {
+                    return null;
+                }
 
-        return $disk->url($path);
+                return $disk->url($path);
+            }
+        );
     }
 
-    public function getSharePictureDescriptionAttribute(): ?string
+    public function sharePictureDescription(): Attribute
     {
-        if (! $this->vote?->isFinalVote()) {
-            return null;
-        }
+        return new Attribute(
+            get: function () {
+                if (! $this->vote?->isFinalVote()) {
+                    return null;
+                }
 
-        return __('voting-lists.share-picture.alt-text', [
-            'title' => $this->display_title,
-            'date' => $this->date->formatLocalized('%b%e, %Y'),
-            'for' => $this->stats['by_position']['FOR'],
-            'forpercent' => round(($this->stats['by_position']['FOR'] / $this->stats['voted'] * 100)),
-            'against' => $this->stats['by_position']['AGAINST'],
-            'againstpercent' => round(($this->stats['by_position']['AGAINST'] / $this->stats['voted'] * 100)),
-            'abstention' => $this->stats['by_position']['ABSTENTION'],
-            'abstentionpercent' => round(($this->stats['by_position']['ABSTENTION'] / $this->stats['voted'] * 100)),
-            'voted' => $this->stats['voted'],
-            'novote' => $this->stats['by_position']['NOVOTE'],
-        ]);
+                return __('voting-lists.share-picture.alt-text', [
+                    'title' => $this->display_title,
+                    'date' => $this->date->formatLocalized('%b%e, %Y'),
+                    'for' => $this->stats['by_position']['FOR'],
+                    'forpercent' => round(($this->stats['by_position']['FOR'] / $this->stats['voted'] * 100)),
+                    'against' => $this->stats['by_position']['AGAINST'],
+                    'againstpercent' => round(($this->stats['by_position']['AGAINST'] / $this->stats['voted'] * 100)),
+                    'abstention' => $this->stats['by_position']['ABSTENTION'],
+                    'abstentionpercent' => round(($this->stats['by_position']['ABSTENTION'] / $this->stats['voted'] * 100)),
+                    'voted' => $this->stats['voted'],
+                    'novote' => $this->stats['by_position']['NOVOTE'],
+                ]);
+            }
+        );
     }
 
-    public function getUrlAttribute(): ?string
+    public function url(): Attribute
     {
-        return route('voting-list.show', ['votingList' => $this->id]);
+        return new Attribute(
+            get: fn () => route('voting-list.show', ['votingList' => $this->id])
+        );
     }
 
-    public function getResultAttribute(): ?VoteResultEnum
+    public function result(): Attribute
     {
-        return $this->vote?->result;
+        return new Attribute(
+            get: fn () => $this->vote?->result
+        );
     }
 }

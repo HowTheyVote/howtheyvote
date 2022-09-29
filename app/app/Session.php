@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Enums\LocationEnum;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -59,12 +60,14 @@ class Session extends Model /*
             ->first();
     }
 
-    public function getDisplayTitleAttribute()
+    public function displayTitle(): Attribute
     {
-        return __('session.title', [
-            'date' => $this->start_date->format('F Y'),
-            'location' => $this->location->label(),
-        ]);
+        return new Attribute(
+            get: fn () => __('session.title', [
+                'date' => $this->start_date->format('F Y'),
+                'location' => $this->location->label(),
+            ])
+        );
     }
 
     public function votes()
@@ -72,8 +75,10 @@ class Session extends Model /*
         return $this->hasMany(Vote::class);
     }
 
-    public function getAgendaUrlAttribute()
+    public function agendaUrl(): Attribute
     {
-        return "https://www.europarl.europa.eu/doceo/document/OJ-9-{$this->start_date->format('Y-m-d')}-SYN_EN.html";
+        return new Attribute(
+            get: fn () => "https://www.europarl.europa.eu/doceo/document/OJ-9-{$this->start_date->format('Y-m-d')}-SYN_EN.html"
+        );
     }
 }

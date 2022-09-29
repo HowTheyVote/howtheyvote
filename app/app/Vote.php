@@ -4,6 +4,7 @@ namespace App;
 
 use App\Enums\VoteResultEnum;
 use App\Enums\VoteTypeEnum;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -64,31 +65,37 @@ class Vote extends Model /*
         return $this->voteCollection->summary();
     }
 
-    public function getDisplayTitleAttribute()
+    public function displayTitle(): Attribute
     {
-        return $this->voteCollection->title;
+        return new Attribute(
+            get: fn () => $this->voteCollection->title
+        );
     }
 
-    public function getSubtitleAttribute()
+    public function subtitle(): Attribute
     {
-        if ($this->isAmendmentVote()) {
-            return __('votes.subtitle.amendment', [
-                'amendment' => $this->amendment,
-                'author' => $this->author,
-            ]);
-        }
+        return new Attribute(
+            get: function () {
+                if ($this->isAmendmentVote()) {
+                    return __('votes.subtitle.amendment', [
+                        'amendment' => $this->amendment,
+                        'author' => $this->author,
+                    ]);
+                }
 
-        if ($this->isSeparateVote()) {
-            $subject = $this->split_part
-                ? "{$this->subject}/{$this->split_part}"
-                : $this->subject;
+                if ($this->isSeparateVote()) {
+                    $subject = $this->split_part
+                        ? "{$this->subject}/{$this->split_part}"
+                        : $this->subject;
 
-            return __('votes.subtitle.separate', ['subject' => $subject]);
-        }
+                    return __('votes.subtitle.separate', ['subject' => $subject]);
+                }
 
-        if ($this->isFinalVote()) {
-            return __('votes.subtitle.final');
-        }
+                if ($this->isFinalVote()) {
+                    return __('votes.subtitle.final');
+                }
+            }
+        );
     }
 
     public function relatedVotes()
@@ -142,12 +149,16 @@ class Vote extends Model /*
         return $this->relatedVotes()->exists();
     }
 
-    public function getUrlAttribute(): ?string
+    public function url(): Attribute
     {
-        if (! $this->votingList) {
-            return null;
-        }
+        return new Attribute(
+            get: function () {
+                if (! $this->votingList) {
+                    return null;
+                }
 
-        return $this->votingList->url;
+                return $this->votingList->url;
+            }
+        );
     }
 }
