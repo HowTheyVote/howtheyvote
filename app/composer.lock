@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0ec80550ffd386fd5c815e570682dc2",
+    "content-hash": "eb149ca1f7ada0bdbffa641db6ae46e1",
     "packages": [
         {
             "name": "brick/math",
@@ -2490,21 +2490,21 @@
         },
         {
             "name": "meilisearch/meilisearch-php",
-            "version": "v0.19.1",
+            "version": "v0.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/meilisearch/meilisearch-php.git",
-                "reference": "ad359d6a7ec391435375d91e22e1e84b01586c2d"
+                "reference": "072d43019b7ade2fe9592a078da99d1ab8521086"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/meilisearch/meilisearch-php/zipball/ad359d6a7ec391435375d91e22e1e84b01586c2d",
-                "reference": "ad359d6a7ec391435375d91e22e1e84b01586c2d",
+                "url": "https://api.github.com/repos/meilisearch/meilisearch-php/zipball/072d43019b7ade2fe9592a078da99d1ab8521086",
+                "reference": "072d43019b7ade2fe9592a078da99d1ab8521086",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^7.3 || ^8.0",
+                "php": "^7.4 || ^8.0",
                 "php-http/client-common": "^2.0",
                 "php-http/discovery": "^1.7",
                 "php-http/httplug": "^2.1"
@@ -2514,10 +2514,10 @@
                 "guzzlehttp/guzzle": "^7.1",
                 "http-interop/http-factory-guzzle": "^1.0",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "^0.12.87",
-                "phpstan/phpstan-deprecation-rules": "^0.12.6",
-                "phpstan/phpstan-phpunit": "^0.12.19",
-                "phpstan/phpstan-strict-rules": "^0.12.9",
+                "phpstan/phpstan": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.1",
                 "phpunit/phpunit": "^9.5"
             },
             "suggest": {
@@ -2540,7 +2540,7 @@
                     "email": "clementine@meilisearch.com"
                 }
             ],
-            "description": "PHP wrapper for the MeiliSearch API",
+            "description": "PHP wrapper for the Meilisearch API",
             "keywords": [
                 "api",
                 "client",
@@ -2551,9 +2551,9 @@
             ],
             "support": {
                 "issues": "https://github.com/meilisearch/meilisearch-php/issues",
-                "source": "https://github.com/meilisearch/meilisearch-php/tree/v0.19.1"
+                "source": "https://github.com/meilisearch/meilisearch-php/tree/v0.24.0"
             },
-            "time": "2021-09-13T16:59:04+00:00"
+            "time": "2022-07-11T15:50:51+00:00"
         },
         {
             "name": "monolog/monolog",

@@ -37,7 +37,7 @@ export default (options = {}) => ({
 
     const data = await this.getResults();
     this.results = data.hits;
-    this.totalNumberOfResults = data.nbHits;
+    this.totalNumberOfResults = data.estimatedTotalHits;
 
     this.persistToUrl();
   },

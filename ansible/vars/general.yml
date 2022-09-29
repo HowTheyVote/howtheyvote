@@ -21,5 +21,5 @@ epvotes_domains:
   - search.howtheyvote.eu
 meilisearch_domain: search.howtheyvote.eu
 meilisearch_install_dir: "~/meilisearch-source"
-meilisearch_version: 0.20.0
+meilisearch_version: 0.28.1
 meilisearch_db_dir: "~/meilisearch-database"
