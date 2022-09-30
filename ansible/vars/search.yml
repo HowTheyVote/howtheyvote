@@ -1,35 +1,36 @@
-meilisearch_displayed_attributes:
-  - id
-  - display_title
-  - date
-  - result
-  - session_id
-  - session_display_title
-meilisearch_searchable_attributes:
-  - display_title
-  - summary
-meilisearch_stop_words:
-  - adopted
-  - votes
-  - abstentions
-  - resolution
-meilisearch_synonyms:
-  corona:
-    - covid
-  human:
-    - humanitarian
-  EU:
-    - European Union
-  USA:
-    - United States
-  UK:
-    - United Kingdom
-    - Great Britian
-meilisearch_ranking_rules:
-  - typo
-  - words
-  - proximity
-  - attribute
-  - wordsPosition
-  - exactness
-  - desc(date)
+meilisearch_index_settings:
+  displayedAttributes:
+    - id
+    - display_title
+    - date
+    - result
+    - session_id
+    - session_display_title
+  searchableAttributes:
+    - display_title
+    - summary
+  stopWords:
+    - adopted
+    - votes
+    - abstentions
+    - resolution
+  synonyms:
+    corona:
+      - covid
+    human:
+      - humanitarian
+    EU:
+      - European Union
+    USA:
+      - United States
+    UK:
+      - United Kingdom
+      - Great Britian
+  rankingRules:
+    - typo
+    - words
+    - proximity
+    - attribute
+    - wordsPosition
+    - exactness
+    - desc(date)
