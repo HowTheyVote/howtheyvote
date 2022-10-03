@@ -165,7 +165,6 @@ class VotingListsController extends Controller
             // as otherwise e.g. `group_memberships.id` would overwrite
             // `members.id`.
             ->select('members.*', 'votings.position', 'group_memberships.group_id')
-            ->orderBy('last_name_normalized')
             ->get();
     }
 
