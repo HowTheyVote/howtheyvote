@@ -18,28 +18,28 @@
             class="vote-card__thumb"
             position="for"
             style="circle"
-            x-show="memberId && vote.members[memberId] === 'FOR'"
+            x-show="memberId && vote.votings[memberId] === 'FOR'"
         />
 
         <x-thumb
             class="vote-card__thumb"
             position="against"
             style="circle"
-            x-show="memberId && vote.members[memberId] === 'AGAINST'"
+            x-show="memberId && vote.votings[memberId] === 'AGAINST'"
         />
 
         <x-thumb
             class="vote-card__thumb"
             position="abstention"
             style="circle"
-            x-show="memberId && vote.members[memberId] === 'ABSTENTION'"
+            x-show="memberId && vote.votings[memberId] === 'ABSTENTION'"
         />
 
         <x-thumb
             class="vote-card__thumb"
             position="novote"
             style="circle"
-            x-show="memberId && vote.members[memberId] === 'NOVOTE'"
+            x-show="memberId && vote.votings[memberId] === 'NOVOTE'"
         />
 
         <div>

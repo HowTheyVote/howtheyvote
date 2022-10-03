@@ -73,9 +73,8 @@ class VotingList extends Model
             'summary' => $this->vote->voteCollection->summary?->text,
             'session_id' => $this->vote->session?->id,
             'session_display_title' => $this->vote->session?->display_title,
-            'members' => $this->members->mapWithKeys(function ($member) {
-                return [$member->id => $member->pivot->position->label];
-            }),
+            'members' => $this->members->map(fn ($member) => $member->id),
+            'votings' => $this->members->mapWithKeys(fn ($member) => [$member->id => $member->pivot->position->label]),
         ];
     }
 
