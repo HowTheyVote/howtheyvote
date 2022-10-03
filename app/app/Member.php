@@ -20,6 +20,13 @@ class Member extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::addGlobalScope('sorted', function (Builder $builder) {
+            $builder->orderBy('last_name_normalized');
+        });
+    }
+
     protected $fillable = [
         'web_id',
         'first_name',
