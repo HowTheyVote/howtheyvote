@@ -1,11 +1,6 @@
 meilisearch_index_settings:
   displayedAttributes:
-    - id
-    - display_title
-    - date
-    - result
-    - session_id
-    - session_display_title
+    - "*"
   sortableAttributes:
     - date
   filterableAttributes:
