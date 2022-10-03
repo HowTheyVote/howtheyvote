@@ -4,19 +4,12 @@
     path: "{{ ansible_facts.env.HOME }}/bin/meilisearch-{{ meilisearch_version }}"
   register: exec_stats
 
-- name: Clone git repository
-  git:
-    repo: https://github.com/meilisearch/MeiliSearch
-    dest: "{{ meilisearch_install_dir }}"
-    version: "tags/v{{ meilisearch_version }}"
-  when: not exec_stats.stat.exists
-
 - name: Download prebuilt binary
   notify:
     - Reread meilisearch service
     - Restart meilisearch service
   get_url:
-    url: "https://github.com/meilisearch/meilisearch/releases/download/v{{ meilisearch_version }}/meilisearch-linux-amd64"
+    url: "https://github.com/HowTheyVote/meilisearch-centos/releases/download/v{{ meilisearch_version }}/meilisearch-{{ meilisearch_version }}"
     dest: "{{ ansible_facts.env.HOME }}/bin/meilisearch-{{ meilisearch_version }}"
     mode: "u+x"
   when: not exec_stats.stat.exists
