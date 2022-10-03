@@ -6,6 +6,8 @@ meilisearch_index_settings:
     - result
     - session_id
     - session_display_title
+  sortableAttributes:
+    - date
   searchableAttributes:
     - display_title
     - summary
@@ -33,4 +35,4 @@ meilisearch_index_settings:
     - attribute
     - wordsPosition
     - exactness
-    - desc(date)
+    - date:desc
