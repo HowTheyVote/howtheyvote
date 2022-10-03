@@ -122,6 +122,7 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
         ->whereDoesntHave('votes')
         ->whereNull('ignore_when_scraping_voting_lists')
         ->orderBy('start_date', 'desc')
+        ->where('end_date', '<', Carbon::now())
         ->first();
 
     if (! $session) {
