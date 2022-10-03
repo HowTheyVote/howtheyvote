@@ -26,10 +26,13 @@ meilisearch_index_settings:
       - United Kingdom
       - Great Britian
   rankingRules:
-    - typo
+    # This is based on the default ranking rules, the only addition being
+    # that votes are by default sorted in inverse chronological order.
+    # https://docs.meilisearch.com/learn/core_concepts/relevancy.html#built-in-rules
     - words
+    - typo
     - proximity
     - attribute
-    - wordsPosition
+    - sort
     - exactness
     - date:desc
