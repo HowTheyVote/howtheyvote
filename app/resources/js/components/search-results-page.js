@@ -120,7 +120,7 @@ export default (options = {}) => ({
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Meili-API-Key': this.apiKey,
+        Authorization: `Bearer ${this.apiKey}`,
       },
       signal: this.abortController.signal,
       body: JSON.stringify({
