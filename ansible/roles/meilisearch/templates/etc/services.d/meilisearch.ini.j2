@@ -3,8 +3,7 @@ directory={{ ansible_facts.env.HOME }}
 command=meilisearch-{{ meilisearch_version }}
     --env production
     --master-key {{ meilisearch_master_key }}
-    --no-analytics true
-    --no-sentry true
+    --no-analytics
     --db-path {{ meilisearch_db_dir }}
     --http-addr 0.0.0.0:7700
 startsecs=30
