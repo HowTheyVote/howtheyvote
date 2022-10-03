@@ -8,6 +8,8 @@ meilisearch_index_settings:
     - session_display_title
   sortableAttributes:
     - date
+  filterableAttributes:
+    - members
   searchableAttributes:
     - display_title
     - summary

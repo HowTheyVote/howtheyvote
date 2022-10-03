@@ -108,8 +108,13 @@ export default (options = {}) => ({
     this.loading = true;
     this.abortController = new AbortController();
 
-    const additionalAttributes =
-      this.memberId !== null ? [`members.${this.memberId}`] : ['result'];
+    let additionalAttributes = ['result'];
+    let filters = [];
+
+    if (this.memberId !== null) {
+      additionalAttributes = [`votings.${this.memberId}`];
+      filters = [`members = ${this.memberId}`];
+    }
 
     const response = await fetch(this.searchUrl, {
       method: 'POST',
@@ -120,6 +125,7 @@ export default (options = {}) => ({
       signal: this.abortController.signal,
       body: JSON.stringify({
         q: this.$store.searchQuery,
+        filter: filters,
         limit: LIMIT,
         offset: this.page * LIMIT,
         attributesToRetrieve: [...ATTRIBUTES, ...additionalAttributes],
