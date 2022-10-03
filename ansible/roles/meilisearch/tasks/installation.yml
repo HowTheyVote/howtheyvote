@@ -36,7 +36,7 @@
     url: "http://localhost:7700/keys"
     method: GET
     headers:
-      X-Meili-API-Key: "{{ meilisearch_master_key }}"
+      Authorization: "Bearer {{ meilisearch_master_key }}"
     return_content: yes
   register: keys
 
