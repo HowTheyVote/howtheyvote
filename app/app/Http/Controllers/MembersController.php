@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\GroupMembership;
 use App\Member;
 use Illuminate\Support\Carbon;
 
@@ -10,14 +9,13 @@ class MembersController extends Controller
 {
     public function show(Member $member)
     {
+        $lastGroupMembership = $member->lastGroupMembership();
+        $lastActive = ($lastGroupMembership->end_date !== null) ? Carbon::parse($lastGroupMembership->end_date)->format('F Y') : null;
+
         return view('members.show', [
             'member' => $member,
-            'group' => GroupMembership::query()
-                ->with('group')
-                ->where('member_id', $member->id)
-                ->activeAt(Carbon::now())
-                ->first()
-                ->group ?? null,
+            'group' => $lastGroupMembership->group,
+            'lastActive' => $lastActive,
         ]);
     }
 }

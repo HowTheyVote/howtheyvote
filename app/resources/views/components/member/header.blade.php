@@ -1,6 +1,7 @@
 @props([
     'member' => null,
-    'group' => null
+    'group' => null,
+    'lastActive' => null,
 ])
 
 <div {{ $attributes->bem('member-header') }}>
@@ -19,9 +20,13 @@
             <p class="member-header__subtitle">
                 {{ $member->country->label }} {{ $member->country->emoji }}
 
-                @if ($group)
-                    ·
+                @if ($group && !$lastActive)
+                    · 
                     {{ $group->name }}
+                @else
+                    · last active in 
+                    {{ $group->name }}
+                    in {{ $lastActive }}
                 @endif
             </p>
 

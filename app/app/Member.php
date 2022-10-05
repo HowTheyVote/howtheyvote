@@ -56,6 +56,15 @@ class Member extends Model
         return $this->belongsTo(Group::class);
     }
 
+    public function lastGroupmembership()
+    {
+        return GroupMembership::query()
+                ->with('group')
+                ->where('member_id', $this->id)
+                ->orderBy('end_date')
+                ->first();
+    }
+
     public function votingLists()
     {
         return $this->belongsToMany(VotingList::class, 'votings')
