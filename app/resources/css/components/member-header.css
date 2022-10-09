@@ -60,7 +60,11 @@
         margin-bottom: var(--space-lg);
     }
 
-    .member-header__subtitle {
+    .member-header__country {
+        font-size: var(--text-lg);
+    }
+
+    .member-header__groups {
         font-size: var(--text-lg);
     }
 }

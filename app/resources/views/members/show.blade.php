@@ -3,7 +3,7 @@
 >
     <x-base-layout>
         <x-stack space="lg">
-            <x-member.header :member="$member" :group="$group" :lastActive="$lastActive" />
+            <x-member.header :member="$member" :membershipParameters="$groupMembershipParameters" />
 
             <section class="padding--h">
                 <x-wrapper>

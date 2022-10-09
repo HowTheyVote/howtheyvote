@@ -1,7 +1,6 @@
 @props([
     'member' => null,
-    'group' => null,
-    'lastActive' => null,
+    'membershipParameters' => null,
 ])
 
 <div {{ $attributes->bem('member-header') }}>
@@ -17,17 +16,20 @@
                 {{ $member->full_name }}
             </h1>
 
-            <p class="member-header__subtitle">
+            <p class="member-header__country">
                 {{ $member->country->label }} {{ $member->country->emoji }}
+            </p>
 
-                @if ($group && !$lastActive)
-                    · 
-                    {{ $group->name }}
-                @else
-                    · last active in 
-                    {{ $group->name }}
-                    in {{ $lastActive }}
-                @endif
+            <p class="member-header__groups">
+                @foreach ($membershipParameters as $membership)
+                {{
+                    __('members.membership', [
+                    'group' => $membership['name'],
+                    'start' => $membership['start'],
+                    'end' => $membership['end'],
+                    ]);
+                }}
+                @endforeach
             </p>
 
             @if ($member->links->isNotEmpty())

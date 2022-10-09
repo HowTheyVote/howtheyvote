@@ -9,13 +9,30 @@ class MembersController extends Controller
 {
     public function show(Member $member)
     {
-        $lastGroupMembership = $member->lastGroupMembership();
-        $lastActive = ($lastGroupMembership->end_date !== null) ? Carbon::parse($lastGroupMembership->end_date)->format('F Y') : null;
-
         return view('members.show', [
             'member' => $member,
-            'group' => $lastGroupMembership->group,
-            'lastActive' => $lastActive,
+            'groupMembershipParameters' => $this->groupMembershipParametersFor($member),
         ]);
+    }
+
+    private function groupMembershipParametersFor(Member $member)
+    {
+        $memberships = Member::find($member->id)->groupMemberships;
+        $memberships = $memberships->map(function ($membership) {
+            $start = $membership->start_date;
+            $end = $membership->end_date;
+
+            // active groupmemberships do not have an end date
+            $end = !$end ?  'now' : Carbon::parse($end)->format('F Y');
+
+            $start = Carbon::parse($start)->format('F Y');
+
+            return [
+                "name" => $membership->group->name,
+                "start" => $start,
+                "end" => $end,
+            ];
+        });
+        return $memberships;
     }
 }
