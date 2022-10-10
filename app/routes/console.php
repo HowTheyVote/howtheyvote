@@ -106,11 +106,11 @@ Artisan::command('scrape:vote-collections {--term=} {--date=}', function (
 })->describe('Scrape and save all vote collections for the given date and term.');
 
 Artisan::command('scrape:all {--term=}', function (int $term) {
-    Artisan::call('scrape:members', ['--term' => $term]);
-    Artisan::call('scrape:members-groups', ['--term' => $term]);
-    Artisan::call('scrape:members-info', ['--term' => $term]);
-    Artisan::call('scrape:members-photos');
-    Artisan::call('scrape:sessions', [
+    $this->call('scrape:members', ['--term' => $term]);
+    $this->call('scrape:members-groups', ['--term' => $term]);
+    $this->call('scrape:members-info', ['--term' => $term]);
+    $this->call('scrape:members-photos');
+    $this->call('scrape:sessions', [
         '--term' => $term,
         '--month' => Carbon::now()->month,
         '--year' => Carbon::now()->year,
@@ -133,7 +133,7 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
     $count = VoteCollection::count();
 
     foreach ($period as $date) {
-        Artisan::call('scrape:vote-collections', [
+        $this->call('scrape:vote-collections', [
             '--term' => $term,
             '--date' => $date,
         ]);
@@ -151,13 +151,13 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
     }
 
     foreach ($period as $date) {
-        Artisan::call('scrape:voting-lists', [
+        $this->call('scrape:voting-lists', [
             '--term' => $term,
             '--date' => $date,
         ]);
     }
 
-    Artisan::call('scrape:match');
+    $this->call('scrape:match');
 })->describe('Runs all scrapers for the given date and matches votes and voting lists.');
 
 Artisan::command('scrape:match', function (MatchVotesAndVotingListsAction $action) {
