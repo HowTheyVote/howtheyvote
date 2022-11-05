@@ -5,7 +5,7 @@
 ])
 
 <x-list-item
-    :avatar-url="$member->thumbnail_url"
+    :avatar-url="$member->thumbnail_url ?: asset('/assets/placeholder.svg')"
     :title="$member->full_name"
     :subtitle="$member->group->abbreviation.' · '.$member->country->label"
     :position="$position"

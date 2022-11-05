@@ -7,7 +7,7 @@
     <x-wrapper class="member-header__wrapper">
         <img
             class="member-header__photo"
-            src="{{ $member->profile_picture_url }}"
+            src="{{ $member->profile_picture_url ?: asset('/assets/placeholder.svg') }}"
             alt="Photo of {{ $member->full_name }}"
         />
 

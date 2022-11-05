@@ -55,6 +55,8 @@ This software is licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.
 
 The contents of the database are sourced from the [plenary minutes](https://www.europarl.europa.eu/plenary/en/minutes.html) of the European Parliament, [MEP profiles](http://europarl.europa.eu/meps/en/home) on the Parliament’s website, and the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/home/home.do).
 
+We use adapted emojis designed originally by [OpenMoji – the open-source emoji and icon project](https://openmoji.org). License: CC BY-SA 4.0
+
 ---
 
 This work is sponsored by the [Federal Ministry of Education and Research](https://bmbf.de) in the 9th round of the [Prototype Fund](https://prototypefund.de/) (Reference: 01IS21818).
