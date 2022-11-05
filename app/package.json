@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@github/details-menu-element": "^1.0.12",
-        "@github/tab-container-element": "^3.1.2",
+        "@github/tab-container-element": "^3.2.0",
         "alpinejs": "^3.2.3",
         "quicklink": "^2.3.0"
     }
