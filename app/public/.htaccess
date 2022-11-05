@@ -29,6 +29,11 @@
     RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}.csv -f
     RewriteRule . page-cache%{REQUEST_URI}.csv [L]
 
+    # Removes superfluous /index.php that sometimes ended up in cached pages
+    # https://github.com/JosephSilber/page-cache/issues/18
+    RewriteCond %{REQUEST_URI} ^GET.*index\.php [NC] 
+    RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=301,NE,L]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
