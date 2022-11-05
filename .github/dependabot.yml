@@ -18,6 +18,13 @@ updates:
         update-types: ["version-update:semver-patch"]
     schedule:
       interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/app"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    schedule:
+      interval: "monthly"
   - package-ecosystem: "docker"
     directory: "/app"
     schedule:
