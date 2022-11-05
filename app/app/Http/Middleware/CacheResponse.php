@@ -14,6 +14,10 @@ class CacheResponse extends BaseCacheResponse
             return false;
         }
 
+        if ($request->route()->named('home')) {
+            return false;
+        }
+
         return parent::shouldCache($request, $response);
     }
 }
