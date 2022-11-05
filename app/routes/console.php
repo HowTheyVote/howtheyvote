@@ -110,10 +110,18 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
     $this->call('scrape:members-groups', ['--term' => $term]);
     $this->call('scrape:members-info', ['--term' => $term]);
     $this->call('scrape:members-photos');
+
+    $now = Carbon::now();
+    $nextMonth = $now->add(1, 'month');
     $this->call('scrape:sessions', [
         '--term' => $term,
-        '--month' => Carbon::now()->month,
-        '--year' => Carbon::now()->year,
+        '--month' => $now->month,
+        '--year' => $now->year,
+    ]);
+    $this->call('scrape:sessions', [
+        '--term' => $term,
+        '--month' => $nextMonth->month,
+        '--year' => $nextMonth->year,
     ]);
 
     // Get the newest session without associated votes and try to
