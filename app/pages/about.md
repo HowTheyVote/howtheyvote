@@ -19,6 +19,8 @@ The contents of our database are sourced from the [plenary minutes](https://www.
 
 The software that powers this website is licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html). Data exports accessible via the web interface on HowTheyVote.eu and database dumps are made available under the [Creative Commons Attribution License 4.0](https://creativecommons.org/licenses/by/4.0/).
 
+We use adapted emojis designed originally by [OpenMoji – the open-source emoji and icon project](https://openmoji.org). License: CC BY-SA 4.0
+
 ## Funding
 
 This work has been funded by the German Federal Ministry of Research and Education as part of the 9th round of the [Prototype Fund](https://prototypefund.de) under the funding reference 1IS21818.

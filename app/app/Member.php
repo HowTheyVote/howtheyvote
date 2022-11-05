@@ -115,12 +115,16 @@ class Member extends Model
 
     public function getThumbnailUrlAttribute(): string
     {
-        return Storage::disk('public')->url("members/{$this->id}-104px.jpg");
+        $thumbnailExists = Storage::disk('public')->exists("members/{$this->id}.jpg");
+
+        return $thumbnailExists ? Storage::disk('public')->url("members/{$this->id}-104px.jpg") : asset('/assets/placeholder.svg');
     }
 
     public function getProfilePictureUrlAttribute(): string
     {
-        return Storage::disk('public')->url("members/{$this->id}.jpg");
+        $profilePictureExists = $this->hasProfilePicture();
+
+        return $profilePictureExists ? Storage::disk('public')->url("members/{$this->id}.jpg") : asset('/assets/placeholder.svg');
     }
 
     public function hasProfilePicture(): bool
