@@ -5,6 +5,7 @@ use App\Group;
 use App\Member;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
@@ -40,8 +41,19 @@ it('renders successfully', function () {
     expect($response)->toHaveStatus(200);
 });
 
-it('shows an info box with contact links for active members', function () {
+it('shows a placeholder when no profile picture is found', function () {
+    Storage::fake('public');
+
     $response = $this->get("/members/{$this->memberId}");
+    expect($response)->toHaveSelector("img[src$='assets/placeholder.svg']");
+});
+
+it('shows an info box with contact links for active members', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put("members/{$this->member->id}.jpg", 'fake');
+
+    $response = $this->get("/members/{$this->memberId}");
+
     expect($response)->toHaveSelector("img[src$='/members/{$this->memberId}.jpg']");
     expect($response)->toHaveSelectorWithText('.member-header', 'Greens/European Free Alliance');
     expect($response)->toHaveSelectorWithText('.member-header', 'Netherlands');
@@ -52,6 +64,10 @@ it('shows an info box with contact links for active members', function () {
 
 it('shows contact info for non-active members', function () {
     Carbon::setTestNow();
+
+    Storage::fake('public');
+    Storage::disk('public')->put("members/{$this->member->id}.jpg", 'fake');
+
     $response = $this->get("/members/{$this->memberId}");
 
     expect($response)->toHaveSelector("img[src$='/members/{$this->memberId}.jpg']");
