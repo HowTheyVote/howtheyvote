@@ -29,8 +29,10 @@
     RewriteCond %{DOCUMENT_ROOT}/page-cache%{REQUEST_URI}.csv -f
     RewriteRule . page-cache%{REQUEST_URI}.csv [L]
 
-    # Removes superfluous /index.php that sometimes ended up in cached pages
-    # https://github.com/JosephSilber/page-cache/issues/18
+    # When the app is accessed directly via `/index.php/slug`, Laravel will generate
+    # URLs prefixed with `/index.php`. Consequently, these URLs will also be included
+    # in the statically cached version of the page. This rule redirects requests to
+    # the "clean" URL (e.g. `/slug` instead of `/index.php/slug`.
     RewriteCond %{REQUEST_URI} ^GET.*index\.php [NC] 
     RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=301,NE,L]
 
