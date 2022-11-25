@@ -33,8 +33,8 @@
     # URLs prefixed with `/index.php`. Consequently, these URLs will also be included
     # in the statically cached version of the page. This rule redirects requests to
     # the "clean" URL (e.g. `/slug` instead of `/index.php/slug`.
-    RewriteCond %{REQUEST_URI} ^GET.*index\.php [NC] 
-    RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=301,NE,L]
+    RewriteCond %{REQUEST_URI} ^/index.php\/(.+) [NC]
+    RewriteRule (.*?)index\.php\/(.*) /$1$2 [R=301,NE,L]
 
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
