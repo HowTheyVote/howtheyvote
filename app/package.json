@@ -16,7 +16,7 @@
         "browser-sync-webpack-plugin": "^2.3.0",
         "laravel-mix": "^6.0.49",
         "postcss": "^8.2.13",
-        "prettier": "^2.7.1"
+        "prettier": "^2.8.1"
     },
     "dependencies": {
         "@github/details-menu-element": "^1.0.12",
