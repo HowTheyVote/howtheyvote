@@ -5825,16 +5825,16 @@
         },
         {
             "name": "spatie/url",
-            "version": "2.1.1",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/url.git",
-                "reference": "a055dc780270adac90dbe9a3372ca8d6bb2ad00f"
+                "reference": "8a52d669b7ada3bd8ba4a3cdba885056a35a978d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/url/zipball/a055dc780270adac90dbe9a3372ca8d6bb2ad00f",
-                "reference": "a055dc780270adac90dbe9a3372ca8d6bb2ad00f",
+                "url": "https://api.github.com/repos/spatie/url/zipball/8a52d669b7ada3bd8ba4a3cdba885056a35a978d",
+                "reference": "8a52d669b7ada3bd8ba4a3cdba885056a35a978d",
                 "shasum": ""
             },
             "require": {
@@ -5871,7 +5871,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/url/issues",
-                "source": "https://github.com/spatie/url/tree/2.1.1"
+                "source": "https://github.com/spatie/url/tree/2.2.0"
             },
             "funding": [
                 {
@@ -5883,7 +5883,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-07-29T15:01:46+00:00"
+            "time": "2022-12-14T09:57:56+00:00"
         },
         {
             "name": "spatie/yaml-front-matter",
