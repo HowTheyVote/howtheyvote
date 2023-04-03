@@ -146,17 +146,6 @@ Artisan::command('scrape:all {--term=}', function (int $term) {
             '--term' => $term,
             '--date' => $date,
         ]);
-
-        // Vote collection documents on the Parliament's website
-        // include all vote collections for the session, including
-        // vote collections that did not take place on the given
-        // day, i.e. we have to make sure to import vote collections
-        // only for the first day of the plenary session.
-        // It is necessary to loop over all days, since the actual first day where
-        // the collections are available is not always the first day of the session.
-        if (VoteCollection::count() > $count) {
-            break;
-        }
     }
 
     foreach ($period as $date) {
