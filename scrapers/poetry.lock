@@ -764,14 +764,14 @@ test = ["fixtures", "mock", "purl", "pytest", "requests-futures", "sphinx", "tes
 
 [[package]]
 name = "sentry-sdk"
-version = "1.12.1"
+version = "1.19.1"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.12.1.tar.gz", hash = "sha256:5bbe4b72de22f9ac1e67f2a4e6efe8fbd595bb59b7b223443f50fe5802a5551c"},
-    {file = "sentry_sdk-1.12.1-py2.py3-none-any.whl", hash = "sha256:9f0b960694e2d8bb04db4ba6ac2a645040caef4e762c65937998ff06064f10d6"},
+    {file = "sentry-sdk-1.19.1.tar.gz", hash = "sha256:7ae78bd921981a5010ab540d6bdf3b793659a4db8cccf7f16180702d48a80d84"},
+    {file = "sentry_sdk-1.19.1-py2.py3-none-any.whl", hash = "sha256:885a11c69df23e53eb281d003b9ff15a5bdfa43d8a2a53589be52104a1b4582f"},
 ]
 
 [package.dependencies]
@@ -782,6 +782,7 @@ urllib3 = {version = ">=1.26.11", markers = "python_version >= \"3.6\""}
 
 [package.extras]
 aiohttp = ["aiohttp (>=3.5)"]
+arq = ["arq (>=0.23)"]
 beam = ["apache-beam (>=2.12)"]
 bottle = ["bottle (>=0.12.13)"]
 celery = ["celery (>=3)"]
@@ -790,8 +791,10 @@ django = ["django (>=1.8)"]
 falcon = ["falcon (>=1.4)"]
 fastapi = ["fastapi (>=0.79.0)"]
 flask = ["blinker (>=1.1)", "flask (>=0.11)"]
+grpcio = ["grpcio (>=1.21.1)"]
 httpx = ["httpx (>=0.16.0)"]
-opentelemetry = ["opentelemetry-distro (>=0.350b0)"]
+huey = ["huey (>=2)"]
+opentelemetry = ["opentelemetry-distro (>=0.35b0)"]
 pure-eval = ["asttokens", "executing", "pure-eval"]
 pymongo = ["pymongo (>=3.1)"]
 pyspark = ["pyspark (>=2.4.4)"]
@@ -800,6 +803,7 @@ rq = ["rq (>=0.6)"]
 sanic = ["sanic (>=0.8)"]
 sqlalchemy = ["sqlalchemy (>=1.2)"]
 starlette = ["starlette (>=0.19.1)"]
+starlite = ["starlite (>=1.48)"]
 tornado = ["tornado (>=5)"]
 
 [[package]]
@@ -917,4 +921,4 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "081d8e7d417506a1a18b1c737844616c7214be85f1cb274ec20a41b59a0a6556"
+content-hash = "6f666b0c5eb1a5c7716746586f7d74453a9b380a13f4e7818b6cdc266092a491"
