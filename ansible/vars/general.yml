@@ -2,7 +2,7 @@
 php_version: '8.1'
 node_version: '14'
 epvotes_version: main
-python_version: '3.10'
+python_version: '3.11'
 poetry_version: '1.2.0'
 epvotes_install_dir: "/var/www/virtual/{{ uberspace_user }}/epvotes"
 epvotes_domains:
