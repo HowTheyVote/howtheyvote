@@ -297,7 +297,6 @@ class VotingListsScraper(Scraper):
         return [self._voting_list(tag) for tag in tags]
 
     def _voting_list(self, tag: Tag) -> VotingList:
-
         doceo_vote_id = None
 
         try:
@@ -438,7 +437,6 @@ class VoteCollectionsScraper(Scraper):
         return True
 
     def _vote(self, row: Row) -> Vote:
-
         remarks = row.get("RCV/EV – remarks")
         if remarks:
             remarks = remarks.replace(" ", "")
