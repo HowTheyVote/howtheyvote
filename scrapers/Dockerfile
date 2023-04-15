@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
-RUN poetry env use python3.10
+RUN poetry env use python3.11
 RUN poetry install
 
 COPY . .
