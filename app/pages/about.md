@@ -11,7 +11,7 @@ Our goal is to provide easy access to the voting results of the European Parliam
 ## Contact Us
 If you use the data from HowTheyVote.eu for your own projects, we would love to hear from you! And if you have an idea how HowTheyVote.eu could be even more helpful, feel free to open a ticket in our [GitHub repository](https://github.com/HowTheyVote/epvotes) or write us an [email](mailto:mail@howtheyvote.eu) or on [Twitter](https://twitter.com/HowTheyVoteEU).
 
-The page is still in an early phase. We will extend the available data in the future and continue working on additional functionality. If you find a mistake (e.g., wrong data for a vote) or something is not working as expected, we would appreciate if you contact us or open an issue in our [GitHub repository](https://github.com/HowTheyVote/epvotes).
+The page is still in an early phase. **Please be aware that this means some votes might be missing in our data. In rare cases, we might also present an erroneous vote as the final one. This happens in cases in which the final vote was not a roll-call vote.** We will extend the available data in the future and continue working on additional functionality. If you find a mistake (e.g. wrong data for a vote) or something is not working as expected, we would appreciate if you contact us or open an issue in our [GitHub repository](https://github.com/HowTheyVote/epvotes).
 
 ## License
 
