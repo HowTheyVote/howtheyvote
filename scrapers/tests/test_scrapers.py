@@ -823,3 +823,13 @@ def test_parliament_sessions_scraper_run(mock_request):
     session_two = Session(date(2021, 3, 24), date(2021, 3, 25), None)
 
     assert set(result) == set([session_two, session_one])
+
+
+def test_parliament_sessions_scraper_handles_sessions_spanning_months(mock_request):
+    scraper = ParliamentSessionsScraper(term=9, month=5, year=2023)
+    result = scraper.run()
+
+    session_one = Session(date(2023, 5, 8), date(2023, 5, 11), None)
+    session_two = Session(date(2023, 5, 31), date(2023, 6, 1), None)
+
+    assert set(result) == set([session_two, session_one])

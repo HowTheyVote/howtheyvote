@@ -589,7 +589,7 @@ class ParliamentSessionsScraper(Scraper):
     def _extract_data(self) -> List[Session]:
         sessions = self._resource["sessionCalendar"]
 
-        # This assumes that a session never spans multiple months or years
+        # We assume that a session never spans multiple years
         sessions_in_year = [
             session for session in sessions if int(session["year"]) == self.year
         ]
@@ -604,16 +604,20 @@ class ParliamentSessionsScraper(Scraper):
 
     def _session(self, session: dict) -> Session:
         return Session(
-            start_date=self._parse_date(session["dayStartDateSession"]),
-            end_date=self._parse_date(session["dayEndDateSession"]),
+            start_date=self._parse_date(
+                session["dayStartDateSession"], session["monthStartDateSession"]
+            ),
+            end_date=self._parse_date(
+                session["dayEndDateSession"], session["monthEndDateSession"]
+            ),
             location=None,
         )
 
-    def _parse_date(self, day: str) -> date:
+    def _parse_date(self, day: str, month: str) -> date:
         return date.fromisoformat(
             str(self.year).rjust(2, "0")
             + "-"
-            + str(self.month).rjust(2, "0")
+            + month.rjust(2, "0")
             + "-"
             + day.rjust(2, "0")
         )
