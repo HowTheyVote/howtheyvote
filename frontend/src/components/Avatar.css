@@ -1,0 +1,38 @@
+.avatar {
+  position: relative;
+  width: 3.25rem;
+  height: 3.25rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  background: rgb(255, 255, 255);
+}
+
+.avatar,
+.avatar::after {
+  border-radius: 50%;
+}
+
+.avatar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar--square,
+.avatar--square::after {
+  border-radius: var(--border-radius-sm);
+}
+
+.avatar--square > img {
+  object-fit: contain;
+}

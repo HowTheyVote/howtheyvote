@@ -1,0 +1,79 @@
+{
+    email mail@howtheyvote.eu
+}
+
+{$CADDY_SITE_ADDRESS} {
+    reverse_proxy /api backend:5000
+    reverse_proxy /api/* backend:5000
+    reverse_proxy /* frontend:8000
+
+    # Enable Gzip compression for common plaintext formats such as
+    # HTML, CSS, JS, JSON, SVG etc.
+    encode gzip
+
+    header {
+        # Add security headers
+        Content-Security-Policy "
+            default-src 'self';
+            style-src 'self' 'unsafe-inline';
+            image-src 'self' 'unsafe-inline';
+        "
+        Referrer-Policy "same-origin"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+
+        # Remove headers (added by Caddy and Flask/tinyhttp)
+        -Server
+        -X-Powered-By
+    }
+
+    @nonlocal {
+        not host localhost
+    }
+
+    header @nonlocal Strict-Transport-Security "max-age=31536000;"
+
+    # A previous version of HowTheyVote.eu used auto-incrementing integers as vote IDs.
+    # In the current version, we have started using the IDs assigned by the European
+    # Parliament instead. This is a mapping from old to new IDs for some votes that are
+    # referenced by other websites, social media posts, etc.
+    redir /votes/6476 /votes/140111
+    redir /votes/9986 /votes/154076
+    redir /votes/4176 /votes/134348
+    redir /votes/4506 /votes/135214
+    redir /votes/1765 /votes/133545
+    redir /votes/3418 /votes/127178
+    redir /votes/9772 /votes/153485
+    redir /votes/9281 /votes/151387
+    redir /votes/4497 /votes/135094
+    redir /votes/122 /votes/127973
+    redir /votes/4792 /votes/135748
+    redir /votes/6143 /votes/139040
+    redir /votes/8016 /votes/146649
+    redir /votes/8582 /votes/147342
+    redir /votes/9307 /votes/152544
+    redir /votes/10064 /votes/154167
+    redir /votes/7776 /votes/144009
+    redir /votes/8765 /votes/148323
+    redir /votes/8017 /votes/146588
+    redir /votes/9814/summary /votes/153753
+    redir /votes/10077/summary /votes/154243
+    redir /votes/9982/summary /votes/153918
+    redir /votes/9731 /votes/153309
+    redir /votes/9788 /votes/153310
+    redir /votes/10166 /votes/154625
+    redir /votes/9772/summary /votes/153485
+    redir /votes/11032/summary /votes/157788
+    redir /votes/10170 /votes/154711
+    redir /votes/10068 /votes/154183
+    redir /votes/9307/summary /votes/152554
+    redir /votes/9312/summary /votes/152509
+    redir /votes/9739/summary /votes/153629
+    redir /votes/9735/summary /votes/153304
+    redir /votes/10064/summary /votes/154173
+    redir /votes/9737/summary /votes/153316
+    redir /votes/9296/summary /votes/9296/
+}
+
+# Allow loading extra configuration by placing additional files in the `caddy` directory.
+import /etc/caddy/*.Caddyfile

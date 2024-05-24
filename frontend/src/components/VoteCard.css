@@ -1,0 +1,25 @@
+.vote-card__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--text);
+  font-weight: 500;
+  margin-block-end: var(--space-xxs);
+}
+
+.vote-card__title a {
+  text-decoration: none;
+}
+
+.vote-card__title a:hover {
+  text-decoration: underline;
+}
+
+.vote-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxs);
+  color: var(--color-text-light);
+  font-size: var(--text-sm);
+}

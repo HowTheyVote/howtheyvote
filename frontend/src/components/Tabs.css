@@ -1,0 +1,49 @@
+.tabs {
+  display: block;
+}
+
+.tabs__tablist {
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+
+  display: flex;
+  margin-bottom: var(--space-sm);
+
+  background-color: white;
+  border-bottom: 1px solid var(--gray-light);
+
+  /* Prevent overflowing contents (e.g. shadows) from being visible */
+  box-shadow: calc(-1 * var(--space)) 0 0 white;
+
+  /* We use padding-top to add space at the top when stuck and use
+     * margin-top to normalize that effect when unstuck. */
+  padding-top: var(--space-xs);
+  margin-top: calc(-1 * var(--space-xs));
+}
+
+.tabs__button {
+  font-weight: 600;
+  color: var(--color-text-light);
+  margin-bottom: -1px;
+  padding-bottom: var(--space-xxs);
+  border-bottom: 2px solid transparent;
+  transition: 0.1s border-color ease-out;
+}
+
+.tabs__button[aria-selected="true"],
+.tabs__button:hover {
+  color: var(--color-text);
+}
+
+.tabs__button:hover {
+  border-color: var(--gray);
+}
+
+.tabs__button[aria-selected="true"] {
+  border-color: var(--gray-dark);
+}
+
+.tabs__button + .tabs__button {
+  margin-left: var(--space-sm);
+}

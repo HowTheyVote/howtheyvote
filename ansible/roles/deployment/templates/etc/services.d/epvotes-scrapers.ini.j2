@@ -1,5 +1,0 @@
-[program:epvotes-scrapers]
-directory={{ epvotes_install_dir }}/scrapers
-command=poetry run gunicorn ep_votes.api:app -b :5000
-startsecs=30
-stderr_logfile={{ ansible_facts.env.HOME }}/logs/epvotes-scrapers.log

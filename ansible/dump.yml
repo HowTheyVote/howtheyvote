@@ -1,6 +1,0 @@
----
-- hosts: all
-  vars_files:
-    - vars/general.yml
-  roles:
-    - dump

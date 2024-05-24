@@ -1,0 +1,12 @@
+.stats {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: 1fr 1fr;
+}
+
+@media screen and (min-width: 720px) {
+  .stats {
+    grid-template: none;
+    grid-auto-flow: column;
+  }
+}

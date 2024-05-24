@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+
+  font-size: var(--text-size);
+  line-height: var(--line-height);
+  font-family: var(--font-family);
+  color: var(--color-text);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+button,
+textarea {
+  border: none;
+  background: none;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+noscript {
+  display: block;
+}
+
+:focus {
+  outline: var(--focus-outline);
+}

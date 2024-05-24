@@ -1,0 +1,13 @@
+#!/bin/bash
+
+filter="
+[
+    .outputs
+        | to_entries
+        | .[]
+        | select(.value.entryPoint)
+        | { key: (.value.entryPoint), value: { js: .key, css: .value.cssBundle } }
+] | from_entries
+"
+
+jq "$filter" dist/meta.json > dist/client/manifest.json

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PV.RollCallVoteResults xmlns:style="http://openoffice.org/2000/style" xmlns:xql="http://metalab.unc.edu/xql/" xmlns:form="http://openoffice.org/2000/form" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:number="http://openoffice.org/2000/datastyle" xmlns:svg="http://www.w3.org/2000/svg" xmlns:office="http://openoffice.org/2000/office" xmlns:dr3d="http://openoffice.org/2000/dr3d" xmlns:chart="http://openoffice.org/2000/chart" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:ino="http://namespaces.softwareag.com/tamino/response2" xmlns:script="http://openoffice.org/2000/script" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:draw="http://openoffice.org/2000/drawing" xmlns:text="http://openoffice.org/2000/text" xmlns:table="http://openoffice.org/2000/table" Sitting.Identifier="1333" Sitting.Date="2019-07-15" EP.Reference="P9_PV(2019)07-15(RCV)" EP.Number="PE 640.124" Document.Language="XL">
+    <RollCallVote.Result Identifier="108425" Date="2019-07-15" Number="1.">
+        <RollCallVote.Description.Text>Mardi - demande du groupe GUE/NGL 15/07/2019 17:09:37.000</RollCallVote.Description.Text>
+        <Result.For Number="0"></Result.For>
+        <Result.Against Number="0"></Result.Against>
+        <Result.Abstention Number="0"></Result.Abstention>
+    </RollCallVote.Result>
+</PV.RollCallVoteResults>

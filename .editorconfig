@@ -16,3 +16,6 @@ indent_size = 2
 
 [*.js]
 indent_size = 2
+
+[*.{html,html.j2}]
+indent_size = 2

@@ -1,76 +1,105 @@
-version: '3.7'
-
 volumes:
-  scrapers_virtualenvs: {}
-  mariadb_storage: {}
-  meilisearch_storage: {}
+  meilisearch_data: {}
+  caddy_data: {}
+  caddy_config: {}
+
+networks:
+  # This network is used to limit network access of the `chromium` service
+  # to just the `backend` and `frontend` services, disabling internet access.
+  chromium:
+    driver: bridge
+    internal: true
 
 services:
-  scrapers:
-    build: ./scrapers
-    command: poetry run flask run --host=0.0.0.0
-    volumes:
-      - ./scrapers:/app
-      - scrapers_virtualenvs:/root/.cache/pypoetry/virtualenvs
-    ports:
-      - '5000:5000'
+  frontend:
+    image: "ghcr.io/howtheyvote/fragments-poc-frontend:main"
+    depends_on:
+      - backend
+    networks:
+      - "default"
+      - "chromium"
+    expose:
+      - "8000"
+    restart: "unless-stopped"
     environment:
-      - FLASK_APP=ep_votes/api.py
-      - FLASK_DEBUG=true
-    stdin_open: true
-    tty: true
+      HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
+      HTV_BACKEND_PRIVATE_URL: "http://backend:5000"
+      HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
 
-  app:
-    build: ./app
-    depends_on: [scrapers, mariadb, meilisearch]
-    command: php artisan serve --host 0.0.0.0
-    volumes:
-      - ./app:/app
+  backend:
+    image: "ghcr.io/howtheyvote/fragments-poc-backend:main"
+    depends_on:
+      - meilisearch
+      - chromium
+    networks:
+      - "default"
+      - "chromium"
     ports:
-      - '8000:8000'
-      - '3000:3000'
+      # Make Prometheus metrics available on host machine
+      - "5000:5000"
+    volumes:
+      - "./storage/database:/howtheyvote/database"
+      - "./storage/files:/howtheyvote/files"
+    restart: "unless-stopped"
     environment:
-      - APP_NAME=epvotes
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - DB_CONNECTION=mysql
-      - DB_HOST=mariadb
-      - DB_DATABASE=laravel
-      - DB_USERNAME=laravel
-      - DB_PASSWORD=laravel
-      - LOG_CHANNEL=stack
-      - SCRAPERS_HOST=scrapers
-      - SCRAPERS_PORT=5000
-      - SCOUT_DRIVER=meilisearch
-      - MEILISEARCH_HOST=http://meilisearch:7700
-      - MEILISEARCH_PUBLIC_ENDPOINT=http://localhost:7700/
-    stdin_open: true
-    tty: true
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
+      HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
+      HTV_FRONTEND_PRIVATE_URL: "http://frontend:8000"
+      MEILI_URL: "http://meilisearch:7700"
+      MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
 
-  mariadb:
-    build: ./mariadb
-    volumes:
-      - mariadb_storage:/var/lib/mysql
+  worker:
+    image: "ghcr.io/howtheyvote/fragments-poc-backend:main"
+    command: "htv worker"
+    depends_on:
+      - meilisearch
+      - chromium
     ports:
-      - '3306:3306'
-    ulimits:
-      nofile:
-        soft: 65535
-        hard: 65535
+      # Make Prometheus metrics available on host machine
+      - "3000:3000"
+    volumes:
+      - "./storage/database:/howtheyvote/database"
+      - "./storage/files:/howtheyvote/files"
+    restart: "unless-stopped"
     environment:
-      - MYSQL_DATABASE=laravel
-      - MYSQL_USER=laravel
-      - MYSQL_PASSWORD=laravel
-      - MYSQL_ROOT_PASSWORD=laravel
-    stdin_open: true
-    tty: true
-    restart: always
+      HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
+      HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
+      MEILI_URL: "http://meilisearch:7700"
+      MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
 
   meilisearch:
-    image: getmeili/meilisearch:v0.28.1
+    image: "getmeili/meilisearch:v1.3.1"
+    expose:
+      - "7700"
     volumes:
-      - meilisearch_storage:/data.ms
+      - "meilisearch_data:/meili_data"
+    restart: "unless-stopped"
+    environment:
+      MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
+
+  caddy:
+    image: "caddy:2.7.6-alpine"
+    volumes:
+      - "caddy_data:/data"
+      - "caddy_config:/config"
+      - "./caddy:/etc/caddy"
+    depends_on:
+      - backend
+      - frontend
     ports:
-      - '7700:7700'
+      - "80:80"
+      - "443:443"
+    restart: "unless-stopped"
+    environment:
+      CADDY_SITE_ADDRESS: "${CADDY_SITE_ADDRESS}"
+
+  chromium:
+    image: "chromedp/headless-shell:125.0.6368.2"
+    command:
+      - "--disable-gpu"
+      - "--remote-allow-origins=*"
+      - "--hide-scrollbars"
+    networks:
+      - "chromium"
+    expose:
+      - "9222"

@@ -1,0 +1,110 @@
+import datetime
+
+from ..models import (
+    Country,
+    Member,
+    PlenarySession,
+    PressRelease,
+    Vote,
+    VoteGroup,
+    deserialize_group_membership,
+    deserialize_member_vote,
+)
+from ..models.eurovoc import EurovocConcept
+from .aggregator import CompositeRecord
+
+
+def map_member(record: CompositeRecord) -> Member:
+    """Maps a `howtheyvote.store.CompositeRecord` to a `howtheyvote.models.Member` object."""
+    country = record.first("country")
+    country = Country[country] if country else None
+
+    date_of_birth = record.first("date_of_birth")
+    if date_of_birth:
+        date_of_birth = datetime.date.fromisoformat(date_of_birth)
+
+    group_memberships = [
+        deserialize_group_membership(gm) for gm in record.chain("group_memberships")
+    ]
+
+    return Member(
+        id=record.group_key,
+        first_name=record.first("first_name"),
+        last_name=record.first("last_name"),
+        country=country,
+        date_of_birth=date_of_birth,
+        terms=record.all("term"),
+        group_memberships=group_memberships,
+        email=record.first("email"),
+        facebook=record.first("facebook"),
+        twitter=record.first("twitter"),
+    )
+
+
+def map_plenary_session(record: CompositeRecord) -> PlenarySession:
+    """Maps a `howtheyvote.store.CompositeRecord` to a `howtheyvote.models.PlenarySession`
+    object."""
+
+    return PlenarySession(
+        id=record.group_key,
+        term=record.first("term"),
+        start_date=datetime.date.fromisoformat(record.first("start_date")),
+        end_date=datetime.date.fromisoformat(record.first("end_date")),
+        location=record.first("location"),
+    )
+
+
+def map_vote(record: CompositeRecord) -> Vote:
+    """Maps a `howtheyvote.store.CompositeRecord` to a `howtheyvote.models.Vote` object."""
+    member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes")]
+    geo_areas = {Country[code] for code in record.chain("geo_areas")}
+    eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
+
+    return Vote(
+        id=record.group_key,
+        timestamp=datetime.datetime.fromisoformat(record.first("timestamp")),
+        order=record.first("order"),
+        title=record.first("title_en") or record.first("title"),
+        description=record.first("description_en") or record.first("description"),
+        reference=record.first("reference"),
+        rapporteur=record.first("rapporteur"),
+        procedure_title=record.first("procedure_title"),
+        procedure_reference=record.first("procedure_reference"),
+        is_main=record.first("is_main") or False,
+        is_featured=record.first("is_featured") or False,
+        group_key=record.first("group_key"),
+        member_votes=member_votes,
+        geo_areas=geo_areas,
+        eurovoc_concepts=eurovoc_concepts,
+        issues=record.chain("issues"),
+    )
+
+
+def map_vote_group(record: CompositeRecord) -> VoteGroup:
+    date = record.first("date")
+
+    if date:
+        date = datetime.date.fromisoformat(date)
+
+    return VoteGroup(
+        id=record.group_key,
+        date=date,
+        issues=record.chain("issues"),
+    )
+
+
+def map_press_release(record: CompositeRecord) -> PressRelease:
+    published_at = record.first("published_at")
+
+    if published_at:
+        published_at = datetime.datetime.fromisoformat(published_at)
+
+    return PressRelease(
+        id=record.group_key,
+        term=record.first("term"),
+        title=record.first("title"),
+        published_at=published_at,
+        references=record.chain("reference"),
+        procedure_references=record.chain("procedure_reference"),
+        facts=record.first("facts"),
+    )

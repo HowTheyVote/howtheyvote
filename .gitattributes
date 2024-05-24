@@ -1,2 +1,1 @@
-app/tests/data/* linguist-vendored
-scrapers/tests/data/* linguist-vendored
+backend/tests/scrapers/data/* linguist-vendored

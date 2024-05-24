@@ -1,0 +1,28 @@
+{
+  "name": "howtheyvote",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "",
+  "author": "Till Prochaska <mail@tillprochaska.de>",
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "@tinyhttp/app": "^2.1.4",
+    "isbot": "^5.1.4",
+    "pino": "^8.20.0",
+    "preact": "^10.19.3",
+    "preact-render-to-string": "^6.3.1",
+    "sirv": "^2.0.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.4.1-nightly.570d680",
+    "@hey-api/openapi-ts": "^0.32.0",
+    "@testing-library/preact": "^3.2.3",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jsdom": "^21.1.6",
+    "@types/node": "^18.17.5",
+    "esbuild": "^0.17.10",
+    "jsdom": "^21.1.1",
+    "tsx": "^4.7.0",
+    "typescript": "^4.9.5"
+  }
+}

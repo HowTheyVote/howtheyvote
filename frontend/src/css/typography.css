@@ -1,0 +1,134 @@
+.alpha,
+.prose h1,
+.beta,
+.prose h2,
+.gamma,
+.prose h3,
+.delta {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.alpha,
+.prose h1,
+.beta,
+.prose h2,
+.delta {
+  color: var(--blue-darker);
+}
+
+.alpha,
+.prose h1 {
+  font-family: var(--font-family-heading);
+  font-size: var(--text-xxl);
+  text-wrap: balance;
+}
+
+.beta,
+.prose h2 {
+  font-size: var(--text-xl);
+  text-wrap: balance;
+}
+
+.gamma,
+.prose h3 {
+  font-size: var(--text-size);
+}
+
+.delta {
+  font-size: var(--text-size);
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+}
+
+strong {
+  font-weight: 500;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: var(--space-sm);
+}
+
+.prose ul li + li,
+.prose ol li + li {
+  margin-top: var(--space-xxs);
+}
+
+.prose > * + * {
+  margin-top: var(--space-xs);
+}
+
+.prose .alpha,
+.prose .beta,
+.prose .gamma,
+.prose .delta {
+  margin-bottom: var(--space-xs);
+}
+
+.prose * + .alpha,
+.prose * + .beta,
+.prose * + .gamma,
+.prose * + .delta {
+  margin-top: var(--space);
+}
+
+.text--sm {
+  font-size: var(--text-sm);
+}
+
+.text--xs {
+  font-size: var(--text-xs);
+}
+
+.text--green {
+  color: var(--green-dark);
+}
+
+.text--red {
+  color: var(--red-dark);
+}
+
+.text--blue {
+  color: var(--blue-dark);
+}
+
+.text--center {
+  text-align: center;
+}
+
+.text--light {
+  color: var(--color-text-light);
+}
+
+.mt {
+  margin-top: var(--space);
+}
+
+.mt--sm {
+  margin-top: var(--space-sm);
+}
+
+.mt--xs {
+  margin-top: var(--space-xs);
+}
+
+.mt--xxs {
+  margin-top: var(--space-xxs);
+}
+
+.mb {
+  margin-bottom: var(--space);
+}
+
+.mb--sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb--xs {
+  margin-bottom: var(--space-xs);
+}
+
+.mb-xxs {
+  margin-bottom: var(--space-xxs);
+}

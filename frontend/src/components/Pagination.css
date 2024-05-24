@@ -1,0 +1,24 @@
+.pagination {
+  display: flex;
+  width: 100%;
+}
+
+.pagination a {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-text-light);
+}
+
+.pagination a[rel="prev"] {
+  margin-right: var(--space);
+}
+
+.pagination a[rel="next"] {
+  margin-left: auto;
+}
+
+.pagination__arrow {
+  font-size: 1.2em;
+  line-height: inherit;
+}

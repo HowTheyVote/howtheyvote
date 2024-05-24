@@ -1,0 +1,21 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.4.1-nightly.570d680/schema.json",
+    "files": {
+        "ignore": [
+            "src/api/generated/**",
+            "static/**"
+        ]
+    },
+	"organizeImports": {
+		"enabled": true
+	},
+    "formatter": {
+        "indentStyle": "space"
+    },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		}
+	}
+}

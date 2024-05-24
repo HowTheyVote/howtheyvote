@@ -1,0 +1,44 @@
+services:
+  frontend:
+    build:
+      context: "./frontend"
+    command: "make dev"
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./frontend:/howtheyvote/frontend"
+    stdin_open: true
+    tty: true
+
+  backend:
+    build:
+      context: "./backend"
+    command: "make dev"
+    volumes:
+      - "./backend:/howtheyvote/backend"
+    stdin_open: true
+    tty: true
+
+  worker:
+    build:
+      context: "./backend"
+    volumes:
+      - "./backend:/howtheyvote/backend"
+    stdin_open: true
+    tty: true
+
+  meilisearch:
+    ports:
+      - "7700:7700"
+    stdin_open: true
+    tty: true
+
+  caddy:
+    stdin_open: true
+    tty: true
+    environment:
+      CADDY_SITE_ADDRESS: "localhost"
+
+  chromium:
+    ports:
+      - "9222:9222"

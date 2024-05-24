@@ -1,0 +1,26 @@
+.list-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.list-item > * + * {
+  margin-left: var(--space-xs);
+}
+
+.list-item__avatar,
+.list-item__thumb {
+  flex-shrink: 0;
+}
+
+.list-item__text {
+  flex-grow: 1;
+}
+
+.list-item__subtitle {
+  color: var(--color-text-light);
+}
+
+.list-item__chart {
+  margin: var(--space-xxs) 0;
+}

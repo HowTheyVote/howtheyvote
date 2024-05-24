@@ -1,0 +1,8 @@
+#!/bin/bash
+
+trap exit SIGINT SIGTERM
+export ENTR_INOTIFY_WORKAROUND=1
+
+while true; do
+    find src -type f | entr -r -d -s 'make build && node dist/server.entry.mjs'
+done
