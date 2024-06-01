@@ -5824,22 +5824,22 @@
         },
         {
             "name": "spatie/url",
-            "version": "2.2.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/url.git",
-                "reference": "8a52d669b7ada3bd8ba4a3cdba885056a35a978d"
+                "reference": "93a51db743cdec22b081c64593e193887c9cd395"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/url/zipball/8a52d669b7ada3bd8ba4a3cdba885056a35a978d",
-                "reference": "8a52d669b7ada3bd8ba4a3cdba885056a35a978d",
+                "url": "https://api.github.com/repos/spatie/url/zipball/93a51db743cdec22b081c64593e193887c9cd395",
+                "reference": "93a51db743cdec22b081c64593e193887c9cd395",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.0",
-                "psr/http-message": "^1.0",
-                "spatie/macroable": "^2.0"
+                "psr/http-message": "^1.0 || ^2.0",
+                "spatie/macroable": "^1.0 || ^2.0"
             },
             "require-dev": {
                 "pestphp/pest": "^1.21"
@@ -5870,7 +5870,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/url/issues",
-                "source": "https://github.com/spatie/url/tree/2.2.0"
+                "source": "https://github.com/spatie/url/tree/2.4.0"
             },
             "funding": [
                 {
@@ -5882,7 +5882,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-12-14T09:57:56+00:00"
+            "time": "2024-03-08T11:35:19+00:00"
         },
         {
             "name": "spatie/yaml-front-matter",
@@ -11763,5 +11763,5 @@
         "php": "^8"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
