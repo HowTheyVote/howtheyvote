@@ -57,3 +57,9 @@ In order to run all data pipelines for an entire term, run the following command
 ```
 htv pipeline all --term=9
 ```
+
+---
+
+Parts of this work were sponsored by the Federal Ministry of Education and Research in the 9th round of the Prototype Fund in 2021 (Reference: 01IS21818).
+
+<img src="./docs/logo-bmbf-ptf.png" alt="Logo of the Federal Ministry of Education and Research of Germany and the Prototype Fund side by side" height="200" />
