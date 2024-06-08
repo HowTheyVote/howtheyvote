@@ -9,7 +9,7 @@ lint:
 	./node_modules/.bin/biome check src static
 
 lint-fix:
-	./node_modules/.bin/biome check --apply src static
+	./node_modules/.bin/biome check --write src static
 
 typecheck:
 	./node_modules/.bin/tsc --noEmit
