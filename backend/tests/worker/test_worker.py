@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from howtheyvote.models import PipelineRun, PipelineRunResult
 from howtheyvote.pipelines import DataUnavailableError, PipelineError
-from howtheyvote.worker.worker import Weekday, Worker
+from howtheyvote.worker.worker import Weekday, Worker, pipeline_ran_successfully
 
 
 def get_handler():
@@ -170,3 +170,45 @@ def test_worker_schedule_pipeline_log_runs_exceptions(db_session):
 
         assert runs[1].pipeline == "pipeline_error"
         assert runs[1].result == PipelineRunResult.FAILURE
+
+
+def test_pipeline_ran_successfully(db_session):
+    class TestPipeline:
+        pass
+
+    now = datetime.datetime.now()
+    today = now.date()
+
+    run = PipelineRun(
+        started_at=now,
+        finished_at=now,
+        pipeline=TestPipeline.__name__,
+        result=PipelineRunResult.FAILURE,
+    )
+    db_session.add(run)
+    db_session.commit()
+
+    assert pipeline_ran_successfully(TestPipeline, today) is False
+
+    run = PipelineRun(
+        started_at=now,
+        finished_at=now,
+        pipeline=TestPipeline.__name__,
+        result=PipelineRunResult.SUCCESS,
+    )
+    db_session.add(run)
+    db_session.commit()
+
+    assert pipeline_ran_successfully(TestPipeline, today) is True
+    assert pipeline_ran_successfully(TestPipeline, today, count=2) is False
+
+    run = PipelineRun(
+        started_at=now,
+        finished_at=now,
+        pipeline=TestPipeline.__name__,
+        result=PipelineRunResult.SUCCESS,
+    )
+    db_session.add(run)
+    db_session.commit()
+
+    assert pipeline_ran_successfully(TestPipeline, today, count=2) is True
