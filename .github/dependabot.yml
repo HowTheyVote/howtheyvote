@@ -9,6 +9,7 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 50
     groups:
       dev-dependencies:
         applies-to: "version-updates"
@@ -28,6 +29,7 @@ updates:
     directory: "/backend"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 50
     groups:
       dev-dependencies:
         applies-to: "version-updates"
