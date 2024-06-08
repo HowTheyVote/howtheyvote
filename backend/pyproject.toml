@@ -52,10 +52,12 @@ responses = "^0.25.2"
 time-machine = "^2.14.1"
 
 [tool.ruff]
-select = ["E", "F", "W", "I", "N", "B", "UP", "UP006"]
 line-length = 95
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "UP", "UP006"]
+
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
 "__init__.py" = ["F401"]
 
