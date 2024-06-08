@@ -1,5 +1,5 @@
 from apispec import APISpec
-from apispec_webframeworks.flask import FlaskPlugin  # type: ignore[import-untyped]
+from apispec_webframeworks.flask import FlaskPlugin
 
 from .. import config
 from .openapi_helpers import get_schema, normalize_schema_name

@@ -54,22 +54,21 @@ yaml = ["PyYAML (>=3.10)"]
 
 [[package]]
 name = "apispec-webframeworks"
-version = "0.5.2"
+version = "1.1.0"
 description = "Web framework plugins for apispec."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "apispec-webframeworks-0.5.2.tar.gz", hash = "sha256:0db35b267914b3f8c562aca0261957dbcb4176f255eacc22520277010818dcf3"},
-    {file = "apispec_webframeworks-0.5.2-py2.py3-none-any.whl", hash = "sha256:482c563abbcc2a261439476cb3f1a7c7284cc997c322c574d48c111643e9c04e"},
+    {file = "apispec_webframeworks-1.1.0-py3-none-any.whl", hash = "sha256:93e7921426dbafe311d0e9dd912b6dd2e09222e153446a1a73f4c06164107582"},
+    {file = "apispec_webframeworks-1.1.0.tar.gz", hash = "sha256:b095df4afb3d773bdf60f0a599b808fd2ca316a8e452f8ce23b10b4cb0e717bf"},
 ]
 
 [package.dependencies]
-apispec = {version = ">=2.0.0", extras = ["yaml"]}
+apispec = {version = ">=6.0.0", extras = ["yaml"]}
 
 [package.extras]
-dev = ["Flask (==1.1.1)", "bottle (==0.12.17)", "flake8 (==3.7.9)", "flake8-bugbear (==19.8.0)", "mock", "pre-commit (>=1.18,<2.0)", "pytest", "tornado", "tox"]
-lint = ["flake8 (==3.7.9)", "flake8-bugbear (==19.8.0)", "pre-commit (>=1.18,<2.0)"]
-tests = ["Flask (==1.1.1)", "bottle (==0.12.17)", "mock", "pytest", "tornado"]
+dev = ["apispec-webframeworks[tests]", "pre-commit (>=3.5,<4.0)", "tox"]
+tests = ["Flask (>=2.3.3)", "aiohttp (>=3.9.3)", "bottle (>=0.12.25)", "pytest", "tornado (>=6)"]
 
 [[package]]
 name = "beautifulsoup4"
@@ -1636,4 +1635,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<4.0"
-content-hash = "abc5575851ed4c091c7c6ef76038d10fd343d172886832b54572905711c9299f"
+content-hash = "10d80d5620e34ba24d0aa92b6744eb528d1b20d7f256e7e0eedb4f17282820e8"
