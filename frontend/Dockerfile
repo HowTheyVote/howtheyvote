@@ -1,4 +1,4 @@
-FROM node:20-alpine3.19 as dev
+FROM node:22-alpine3.19 as dev
 
 WORKDIR /howtheyvote/frontend
 
