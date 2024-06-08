@@ -34,7 +34,7 @@ prometheus-client = "^0.20.0"
 sqlalchemy = "^2.0.23"
 schedule = "^1.2.2"
 pytz = "^2024.1"
-websocket-client = "^1.7.0"
+websocket-client = "^1.8.0"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^6.4"
