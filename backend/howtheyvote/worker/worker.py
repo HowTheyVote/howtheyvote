@@ -9,6 +9,7 @@ import prometheus_client
 from prometheus_client import Counter, Gauge, Histogram
 from prometheus_client import start_http_server as start_metrics_server
 from schedule import Scheduler
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from .. import config
@@ -56,6 +57,24 @@ class Weekday(enum.Enum):
 
 
 Handler = Callable[..., Any]
+
+
+def pipeline_ran_successfully(
+    pipeline: type[object],
+    date: datetime.date,
+    count: int = 1,
+) -> bool:
+    """Check if a given pipeline has been run successfully on a given day."""
+    query = (
+        select(func.count())
+        .select_from(PipelineRun)
+        .where(PipelineRun.pipeline == pipeline.__name__)
+        .where(func.date(PipelineRun.started_at) == func.date(date))
+        .where(PipelineRun.result == PipelineRunResult.SUCCESS)
+    )
+    result = Session.execute(query).scalar() or 0
+
+    return result >= count
 
 
 class Worker:
