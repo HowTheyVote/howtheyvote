@@ -1,4 +1,4 @@
-import { JSX } from "preact";
+import type { JSX } from "preact";
 import { bem } from "../lib/bem";
 
 import "./Input.css";

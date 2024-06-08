@@ -1,4 +1,4 @@
-import { BaseVote } from "../api";
+import type { BaseVote } from "../api";
 import { formatDate } from "../lib/dates";
 import Tag from "./Tag";
 
@@ -17,7 +17,7 @@ export default function VoteCard({ vote }: VoteCardProps) {
       <div class="vote-card__meta">
         {vote.is_featured && <Tag style="featured">Featured</Tag>}
         {vote.geo_areas.length > 0 &&
-          vote.geo_areas.map((area) => <Tag>{area.label}</Tag>)}
+          vote.geo_areas.map((area) => <Tag key={area.code}>{area.label}</Tag>)}
         {formatDate(new Date(vote.timestamp))}
       </div>
     </article>

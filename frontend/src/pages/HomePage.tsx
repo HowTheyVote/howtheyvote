@@ -1,11 +1,11 @@
-import { PlenarySession, api } from "../api/index";
+import { type PlenarySession, api } from "../api/index";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SearchForm from "../components/SearchForm";
 import { formatDate } from "../lib/dates";
-import { Loader, Page } from "../lib/server";
+import type { Loader, Page } from "../lib/server";
 
 import "./HomePage.css";
 

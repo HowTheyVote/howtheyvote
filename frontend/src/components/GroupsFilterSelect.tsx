@@ -1,5 +1,5 @@
-import { JSX } from "preact/jsx-runtime";
-import { Group } from "../api";
+import type { JSX } from "preact/jsx-runtime";
+import type { Group } from "../api";
 import FilterSelect from "./FilterSelect";
 
 type GroupsFilterSelectProps = {

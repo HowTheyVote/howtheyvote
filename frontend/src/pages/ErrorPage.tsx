@@ -1,4 +1,4 @@
-import { FunctionComponent, VNode } from "preact";
+import type { FunctionComponent, VNode } from "preact";
 import App from "../components/App";
 import Eyes from "../components/Eyes";
 import { HTTPException } from "../lib/http";
@@ -6,13 +6,12 @@ import { Island } from "../lib/islands";
 
 import "./ErrorPage.css";
 
-type ErrorPageMessages = Record<
-  number,
-  {
-    title: string;
-    message: string | VNode;
-  }
->;
+type ErrorPageMessage = {
+  title: string;
+  message: string | VNode;
+};
+
+type ErrorPageMessages = Record<number, ErrorPageMessage>;
 
 const CONTENT: ErrorPageMessages = {
   404: {
@@ -33,13 +32,11 @@ const CONTENT: ErrorPageMessages = {
 };
 
 export const ErrorPage: FunctionComponent<{ error: Error }> = ({ error }) => {
-  let content;
+  let content: ErrorPageMessage;
 
   if (error instanceof HTTPException) {
     content = CONTENT[error.code];
-  }
-
-  if (!content) {
+  } else {
     content = CONTENT[500];
   }
 

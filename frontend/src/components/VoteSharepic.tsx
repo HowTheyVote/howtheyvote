@@ -1,4 +1,4 @@
-import { Vote } from "../api";
+import type { Vote } from "../api";
 import { formatDate } from "../lib/dates";
 import CCLogo from "./CCLogo";
 import VoteResultChart from "./VoteResultChart";

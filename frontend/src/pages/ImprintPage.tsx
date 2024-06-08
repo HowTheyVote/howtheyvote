@@ -3,7 +3,7 @@ import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
 import Stack from "../components/Stack";
 import Wrapper from "../components/Wrapper";
-import { Page } from "../lib/server";
+import type { Page } from "../lib/server";
 
 export const ImprintPage: Page = () => {
   return (

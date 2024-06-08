@@ -1,4 +1,4 @@
-import { BaseVote } from "../api";
+import type { BaseVote } from "../api";
 import { formatDate } from "../lib/dates";
 import Stack from "./Stack";
 import VoteCard from "./VoteCard";
@@ -21,7 +21,7 @@ function Group({ votes, title }: GroupProps) {
       {title && <h2 class="delta">{title}</h2>}
 
       {votes.map((vote: BaseVote) => (
-        <VoteCard vote={vote} />
+        <VoteCard key={vote.id} vote={vote} />
       ))}
     </Stack>
   );
@@ -52,7 +52,7 @@ export default function VoteCards({ votes, groupByDate }: VoteCardsProps) {
   return (
     <div class="vote-cards">
       {Array.from(groups.entries()).map(([formattedDate, votes]) => (
-        <Group votes={votes} title={formattedDate} />
+        <Group key={formattedDate} votes={votes} title={formattedDate} />
       ))}
     </div>
   );

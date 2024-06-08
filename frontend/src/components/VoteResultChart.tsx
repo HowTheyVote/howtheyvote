@@ -1,4 +1,4 @@
-import { MemberVote, VotePositionCounts } from "../api";
+import type { MemberVote, VotePositionCounts } from "../api";
 import { bem } from "../lib/bem";
 import Thumb from "./Thumb";
 

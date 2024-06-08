@@ -1,4 +1,4 @@
-import { VotesQueryResponse, api } from "../api";
+import { type VotesQueryResponse, api } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
@@ -9,13 +9,16 @@ import VoteCards from "../components/VoteCards";
 import Wrapper from "../components/Wrapper";
 import { firstQueryValue, redirect } from "../lib/http";
 import { getLogger } from "../lib/logging";
-import { Loader, Page, Request } from "../lib/server";
+import type { Loader, Page, Request } from "../lib/server";
 
 const log = getLogger();
 
 export const loader: Loader<VotesQueryResponse> = async (request: Request) => {
   const q = firstQueryValue(request.query, "q") || "";
-  const page = parseInt(firstQueryValue(request.query, "page") || "1", 10);
+  const page = Number.parseInt(
+    firstQueryValue(request.query, "page") || "1",
+    10,
+  );
 
   const data = await api.votes.search({ q, page });
 

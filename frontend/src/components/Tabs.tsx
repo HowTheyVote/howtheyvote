@@ -1,4 +1,4 @@
-import { FunctionComponent, VNode } from "preact";
+import type { FunctionComponent, VNode } from "preact";
 import { useRef, useState } from "preact/hooks";
 import "./Tabs.css";
 
@@ -68,6 +68,7 @@ const Tabs: TabsComponent = ({ children }) => {
       >
         {panels.map((panel: VNode<PanelProps>, index: number) => (
           <button
+            key={panel.props.id}
             type="button"
             class="tabs__button"
             id={panel.props.id}

@@ -1,4 +1,4 @@
-import { ComponentChildren, toChildArray } from "preact";
+import { type ComponentChildren, toChildArray } from "preact";
 import { useState } from "preact/hooks";
 import { bem } from "../lib/bem";
 import Button from "./Button";

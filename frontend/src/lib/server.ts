@@ -1,13 +1,13 @@
 import {
   App as BaseApp,
-  ErrorHandler,
-  Handler,
-  NextFunction,
-  Request as BaseRequest,
-  Response,
+  type Request as BaseRequest,
+  type ErrorHandler,
+  type Handler,
+  type NextFunction,
+  type Response,
 } from "@tinyhttp/app";
 
-import { FunctionComponent, VNode, h } from "preact";
+import { type FunctionComponent, type VNode, h } from "preact";
 import render from "preact-render-to-string";
 import { ApiError } from "../api/generated";
 import { HTTPException, RedirectException } from "../lib/http";

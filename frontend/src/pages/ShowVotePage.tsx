@@ -1,4 +1,4 @@
-import { Vote, api } from "../api";
+import { type Vote, api } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
@@ -13,8 +13,8 @@ import { Island } from "../lib/islands";
 import { getDownloadUrl, getErrorReportFormUrl } from "../lib/links";
 import { getLogger } from "../lib/logging";
 import { serializeMemberVotes } from "../lib/serialization";
-import { Request } from "../lib/server";
-import { Loader, Page } from "../lib/server";
+import type { Request } from "../lib/server";
+import type { Loader, Page } from "../lib/server";
 
 const log = getLogger();
 
@@ -106,7 +106,7 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
 };
 
 function Copyright({ vote }: { vote: Vote }) {
-  const copyright = [
+  let copyright = (
     <>
       {"MEP photos: © European Union 2019 · "}
       <a
@@ -115,12 +115,14 @@ function Copyright({ vote }: { vote: Vote }) {
       >
         Source: EP
       </a>
-    </>,
-  ];
+    </>
+  );
 
   if (vote.facts) {
-    copyright.push(
+    copyright = (
       <>
+        {copyright}
+        <br />
         {"Summary: © European Union "}
         {new Date(vote.timestamp).getFullYear()}
         {" · "}
@@ -130,27 +132,11 @@ function Copyright({ vote }: { vote: Vote }) {
         >
           Source: EP
         </a>
-      </>,
+      </>
     );
   }
 
-  return (
-    <>
-      {copyright.reduce((concatenated, item) => {
-        if (!concatenated) {
-          return <>item</>;
-        }
-
-        return (
-          <>
-            {concatenated}
-            <br />
-            {item}
-          </>
-        );
-      })}
-    </>
-  );
+  return copyright;
 }
 
 function MetaTags({ vote }: { vote: Vote }) {

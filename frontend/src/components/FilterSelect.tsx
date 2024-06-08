@@ -1,4 +1,4 @@
-import { JSX } from "preact/jsx-runtime";
+import type { JSX } from "preact/jsx-runtime";
 
 import "./FilterSelect.css";
 
@@ -41,7 +41,9 @@ export default function FilterSelect({
         autoComplete="off"
       >
         {Object.entries(options).map(([value, label]) => (
-          <option value={value}>{label}</option>
+          <option value={value} key={value}>
+            {label}
+          </option>
         ))}
       </select>
     </div>

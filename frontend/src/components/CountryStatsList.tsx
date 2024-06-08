@@ -1,4 +1,4 @@
-import { Country, VotePositionCounts } from "../api";
+import type { Country, VotePositionCounts } from "../api";
 import CountryFlag from "./CountryFlag";
 import List from "./List";
 import ListItem from "./ListItem";
@@ -42,7 +42,7 @@ export default function CountryStatsList({ countries }: CountryStatsListProps) {
   return (
     <List truncate>
       {countries.map(({ country, stats }) => (
-        <Item country={country} stats={stats} />
+        <Item key={country.code} country={country} stats={stats} />
       ))}
     </List>
   );

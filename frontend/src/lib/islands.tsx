@@ -1,6 +1,6 @@
 import {
-  ComponentChildren,
-  ComponentType,
+  type ComponentChildren,
+  type ComponentType,
   hydrate,
   toChildArray,
 } from "preact";
