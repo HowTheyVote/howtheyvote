@@ -1,5 +1,5 @@
-import { JSX } from "preact/jsx-runtime";
-import { Country } from "../api";
+import type { JSX } from "preact/jsx-runtime";
+import type { Country } from "../api";
 import FilterSelect from "./FilterSelect";
 
 type CountriesFilterSelectProps = {

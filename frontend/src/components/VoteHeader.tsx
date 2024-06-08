@@ -1,4 +1,4 @@
-import { Vote } from "../api";
+import type { Vote } from "../api";
 import { PUBLIC_URL } from "../config";
 import ShareButton from "./ShareButton";
 import Stack from "./Stack";

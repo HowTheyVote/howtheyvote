@@ -1,4 +1,4 @@
-import { ComponentChildren } from "preact";
+import type { ComponentChildren } from "preact";
 import { bem } from "../lib/bem";
 import Footer from "./Footer";
 import Header from "./Header";

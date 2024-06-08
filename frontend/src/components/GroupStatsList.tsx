@@ -1,4 +1,4 @@
-import { Group, VotePositionCounts } from "../api";
+import type { Group, VotePositionCounts } from "../api";
 import Avatar from "./Avatar";
 import List from "./List";
 import ListItem from "./ListItem";
@@ -37,7 +37,7 @@ export default function GroupStatsList({ groups }: GroupStatsListProps) {
   return (
     <List>
       {groups.map(({ group, stats }) => (
-        <Item group={group} stats={stats} />
+        <Item key={group.code} group={group} stats={stats} />
       ))}
     </List>
   );

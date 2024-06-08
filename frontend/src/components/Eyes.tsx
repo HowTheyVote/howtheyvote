@@ -25,12 +25,12 @@ function Eye({ translateX, translateY }: EyeProps) {
   const [cursorX, setCursorX] = useState(0);
   const [cursorY, setCursorY] = useState(0);
 
-  const onMouseMove = (event: MouseEvent) => {
-    setCursorX(event.pageX);
-    setCursorY(event.pageY);
-  };
-
   useEffect(() => {
+    const onMouseMove = (event: MouseEvent) => {
+      setCursorX(event.pageX);
+      setCursorY(event.pageY);
+    };
+
     window.addEventListener("mousemove", onMouseMove);
     return () => window.removeEventListener("mousemove", onMouseMove);
   }, []);

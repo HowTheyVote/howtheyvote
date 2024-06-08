@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { Country, Group, Member, MemberVote } from "../api";
+import type { Country, Group, Member, MemberVote } from "../api";
 import { normalize } from "../lib/normalization";
 import Avatar from "./Avatar";
 import Button from "./Button";

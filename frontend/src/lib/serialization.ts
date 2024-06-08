@@ -1,4 +1,4 @@
-import { Country, Group, Member, MemberVote } from "../api";
+import type { Country, Group, Member, MemberVote } from "../api";
 
 export type SerializedMemberVotes = {
   items: Array<

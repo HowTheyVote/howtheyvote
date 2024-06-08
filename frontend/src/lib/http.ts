@@ -1,4 +1,4 @@
-import { ParsedUrlQuery } from "node:querystring";
+import type { ParsedUrlQuery } from "node:querystring";
 
 export class HTTPException extends Error {
   code: number;

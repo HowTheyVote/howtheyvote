@@ -1,4 +1,4 @@
-import { Source } from "../api";
+import type { Source } from "../api";
 import { formatDateTime } from "../lib/dates";
 import List from "./List";
 import ListItem from "./ListItem";
@@ -11,7 +11,7 @@ export default function Sources({ sources }: SourcesProps) {
   return (
     <List space="xxs">
       {sources.map((source) => (
-        <SourceItem source={source} />
+        <SourceItem source={source} key={source.name} />
       ))}
     </List>
   );

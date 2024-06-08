@@ -20,7 +20,8 @@ export function normalize(string: string): string {
   // Normalize decomposable characters by decomposing them first, then removing
   // characters from the diacritics Unicode block.
   // See https://stackoverflow.com/a/37511463
-  normalized = normalized.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+  // biome-ignore lint/suspicious/noMisleadingCharacterClass: Copy-pasted from SO
+  normalized = normalized.normalize("NFKD").replace(/[\u0300-\u036f]/gu, "");
 
   return normalized;
 }

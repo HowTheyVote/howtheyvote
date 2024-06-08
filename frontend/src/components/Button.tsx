@@ -1,4 +1,4 @@
-import { ComponentChildren, FunctionComponent, JSX } from "preact";
+import type { ComponentChildren, FunctionComponent, JSX } from "preact";
 import { bem } from "../lib/bem";
 import "./Button.css";
 

@@ -1,5 +1,5 @@
-import { JSX } from "preact";
-import { MemberVote } from "../api";
+import type { JSX } from "preact";
+import type { MemberVote } from "../api";
 import { bem } from "../lib/bem";
 
 import "./Thumb.css";

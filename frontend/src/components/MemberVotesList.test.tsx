@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 import { render, within } from "@testing-library/preact";
 import userEvent from "@testing-library/user-event";
-import { Country, Group, Member } from "../api";
+import { Country, type Group, type Member } from "../api";
 import MemberVotesList from "./MemberVotesList";
 
 const country = {
