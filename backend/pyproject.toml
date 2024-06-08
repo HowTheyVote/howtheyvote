@@ -32,7 +32,7 @@ apispec = "^6.3.0"
 apispec-webframeworks = "^0.5.2"
 prometheus-client = "^0.20.0"
 sqlalchemy = "^2.0.23"
-schedule = "^1.2.1"
+schedule = "^1.2.2"
 pytz = "^2024.1"
 websocket-client = "^1.7.0"
 
