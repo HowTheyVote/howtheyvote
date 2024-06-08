@@ -1,0 +1,65 @@
+.vote-result-chart__bars {
+  display: flex;
+  min-height: calc(2 * var(--space-xs));
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  background-color: var(--gray-light);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.25);
+  margin-bottom: var(--space-xxs);
+}
+
+.vote-result-chart__bars > * + * {
+  margin-left: 1px;
+}
+
+.vote-result-chart__bar {
+  width: calc(var(--ratio) * 100%);
+  padding: var(--space-xs) 0;
+
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.vote-result-chart--slim .vote-result-chart__bars {
+  min-height: 6px;
+}
+
+.vote-result-chart--slim .vote-result-chart__bar {
+  padding: 3px 0;
+}
+
+.vote-result-chart--slim .vote-result-chart__thumb,
+.vote-result-chart--slim .vote-result-chart__percentage {
+  display: none;
+}
+
+.vote-result-chart__bar--for {
+  background-color: var(--green);
+  background-image: var(--green-pattern);
+}
+
+.vote-result-chart__bar--against {
+  background-color: var(--red);
+  background-image: var(--red-pattern);
+}
+
+.vote-result-chart__bar--abstention {
+  background-color: var(--blue);
+}
+
+.vote-result-chart__bar--small .vote-result-chart__thumb,
+.vote-result-chart__bar--small .vote-result-chart__percentage {
+  display: none;
+}
+
+.vote-result-chart__bar--medium .vote-result-chart__percentage {
+  display: none;
+}
+
+@media screen and (max-width: 720px) {
+  .vote-result-chart__bar--medium .vote-result-chart__thumb {
+    display: none;
+  }
+}

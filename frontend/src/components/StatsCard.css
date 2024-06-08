@@ -1,0 +1,13 @@
+.stats-card__value {
+  display: block;
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
+.stats-card__label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  color: var(--color-text-light);
+  font-size: var(--text-sm);
+}

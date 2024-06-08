@@ -1,0 +1,55 @@
+name: Backend CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    services:
+      meilisearch:
+        image: "getmeili/meilisearch:v1.3.1"
+        ports: ["7700:7700"]
+        env:
+          MEILI_MASTER_KEY: "1234567890"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+          cache: "poetry"
+          cache-dependency-path: "./backend/poetry.lock"
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Check formatting
+        run: make format-check
+
+      - name: Run linter
+        run: make lint
+
+      - name: Run types
+        run: make typecheck
+
+      - name: Run tests
+        run: make test
+        env:
+          HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
+          HTV_BACKEND_USERS_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/users.sqlite3"
+          MEILI_MASTER_KEY: "1234567890"
+          MEILI_URL: "http://localhost:7700"

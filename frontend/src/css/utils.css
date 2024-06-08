@@ -1,0 +1,19 @@
+.visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.px {
+  padding-left: var(--space-sm);
+  padding-right: var(--space-sm);
+}
+
+.py {
+  padding-top: var(--space);
+  padding-bottom: var(--space);
+}

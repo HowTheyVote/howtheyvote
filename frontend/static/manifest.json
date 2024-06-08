@@ -1,0 +1,8 @@
+{
+  "name": "HowTheyVote",
+  "short_name": "HowTheyVote",
+  "description": "Find out how Members of the European Parliament vote.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone"
+}

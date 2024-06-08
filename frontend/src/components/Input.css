@@ -1,0 +1,20 @@
+.input {
+  border: 1px solid var(--gray-light);
+  border-radius: var(--border-radius);
+  display: block;
+  width: 100%;
+  padding: var(--space-xxs) var(--space-xs);
+  background-color: #fff;
+}
+
+.input--lg {
+  padding: var(--space-xs) var(--space-sm);
+}
+
+input[type="search"] {
+  -webkit-appearance: none;
+}
+
+.input:focus {
+  border-color: var(--blue);
+}

@@ -1,0 +1,10 @@
+.member-votes-list__action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xs);
+}
+
+.member-votes-list__search {
+  width: 100%;
+  margin-bottom: var(--space-xxs);
+}

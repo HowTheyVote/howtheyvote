@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "lib": ["es2022", "dom"],
+        "target": "es2022",
+        "moduleResolution": "node",
+        "strict": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact"
+    }
+}

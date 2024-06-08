@@ -1,0 +1,26 @@
+.hero {
+  background-color: var(--gray-lightest);
+}
+
+.hero__text {
+  font-size: var(--text-lg);
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-lg);
+}
+
+.hero__text > * + * {
+  margin-top: var(--space-xs);
+}
+
+.hero__title {
+  margin-bottom: 0;
+}
+
+.hero__action {
+  margin-top: calc(-1 * var(--space-xs));
+  background-image: linear-gradient(
+    to bottom,
+    var(--gray-lightest) 50%,
+    #fff 50%
+  );
+}

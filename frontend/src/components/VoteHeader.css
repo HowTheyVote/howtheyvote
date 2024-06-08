@@ -1,0 +1,19 @@
+.vote-header {
+  padding: var(--space-lg) var(--space-sm);
+  background-color: var(--gray-lightest);
+}
+
+.vote-header__facts ul li {
+  list-style-position: inside;
+}
+
+.vote-header__facts ul li + li {
+  margin-block-start: var(--space-xxs);
+}
+
+@media screen and (min-width: 520px) {
+  .vote-header__facts ul li {
+    list-style-position: outside;
+    margin-inline-start: var(--space-sm);
+  }
+}

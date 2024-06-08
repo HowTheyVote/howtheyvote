@@ -1,0 +1,1796 @@
+[
+  {
+    "code": "BEL",
+    "label": "Belgium",
+    "alt_label": "Kingdom of Belgium",
+    "iso_alpha_2": "BE"
+  },
+  {
+    "code": "BGR",
+    "label": "Bulgaria",
+    "alt_label": "Republic of Bulgaria",
+    "iso_alpha_2": "BG"
+  },
+  {
+    "code": "CZE",
+    "label": "Czechia",
+    "alt_label": "Czech Republic",
+    "iso_alpha_2": "CZ"
+  },
+  {
+    "code": "DNK",
+    "label": "Denmark",
+    "alt_label": "Kingdom of Denmark",
+    "iso_alpha_2": "DK"
+  },
+  {
+    "code": "DEU",
+    "label": "Germany",
+    "alt_label": "Federal Republic of Germany",
+    "iso_alpha_2": "DE"
+  },
+  {
+    "code": "EST",
+    "label": "Estonia",
+    "alt_label": "Republic of Estonia",
+    "iso_alpha_2": "EE"
+  },
+  {
+    "code": "IRL",
+    "label": "Ireland",
+    "alt_label": "Ireland",
+    "iso_alpha_2": "IE"
+  },
+  {
+    "code": "GRC",
+    "label": "Greece",
+    "alt_label": "Hellenic Republic",
+    "iso_alpha_2": "GR"
+  },
+  {
+    "code": "ESP",
+    "label": "Spain",
+    "alt_label": "Kingdom of Spain",
+    "iso_alpha_2": "ES"
+  },
+  {
+    "code": "FRA",
+    "label": "France",
+    "alt_label": "French Republic",
+    "iso_alpha_2": "FR"
+  },
+  {
+    "code": "HRV",
+    "label": "Croatia",
+    "alt_label": "Republic of Croatia",
+    "iso_alpha_2": "HR"
+  },
+  {
+    "code": "ITA",
+    "label": "Italy",
+    "alt_label": "Italian Republic",
+    "iso_alpha_2": "IT"
+  },
+  {
+    "code": "CYP",
+    "label": "Cyprus",
+    "alt_label": "Republic of Cyprus",
+    "iso_alpha_2": "CY"
+  },
+  {
+    "code": "LVA",
+    "label": "Latvia",
+    "alt_label": "Republic of Latvia",
+    "iso_alpha_2": "LV"
+  },
+  {
+    "code": "LTU",
+    "label": "Lithuania",
+    "alt_label": "Republic of Lithuania",
+    "iso_alpha_2": "LT"
+  },
+  {
+    "code": "LUX",
+    "label": "Luxembourg",
+    "alt_label": "Grand Duchy of Luxembourg",
+    "iso_alpha_2": "LU"
+  },
+  {
+    "code": "HUN",
+    "label": "Hungary",
+    "alt_label": "Hungary",
+    "iso_alpha_2": "HU"
+  },
+  {
+    "code": "MLT",
+    "label": "Malta",
+    "alt_label": "Republic of Malta",
+    "iso_alpha_2": "MT"
+  },
+  {
+    "code": "NLD",
+    "label": "Netherlands",
+    "alt_label": "Kingdom of the Netherlands",
+    "iso_alpha_2": "NL"
+  },
+  {
+    "code": "AUT",
+    "label": "Austria",
+    "alt_label": "Republic of Austria",
+    "iso_alpha_2": "AT"
+  },
+  {
+    "code": "POL",
+    "label": "Poland",
+    "alt_label": "Republic of Poland",
+    "iso_alpha_2": "PL"
+  },
+  {
+    "code": "PRT",
+    "label": "Portugal",
+    "alt_label": "Portuguese Republic",
+    "iso_alpha_2": "PT"
+  },
+  {
+    "code": "ROU",
+    "label": "Romania",
+    "alt_label": "Romania",
+    "iso_alpha_2": "RO"
+  },
+  {
+    "code": "SVN",
+    "label": "Slovenia",
+    "alt_label": "Republic of Slovenia",
+    "iso_alpha_2": "SI"
+  },
+  {
+    "code": "SVK",
+    "label": "Slovakia",
+    "alt_label": "Slovak Republic",
+    "iso_alpha_2": "SK"
+  },
+  {
+    "code": "FIN",
+    "label": "Finland",
+    "alt_label": "Republic of Finland",
+    "iso_alpha_2": "FI"
+  },
+  {
+    "code": "SWE",
+    "label": "Sweden",
+    "alt_label": "Kingdom of Sweden",
+    "iso_alpha_2": "SE"
+  },
+  {
+    "code": "ABW",
+    "label": "Aruba",
+    "alt_label": "Aruba",
+    "iso_alpha_2": "AW"
+  },
+  {
+    "code": "AFG",
+    "label": "Afghanistan",
+    "alt_label": "Islamic Republic of Afghanistan",
+    "iso_alpha_2": "AF"
+  },
+  {
+    "code": "AGO",
+    "label": "Angola",
+    "alt_label": "Republic of Angola",
+    "iso_alpha_2": "AO"
+  },
+  {
+    "code": "AIA",
+    "label": "Anguilla",
+    "alt_label": "Anguilla",
+    "iso_alpha_2": "AI"
+  },
+  {
+    "code": "ALA",
+    "label": "\u00c5land Islands",
+    "alt_label": "\u00c5land Islands",
+    "iso_alpha_2": "AX"
+  },
+  {
+    "code": "ALB",
+    "label": "Albania",
+    "alt_label": "Republic of Albania",
+    "iso_alpha_2": "AL"
+  },
+  {
+    "code": "AND",
+    "label": "Andorra",
+    "alt_label": "Principality of Andorra",
+    "iso_alpha_2": "AD"
+  },
+  {
+    "code": "ARE",
+    "label": "United Arab Emirates",
+    "alt_label": "United Arab Emirates",
+    "iso_alpha_2": "AE"
+  },
+  {
+    "code": "ARG",
+    "label": "Argentina",
+    "alt_label": "Argentine Republic",
+    "iso_alpha_2": "AR"
+  },
+  {
+    "code": "ARM",
+    "label": "Armenia",
+    "alt_label": "Republic of Armenia",
+    "iso_alpha_2": "AM"
+  },
+  {
+    "code": "ASM",
+    "label": "American Samoa",
+    "alt_label": "Territory of American Samoa",
+    "iso_alpha_2": "AS"
+  },
+  {
+    "code": "ATA",
+    "label": "Antarctica",
+    "alt_label": "Antarctica",
+    "iso_alpha_2": "AQ"
+  },
+  {
+    "code": "ATF",
+    "label": "French Southern and Antarctic Lands",
+    "alt_label": "French Southern and Antarctic Lands",
+    "iso_alpha_2": "TF"
+  },
+  {
+    "code": "ATG",
+    "label": "Antigua and Barbuda",
+    "alt_label": "Antigua and Barbuda",
+    "iso_alpha_2": "AG"
+  },
+  {
+    "code": "AUS",
+    "label": "Australia",
+    "alt_label": "Commonwealth of Australia",
+    "iso_alpha_2": "AU"
+  },
+  {
+    "code": "AZE",
+    "label": "Azerbaijan",
+    "alt_label": "Republic of Azerbaijan",
+    "iso_alpha_2": "AZ"
+  },
+  {
+    "code": "BDI",
+    "label": "Burundi",
+    "alt_label": "Republic of Burundi",
+    "iso_alpha_2": "BI"
+  },
+  {
+    "code": "BEN",
+    "label": "Benin",
+    "alt_label": "Republic of Benin",
+    "iso_alpha_2": "BJ"
+  },
+  {
+    "code": "BES",
+    "label": "Bonaire, Sint Eustatius and Saba",
+    "alt_label": "Bonaire, Sint Eustatius and Saba",
+    "iso_alpha_2": "BQ"
+  },
+  {
+    "code": "BFA",
+    "label": "Burkina Faso",
+    "alt_label": "Burkina Faso",
+    "iso_alpha_2": "BF"
+  },
+  {
+    "code": "BGD",
+    "label": "Bangladesh",
+    "alt_label": "People\u2019s Republic of Bangladesh",
+    "iso_alpha_2": "BD"
+  },
+  {
+    "code": "BHR",
+    "label": "Bahrain",
+    "alt_label": "Kingdom of Bahrain",
+    "iso_alpha_2": "BH"
+  },
+  {
+    "code": "BHS",
+    "label": "Bahamas",
+    "alt_label": "Commonwealth of the Bahamas",
+    "iso_alpha_2": "BS"
+  },
+  {
+    "code": "BIH",
+    "label": "Bosnia and Herzegovina",
+    "alt_label": "Bosnia and Herzegovina",
+    "iso_alpha_2": "BA"
+  },
+  {
+    "code": "BLM",
+    "label": "Saint Barth\u00e9lemy",
+    "alt_label": "Collectivity of Saint Barth\u00e9lemy",
+    "iso_alpha_2": "BL"
+  },
+  {
+    "code": "BLR",
+    "label": "Belarus",
+    "alt_label": "Republic of Belarus",
+    "iso_alpha_2": "BY"
+  },
+  {
+    "code": "BLZ",
+    "label": "Belize",
+    "alt_label": "Belize",
+    "iso_alpha_2": "BZ"
+  },
+  {
+    "code": "BMU",
+    "label": "Bermuda",
+    "alt_label": "Bermuda",
+    "iso_alpha_2": "BM"
+  },
+  {
+    "code": "BOL",
+    "label": "Bolivia",
+    "alt_label": "Plurinational State of Bolivia",
+    "iso_alpha_2": "BO"
+  },
+  {
+    "code": "BRA",
+    "label": "Brazil",
+    "alt_label": "Federative Republic of Brazil",
+    "iso_alpha_2": "BR"
+  },
+  {
+    "code": "BRB",
+    "label": "Barbados",
+    "alt_label": "Barbados",
+    "iso_alpha_2": "BB"
+  },
+  {
+    "code": "BRN",
+    "label": "Brunei",
+    "alt_label": "Brunei Darussalam",
+    "iso_alpha_2": "BN"
+  },
+  {
+    "code": "BTN",
+    "label": "Bhutan",
+    "alt_label": "Kingdom of Bhutan",
+    "iso_alpha_2": "BT"
+  },
+  {
+    "code": "BVT",
+    "label": "Bouvet Island",
+    "alt_label": "Bouvet Island",
+    "iso_alpha_2": "BV"
+  },
+  {
+    "code": "BWA",
+    "label": "Botswana",
+    "alt_label": "Republic of Botswana",
+    "iso_alpha_2": "BW"
+  },
+  {
+    "code": "CAF",
+    "label": "Central African Republic",
+    "alt_label": "Central African Republic",
+    "iso_alpha_2": "CF"
+  },
+  {
+    "code": "CAN",
+    "label": "Canada",
+    "alt_label": "Canada",
+    "iso_alpha_2": "CA"
+  },
+  {
+    "code": "CCK",
+    "label": "Cocos (Keeling) Islands",
+    "alt_label": "Territory of Cocos (Keeling) Islands",
+    "iso_alpha_2": "CC"
+  },
+  {
+    "code": "CHE",
+    "label": "Switzerland",
+    "alt_label": "Swiss Confederation",
+    "iso_alpha_2": "CH"
+  },
+  {
+    "code": "CHL",
+    "label": "Chile",
+    "alt_label": "Republic of Chile",
+    "iso_alpha_2": "CL"
+  },
+  {
+    "code": "CHN",
+    "label": "China",
+    "alt_label": "People\u2019s Republic of China",
+    "iso_alpha_2": "CN"
+  },
+  {
+    "code": "CIV",
+    "label": "C\u00f4te d\u2019Ivoire",
+    "alt_label": "Republic of C\u00f4te d\u2019Ivoire",
+    "iso_alpha_2": "CI"
+  },
+  {
+    "code": "CMR",
+    "label": "Cameroon",
+    "alt_label": "Republic of Cameroon",
+    "iso_alpha_2": "CM"
+  },
+  {
+    "code": "COD",
+    "label": "Democratic Republic of the Congo",
+    "alt_label": "Democratic Republic of the Congo",
+    "iso_alpha_2": "CD"
+  },
+  {
+    "code": "COG",
+    "label": "Congo",
+    "alt_label": "Republic of the Congo",
+    "iso_alpha_2": "CG"
+  },
+  {
+    "code": "COK",
+    "label": "Cook Islands",
+    "alt_label": "Cook Islands",
+    "iso_alpha_2": "CK"
+  },
+  {
+    "code": "COL",
+    "label": "Colombia",
+    "alt_label": "Republic of Colombia",
+    "iso_alpha_2": "CO"
+  },
+  {
+    "code": "COM",
+    "label": "Comoros",
+    "alt_label": "Union of the Comoros",
+    "iso_alpha_2": "KM"
+  },
+  {
+    "code": "CPT",
+    "label": "Clipperton",
+    "alt_label": "Clipperton Island",
+    "iso_alpha_2": "CP"
+  },
+  {
+    "code": "CPV",
+    "label": "Cabo Verde",
+    "alt_label": "Republic of Cabo Verde",
+    "iso_alpha_2": "CV"
+  },
+  {
+    "code": "CRI",
+    "label": "Costa Rica",
+    "alt_label": "Republic of Costa Rica",
+    "iso_alpha_2": "CR"
+  },
+  {
+    "code": "CRQ",
+    "label": "Sark",
+    "alt_label": "Sark Island",
+    "iso_alpha_2": "CQ"
+  },
+  {
+    "code": "CUB",
+    "label": "Cuba",
+    "alt_label": "Republic of Cuba",
+    "iso_alpha_2": "CU"
+  },
+  {
+    "code": "CUW",
+    "label": "Cura\u00e7ao",
+    "alt_label": "Cura\u00e7ao",
+    "iso_alpha_2": "CW"
+  },
+  {
+    "code": "CXR",
+    "label": "Christmas Island",
+    "alt_label": "Christmas Island Territory",
+    "iso_alpha_2": "CX"
+  },
+  {
+    "code": "CYM",
+    "label": "Cayman Islands",
+    "alt_label": "Cayman Islands",
+    "iso_alpha_2": "KY"
+  },
+  {
+    "code": "DJI",
+    "label": "Djibouti",
+    "alt_label": "Republic of Djibouti",
+    "iso_alpha_2": "DJ"
+  },
+  {
+    "code": "DMA",
+    "label": "Dominica",
+    "alt_label": "Commonwealth of Dominica",
+    "iso_alpha_2": "DM"
+  },
+  {
+    "code": "DOM",
+    "label": "Dominican Republic",
+    "alt_label": "Dominican Republic",
+    "iso_alpha_2": "DO"
+  },
+  {
+    "code": "DZA",
+    "label": "Algeria",
+    "alt_label": "People\u2019s Democratic Republic of Algeria",
+    "iso_alpha_2": "DZ"
+  },
+  {
+    "code": "ECU",
+    "label": "Ecuador",
+    "alt_label": "Republic of Ecuador",
+    "iso_alpha_2": "EC"
+  },
+  {
+    "code": "EGY",
+    "label": "Egypt",
+    "alt_label": "Arab Republic of Egypt",
+    "iso_alpha_2": "EG"
+  },
+  {
+    "code": "ERI",
+    "label": "Eritrea",
+    "alt_label": "State of Eritrea",
+    "iso_alpha_2": "ER"
+  },
+  {
+    "code": "ESH",
+    "label": "Western Sahara",
+    "alt_label": "Western Sahara",
+    "iso_alpha_2": "EH"
+  },
+  {
+    "code": "ETH",
+    "label": "Ethiopia",
+    "alt_label": "Federal Democratic Republic of Ethiopia",
+    "iso_alpha_2": "ET"
+  },
+  {
+    "code": "EUR",
+    "label": "European Union",
+    "alt_label": "European Union",
+    "iso_alpha_2": "EU"
+  },
+  {
+    "code": "FJI",
+    "label": "Fiji",
+    "alt_label": "Republic of Fiji",
+    "iso_alpha_2": "FJ"
+  },
+  {
+    "code": "FLK",
+    "label": "Falkland Islands",
+    "alt_label": "Falkland Islands",
+    "iso_alpha_2": "FK"
+  },
+  {
+    "code": "FRO",
+    "label": "Faroes",
+    "alt_label": "Faroe Islands",
+    "iso_alpha_2": "FO"
+  },
+  {
+    "code": "FSM",
+    "label": "Micronesia",
+    "alt_label": "Federated States of Micronesia",
+    "iso_alpha_2": "FM"
+  },
+  {
+    "code": "GAB",
+    "label": "Gabon",
+    "alt_label": "Gabonese Republic",
+    "iso_alpha_2": "GA"
+  },
+  {
+    "code": "GBR",
+    "label": "United Kingdom",
+    "alt_label": "United Kingdom of Great Britain and Northern Ireland",
+    "iso_alpha_2": "GB"
+  },
+  {
+    "code": "GEO",
+    "label": "Georgia",
+    "alt_label": "Georgia",
+    "iso_alpha_2": "GE"
+  },
+  {
+    "code": "GGY",
+    "label": "Guernsey",
+    "alt_label": "Bailiwick of Guernsey",
+    "iso_alpha_2": "GG"
+  },
+  {
+    "code": "GHA",
+    "label": "Ghana",
+    "alt_label": "Republic of Ghana",
+    "iso_alpha_2": "GH"
+  },
+  {
+    "code": "GIB",
+    "label": "Gibraltar",
+    "alt_label": "Gibraltar",
+    "iso_alpha_2": "GI"
+  },
+  {
+    "code": "GIN",
+    "label": "Guinea",
+    "alt_label": "Republic of Guinea",
+    "iso_alpha_2": "GN"
+  },
+  {
+    "code": "GLP",
+    "label": "Guadeloupe",
+    "alt_label": "Guadeloupe",
+    "iso_alpha_2": "GP"
+  },
+  {
+    "code": "GMB",
+    "label": "The Gambia",
+    "alt_label": "Republic of The Gambia",
+    "iso_alpha_2": "GM"
+  },
+  {
+    "code": "GNB",
+    "label": "Guinea-Bissau",
+    "alt_label": "Republic of Guinea-Bissau",
+    "iso_alpha_2": "GW"
+  },
+  {
+    "code": "GNQ",
+    "label": "Equatorial Guinea",
+    "alt_label": "Republic of Equatorial Guinea",
+    "iso_alpha_2": "GQ"
+  },
+  {
+    "code": "GRD",
+    "label": "Grenada",
+    "alt_label": "Grenada",
+    "iso_alpha_2": "GD"
+  },
+  {
+    "code": "GRL",
+    "label": "Greenland",
+    "alt_label": "Greenland",
+    "iso_alpha_2": "GL"
+  },
+  {
+    "code": "GTM",
+    "label": "Guatemala",
+    "alt_label": "Republic of Guatemala",
+    "iso_alpha_2": "GT"
+  },
+  {
+    "code": "GUF",
+    "label": "French Guiana",
+    "alt_label": "French Guiana",
+    "iso_alpha_2": "GF"
+  },
+  {
+    "code": "GUM",
+    "label": "Guam",
+    "alt_label": "Territory of Guam",
+    "iso_alpha_2": "GU"
+  },
+  {
+    "code": "GUY",
+    "label": "Guyana",
+    "alt_label": "Cooperative Republic of Guyana",
+    "iso_alpha_2": "GY"
+  },
+  {
+    "code": "HKG",
+    "label": "Hong Kong",
+    "alt_label": "Hong Kong Special Administrative Region of the People\u2019s Republic of China",
+    "iso_alpha_2": "HK"
+  },
+  {
+    "code": "HMD",
+    "label": "Heard Island and McDonald Islands",
+    "alt_label": "Territory of Heard Island and McDonald Islands",
+    "iso_alpha_2": "HM"
+  },
+  {
+    "code": "HND",
+    "label": "Honduras",
+    "alt_label": "Republic of Honduras",
+    "iso_alpha_2": "HN"
+  },
+  {
+    "code": "HTI",
+    "label": "Haiti",
+    "alt_label": "Republic of Haiti",
+    "iso_alpha_2": "HT"
+  },
+  {
+    "code": "IDN",
+    "label": "Indonesia",
+    "alt_label": "Republic of Indonesia",
+    "iso_alpha_2": "ID"
+  },
+  {
+    "code": "IMN",
+    "label": "Isle of Man",
+    "alt_label": "Isle of Man",
+    "iso_alpha_2": "IM"
+  },
+  {
+    "code": "IND",
+    "label": "India",
+    "alt_label": "Republic of India",
+    "iso_alpha_2": "IN"
+  },
+  {
+    "code": "IOT",
+    "label": "British Indian Ocean Territory",
+    "alt_label": "British Indian Ocean Territory",
+    "iso_alpha_2": "IO"
+  },
+  {
+    "code": "IRN",
+    "label": "Iran",
+    "alt_label": "Islamic Republic of Iran",
+    "iso_alpha_2": "IR"
+  },
+  {
+    "code": "IRQ",
+    "label": "Iraq",
+    "alt_label": "Republic of Iraq",
+    "iso_alpha_2": "IQ"
+  },
+  {
+    "code": "ISL",
+    "label": "Iceland",
+    "alt_label": "Iceland",
+    "iso_alpha_2": "IS"
+  },
+  {
+    "code": "ISR",
+    "label": "Israel",
+    "alt_label": "State of Israel",
+    "iso_alpha_2": "IL"
+  },
+  {
+    "code": "JAM",
+    "label": "Jamaica",
+    "alt_label": "Jamaica",
+    "iso_alpha_2": "JM"
+  },
+  {
+    "code": "JEY",
+    "label": "Jersey",
+    "alt_label": "Bailiwick of Jersey",
+    "iso_alpha_2": "JE"
+  },
+  {
+    "code": "JOR",
+    "label": "Jordan",
+    "alt_label": "Hashemite Kingdom of Jordan",
+    "iso_alpha_2": "JO"
+  },
+  {
+    "code": "JPN",
+    "label": "Japan",
+    "alt_label": "Japan",
+    "iso_alpha_2": "JP"
+  },
+  {
+    "code": "KAZ",
+    "label": "Kazakhstan",
+    "alt_label": "Republic of Kazakhstan",
+    "iso_alpha_2": "KZ"
+  },
+  {
+    "code": "KEN",
+    "label": "Kenya",
+    "alt_label": "Republic of Kenya",
+    "iso_alpha_2": "KE"
+  },
+  {
+    "code": "KGZ",
+    "label": "Kyrgyzstan",
+    "alt_label": "Kyrgyz Republic",
+    "iso_alpha_2": "KG"
+  },
+  {
+    "code": "KHM",
+    "label": "Cambodia",
+    "alt_label": "Kingdom of Cambodia",
+    "iso_alpha_2": "KH"
+  },
+  {
+    "code": "KIR",
+    "label": "Kiribati",
+    "alt_label": "Republic of Kiribati",
+    "iso_alpha_2": "KI"
+  },
+  {
+    "code": "KNA",
+    "label": "Saint Kitts and Nevis",
+    "alt_label": "Federation of Saint Kitts and Nevis",
+    "iso_alpha_2": "KN"
+  },
+  {
+    "code": "KOR",
+    "label": "South Korea",
+    "alt_label": "Republic of Korea",
+    "iso_alpha_2": "KR"
+  },
+  {
+    "code": "KWT",
+    "label": "Kuwait",
+    "alt_label": "State of Kuwait",
+    "iso_alpha_2": "KW"
+  },
+  {
+    "code": "LAO",
+    "label": "Laos",
+    "alt_label": "Lao People\u2019s Democratic Republic",
+    "iso_alpha_2": "LA"
+  },
+  {
+    "code": "LBN",
+    "label": "Lebanon",
+    "alt_label": "Lebanese Republic",
+    "iso_alpha_2": "LB"
+  },
+  {
+    "code": "LBR",
+    "label": "Liberia",
+    "alt_label": "Republic of Liberia",
+    "iso_alpha_2": "LR"
+  },
+  {
+    "code": "LBY",
+    "label": "Libya",
+    "alt_label": "State of Libya",
+    "iso_alpha_2": "LY"
+  },
+  {
+    "code": "LCA",
+    "label": "Saint Lucia",
+    "alt_label": "Saint Lucia",
+    "iso_alpha_2": "LC"
+  },
+  {
+    "code": "LIE",
+    "label": "Liechtenstein",
+    "alt_label": "Principality of Liechtenstein",
+    "iso_alpha_2": "LI"
+  },
+  {
+    "code": "LKA",
+    "label": "Sri Lanka",
+    "alt_label": "Democratic Socialist Republic of Sri Lanka",
+    "iso_alpha_2": "LK"
+  },
+  {
+    "code": "LSO",
+    "label": "Lesotho",
+    "alt_label": "Kingdom of Lesotho",
+    "iso_alpha_2": "LS"
+  },
+  {
+    "code": "MAC",
+    "label": "Macao",
+    "alt_label": "Macao Special Administrative Region of the People\u2019s Republic of China",
+    "iso_alpha_2": "MO"
+  },
+  {
+    "code": "MAF",
+    "label": "Saint Martin",
+    "alt_label": "Collectivity of Saint Martin",
+    "iso_alpha_2": "MF"
+  },
+  {
+    "code": "MAR",
+    "label": "Morocco",
+    "alt_label": "Kingdom of Morocco",
+    "iso_alpha_2": "MA"
+  },
+  {
+    "code": "MCO",
+    "label": "Monaco",
+    "alt_label": "Principality of Monaco",
+    "iso_alpha_2": "MC"
+  },
+  {
+    "code": "MDA",
+    "label": "Moldova",
+    "alt_label": "Republic of Moldova",
+    "iso_alpha_2": "MD"
+  },
+  {
+    "code": "MDG",
+    "label": "Madagascar",
+    "alt_label": "Republic of Madagascar",
+    "iso_alpha_2": "MG"
+  },
+  {
+    "code": "MDV",
+    "label": "Maldives",
+    "alt_label": "Republic of Maldives",
+    "iso_alpha_2": "MV"
+  },
+  {
+    "code": "MEX",
+    "label": "Mexico",
+    "alt_label": "United Mexican States",
+    "iso_alpha_2": "MX"
+  },
+  {
+    "code": "MHL",
+    "label": "Marshall Islands",
+    "alt_label": "Republic of the Marshall Islands",
+    "iso_alpha_2": "MH"
+  },
+  {
+    "code": "MKD",
+    "label": "North Macedonia",
+    "alt_label": "Republic of North Macedonia",
+    "iso_alpha_2": "MK"
+  },
+  {
+    "code": "MLI",
+    "label": "Mali",
+    "alt_label": "Republic of Mali",
+    "iso_alpha_2": "ML"
+  },
+  {
+    "code": "MMR",
+    "label": "Myanmar/Burma",
+    "alt_label": "Myanmar/Burma",
+    "iso_alpha_2": "MM"
+  },
+  {
+    "code": "MNE",
+    "label": "Montenegro",
+    "alt_label": "Montenegro",
+    "iso_alpha_2": "ME"
+  },
+  {
+    "code": "MNG",
+    "label": "Mongolia",
+    "alt_label": "Mongolia",
+    "iso_alpha_2": "MN"
+  },
+  {
+    "code": "MNP",
+    "label": "Northern Mariana Islands",
+    "alt_label": "Commonwealth of the Northern Mariana Islands",
+    "iso_alpha_2": "MP"
+  },
+  {
+    "code": "MOZ",
+    "label": "Mozambique",
+    "alt_label": "Republic of Mozambique",
+    "iso_alpha_2": "MZ"
+  },
+  {
+    "code": "MRT",
+    "label": "Mauritania",
+    "alt_label": "Islamic Republic of Mauritania",
+    "iso_alpha_2": "MR"
+  },
+  {
+    "code": "MSR",
+    "label": "Montserrat",
+    "alt_label": "Montserrat",
+    "iso_alpha_2": "MS"
+  },
+  {
+    "code": "MTQ",
+    "label": "Martinique",
+    "alt_label": "Martinique",
+    "iso_alpha_2": "MQ"
+  },
+  {
+    "code": "MUS",
+    "label": "Mauritius",
+    "alt_label": "Republic of Mauritius",
+    "iso_alpha_2": "MU"
+  },
+  {
+    "code": "MWI",
+    "label": "Malawi",
+    "alt_label": "Republic of Malawi",
+    "iso_alpha_2": "MW"
+  },
+  {
+    "code": "MYS",
+    "label": "Malaysia",
+    "alt_label": "Malaysia",
+    "iso_alpha_2": "MY"
+  },
+  {
+    "code": "MYT",
+    "label": "Mayotte",
+    "alt_label": "Mayotte",
+    "iso_alpha_2": "YT"
+  },
+  {
+    "code": "NAM",
+    "label": "Namibia",
+    "alt_label": "Republic of Namibia",
+    "iso_alpha_2": "NA"
+  },
+  {
+    "code": "NCL",
+    "label": "New Caledonia",
+    "alt_label": "New Caledonia",
+    "iso_alpha_2": "NC"
+  },
+  {
+    "code": "NER",
+    "label": "Niger",
+    "alt_label": "Republic of Niger",
+    "iso_alpha_2": "NE"
+  },
+  {
+    "code": "NFK",
+    "label": "Norfolk Island",
+    "alt_label": "Territory of Norfolk Island",
+    "iso_alpha_2": "NF"
+  },
+  {
+    "code": "NGA",
+    "label": "Nigeria",
+    "alt_label": "Federal Republic of Nigeria",
+    "iso_alpha_2": "NG"
+  },
+  {
+    "code": "NIC",
+    "label": "Nicaragua",
+    "alt_label": "Republic of Nicaragua",
+    "iso_alpha_2": "NI"
+  },
+  {
+    "code": "NIU",
+    "label": "Niue",
+    "alt_label": "Niue",
+    "iso_alpha_2": "NU"
+  },
+  {
+    "code": "NOR",
+    "label": "Norway",
+    "alt_label": "Kingdom of Norway",
+    "iso_alpha_2": "NO"
+  },
+  {
+    "code": "NPL",
+    "label": "Nepal",
+    "alt_label": "Federal Democratic Republic of Nepal",
+    "iso_alpha_2": "NP"
+  },
+  {
+    "code": "NRU",
+    "label": "Nauru",
+    "alt_label": "Republic of Nauru",
+    "iso_alpha_2": "NR"
+  },
+  {
+    "code": "NZL",
+    "label": "New Zealand",
+    "alt_label": "New Zealand",
+    "iso_alpha_2": "NZ"
+  },
+  {
+    "code": "OMN",
+    "label": "Oman",
+    "alt_label": "Sultanate of Oman",
+    "iso_alpha_2": "OM"
+  },
+  {
+    "code": "PAK",
+    "label": "Pakistan",
+    "alt_label": "Islamic Republic of Pakistan",
+    "iso_alpha_2": "PK"
+  },
+  {
+    "code": "PAN",
+    "label": "Panama",
+    "alt_label": "Republic of Panama",
+    "iso_alpha_2": "PA"
+  },
+  {
+    "code": "PCN",
+    "label": "Pitcairn Islands",
+    "alt_label": "Pitcairn Islands",
+    "iso_alpha_2": "PN"
+  },
+  {
+    "code": "PER",
+    "label": "Peru",
+    "alt_label": "Republic of Peru",
+    "iso_alpha_2": "PE"
+  },
+  {
+    "code": "PHL",
+    "label": "Philippines",
+    "alt_label": "Republic of the Philippines",
+    "iso_alpha_2": "PH"
+  },
+  {
+    "code": "PLW",
+    "label": "Palau",
+    "alt_label": "Republic of Palau",
+    "iso_alpha_2": "PW"
+  },
+  {
+    "code": "PNG",
+    "label": "Papua New Guinea",
+    "alt_label": "Independent State of Papua New Guinea",
+    "iso_alpha_2": "PG"
+  },
+  {
+    "code": "PRI",
+    "label": "Puerto Rico",
+    "alt_label": "Commonwealth of Puerto Rico",
+    "iso_alpha_2": "PR"
+  },
+  {
+    "code": "PRK",
+    "label": "North Korea",
+    "alt_label": "Democratic People\u2019s Republic of Korea",
+    "iso_alpha_2": "KP"
+  },
+  {
+    "code": "PRY",
+    "label": "Paraguay",
+    "alt_label": "Republic of Paraguay",
+    "iso_alpha_2": "PY"
+  },
+  {
+    "code": "PSE",
+    "label": "Palestine*",
+    "alt_label": "Palestine*",
+    "iso_alpha_2": "PS"
+  },
+  {
+    "code": "PYF",
+    "label": "French Polynesia",
+    "alt_label": "French Polynesia",
+    "iso_alpha_2": "PF"
+  },
+  {
+    "code": "QAT",
+    "label": "Qatar",
+    "alt_label": "State of Qatar",
+    "iso_alpha_2": "QA"
+  },
+  {
+    "code": "REU",
+    "label": "R\u00e9union",
+    "alt_label": "R\u00e9union",
+    "iso_alpha_2": "RE"
+  },
+  {
+    "code": "RUS",
+    "label": "Russia",
+    "alt_label": "Russian Federation",
+    "iso_alpha_2": "RU"
+  },
+  {
+    "code": "RWA",
+    "label": "Rwanda",
+    "alt_label": "Republic of Rwanda",
+    "iso_alpha_2": "RW"
+  },
+  {
+    "code": "SAU",
+    "label": "Saudi Arabia",
+    "alt_label": "Kingdom of Saudi Arabia",
+    "iso_alpha_2": "SA"
+  },
+  {
+    "code": "SDN",
+    "label": "Sudan",
+    "alt_label": "Republic of the Sudan",
+    "iso_alpha_2": "SD"
+  },
+  {
+    "code": "SEN",
+    "label": "Senegal",
+    "alt_label": "Republic of Senegal",
+    "iso_alpha_2": "SN"
+  },
+  {
+    "code": "SGP",
+    "label": "Singapore",
+    "alt_label": "Republic of Singapore",
+    "iso_alpha_2": "SG"
+  },
+  {
+    "code": "SGS",
+    "label": "South Georgia and the South Sandwich Islands",
+    "alt_label": "South Georgia and the South Sandwich Islands",
+    "iso_alpha_2": "GS"
+  },
+  {
+    "code": "SHN",
+    "label": "Saint Helena, Ascension and Tristan da Cunha",
+    "alt_label": "Saint Helena, Ascension and Tristan da Cunha",
+    "iso_alpha_2": "SH"
+  },
+  {
+    "code": "SJM",
+    "label": "Svalbard and Jan Mayen",
+    "alt_label": "Svalbard and Jan Mayen",
+    "iso_alpha_2": "SJ"
+  },
+  {
+    "code": "SLB",
+    "label": "Solomon Islands",
+    "alt_label": "Solomon Islands",
+    "iso_alpha_2": "SB"
+  },
+  {
+    "code": "SLE",
+    "label": "Sierra Leone",
+    "alt_label": "Republic of Sierra Leone",
+    "iso_alpha_2": "SL"
+  },
+  {
+    "code": "SLV",
+    "label": "El Salvador",
+    "alt_label": "Republic of El Salvador",
+    "iso_alpha_2": "SV"
+  },
+  {
+    "code": "SMR",
+    "label": "San Marino",
+    "alt_label": "Republic of San Marino",
+    "iso_alpha_2": "SM"
+  },
+  {
+    "code": "SOM",
+    "label": "Somalia",
+    "alt_label": "Federal Republic of Somalia",
+    "iso_alpha_2": "SO"
+  },
+  {
+    "code": "SPM",
+    "label": "Saint Pierre and Miquelon",
+    "alt_label": "Territorial Collectivity of Saint Pierre and Miquelon",
+    "iso_alpha_2": "PM"
+  },
+  {
+    "code": "SRB",
+    "label": "Serbia",
+    "alt_label": "Republic of Serbia",
+    "iso_alpha_2": "RS"
+  },
+  {
+    "code": "SSD",
+    "label": "South Sudan",
+    "alt_label": "Republic of South Sudan",
+    "iso_alpha_2": "SS"
+  },
+  {
+    "code": "STP",
+    "label": "S\u00e3o Tom\u00e9 and Pr\u00edncipe",
+    "alt_label": "Democratic Republic of S\u00e3o Tom\u00e9 and Pr\u00edncipe",
+    "iso_alpha_2": "ST"
+  },
+  {
+    "code": "SUR",
+    "label": "Suriname",
+    "alt_label": "Republic of Suriname",
+    "iso_alpha_2": "SR"
+  },
+  {
+    "code": "SWZ",
+    "label": "Eswatini",
+    "alt_label": "Kingdom of Eswatini",
+    "iso_alpha_2": "SZ"
+  },
+  {
+    "code": "SXM",
+    "label": "Sint Maarten",
+    "alt_label": "Sint Maarten",
+    "iso_alpha_2": "SX"
+  },
+  {
+    "code": "SYC",
+    "label": "Seychelles",
+    "alt_label": "Republic of Seychelles",
+    "iso_alpha_2": "SC"
+  },
+  {
+    "code": "SYR",
+    "label": "Syria",
+    "alt_label": "Syrian Arab Republic",
+    "iso_alpha_2": "SY"
+  },
+  {
+    "code": "TCA",
+    "label": "Turks and Caicos Islands",
+    "alt_label": "Turks and Caicos Islands",
+    "iso_alpha_2": "TC"
+  },
+  {
+    "code": "TCD",
+    "label": "Chad",
+    "alt_label": "Republic of Chad",
+    "iso_alpha_2": "TD"
+  },
+  {
+    "code": "TGO",
+    "label": "Togo",
+    "alt_label": "Togolese Republic",
+    "iso_alpha_2": "TG"
+  },
+  {
+    "code": "THA",
+    "label": "Thailand",
+    "alt_label": "Kingdom of Thailand",
+    "iso_alpha_2": "TH"
+  },
+  {
+    "code": "TJK",
+    "label": "Tajikistan",
+    "alt_label": "Republic of Tajikistan",
+    "iso_alpha_2": "TJ"
+  },
+  {
+    "code": "TKL",
+    "label": "Tokelau",
+    "alt_label": "Tokelau",
+    "iso_alpha_2": "TK"
+  },
+  {
+    "code": "TKM",
+    "label": "Turkmenistan",
+    "alt_label": "Turkmenistan",
+    "iso_alpha_2": "TM"
+  },
+  {
+    "code": "TLS",
+    "label": "Timor-Leste",
+    "alt_label": "Democratic Republic of Timor-Leste",
+    "iso_alpha_2": "TL"
+  },
+  {
+    "code": "TON",
+    "label": "Tonga",
+    "alt_label": "Kingdom of Tonga",
+    "iso_alpha_2": "TO"
+  },
+  {
+    "code": "TTO",
+    "label": "Trinidad and Tobago",
+    "alt_label": "Republic of Trinidad and Tobago",
+    "iso_alpha_2": "TT"
+  },
+  {
+    "code": "TUN",
+    "label": "Tunisia",
+    "alt_label": "Republic of Tunisia",
+    "iso_alpha_2": "TN"
+  },
+  {
+    "code": "TUR",
+    "label": "T\u00fcrkiye",
+    "alt_label": "Republic of T\u00fcrkiye",
+    "iso_alpha_2": "TR"
+  },
+  {
+    "code": "TUV",
+    "label": "Tuvalu",
+    "alt_label": "Tuvalu",
+    "iso_alpha_2": "TV"
+  },
+  {
+    "code": "TWN",
+    "label": "Taiwan",
+    "alt_label": "Taiwan",
+    "iso_alpha_2": "TW"
+  },
+  {
+    "code": "TZA",
+    "label": "Tanzania",
+    "alt_label": "United Republic of Tanzania",
+    "iso_alpha_2": "TZ"
+  },
+  {
+    "code": "UGA",
+    "label": "Uganda",
+    "alt_label": "Republic of Uganda",
+    "iso_alpha_2": "UG"
+  },
+  {
+    "code": "UKR",
+    "label": "Ukraine",
+    "alt_label": "Ukraine",
+    "iso_alpha_2": "UA"
+  },
+  {
+    "code": "UMI",
+    "label": "United States Minor Outlying Islands",
+    "alt_label": "United States Minor Outlying Islands",
+    "iso_alpha_2": "UM"
+  },
+  {
+    "code": "URY",
+    "label": "Uruguay",
+    "alt_label": "Eastern Republic of Uruguay",
+    "iso_alpha_2": "UY"
+  },
+  {
+    "code": "USA",
+    "label": "United States",
+    "alt_label": "United States of America",
+    "iso_alpha_2": "US"
+  },
+  {
+    "code": "UZB",
+    "label": "Uzbekistan",
+    "alt_label": "Republic of Uzbekistan",
+    "iso_alpha_2": "UZ"
+  },
+  {
+    "code": "VAT",
+    "label": "Holy See",
+    "alt_label": "Holy See",
+    "iso_alpha_2": "VA"
+  },
+  {
+    "code": "VCT",
+    "label": "Saint Vincent and the Grenadines",
+    "alt_label": "Saint Vincent and the Grenadines",
+    "iso_alpha_2": "VC"
+  },
+  {
+    "code": "VEN",
+    "label": "Venezuela",
+    "alt_label": "Bolivarian Republic of Venezuela",
+    "iso_alpha_2": "VE"
+  },
+  {
+    "code": "VGB",
+    "label": "British Virgin Islands",
+    "alt_label": "British Virgin Islands",
+    "iso_alpha_2": "VG"
+  },
+  {
+    "code": "VIR",
+    "label": "US Virgin Islands",
+    "alt_label": "Virgin Islands of the United States",
+    "iso_alpha_2": "VI"
+  },
+  {
+    "code": "VNM",
+    "label": "Vietnam",
+    "alt_label": "Socialist Republic of Vietnam",
+    "iso_alpha_2": "VN"
+  },
+  {
+    "code": "VUT",
+    "label": "Vanuatu",
+    "alt_label": "Republic of Vanuatu",
+    "iso_alpha_2": "VU"
+  },
+  {
+    "code": "WLF",
+    "label": "Wallis and Futuna",
+    "alt_label": "Territory of the Wallis and Futuna Islands",
+    "iso_alpha_2": "WF"
+  },
+  {
+    "code": "WSM",
+    "label": "Samoa",
+    "alt_label": "Independent State of Samoa",
+    "iso_alpha_2": "WS"
+  },
+  {
+    "code": "XAC",
+    "label": "Ashmore and Cartier Islands",
+    "alt_label": "Territory of Ashmore and Cartier Islands",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XAD",
+    "label": "UK Sovereign Base Areas of Akrotiri and Dhekelia",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XBH",
+    "label": "B\u00fcsingen am Hochrhein",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XCI",
+    "label": "Campione d\u2019Italia",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XDST",
+    "label": "Disputed region",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XEU",
+    "label": "EU Waters",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XGS",
+    "label": "Gaza Strip",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XHS",
+    "label": "High seas",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XIC",
+    "label": "Canary Islands",
+    "alt_label": null,
+    "iso_alpha_2": "IC"
+  },
+  {
+    "code": "XIH",
+    "label": "Heligoland",
+    "alt_label": "Islands of Heligoland",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XIN",
+    "label": "International Waters",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XJM",
+    "label": "Fisheries zone around Jan Mayen",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XKX",
+    "label": "Kosovo*",
+    "alt_label": "Kosovo*",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XLF",
+    "label": "Fezzan (Libya)",
+    "alt_label": "Fezzan region (Libya)",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XLI",
+    "label": "Livigno",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XLL",
+    "label": "Italian waters of Lake Lugano",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XMA",
+    "label": "Mount Athos",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XMAZ",
+    "label": "Marine zone",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XME",
+    "label": "Melanesia",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XNC",
+    "label": "areas of the Republic of Cyprus in which the Government of the Republic of Cyprus does not exercise effective control",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XPA",
+    "label": "Azores",
+    "alt_label": "Autonomous Region of the Azores",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XPM",
+    "label": "Madeira",
+    "alt_label": "Autonomous Region of Madeira",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XQP",
+    "label": "Colombia/Jamaica (joint regime)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XQR",
+    "label": "Japan/South Korea (joint regime)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XSC",
+    "label": "Ceuta",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XSG",
+    "label": "Joint area between Senegal and Guinea-Bissau",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XSL",
+    "label": "Somaliland",
+    "alt_label": "Republic of Somaliland",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XSM",
+    "label": "Melilla",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XSV",
+    "label": "Fisheries Protection Zone around Svalbard",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXA",
+    "label": "Paracel Islands (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXB",
+    "label": "Spratly Islands (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXC",
+    "label": "Aksai Chin (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXD",
+    "label": "Arunashal Pradesh (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXE",
+    "label": "China/India (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXF",
+    "label": "Hala'Ib Triangle (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXG",
+    "label": "Ilemi Triangle (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXH",
+    "label": "Jammu Kashmir (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXI",
+    "label": "Northern Ireland",
+    "alt_label": "United Kingdom (Northern Ireland)",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXJ",
+    "label": "Liancourt Rock (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXL",
+    "label": "Navassa Island (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXM",
+    "label": "Scarborough Reef (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXN",
+    "label": "Senkaku Islands (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXO",
+    "label": "Juan de Nova, Glorioso, Europa, Tromelin, Bassas da India",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXP",
+    "label": "China/Philippines/Vietnam/Taiwan/Malaysia (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXU",
+    "label": "Abyei Region (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXV",
+    "label": "Bir Tawil (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXZ",
+    "label": "Kuril Islands (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "YEM",
+    "label": "Yemen",
+    "alt_label": "Republic of Yemen",
+    "iso_alpha_2": "YE"
+  },
+  {
+    "code": "ZAF",
+    "label": "South Africa",
+    "alt_label": "Republic of South Africa",
+    "iso_alpha_2": "ZA"
+  },
+  {
+    "code": "ZMB",
+    "label": "Zambia",
+    "alt_label": "Republic of Zambia",
+    "iso_alpha_2": "ZM"
+  },
+  {
+    "code": "ZWE",
+    "label": "Zimbabwe",
+    "alt_label": "Republic of Zimbabwe",
+    "iso_alpha_2": "ZW"
+  }
+]

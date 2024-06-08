@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PV.RollCallVoteResults xmlns:chart="http://openoffice.org/2000/chart" xmlns:dr3d="http://openoffice.org/2000/dr3d" xmlns:draw="http://openoffice.org/2000/drawing" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:form="http://openoffice.org/2000/form" xmlns:ino="http://namespaces.softwareag.com/tamino/response2" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:number="http://openoffice.org/2000/datastyle" xmlns:office="http://openoffice.org/2000/office" xmlns:script="http://openoffice.org/2000/script" xmlns:style="http://openoffice.org/2000/style" xmlns:svg="http://www.w3.org/2000/svg" xmlns:table="http://openoffice.org/2000/table" xmlns:text="http://openoffice.org/2000/text" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xql="http://metalab.unc.edu/xql/" Sitting.Identifier="1413" Sitting.Date="2020-09-15" EP.Reference="P9_PV(2020)09-15" EP.Number="PE 658.123" Document.Language="XL">
+    <RollCallVote.Result Identifier="116461" Date="2020-09-15 12:51:17">
+        <RollCallVote.Description.Text>
+            <a href="#reds:iPlRp/A-9-2020-0148" data-rel="reds" redmap-uri="/reds:iPlRp/A-9-2020-0148">A9-0148/2020</a> - Nikos Androulakis - Am 1-9, 11-16, 18-52, 55-87
+        </RollCallVote.Description.Text>
+        <Result.For Number="2">
+            <Result.PoliticalGroup.List Identifier="ID">
+                <PoliticalGroup.Member.Name MepId="7211">Adinolfi Matteo</PoliticalGroup.Member.Name>
+            </Result.PoliticalGroup.List>
+            <Result.PoliticalGroup.List Identifier="NI">
+                <PoliticalGroup.Member.Name MepId="6468">Adinolfi Isabella</PoliticalGroup.Member.Name>
+            </Result.PoliticalGroup.List>
+        </Result.For>
+        <Result.Against Number="0">
+        </Result.Against>
+        <Result.Abstention Number="0">
+        </Result.Abstention>
+    </RollCallVote.Result>
+</PV.RollCallVoteResults>

@@ -1,31 +1,43 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/scrapers"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "docker"
-    directory: "/scrapers"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "composer"
-    directory: "/app"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
-    schedule:
-      interval: "monthly"
+
   - package-ecosystem: "npm"
-    directory: "/app"
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+    directory: "/frontend"
     schedule:
       interval: "monthly"
+    groups:
+      dev-dependencies:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        exclude-patterns:
+          # These dependencies are responsible for code generation. Updating them
+          # likely also requires regenerating code, so it’s a good idea to update
+          # them separately from other dev dependencies.
+          - "@hey-api/*"
+
   - package-ecosystem: "docker"
-    directory: "/app"
+    directory: "/frontend"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "monthly"
+    groups:
+      dev-dependencies:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        exclude-patterns:
+          # Maintain option to merge typeshed packages separately, to ensure they
+          # are in sync with the respective package.
+          - "types-*"
+
+  - package-ecosystem: "docker"
+    directory: "/backend"
     schedule:
       interval: "monthly"
