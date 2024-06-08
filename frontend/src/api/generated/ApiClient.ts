@@ -3,9 +3,9 @@ import type { OpenAPIConfig } from './core/OpenAPI';
 import { Interceptors } from './core/OpenAPI';
 import { FetchHttpRequest } from './core/FetchHttpRequest';
 
-import { MiscellaneousService } from './services/MiscellaneousService';
-import { PlenarySessionsService } from './services/PlenarySessionsService';
-import { VotesService } from './services/VotesService';
+import { MiscellaneousService } from './services';
+import { PlenarySessionsService } from './services';
+import { VotesService } from './services';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 
