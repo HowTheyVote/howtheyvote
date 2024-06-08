@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import exists, func, select
+from sqlalchemy import select
 from structlog import get_logger
 
 from .. import config
@@ -8,12 +8,12 @@ from ..db import Session
 from ..models import PipelineRun, PipelineRunResult, PlenarySession
 from ..pipelines import MembersPipeline, PressPipeline, RCVListPipeline, SessionsPipeline
 from ..query import session_is_current_at
-from .worker import SkipPipelineError, Weekday, Worker
+from .worker import SkipPipelineError, Weekday, Worker, pipeline_ran_successfully
 
 log = get_logger(__name__)
 
 
-def op_rcv() -> None:
+def op_rcv_midday() -> None:
     """Checks if there is a current plenary session and, if yes, fetches the latest roll-call
     vote results."""
     today = datetime.date.today()
@@ -21,7 +21,25 @@ def op_rcv() -> None:
     if not _is_session_day(today):
         raise SkipPipelineError()
 
-    if _ran_successfully(RCVListPipeline, today):
+    if pipeline_ran_successfully(RCVListPipeline, today):
+        raise SkipPipelineError()
+
+    pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
+    pipeline.run()
+
+
+def op_rcv_evening() -> None:
+    """While on most plenary days, there’s only one voting session around midday, on some days
+    there is another sesssion in the evening, usually around 17:00. The vote results of the
+    evening sessions are appended to the same source document that also contains the results
+    of the midday votes. This method fetches the latest roll-call vote results, even if they
+    have been fetched successfully earlier on the same day."""
+    today = datetime.date.today()
+
+    if not _is_session_day(today):
+        raise SkipPipelineError()
+
+    if pipeline_ran_successfully(RCVListPipeline, today, count=2):
         raise SkipPipelineError()
 
     pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
@@ -59,19 +77,6 @@ def _is_session_day(date: datetime.date) -> bool:
     return session is not None
 
 
-def _ran_successfully(pipeline: type[object], date: datetime.date) -> bool:
-    """Check if a given pipeline has been run successfully on a given day."""
-    query = (
-        exists()
-        .where(PipelineRun.pipeline == pipeline.__name__)
-        .where(func.date(PipelineRun.started_at) == func.date(date))
-        .where(PipelineRun.result == PipelineRunResult.SUCCESS)
-        .select()
-    )
-
-    return bool(Session.execute(query).scalar())
-
-
 worker = Worker()
 
 # Mon at 04:00
@@ -94,10 +99,20 @@ worker.schedule(
 
 # Mon-Thu between 12:00 and 15:00, every 10 mins
 worker.schedule(
-    op_rcv,
+    op_rcv_midday,
     name=RCVListPipeline.__name__,
     weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
     hours=range(12, 15),
+    minutes=range(0, 60, 10),
+    tz=config.TIMEZONE,
+)
+
+# Mon-Thu between 17:00 and 20:00, every 10 mins
+worker.schedule(
+    op_rcv_evening,
+    name=RCVListPipeline.__name__,
+    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+    hours=range(17, 20),
     minutes=range(0, 60, 10),
     tz=config.TIMEZONE,
 )
