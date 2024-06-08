@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.4.1-nightly.570d680",
-    "@hey-api/openapi-ts": "^0.32.0",
+    "@hey-api/openapi-ts": "^0.34.5",
     "@testing-library/preact": "^3.2.3",
     "@testing-library/user-event": "^14.4.3",
     "@types/jsdom": "^21.1.6",
