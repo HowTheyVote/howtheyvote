@@ -74,7 +74,7 @@ class DataCollector(Collector):
         )
 
         vote_month = func.strftime("%Y-%m", Vote.timestamp)
-        vote_exp = func.json_each(Vote.issues).table_valued("value")  # type: ignore[no-untyped-call]
+        vote_exp = func.json_each(Vote.issues).table_valued("value")
         vote_query = (
             select(vote_exp.c.value, vote_month, func.count())
             .select_from(Vote, vote_exp)
@@ -82,7 +82,7 @@ class DataCollector(Collector):
         )
 
         vote_group_month = func.strftime("%Y-%m", VoteGroup.date)
-        vote_group_exp = func.json_each(VoteGroup.issues).table_valued("value")  # type: ignore[no-untyped-call]
+        vote_group_exp = func.json_each(VoteGroup.issues).table_valued("value")
         vote_group_query = (
             select(vote_group_exp.c.value, vote_group_month, func.count())
             .select_from(VoteGroup, vote_group_exp)
