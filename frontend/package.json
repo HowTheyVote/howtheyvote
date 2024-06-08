@@ -8,7 +8,7 @@
   "dependencies": {
     "@tinyhttp/app": "^2.1.4",
     "isbot": "^5.1.4",
-    "pino": "^8.20.0",
+    "pino": "^9.1.0",
     "preact": "^10.19.3",
     "preact-render-to-string": "^6.3.1",
     "sirv": "^2.0.3"
