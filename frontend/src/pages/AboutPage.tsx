@@ -362,12 +362,16 @@ function RelatedSection() {
 function FundingSection() {
   return (
     <div class="prose">
-      <h3 class="delta">Funding</h3>
+      <h3 class="delta">Funding and sponsors</h3>
       <p>
         A first version of HowTheyVote.eu has been funded by the German Federal
         Ministry of Research and Education as part of the 9th round of the{" "}
         <a href="https://prototypefund.de/">Prototype Fund</a> under the funding
         reference 1IS21818.
+      </p>
+      <p>
+        <a href="https://tota.com">Tuta</a> supports HowTheyVote.eu with a
+        secure and ad-free email account.
       </p>
     </div>
   );
