@@ -1,7 +1,7 @@
-from pathlib import Path
-
 import click
 
+from ..db import Session
+from ..export import Export
 from ..files import file_path
 from ..sharepics import generate_vote_sharepic
 from ..worker import worker as worker_
@@ -21,6 +21,13 @@ def cli() -> None:
 def worker() -> None:
     """Start a worker process to execute scheduled pipeline runs."""
     worker_.run()
+
+
+@cli.command()
+def export() -> None:
+    """Generate a CSV data export."""
+    export = Export(outdir=file_path("export"))
+    export.run()
 
 
 cli.add_command(system)

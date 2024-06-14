@@ -2,9 +2,10 @@ import ast
 import datetime
 import inspect
 from enum import Enum
-from textwrap import dedent
 from types import NoneType, UnionType
-from typing import Annotated, Any, TypedDict, cast, get_args, get_origin, is_typeddict
+from typing import Annotated, Any, TypedDict, get_args, get_origin, is_typeddict
+
+from ..helpers import get_attribute_docstrings, get_class_ast
 
 
 def get_schema(schema_cls: type) -> dict[str, Any]:
@@ -17,7 +18,7 @@ def get_schema(schema_cls: type) -> dict[str, Any]:
     cls_docstring = inspect.cleandoc(cls_docstring)
     annotations = schema_cls.__annotations__
     non_inherited_annotations = _get_annotated_attributes(schema_cls)
-    attr_docstrings = _get_attribute_docstrings(schema_cls)
+    attr_docstrings = get_attribute_docstrings(schema_cls)
 
     props: dict[str, dict[Any, Any]] = {}
     required: list[str] = []
@@ -157,7 +158,7 @@ def _get_annotated_attributes(type_: type) -> set[str]:
     """Python doesn't allow checking if an attribute of a `TypedDict` was inherited from
     another `TypedDict` or not, so this class analyzes the AST to return a list of all
     attributes that have been defined explicitly and not inherited."""
-    class_def = _get_class_ast(type_)
+    class_def = get_class_ast(type_)
     attrs = set()
 
     for stmt in class_def.body:
@@ -168,32 +169,6 @@ def _get_annotated_attributes(type_: type) -> set[str]:
     return attrs
 
 
-def _get_attribute_docstrings(type_: type) -> dict[str, str]:
-    """Python doesn't expose docstrings for class attributes at runtime. This method
-    parses the source code for the given class into an AST, then tries to find docstrings
-    immediately following a class attribute annotation. It returns a mapping from attribute
-    names to docstrings."""
-    class_def = _get_class_ast(type_)
-
-    docstrings: dict[str, str] = {}
-    prev_annotation = None
-
-    for stmt in class_def.body:
-        if isinstance(stmt, ast.AnnAssign):
-            if isinstance(stmt.target, ast.Name):
-                prev_annotation = str(stmt.target.id)
-                continue
-
-        if isinstance(stmt, ast.Expr):
-            if isinstance(stmt.value, ast.Constant):
-                if prev_annotation:
-                    docstrings[prev_annotation] = inspect.cleandoc(stmt.value.value)
-
-        prev_annotation = None
-
-    return docstrings
-
-
 def _ref(type_: type) -> str:
     normalized_name = normalize_schema_name(type_)
     return f"#/components/schemas/{normalized_name}"
@@ -201,9 +176,3 @@ def _ref(type_: type) -> str:
 
 def normalize_schema_name(type_: type) -> str:
     return type_.__name__.removesuffix("Dict")
-
-
-def _get_class_ast(type_: type) -> ast.ClassDef:
-    source = dedent(inspect.getsource(type_))
-    tree = ast.parse(source)
-    return cast(ast.ClassDef, tree.body[0])
