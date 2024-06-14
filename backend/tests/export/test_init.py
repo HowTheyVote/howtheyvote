@@ -1,4 +1,5 @@
 import datetime
+import re
 
 import pytest
 
@@ -19,6 +20,18 @@ from howtheyvote.models import (
 @pytest.fixture(autouse=True)
 def tmp_file_path(tmp_path):
     config.FILES_DIR = tmp_path
+
+
+def test_readme(db_session):
+    export = Export(outdir=file_path("export"))
+    export.run()
+
+    readme = file_path("export/README.md").read_text()
+
+    assert readme.startswith("# HowTheyVote.eu Database")
+    assert re.search(r"^## Tables$", readme, re.MULTILINE)
+    assert re.search(r"^### members.csv$", readme, re.MULTILINE)
+    assert re.search(r"^### votes.csv$", readme, re.MULTILINE)
 
 
 def test_export_members(db_session):
@@ -57,9 +70,7 @@ def test_export_members(db_session):
     countries_csv = file_path("export/countries.csv")
     countries_meta = file_path("export/countries.csv-metadata.json")
 
-    expected = (
-        "code,iso_alpha_2,label,alt_label\n" "DEU,DE,Germany,Federal Republic of Germany\n"
-    )
+    expected = "code,iso_alpha_2,label\n" "DEU,DE,Germany\n"
 
     assert countries_csv.read_text() == expected
     assert countries_meta.is_file()

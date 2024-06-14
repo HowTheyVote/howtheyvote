@@ -1,13 +1,34 @@
 import csv
 import datetime
 import pathlib
+import re
 from collections.abc import Generator
 from contextlib import contextmanager
 from types import NoneType, UnionType
-from typing import Any, Generic, Self, TypeVar, cast, get_args, TypedDict, NotRequired
+from typing import Any, Generic, NotRequired, Self, TypedDict, TypeVar, cast, get_args
 
-from ..helpers import get_attribute_docstrings
+from tabulate import tabulate
+
+from ..helpers import get_attribute_docstrings, get_normalized_docstring
 from ..json import json_dumps
+
+Column = TypedDict(
+    "Column",
+    {
+        "datatype": str,
+        "required": bool,
+        "dc:description": NotRequired[str],
+    },
+)
+
+
+class NamedColumn(Column):
+    name: str
+
+
+class TableSchema(TypedDict):
+    columns: list[NamedColumn]
+
 
 T = TypeVar("T")
 
@@ -29,6 +50,18 @@ class Table(Generic[T]):
 
         self.table_file = self.outdir.joinpath(f"{self.name}.csv")
         self.meta_file = self.outdir.joinpath(f"{self.name}.csv-metadata.json")
+
+    def get_schema(self) -> TableSchema:
+        return get_schema(self.row_type)
+
+    def get_description(self) -> str:
+        return get_normalized_docstring(self.row_type)
+
+    def get_markdown(self) -> str:
+        return get_markdown_docs(self.get_schema())
+
+    def get_filename(self) -> str:
+        return self.table_file.name
 
     @contextmanager
     def open(self) -> Generator[Self, None, None]:
@@ -61,7 +94,7 @@ class Table(Generic[T]):
             },
             "dc:creator": {"@id": "https://howtheyvote.eu"},
             "dc:publisher": {"@id": "https://howtheyvote.eu"},
-            "tableSchema": get_schema(self.row_type),
+            "tableSchema": self.get_schema(),
             "primaryKey": self.primary_key,
             "dialect": {
                 "header": True,
@@ -69,24 +102,6 @@ class Table(Generic[T]):
         }
 
         self.meta_handle.write(json_dumps(metadata, indent=2))
-
-
-Column = TypedDict(
-    "Column",
-    {
-        "datatype": str,
-        "required": bool,
-        "dc:description": NotRequired[str],
-    },
-)
-
-
-class NamedColumn(Column):
-    name: str
-
-
-class TableSchema(TypedDict):
-    columns: list[NamedColumn]
 
 
 def get_schema(row_type: type) -> TableSchema:
@@ -100,7 +115,7 @@ def get_schema(row_type: type) -> TableSchema:
         }
 
         if docstrings.get(column):
-            definition["dc:description"] = docstrings[column]
+            definition["dc:description"] = re.sub(r"\n+", " ", docstrings[column])
 
         columns.append(definition)
 
@@ -156,3 +171,29 @@ def get_column_definition(col_type: type) -> Column:
             return definition
 
     raise Exception(f"Could not get column definition for {col_type}")
+
+
+def get_markdown_docs(schema: TableSchema) -> str:
+    headers = [
+        "Column",
+        "Type",
+        "Description",
+    ]
+    rows = []
+
+    for column in schema["columns"]:
+        rows.append(
+            [
+                f"`{column["name"]}`",
+                column["datatype"]
+                if column["required"]
+                else f"{column["datatype"]} (optional)",
+                column.get("dc:description"),
+            ]
+        )
+
+    return tabulate(
+        rows,
+        headers,
+        tablefmt="github",
+    )

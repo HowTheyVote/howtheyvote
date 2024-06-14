@@ -1,11 +1,10 @@
 import ast
 import datetime
-import inspect
 from enum import Enum
 from types import NoneType, UnionType
 from typing import Annotated, Any, TypedDict, get_args, get_origin, is_typeddict
 
-from ..helpers import get_attribute_docstrings, get_class_ast
+from ..helpers import get_attribute_docstrings, get_class_ast, get_normalized_docstring
 
 
 def get_schema(schema_cls: type) -> dict[str, Any]:
@@ -14,8 +13,7 @@ def get_schema(schema_cls: type) -> dict[str, Any]:
     if not is_typeddict(schema_cls):
         raise Exception("Only TypedDict is supported.")
 
-    cls_docstring = schema_cls.__doc__ or ""
-    cls_docstring = inspect.cleandoc(cls_docstring)
+    cls_docstring = get_normalized_docstring(schema_cls)
     annotations = schema_cls.__annotations__
     non_inherited_annotations = _get_annotated_attributes(schema_cls)
     attr_docstrings = get_attribute_docstrings(schema_cls)

@@ -146,3 +146,13 @@ def get_attribute_docstrings(type_: type) -> dict[str, str]:
         prev_annotation = None
 
     return docstrings
+
+
+def get_normalized_docstring(type_: type) -> str:
+    """Returns the docstring with leading whitespace removed."""
+
+    docstring = type_.__doc__ or ""
+    docstring = inspect.cleandoc(docstring)
+    docstring = docstring.strip()
+
+    return docstring

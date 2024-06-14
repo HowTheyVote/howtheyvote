@@ -1,6 +1,6 @@
 import datetime
 import pathlib
-from typing import TypedDict
+from typing import Any, TypedDict
 
 from sqlalchemy import select
 from structlog import get_logger
@@ -12,7 +12,22 @@ from .csvw_helpers import Table
 log = get_logger(__name__)
 
 
+DESCRIPTION = """
+# HowTheyVote.eu Database
+
+HowTheyVote.eu collects data about European Parliament roll-call votes and related data such as biographical information about MEPs and political groups. We provide a full export of the database in CSV format.
+
+## Status
+The database export is experimental and the format of the tables may change in the future.
+
+## License
+The HowTheyVote.eu data is made available under an open license. If you use data published by HowTheyVote.eu please make sure you’ve read the [license terms](https://howtheyvote.eu/about#license) and provide proper attribution.
+"""  # noqa: E501
+
+
 class MemberRow(TypedDict):
+    """Each row represents a Member of the European Parliament (MEP)."""
+
     id: int
     """Member ID as used by the [MEP Directory](https://www.europarl.europa.eu/meps/en/home)."""
 
@@ -39,6 +54,8 @@ class MemberRow(TypedDict):
 
 
 class CountryRow(TypedDict):
+    """Each row represents an EU member state."""
+
     code: str
     """3-letter ISO-3166-1 code"""
 
@@ -50,6 +67,8 @@ class CountryRow(TypedDict):
 
 
 class GroupRow(TypedDict):
+    """Each row represents a political group in the European Parliament."""
+
     code: str
     """Unique identifier for the political group"""
 
@@ -65,6 +84,12 @@ class GroupRow(TypedDict):
 
 
 class GroupMembershipRow(TypedDict):
+    """Each row represents a membership of an MEP in a political group.
+
+    MEPs can change their political group during the term, i.e. each MEP is part of one or
+    more political groups over the course of a term. Non-attached MEPs are a member of the
+    `NI` group."""
+
     member_id: int
     """Member ID"""
 
@@ -82,6 +107,8 @@ class GroupMembershipRow(TypedDict):
 
 
 class VoteRow(TypedDict):
+    """Each row represents a roll-call vote in plenary."""
+
     id: int
     """Vote ID"""
 
@@ -115,6 +142,8 @@ class VoteRow(TypedDict):
 
 
 class MemberVoteRow(TypedDict):
+    """Each row represents how an MEP voted in a roll-call vote."""
+
     vote_id: int
     """Vote ID"""
 
@@ -139,8 +168,13 @@ class Export:
 
     def run(self) -> None:
         self.fetch_members()
-        self.export_members()
-        self.export_votes()
+
+        tables: list[Table[Any]] = [
+            *self.export_members(),
+            *self.export_votes(),
+        ]
+
+        self.write_readme(tables)
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -148,7 +182,22 @@ class Export:
         for member in Session.scalars(select(Member)):
             self.members_by_id[member.id] = member
 
-    def export_members(self) -> None:
+    def write_readme(self, tables: list[Table[Any]]) -> None:
+        readme = self.outdir.joinpath("README.md")
+        blocks = [
+            DESCRIPTION.strip(),
+            "## Tables",
+        ]
+
+        for table in tables:
+            blocks.append(f"### {table.get_filename()}")
+            blocks.append(table.get_description())
+            blocks.append(table.get_markdown())
+
+        text = "\n\n".join(blocks) + "\n"
+        readme.write_text(text)
+
+    def export_members(self) -> list[Table[Any]]:
         log.info("Exporting members")
 
         members = Table(
@@ -239,7 +288,9 @@ class Export:
                         }
                     )
 
-    def export_votes(self) -> None:
+        return [members, countries, groups, group_memberships]
+
+    def export_votes(self) -> list[Table[Any]]:
         log.info("Exporting votes")
 
         votes = Table(
@@ -293,3 +344,5 @@ class Export:
                             "group_code": group.code if group else None,
                         }
                     )
+
+        return [votes, member_votes]
