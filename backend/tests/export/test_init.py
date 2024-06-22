@@ -1,5 +1,8 @@
 import datetime
 
+import pytest
+
+from howtheyvote import config
 from howtheyvote.export import Export
 from howtheyvote.files import file_path
 from howtheyvote.models import (
@@ -11,6 +14,11 @@ from howtheyvote.models import (
     Vote,
     VotePosition,
 )
+
+
+@pytest.fixture(autouse=True)
+def tmp_file_path(tmp_path):
+    config.FILES_DIR = tmp_path
 
 
 def test_export_members(db_session):
