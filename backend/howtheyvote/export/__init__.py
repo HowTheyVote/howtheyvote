@@ -183,7 +183,10 @@ class Export:
         exported_country_codes = set()
 
         with members.open(), countries.open(), groups.open(), group_memberships.open():
-            for member in self.members_by_id.values():
+            query = select(Member).order_by(Member.id)
+            result = Session.scalars(query)
+
+            for member in result:
                 members.write_row(
                     {
                         "id": member.id,
@@ -213,7 +216,7 @@ class Export:
                         }
                     )
 
-                for gm in member.group_memberships:
+                for gm in sorted(member.group_memberships, key=lambda gm: gm.start_date):
                     if gm.group.code not in exported_group_codes:
                         exported_group_codes.add(gm.group.code)
 
@@ -254,7 +257,7 @@ class Export:
         )
 
         with votes.open(), member_votes.open():
-            query = select(Vote).execution_options(yield_per=500)
+            query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
 
             for idx, vote in enumerate(result):
@@ -275,7 +278,7 @@ class Export:
                     }
                 )
 
-                for member_vote in vote.member_votes:
+                for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]
                     group = member.group_at(vote.timestamp)
 
