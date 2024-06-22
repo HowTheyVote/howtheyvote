@@ -133,7 +133,73 @@ def test_export_votes(db_session):
     member_votes_csv = file_path("export/member_votes.csv")
     member_votes_meta = file_path("export/member_votes.csv-metadata.json")
 
-    expected = "vote_id,member_id,position\n" + "123456,123,FOR\n"
+    expected = (
+        "vote_id,member_id,position,country_code,group_code\n" "123456,123,FOR,DEU,EPP\n"
+    )
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
+
+
+def test_export_votes_country_group(db_session):
+    member = Member(
+        id=123,
+        first_name="Max",
+        last_name="MUSTERMANN",
+        country=Country["DEU"],
+        date_of_birth=datetime.date(1960, 1, 1),
+        group_memberships=[
+            GroupMembership(
+                group=Group["EPP"],
+                term=9,
+                start_date=datetime.date(2023, 1, 1),
+                end_date=datetime.date(2024, 1, 31),
+            ),
+            GroupMembership(
+                group=Group["RENEW"],
+                term=9,
+                start_date=datetime.date(2024, 2, 1),
+                end_date=None,
+            ),
+        ],
+    )
+
+    one = Vote(
+        id=123456,
+        title="One",
+        timestamp=datetime.datetime(2024, 1, 31, 0, 0, 0),
+        member_votes=[
+            MemberVote(
+                web_id=123,
+                position=VotePosition.FOR,
+            ),
+        ],
+    )
+
+    two = Vote(
+        id=654321,
+        title="Two",
+        timestamp=datetime.datetime(2024, 2, 1, 0, 0, 0),
+        member_votes=[
+            MemberVote(
+                web_id=123,
+                position=VotePosition.FOR,
+            ),
+        ],
+    )
+
+    db_session.add_all([member, one, two])
+    db_session.commit()
+
+    export = Export(outdir=file_path("export"))
+    export.run()
+
+    member_votes_csv = file_path("export/member_votes.csv")
+
+    expected = (
+        "vote_id,member_id,position,country_code,group_code\n"
+        "123456,123,FOR,DEU,EPP\n"
+        "654321,123,FOR,DEU,RENEW\n"
+    )
+
+    assert member_votes_csv.read_text() == expected
