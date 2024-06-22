@@ -166,15 +166,62 @@ class Export:
         self.outdir = outdir
         self.outdir.mkdir(exist_ok=True)
 
+        self.members = Table(
+            row_type=MemberRow,
+            outdir=self.outdir,
+            name="members",
+            primary_key="id",
+        )
+
+        self.countries = Table(
+            row_type=CountryRow,
+            outdir=self.outdir,
+            name="countries",
+            primary_key="code",
+        )
+
+        self.groups = Table(
+            row_type=GroupRow,
+            outdir=self.outdir,
+            name="groups",
+            primary_key="code",
+        )
+
+        self.group_memberships = Table(
+            row_type=GroupMembershipRow,
+            outdir=self.outdir,
+            name="group_memberships",
+            primary_key=["member_id", "group_code", "start_date", "end_date"],
+        )
+
+        self.votes = Table(
+            row_type=VoteRow,
+            outdir=self.outdir,
+            name="votes",
+            primary_key="id",
+        )
+
+        self.member_votes = Table(
+            row_type=MemberVoteRow,
+            outdir=self.outdir,
+            name="member_votes",
+            primary_key=["member_id", "vote_id"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
-
-        tables: list[Table[Any]] = [
-            *self.export_members(),
-            *self.export_votes(),
-        ]
-
-        self.write_readme(tables)
+        self.write_readme(
+            [
+                self.members,
+                self.countries,
+                self.groups,
+                self.group_memberships,
+                self.votes,
+                self.member_votes,
+            ]
+        )
+        self.export_members()
+        self.export_votes()
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -197,41 +244,18 @@ class Export:
         text = "\n\n".join(blocks) + "\n"
         readme.write_text(text)
 
-    def export_members(self) -> list[Table[Any]]:
+    def export_members(self) -> None:
         log.info("Exporting members")
-
-        members = Table(
-            row_type=MemberRow,
-            outdir=self.outdir,
-            name="members",
-            primary_key="id",
-        )
-
-        countries = Table(
-            row_type=CountryRow,
-            outdir=self.outdir,
-            name="countries",
-            primary_key="code",
-        )
-
-        groups = Table(
-            row_type=GroupRow,
-            outdir=self.outdir,
-            name="groups",
-            primary_key="code",
-        )
-
-        group_memberships = Table(
-            row_type=GroupMembershipRow,
-            outdir=self.outdir,
-            name="group_memberships",
-            primary_key=["member_id", "group_code", "start_date", "end_date"],
-        )
 
         exported_group_codes = set()
         exported_country_codes = set()
 
-        with members.open(), countries.open(), groups.open(), group_memberships.open():
+        with (
+            self.members.open() as members,
+            self.countries.open() as countries,
+            self.groups.open() as groups,
+            self.group_memberships.open() as group_memberships,
+        ):
             query = select(Member).order_by(Member.id)
             result = Session.scalars(query)
 
@@ -288,26 +312,13 @@ class Export:
                         }
                     )
 
-        return [members, countries, groups, group_memberships]
-
-    def export_votes(self) -> list[Table[Any]]:
+    def export_votes(self) -> None:
         log.info("Exporting votes")
 
-        votes = Table(
-            row_type=VoteRow,
-            outdir=self.outdir,
-            name="votes",
-            primary_key="id",
-        )
-
-        member_votes = Table(
-            row_type=MemberVoteRow,
-            outdir=self.outdir,
-            name="member_votes",
-            primary_key=["member_id", "vote_id"],
-        )
-
-        with votes.open(), member_votes.open():
+        with (
+            self.votes.open() as votes,
+            self.member_votes.open() as member_votes,
+        ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
 
@@ -344,5 +355,3 @@ class Export:
                             "group_code": group.code if group else None,
                         }
                     )
-
-        return [votes, member_votes]
