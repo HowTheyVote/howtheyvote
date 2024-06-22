@@ -124,6 +124,13 @@ class MemberVoteRow(TypedDict):
     position: str
     """Vote position"""
 
+    country_code: str
+    """Country code"""
+
+    group_code: str | None
+    """Group code. This references the political group that the MEP was part of on the day
+    of the vote which isn’t necessarily the MEP’s current political group."""
+
 
 class Export:
     def __init__(self, outdir: pathlib.Path):
@@ -131,8 +138,15 @@ class Export:
         self.outdir.mkdir(exist_ok=True)
 
     def run(self) -> None:
+        self.fetch_members()
         self.export_members()
         self.export_votes()
+
+    def fetch_members(self) -> None:
+        self.members_by_id: dict[int, Member] = {}
+
+        for member in Session.scalars(select(Member)):
+            self.members_by_id[member.id] = member
 
     def export_members(self) -> None:
         log.info("Exporting members")
@@ -169,7 +183,7 @@ class Export:
         exported_country_codes = set()
 
         with members.open(), countries.open(), groups.open(), group_memberships.open():
-            for member in Session.scalars(select(Member)):
+            for member in self.members_by_id.values():
                 members.write_row(
                     {
                         "id": member.id,
@@ -262,10 +276,17 @@ class Export:
                 )
 
                 for member_vote in vote.member_votes:
+                    member = self.members_by_id[member_vote.web_id]
+                    group = member.group_at(vote.timestamp)
+
                     member_votes.write_row(
                         {
                             "vote_id": vote.id,
                             "member_id": member_vote.web_id,
                             "position": member_vote.position.value,
+                            # In theory, country and group are redundant here, but in practice,
+                            # this is super handy to calculate stats by group/country.
+                            "country_code": member.country.code,
+                            "group_code": group.code if group else None,
                         }
                     )
