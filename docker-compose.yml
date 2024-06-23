@@ -83,6 +83,7 @@ services:
       - "caddy_data:/data"
       - "caddy_config:/config"
       - "./caddy:/etc/caddy"
+      - "./storage/files:/howtheyvote/files"
     depends_on:
       - backend
       - frontend

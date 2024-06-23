@@ -7,6 +7,12 @@
     reverse_proxy /api/* backend:5000
     reverse_proxy /* frontend:8000
 
+    # Serve static CSV database export
+    handle_path /files/export/* {
+        root * /howtheyvote/files/export
+        file_server browse
+    }
+
     # Enable Gzip compression for common plaintext formats such as
     # HTML, CSS, JS, JSON, SVG etc.
     encode gzip
