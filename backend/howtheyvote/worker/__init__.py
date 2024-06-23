@@ -1,10 +1,14 @@
 import datetime
+import time
 
+from prometheus_client import Gauge
 from sqlalchemy import exists, func, select
 from structlog import get_logger
 
 from .. import config
 from ..db import Session
+from ..export import Export
+from ..files import file_path
 from ..models import PipelineRun, PipelineRunResult, PlenarySession
 from ..pipelines import MembersPipeline, PressPipeline, RCVListPipeline, SessionsPipeline
 from ..query import session_is_current_at
@@ -50,6 +54,18 @@ def op_members() -> None:
     """Fetches information about all members of the current term."""
     pipeline = MembersPipeline(term=config.CURRENT_TERM)
     pipeline.run()
+
+
+EXPORT_LAST_RUN = Gauge(
+    "htv_export_last_run_timestamp_seconds",
+    "Timestamp when the CSV export was generated the last time",
+)
+
+
+def op_generate_export() -> None:
+    export = Export(outdir=file_path("export"))
+    export.run()
+    EXPORT_LAST_RUN.set(time.time())
 
 
 def _is_session_day(date: datetime.date) -> bool:
@@ -110,4 +126,15 @@ worker.schedule(
     hours=range(13, 20),
     minutes={0, 30},
     tz=config.TIMEZONE,
+)
+
+# Sun at 04:00
+worker.schedule(
+    op_generate_export,
+    name=Export.__name__,
+    weekdays={Weekday.SUN},
+    hours={4},
+    # While the schedules for other pipelines follow real-life events in Brussels/Strasbourg
+    # time, this isn’t the case for the export so we can just use UTC for simplicity.
+    tz="UTC",
 )
