@@ -91,7 +91,7 @@ def _ran_successfully(pipeline: type[object], date: datetime.date) -> bool:
 worker = Worker()
 
 # Mon at 04:00
-worker.schedule(
+worker.schedule_pipeline(
     op_sessions,
     name=SessionsPipeline.__name__,
     weekdays={Weekday.MON},
@@ -100,7 +100,7 @@ worker.schedule(
 )
 
 # Mon at 05:00
-worker.schedule(
+worker.schedule_pipeline(
     op_members,
     name=MembersPipeline.__name__,
     weekdays={Weekday.MON},
@@ -109,7 +109,7 @@ worker.schedule(
 )
 
 # Mon-Thu between 12:00 and 15:00, every 10 mins
-worker.schedule(
+worker.schedule_pipeline(
     op_rcv,
     name=RCVListPipeline.__name__,
     weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
@@ -119,7 +119,7 @@ worker.schedule(
 )
 
 # Mon-Thu, between 13:00 and 20:00, every 30 mins
-worker.schedule(
+worker.schedule_pipeline(
     op_press,
     name=PressPipeline.__name__,
     weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
@@ -131,7 +131,6 @@ worker.schedule(
 # Sun at 04:00
 worker.schedule(
     op_generate_export,
-    name=Export.__name__,
     weekdays={Weekday.SUN},
     hours={4},
     # While the schedules for other pipelines follow real-life events in Brussels/Strasbourg
