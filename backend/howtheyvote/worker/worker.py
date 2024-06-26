@@ -65,7 +65,7 @@ class Worker:
     def __init__(self) -> None:
         self._scheduler = Scheduler()
         self._stopped = False
-        self._scheduled: set[str] = set()
+        self._scheduled_pipelines: set[str] = set()
 
     def run(self) -> None:
         """Start an endless loop executing scheduled pipelines."""
@@ -97,20 +97,20 @@ class Worker:
     def schedule(
         self,
         handler: Handler,
-        name: str,
         weekdays: Iterable[Weekday] = set(Weekday),
         hours: Iterable[int] = {0},
         minutes: Iterable[int] = {0},
         tz: str | None = None,
     ) -> None:
-        """Schedule a pipeline to be executed at the given weekdays, hours, minutes.
-        Optionally passing a timezone string via the `tz` parameter indicates that the
-        pipeline should be executed at the given time in the respective timezone. For
-        example, `schedule(my_handler, hours={6}, tz="Europe/Berlin")` executes the
-        handler at 6am Berlin time."""
+        """Schedule a job to be executed at the given weekdays, hours, minutes. Optionally
+        passing a timezone string via the `tz` parameter indicates that the job should be
+        executed at the given time in the respective timezone. The following example
+        executes the handler at 6am Berlin time:
 
-        self._scheduled.add(name)
-        wrapped_handler = self._wrap_handler(name, handler)
+        ```
+        schedule(my_handler, hours={6}, tz="Europe/Berlin")
+        ```
+        """
 
         # `schedule` doesn’t support some use cases, for example:
         # "Run job every 10 minutes on Monday between 3 and pm".
@@ -127,13 +127,20 @@ class Worker:
                     job = self._scheduler.every()
                     job = getattr(job, weekday.value)
                     job = job.at(formatted_time, tz)
-                    job = job.tag(name)
-                    job = job.do(wrapped_handler)
+                    job = job.do(handler)
 
-    def _wrap_handler(self, name: str, handler: Handler) -> Handler:
-        # Wraps the actual handler function to add exception handling and result logging.
+    def schedule_pipeline(
+        self,
+        handler: Handler,
+        name: str,
+        weekdays: Iterable[Weekday] = set(Weekday),
+        hours: Iterable[int] = {0},
+        minutes: Iterable[int] = {0},
+        tz: str | None = None,
+    ) -> None:
+        """Same as `schedule`, but handles exceptions and logs pipeline runs."""
 
-        def wrapped() -> None:
+        def wrapped_handler() -> None:
             start_time = time.time()
             started_at = datetime.datetime.now(datetime.UTC)
 
@@ -177,10 +184,18 @@ class Worker:
 
             Session.remove()
 
-        return wrapped
+        self._scheduled_pipelines.add(name)
+
+        self.schedule(
+            handler=wrapped_handler,
+            weekdays=weekdays,
+            hours=hours,
+            minutes=minutes,
+            tz=tz,
+        )
 
     def _update_next_run_metrics(self) -> None:
-        for name in self._scheduled:
+        for name in self._scheduled_pipelines:
             next_run = self._scheduler.get_next_run(name)
             next_run_ts = next_run.timestamp() if next_run else -1
             PIPELINE_NEXT_RUN.labels(pipeline=name).set(next_run_ts)
