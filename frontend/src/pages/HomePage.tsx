@@ -128,7 +128,7 @@ function SessionInfo({ currentSession, lastSession }: SessionInfoProps) {
         {locationName && `in ${locationName} `}
         from {startDate} to {endDate}.{" "}
         <strong>
-          <a href="/votes">View votes results</a>
+          <a href="/votes">View vote results</a>
         </strong>{" "}
         from this session.
       </>
