@@ -1,7 +1,10 @@
+import ast
 import hashlib
+import inspect
 import itertools
 import re
 from collections.abc import Iterable, Iterator, Mapping
+from textwrap import dedent
 from typing import Any, TypedDict, TypeVar, cast
 from urllib.parse import urljoin
 
@@ -111,3 +114,45 @@ def subset_dict(data: Mapping[Any, Any], keys: Iterable[Any]) -> Mapping[Any, An
         keys = set(keys)
 
     return {k: v for k, v in data.items() if k in keys}
+
+
+def get_class_ast(type_: type) -> ast.ClassDef:
+    source = dedent(inspect.getsource(type_))
+    tree = ast.parse(source)
+    return cast(ast.ClassDef, tree.body[0])
+
+
+def get_attribute_docstrings(type_: type) -> dict[str, str]:
+    """Python doesn't expose docstrings for class attributes at runtime. This method
+    parses the source code for the given class into an AST, then tries to find docstrings
+    immediately following a class attribute annotation. It returns a mapping from attribute
+    names to docstrings."""
+    class_def = get_class_ast(type_)
+
+    docstrings: dict[str, str] = {}
+    prev_annotation = None
+
+    for stmt in class_def.body:
+        if isinstance(stmt, ast.AnnAssign):
+            if isinstance(stmt.target, ast.Name):
+                prev_annotation = str(stmt.target.id)
+                continue
+
+        if isinstance(stmt, ast.Expr):
+            if isinstance(stmt.value, ast.Constant):
+                if prev_annotation:
+                    docstrings[prev_annotation] = inspect.cleandoc(stmt.value.value)
+
+        prev_annotation = None
+
+    return docstrings
+
+
+def get_normalized_docstring(type_: type) -> str:
+    """Returns the docstring with leading whitespace removed."""
+
+    docstring = type_.__doc__ or ""
+    docstring = inspect.cleandoc(docstring)
+    docstring = docstring.strip()
+
+    return docstring
