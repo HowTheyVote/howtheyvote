@@ -19,7 +19,7 @@ typegen:
 		--input http://backend:5000/api \
 		--output ./src/api/generated \
 		--name ApiClient \
-		--exportSchemas false \
+		--schemas false \
 		--useOptions
 
 test:
