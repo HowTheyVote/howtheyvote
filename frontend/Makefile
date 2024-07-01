@@ -18,6 +18,7 @@ typegen:
 	./node_modules/.bin/openapi-ts \
 		--input http://backend:5000/api \
 		--output ./src/api/generated \
+		--client @hey-api/client-fetch \
 		--schemas false \
 		--useOptions
 

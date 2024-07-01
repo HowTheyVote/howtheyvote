@@ -6,6 +6,7 @@
   "author": "Till Prochaska <mail@tillprochaska.de>",
   "license": "GPL-3.0-only",
   "dependencies": {
+    "@hey-api/client-fetch": "^0.1.7",
     "@tinyhttp/app": "^2.3.1",
     "isbot": "^5.1.17",
     "pino": "^9.5.0",
