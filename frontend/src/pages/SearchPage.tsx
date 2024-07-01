@@ -1,4 +1,4 @@
-import { type VotesQueryResponse, api } from "../api";
+import { type VotesQueryResponse, searchVotes } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
@@ -20,7 +20,7 @@ export const loader: Loader<VotesQueryResponse> = async (request: Request) => {
     10,
   );
 
-  const data = await api.votes.search({ q, page });
+  const { data } = await searchVotes({ query: { q, page } });
 
   if (!request.isBot && q) {
     log.info({
