@@ -6,7 +6,7 @@
   "author": "Till Prochaska <mail@tillprochaska.de>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@tinyhttp/app": "^2.1.4",
+    "@tinyhttp/app": "^2.2.4",
     "isbot": "^5.1.11",
     "pino": "^9.2.0",
     "preact": "^10.22.1",
