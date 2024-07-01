@@ -69,7 +69,7 @@ def index() -> Response:
     """List votes
     ---
     get:
-        operationId: index
+        operationId: getVotes
         tags:
             - Votes
         summary: List votes
@@ -123,7 +123,7 @@ def search() -> Response:
     Search votes
     ---
     get:
-        operationId: search
+        operationId: searchVotes
         tags:
             - Votes
         summary: Search votes
