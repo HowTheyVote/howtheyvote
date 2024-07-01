@@ -1,4 +1,4 @@
-import { type PlenarySession, api } from "../api/index";
+import { type PlenarySession, getSessions } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
@@ -23,16 +23,20 @@ type HomePageData = {
 };
 
 export const loader: Loader<HomePageData> = async () => {
-  const current = await api.plenarySessions.getSessions({
-    status: "current",
-    pageSize: 1,
-    sortOrder: "asc",
+  const { data: current } = await getSessions({
+    query: {
+      status: "current",
+      pageSize: 1,
+      sortOrder: "asc",
+    },
   });
 
-  const past = await api.plenarySessions.getSessions({
-    status: "past",
-    pageSize: 1,
-    sortOrder: "desc",
+  const { data: past } = await getSessions({
+    query: {
+      status: "past",
+      pageSize: 1,
+      sortOrder: "desc",
+    },
   });
 
   return {

@@ -9,7 +9,6 @@ import {
 
 import { type FunctionComponent, type VNode, h } from "preact";
 import render from "preact-render-to-string";
-import { ApiError } from "../api/generated";
 import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
 import { requestIsBot } from "./bots";
@@ -83,17 +82,7 @@ export class App extends BaseApp<Request, Response> {
       let data: Data | undefined = undefined;
 
       if (loader) {
-        try {
-          data = await loader(request);
-        } catch (error) {
-          // This is a convenience that renders a frontend 404 error whenever
-          // the backend API returns a 404 error.
-          if (error instanceof ApiError && error.status === 404) {
-            throw new HTTPException(404);
-          }
-
-          throw error;
-        }
+        data = await loader(request);
       }
 
       const vdom = h(page, {

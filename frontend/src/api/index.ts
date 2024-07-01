@@ -1,6 +1,18 @@
 import { BACKEND_PRIVATE_URL } from "../config";
-import { ApiClient } from "./generated";
+import { HTTPException } from "../lib/http";
+import { client } from "./generated/sdk.gen";
 
-export * from "./generated/models";
+client.setConfig({
+  baseUrl: BACKEND_PRIVATE_URL,
+});
 
-export const api = new ApiClient({ BASE: BACKEND_PRIVATE_URL });
+client.interceptors.response.use((response) => {
+  if (response.status === 404) {
+    throw new HTTPException(404);
+  }
+
+  return response;
+});
+
+export * from "./generated/sdk.gen";
+export * from "./generated/types.gen";
