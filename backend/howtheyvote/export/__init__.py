@@ -14,7 +14,6 @@ log = get_logger(__name__)
 
 DESCRIPTION = """
 # HowTheyVote.eu Database
-
 HowTheyVote.eu collects data about European Parliament roll-call votes and related data such as biographical information about MEPs and political groups. We provide a full export of the database in CSV format.
 
 ## Status
@@ -86,7 +85,7 @@ class GroupRow(TypedDict):
 class GroupMembershipRow(TypedDict):
     """Each row represents a membership of an MEP in a political group.
 
-    MEPs can change their political group during the term, i.e. each MEP is part of one or
+    MEPs can change their political group during the term, i.e., each MEP is part of one or
     more political groups over the course of a term. Non-attached MEPs are a member of the
     `NI` group."""
 
@@ -127,7 +126,12 @@ class VoteRow(TypedDict):
     """Description of the vote as published in the roll-call vote results"""
 
     is_main: bool
-    """Whether this vote is a main vote."""
+    """Whether this vote is a main vote. We classify certain votes as main votes based on
+    the text description in the voting records published by Parliament. For example, if
+    Parliament has voted on amendments, only the vote on the text as a whole is classified
+    as a main vote. Certain votes such as votes on the agenda are not classified as main
+    votes. This is not an official classification by the European Parliament and there may
+    be false negatives."""
 
     is_featured: bool
     """Whether this vote is featured. Currently, a vote is featured when we have found an
@@ -151,14 +155,16 @@ class MemberVoteRow(TypedDict):
     """Member ID"""
 
     position: str
-    """Vote position"""
+    """Vote position. One of `FOR`, `AGAINST`, `ABSTENTION` if the MEP participated in the
+    vote or `DID_NOT_VOTE` if the MEP wasn’t present for the vote. We currently do not
+    differentiate between MEPs who did not vote with or without an excuse."""
 
     country_code: str
     """Country code"""
 
     group_code: str | None
     """Group code. This references the political group that the MEP was part of on the day
-    of the vote which isn’t necessarily the MEP’s current political group."""
+    of the vote. This is not necessarily the MEP’s current political group."""
 
 
 class Export:
