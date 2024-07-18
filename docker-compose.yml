@@ -12,7 +12,7 @@ networks:
 
 services:
   frontend:
-    image: "ghcr.io/howtheyvote/fragments-poc-frontend:main"
+    image: "ghcr.io/howtheyvote/howtheyvote-frontend:main"
     depends_on:
       - backend
     networks:
@@ -27,7 +27,7 @@ services:
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
 
   backend:
-    image: "ghcr.io/howtheyvote/fragments-poc-backend:main"
+    image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
     depends_on:
       - meilisearch
       - chromium
@@ -49,7 +49,7 @@ services:
       MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
 
   worker:
-    image: "ghcr.io/howtheyvote/fragments-poc-backend:main"
+    image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
     command: "htv worker"
     depends_on:
       - meilisearch
