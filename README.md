@@ -46,16 +46,16 @@ docker compose exec backend bash
 While we use a background worker to run data pipelines on a regular schedule in production, you can also run them manually using the CLI:
 
 ```
-htv pipeline members --term=9
-htv pipeline sessions --term=9
-htv pipeline rcv-list --term=9 --date=2024-04-10
-htv pipeline press --date=2024-04-10
+htv pipeline members --term=10
+htv pipeline sessions --term=10
+htv pipeline rcv-list --term=10 --date=2024-07-16
+htv pipeline press --date=2024-07-16
 ```
 
 In order to run all data pipelines for an entire term, run the following command. Please note that this command may take multiple hours to complete.
 
 ```
-htv pipeline all --term=9
+htv pipeline all --term=10
 ```
 
 ---

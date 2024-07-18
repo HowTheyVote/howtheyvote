@@ -194,12 +194,17 @@ class VoteDataIssuesAnalyzer:
 
     def member_votes_count(self) -> Iterator[Fragment]:
         brexit_date = datetime.date(2020, 2, 1)
+        tenth_term_date = datetime.date(2024, 7, 16)
         date = self.vote.timestamp.date()
         count = len(self.vote.member_votes)
 
         issues = []
 
-        if (date < brexit_date and count != 751) or (date >= brexit_date and count != 705):
+        if (
+            (date < brexit_date and count != 751)
+            or (date >= brexit_date and count != 705)
+            or (date >= tenth_term_date and count != 720)
+        ):
             issues = [DataIssue.MEMBER_VOTES_COUNT_MISMATCH]
 
         yield Fragment(
