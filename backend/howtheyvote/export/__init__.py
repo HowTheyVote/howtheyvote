@@ -1,0 +1,372 @@
+import datetime
+import pathlib
+import shutil
+import tempfile
+from typing import Any, TypedDict
+
+from sqlalchemy import select
+from structlog import get_logger
+
+from ..db import Session
+from ..models import Member, Vote
+from .csvw_helpers import Table
+
+log = get_logger(__name__)
+
+
+DESCRIPTION = """
+# HowTheyVote.eu Database
+HowTheyVote.eu collects data about European Parliament roll-call votes and related data such as biographical information about MEPs and political groups. We provide a full export of the database in CSV format.
+
+## Status
+The database export is experimental and the format of the tables may change in the future.
+
+## License
+The HowTheyVote.eu data is made available under an open license. If you use data published by HowTheyVote.eu please make sure you’ve read the [license terms](https://howtheyvote.eu/about#license) and provide proper attribution.
+"""  # noqa: E501
+
+
+class MemberRow(TypedDict):
+    """Each row represents a Member of the European Parliament (MEP)."""
+
+    id: int
+    """Member ID as used by the [MEP Directory](https://www.europarl.europa.eu/meps/en/home)."""
+
+    first_name: str
+    """First name"""
+
+    last_name: str
+    """Last name"""
+
+    country_code: str
+    """3-letter ISO-3166-1 code"""
+
+    date_of_birth: datetime.date | None
+    """Date of birth"""
+
+    email: str | None
+    """Email address"""
+
+    facebook: str | None
+    """Facebook profile URL"""
+
+    twitter: str | None
+    """Twitter account URL"""
+
+
+class CountryRow(TypedDict):
+    """Each row represents an EU member state."""
+
+    code: str
+    """3-letter ISO-3166-1 code"""
+
+    iso_alpha_2: str
+    """2-letter ISO-3166-1 code"""
+
+    label: str
+    """Label as published by the Publications Office of the European Union"""
+
+
+class GroupRow(TypedDict):
+    """Each row represents a political group in the European Parliament."""
+
+    code: str
+    """Unique identifier for the political group"""
+
+    official_label: str
+    """Official label as published by the Publications Office of the European Union"""
+
+    label: str
+    """Label based on the official label. Prefixes and suffixes such as "Group" are
+    removed for clarity."""
+
+    short_label: str
+    """Short label or abbreviation"""
+
+
+class GroupMembershipRow(TypedDict):
+    """Each row represents a membership of an MEP in a political group.
+
+    MEPs can change their political group during the term, i.e., each MEP is part of one or
+    more political groups over the course of a term. Non-attached MEPs are a member of the
+    `NI` group."""
+
+    member_id: int
+    """Member ID"""
+
+    group_code: str
+    """Group code"""
+
+    term: int
+    """Parliamentary term"""
+
+    start_date: datetime.date
+    """Start date"""
+
+    end_date: datetime.date | None
+    """End date. If empty, the MEP the membership is still active."""
+
+
+class VoteRow(TypedDict):
+    """Each row represents a roll-call vote in plenary."""
+
+    id: int
+    """Vote ID"""
+
+    timestamp: datetime.datetime
+    """Date and time of the vote"""
+
+    display_title: str | None
+    """Title that can be used to refer to the vote. In most cases, this is the title
+    published in the roll-call vote results. If the title in the roll-call vote results
+    is empty, this falls back to the procedure title."""
+
+    reference: str | None
+    """Reference to a plenary document such as a report or a resolution"""
+
+    description: str | None
+    """Description of the vote as published in the roll-call vote results"""
+
+    is_main: bool
+    """Whether this vote is a main vote. We classify certain votes as main votes based on
+    the text description in the voting records published by Parliament. For example, if
+    Parliament has voted on amendments, only the vote on the text as a whole is classified
+    as a main vote. Certain votes such as votes on the agenda are not classified as main
+    votes. This is not an official classification by the European Parliament and there may
+    be false negatives."""
+
+    is_featured: bool
+    """Whether this vote is featured. Currently, a vote is featured when we have found an
+    official press release about the vote published by the European Parliament Newsroom.
+    However, this is subject to change."""
+
+    procedure_reference: str | None
+    """Procedure reference as listed in the Legislative Observatory"""
+
+    procedure_title: str | None
+    """Title of the legislative procedure as listed in the Legislative Observatory"""
+
+
+class MemberVoteRow(TypedDict):
+    """Each row represents how an MEP voted in a roll-call vote."""
+
+    vote_id: int
+    """Vote ID"""
+
+    member_id: int
+    """Member ID"""
+
+    position: str
+    """Vote position. One of `FOR`, `AGAINST`, `ABSTENTION` if the MEP participated in the
+    vote or `DID_NOT_VOTE` if the MEP wasn’t present for the vote. We currently do not
+    differentiate between MEPs who did not vote with or without an excuse."""
+
+    country_code: str
+    """Country code"""
+
+    group_code: str | None
+    """Group code. This references the political group that the MEP was part of on the day
+    of the vote. This is not necessarily the MEP’s current political group."""
+
+
+class Export:
+    def __init__(self, outdir: pathlib.Path):
+        self.outdir = outdir
+
+        self.members = Table(
+            row_type=MemberRow,
+            outdir=self.outdir,
+            name="members",
+            primary_key="id",
+        )
+
+        self.countries = Table(
+            row_type=CountryRow,
+            outdir=self.outdir,
+            name="countries",
+            primary_key="code",
+        )
+
+        self.groups = Table(
+            row_type=GroupRow,
+            outdir=self.outdir,
+            name="groups",
+            primary_key="code",
+        )
+
+        self.group_memberships = Table(
+            row_type=GroupMembershipRow,
+            outdir=self.outdir,
+            name="group_memberships",
+            primary_key=["member_id", "group_code", "start_date", "end_date"],
+        )
+
+        self.votes = Table(
+            row_type=VoteRow,
+            outdir=self.outdir,
+            name="votes",
+            primary_key="id",
+        )
+
+        self.member_votes = Table(
+            row_type=MemberVoteRow,
+            outdir=self.outdir,
+            name="member_votes",
+            primary_key=["member_id", "vote_id"],
+        )
+
+    def run(self) -> None:
+        self.fetch_members()
+        self.write_readme(
+            [
+                self.members,
+                self.countries,
+                self.groups,
+                self.group_memberships,
+                self.votes,
+                self.member_votes,
+            ]
+        )
+        self.export_members()
+        self.export_votes()
+
+    def fetch_members(self) -> None:
+        self.members_by_id: dict[int, Member] = {}
+
+        for member in Session.scalars(select(Member)):
+            self.members_by_id[member.id] = member
+
+    def write_readme(self, tables: list[Table[Any]]) -> None:
+        readme = self.outdir.joinpath("README.md")
+        blocks = [
+            DESCRIPTION.strip(),
+            "## Tables",
+        ]
+
+        for table in tables:
+            blocks.append(f"### {table.get_filename()}")
+            blocks.append(table.get_description())
+            blocks.append(table.get_markdown())
+
+        text = "\n\n".join(blocks) + "\n"
+        readme.write_text(text)
+
+    def export_members(self) -> None:
+        log.info("Exporting members")
+
+        exported_group_codes = set()
+        exported_country_codes = set()
+
+        with (
+            self.members.open() as members,
+            self.countries.open() as countries,
+            self.groups.open() as groups,
+            self.group_memberships.open() as group_memberships,
+        ):
+            query = select(Member).order_by(Member.id)
+            result = Session.scalars(query)
+
+            for member in result:
+                members.write_row(
+                    {
+                        "id": member.id,
+                        "first_name": member.first_name,
+                        "last_name": member.last_name,
+                        "country_code": member.country.code,
+                        "date_of_birth": member.date_of_birth,
+                        "email": member.email,
+                        "facebook": member.facebook,
+                        "twitter": member.twitter,
+                    }
+                )
+
+                if member.country.code not in exported_country_codes:
+                    exported_country_codes.add(member.country.code)
+
+                    if not member.country.iso_alpha_2:
+                        raise Exception(
+                            f"Country {member.country.label} does not have ISO-alpha-2 code"
+                        )
+
+                    countries.write_row(
+                        {
+                            "code": member.country.code,
+                            "iso_alpha_2": member.country.iso_alpha_2,
+                            "label": member.country.label,
+                        }
+                    )
+
+                for gm in sorted(member.group_memberships, key=lambda gm: gm.start_date):
+                    if gm.group.code not in exported_group_codes:
+                        exported_group_codes.add(gm.group.code)
+
+                        groups.write_row(
+                            {
+                                "code": gm.group.code,
+                                "official_label": gm.group.official_label,
+                                "label": gm.group.label,
+                                "short_label": gm.group.short_label,
+                            }
+                        )
+
+                    group_memberships.write_row(
+                        {
+                            "member_id": member.id,
+                            "group_code": gm.group.code,
+                            "term": gm.term,
+                            "start_date": gm.start_date,
+                            "end_date": gm.end_date,
+                        }
+                    )
+
+    def export_votes(self) -> None:
+        log.info("Exporting votes")
+
+        with (
+            self.votes.open() as votes,
+            self.member_votes.open() as member_votes,
+        ):
+            query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
+            result = Session.scalars(query)
+
+            for idx, vote in enumerate(result):
+                if idx % 1000 == 0:
+                    log.info("Writing vote", index=idx)
+
+                votes.write_row(
+                    {
+                        "id": vote.id,
+                        "timestamp": vote.timestamp,
+                        "display_title": vote.display_title,
+                        "reference": vote.reference,
+                        "description": vote.description,
+                        "is_main": vote.is_main,
+                        "is_featured": vote.is_featured,
+                        "procedure_reference": vote.procedure_reference,
+                        "procedure_title": vote.procedure_title,
+                    }
+                )
+
+                for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
+                    member = self.members_by_id[member_vote.web_id]
+                    group = member.group_at(vote.timestamp)
+
+                    member_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "member_id": member_vote.web_id,
+                            "position": member_vote.position.value,
+                            # In theory, country and group are redundant here, but in practice,
+                            # this is super handy to calculate stats by group/country.
+                            "country_code": member.country.code,
+                            "group_code": group.code if group else None,
+                        }
+                    )
+
+
+def generate_export(path: pathlib.Path) -> None:
+    with tempfile.TemporaryDirectory() as outdir:
+        export = Export(outdir=pathlib.Path(outdir))
+        export.run()
+        log.info("Archiving CSV export")
+        shutil.make_archive(str(path), "zip", outdir)

@@ -16,14 +16,14 @@ def get_handler():
     return handler
 
 
-def test_worker_weekday(db_session):
+def test_worker_schedule_weekday(db_session):
     worker = Worker()
     handler = get_handler()
 
     # Mar 24th 2024 is a Sunday
     now = datetime.datetime(2024, 3, 24, 23, 59)
     with time_machine.travel(now):
-        worker.schedule(handler, name="test", weekdays={Weekday.MON})
+        worker.schedule(handler, weekdays={Weekday.MON})
         worker.run_pending()
         assert handler.calls == 0
 
@@ -40,13 +40,13 @@ def test_worker_weekday(db_session):
         assert handler.calls == 1
 
 
-def test_worker_time(db_session):
+def test_worker_schedule_time(db_session):
     worker = Worker()
     handler = get_handler()
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 10, 29)):
         # Every day at 10:30
-        worker.schedule(handler, name="test", hours={10}, minutes={30})
+        worker.schedule(handler, hours={10}, minutes={30})
         worker.run_pending()
         assert handler.calls == 0
 
@@ -67,7 +67,7 @@ def test_worker_delayed(db_session):
     handler = get_handler()
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 9, 59)):
-        worker.schedule(handler, name="test", hours={10}, minutes={0})
+        worker.schedule(handler, hours={10}, minutes={0})
         worker.run_pending()
         assert handler.calls == 0
 
@@ -78,20 +78,14 @@ def test_worker_delayed(db_session):
         assert handler.calls == 1
 
 
-def test_worker_timezone(db_session):
+def test_worker_schedule_timezone(db_session):
     worker = Worker()
     handler = get_handler()
 
     # Mar 30th 2024, 23:00 in Brussels
     with time_machine.travel(datetime.datetime(2024, 3, 30, 22, 0)):
         # Every day at midnight
-        worker.schedule(
-            handler,
-            name="test",
-            hours={0},
-            minutes={0},
-            tz="Europe/Brussels",
-        )
+        worker.schedule(handler, hours={0}, minutes={0}, tz="Europe/Brussels")
         worker.run_pending()
         assert handler.calls == 0
 
@@ -101,20 +95,14 @@ def test_worker_timezone(db_session):
         assert handler.calls == 1
 
 
-def test_worker_timezone_dst(db_session):
+def test_worker_schedule_timezone_dst(db_session):
     worker = Worker()
     handler = get_handler()
 
     # Mar 31st 2024, 23:00 in Brussels (DST)
     with time_machine.travel(datetime.datetime(2024, 3, 31, 21, 0)):
         # Every day at midnight
-        worker.schedule(
-            handler,
-            name="test",
-            hours={0},
-            minutes={0},
-            tz="Europe/Brussels",
-        )
+        worker.schedule(handler, hours={0}, minutes={0}, tz="Europe/Brussels")
         worker.run_pending()
         assert handler.calls == 0
 
@@ -124,12 +112,12 @@ def test_worker_timezone_dst(db_session):
         assert handler.calls == 1
 
 
-def test_log_runs(db_session):
+def test_worker_schedule_pipeline_log_runs(db_session):
     worker = Worker()
     handler = get_handler()
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0)):
-        worker.schedule(handler, name="test", hours={10})
+        worker.schedule_pipeline(handler, name="test", hours={10})
         worker.run_pending()
         assert handler.calls == 0
 
@@ -150,7 +138,7 @@ def test_log_runs(db_session):
         assert run.finished_at.date() == datetime.date(2024, 1, 1)
 
 
-def test_log_runs_exceptions(db_session):
+def test_worker_schedule_pipeline_log_runs_exceptions(db_session):
     worker = Worker()
 
     def data_unavailable_error():
@@ -160,8 +148,16 @@ def test_log_runs_exceptions(db_session):
         raise PipelineError()
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0)):
-        worker.schedule(data_unavailable_error, name="data_unavailable_error", hours={10})
-        worker.schedule(pipeline_error, name="pipeline_error", hours={10})
+        worker.schedule_pipeline(
+            data_unavailable_error,
+            name="data_unavailable_error",
+            hours={10},
+        )
+        worker.schedule_pipeline(
+            pipeline_error,
+            name="pipeline_error",
+            hours={10},
+        )
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 10, 0)):
         worker.run_pending()
