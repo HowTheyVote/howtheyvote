@@ -13,8 +13,8 @@ In order to set up a development environment on your computer please make sure y
 Before you run HowTheyVote.eu locally for the first time, you will need to install dependencies for the frontend and backend:
 
 ```
-docker compose run frontend npm install
-docker compose run backend poetry install
+docker compose run --rm frontend npm install
+docker compose run --rm backend poetry install
 ```
 
 Create an `.env` file according to `.env.template`.
@@ -22,7 +22,7 @@ Create an `.env` file according to `.env.template`.
 Upgrade the system to run database migration and configure the search index:
 
 ```
-docker compose run backend htv system upgrade
+docker compose run --rm backend htv system upgrade
 ```
 
 Finally, you can start all required containers:
