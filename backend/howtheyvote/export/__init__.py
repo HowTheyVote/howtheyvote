@@ -1,5 +1,7 @@
 import datetime
 import pathlib
+import shutil
+import tempfile
 from typing import Any, TypedDict
 
 from sqlalchemy import select
@@ -170,7 +172,6 @@ class MemberVoteRow(TypedDict):
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
-        self.outdir.mkdir(exist_ok=True)
 
         self.members = Table(
             row_type=MemberRow,
@@ -361,3 +362,11 @@ class Export:
                             "group_code": group.code if group else None,
                         }
                     )
+
+
+def generate_export(path: pathlib.Path) -> None:
+    with tempfile.TemporaryDirectory() as outdir:
+        export = Export(outdir=pathlib.Path(outdir))
+        export.run()
+        log.info("Archiving CSV export")
+        shutil.make_archive(str(path), "zip", outdir)

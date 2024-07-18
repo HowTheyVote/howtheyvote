@@ -8,9 +8,9 @@
     reverse_proxy /* frontend:8000
 
     # Serve static CSV database export
-    handle_path /files/export/* {
-        root * /howtheyvote/files/export
-        file_server browse
+    handle_path /files/export/export.zip {
+        root * /howtheyvote/files/export/export.zip
+        file_server
     }
 
     # Enable Gzip compression for common plaintext formats such as

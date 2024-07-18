@@ -1,7 +1,11 @@
+import pathlib
+import shutil
+import tempfile
+
 import click
 
 from ..db import Session
-from ..export import Export
+from ..export import generate_export
 from ..files import file_path
 from ..sharepics import generate_vote_sharepic
 from ..worker import worker as worker_
@@ -26,8 +30,8 @@ def worker() -> None:
 @cli.command()
 def export() -> None:
     """Generate a CSV data export."""
-    export = Export(outdir=file_path("export"))
-    export.run()
+    archive_path = file_path("export/export")
+    generate_export(archive_path)
 
 
 cli.add_command(system)

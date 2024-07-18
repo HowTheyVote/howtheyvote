@@ -1,11 +1,7 @@
 import datetime
 import re
 
-import pytest
-
-from howtheyvote import config
 from howtheyvote.export import Export
-from howtheyvote.files import file_path
 from howtheyvote.models import (
     Country,
     Group,
@@ -17,16 +13,11 @@ from howtheyvote.models import (
 )
 
 
-@pytest.fixture(autouse=True)
-def tmp_file_path(tmp_path):
-    config.FILES_DIR = tmp_path
-
-
-def test_readme(db_session):
-    export = Export(outdir=file_path("export"))
+def test_readme(db_session, tmp_path):
+    export = Export(outdir=tmp_path)
     export.run()
 
-    readme = file_path("export/README.md").read_text()
+    readme = tmp_path.joinpath("README.md").read_text()
 
     assert readme.startswith("# HowTheyVote.eu Database")
     assert re.search(r"^## Tables$", readme, re.MULTILINE)
@@ -34,7 +25,7 @@ def test_readme(db_session):
     assert re.search(r"^### votes.csv$", readme, re.MULTILINE)
 
 
-def test_export_members(db_session):
+def test_export_members(db_session, tmp_path):
     member = Member(
         id=123,
         first_name="Max",
@@ -53,11 +44,11 @@ def test_export_members(db_session):
     db_session.add(member)
     db_session.commit()
 
-    export = Export(outdir=file_path("export"))
+    export = Export(outdir=tmp_path)
     export.run()
 
-    members_csv = file_path("export/members.csv")
-    members_meta = file_path("export/members.csv-metadata.json")
+    members_csv = tmp_path.joinpath("members.csv")
+    members_meta = tmp_path.joinpath("members.csv-metadata.json")
 
     expected = (
         "id,first_name,last_name,country_code,date_of_birth,email,facebook,twitter\n"
@@ -67,16 +58,16 @@ def test_export_members(db_session):
     assert members_csv.read_text() == expected
     assert members_meta.is_file()
 
-    countries_csv = file_path("export/countries.csv")
-    countries_meta = file_path("export/countries.csv-metadata.json")
+    countries_csv = tmp_path.joinpath("countries.csv")
+    countries_meta = tmp_path.joinpath("countries.csv-metadata.json")
 
     expected = "code,iso_alpha_2,label\n" "DEU,DE,Germany\n"
 
     assert countries_csv.read_text() == expected
     assert countries_meta.is_file()
 
-    groups_csv = file_path("export/groups.csv")
-    groups_meta = file_path("export/groups.csv-metadata.json")
+    groups_csv = tmp_path.joinpath("groups.csv")
+    groups_meta = tmp_path.joinpath("groups.csv-metadata.json")
 
     expected = (
         "code,official_label,label,short_label\n"
@@ -86,8 +77,8 @@ def test_export_members(db_session):
     assert groups_csv.read_text() == expected
     assert groups_meta.is_file()
 
-    group_memberships_csv = file_path("export/group_memberships.csv")
-    group_memberships_meta = file_path("export/group_memberships.csv-metadata.json")
+    group_memberships_csv = tmp_path.joinpath("group_memberships.csv")
+    group_memberships_meta = tmp_path.joinpath("group_memberships.csv-metadata.json")
 
     expected = "member_id,group_code,term,start_date,end_date\n" "123,EPP,9,2024-01-01,\n"
 
@@ -95,7 +86,7 @@ def test_export_members(db_session):
     assert group_memberships_meta.is_file()
 
 
-def test_export_votes(db_session):
+def test_export_votes(db_session, tmp_path):
     member = Member(
         id=123,
         first_name="Max",
@@ -127,11 +118,11 @@ def test_export_votes(db_session):
     db_session.add_all([member, vote])
     db_session.commit()
 
-    export = Export(outdir=file_path("export"))
+    export = Export(outdir=tmp_path)
     export.run()
 
-    votes_csv = file_path("export/votes.csv")
-    votes_meta = file_path("export/votes.csv-metadata.json")
+    votes_csv = tmp_path.joinpath("votes.csv")
+    votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
         "id,timestamp,display_title,reference,description,is_main,is_featured,procedure_reference,procedure_title\n"
@@ -141,8 +132,8 @@ def test_export_votes(db_session):
     assert votes_csv.read_text() == expected
     assert votes_meta.is_file()
 
-    member_votes_csv = file_path("export/member_votes.csv")
-    member_votes_meta = file_path("export/member_votes.csv-metadata.json")
+    member_votes_csv = tmp_path.joinpath("member_votes.csv")
+    member_votes_meta = tmp_path.joinpath("member_votes.csv-metadata.json")
 
     expected = (
         "vote_id,member_id,position,country_code,group_code\n" "123456,123,FOR,DEU,EPP\n"
@@ -152,7 +143,7 @@ def test_export_votes(db_session):
     assert member_votes_meta.is_file()
 
 
-def test_export_votes_country_group(db_session):
+def test_export_votes_country_group(db_session, tmp_path):
     member = Member(
         id=123,
         first_name="Max",
@@ -202,10 +193,10 @@ def test_export_votes_country_group(db_session):
     db_session.add_all([member, one, two])
     db_session.commit()
 
-    export = Export(outdir=file_path("export"))
+    export = Export(outdir=tmp_path)
     export.run()
 
-    member_votes_csv = file_path("export/member_votes.csv")
+    member_votes_csv = tmp_path.joinpath("member_votes.csv")
 
     expected = (
         "vote_id,member_id,position,country_code,group_code\n"

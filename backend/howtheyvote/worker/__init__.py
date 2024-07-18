@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from .. import config
 from ..db import Session
-from ..export import Export
+from ..export import generate_export
 from ..files import file_path
 from ..models import PipelineRun, PipelineRunResult, PlenarySession
 from ..pipelines import MembersPipeline, PressPipeline, RCVListPipeline, SessionsPipeline
@@ -63,8 +63,8 @@ EXPORT_LAST_RUN = Gauge(
 
 
 def op_generate_export() -> None:
-    export = Export(outdir=file_path("export"))
-    export.run()
+    archive_path = file_path("export/export")
+    generate_export(archive_path)
     EXPORT_LAST_RUN.set(time.time())
 
 
