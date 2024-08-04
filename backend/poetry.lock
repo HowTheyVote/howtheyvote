@@ -741,13 +741,13 @@ files = [
 
 [[package]]
 name = "meilisearch"
-version = "0.31.3"
+version = "0.31.4"
 description = "The python client for Meilisearch API."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "meilisearch-0.31.3-py3-none-any.whl", hash = "sha256:dadd50a0f08002f92bfcb3cca18c337203c616ac4dd5a9678aa05f5382b4bf55"},
-    {file = "meilisearch-0.31.3.tar.gz", hash = "sha256:4e5a63c61cbd4bd8af2c30882075854dc6ed3a13816b4d3070e62070698f25ca"},
+    {file = "meilisearch-0.31.4-py3-none-any.whl", hash = "sha256:a36f345334689e1880a72f22babadd49a4b583f260a47fe7794b4030760ea759"},
+    {file = "meilisearch-0.31.4.tar.gz", hash = "sha256:c4d578640d073e2d6106b4d653f55d698d2520b51db57e3ce7375707e15c86d1"},
 ]
 
 [package.dependencies]
@@ -1674,4 +1674,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<4.0"
-content-hash = "c2496958289df7f0227e489fdec2c092466ace10c26f49fdf02acf7a82bdc00f"
+content-hash = "cd49c04c0e0421b8cd47c064adbf43b1f15df1b38dd5f1133115387b3d3b4eb9"
