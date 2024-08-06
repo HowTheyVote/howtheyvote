@@ -94,9 +94,7 @@ class ODPSessionScraper(BeautifulSoupScraper):
         return f"{self.BASE_URL}/MTG-PL-{self.start_date.isoformat()}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
-        locality = doc.select_one(
-            "rdf|RDF > eli-dl|Activity > eli-dl|consists_of > eli-dl|Activity > vcard|hasLocality"  # noqa: E501
-        )
+        locality = doc.select_one("rdf|RDF > eli-dl|Activity > vcard|hasLocality")
 
         if not locality:
             return None
