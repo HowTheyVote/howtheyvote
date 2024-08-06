@@ -23,7 +23,7 @@ class JSONEncoder(json.JSONEncoder):
         if isinstance(o, set):
             return sorted(o)
 
-        if dataclasses.is_dataclass(o):
+        if dataclasses.is_dataclass(o) and not isinstance(o, type):
             return dataclasses.asdict(o)
 
         return json.JSONEncoder.default(self, o)
