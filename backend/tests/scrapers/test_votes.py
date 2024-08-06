@@ -41,6 +41,7 @@ def test_rcv_list_scraper(responses):
             source_url="https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
             data={
                 "timestamp": datetime.datetime(2020, 7, 23, 12, 49, 32),
+                "term": 9,
                 "title": None,
                 "reference": "B9-0229/2020",
                 "description": "§ 1/1",

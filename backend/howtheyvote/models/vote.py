@@ -73,6 +73,7 @@ class Vote(BaseWithId):
 
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
     timestamp: Mapped[datetime.datetime] = mapped_column(sa.DateTime)
+    term: Mapped[int] = mapped_column(sa.Integer)
     order: Mapped[int] = mapped_column(sa.Integer)
     title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_title: Mapped[str | None] = mapped_column(sa.Unicode)
