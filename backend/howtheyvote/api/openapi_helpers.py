@@ -66,38 +66,38 @@ def get_property_definition(prop_type: Any) -> dict[str, Any]:
     """Returns a JSON Schema property definition for the given type or class. This only handles
     types and classes that we currently use in `howtheyvote.api.serializers`."""
 
-    if prop_type == str:
+    if prop_type is str:
         return {
             "type": "string",
             "required": True,
         }
 
-    if prop_type == int:
+    if prop_type is int:
         return {
             "type": "integer",
             "required": True,
         }
 
-    if prop_type == float:
+    if prop_type is float:
         return {
             "type": "number",
             "required": True,
         }
 
-    if prop_type == bool:
+    if prop_type is bool:
         return {
             "type": "boolean",
             "required": True,
         }
 
-    if prop_type == datetime.date:
+    if prop_type is datetime.date:
         return {
             "type": "string",
             "format": "date",
             "required": True,
         }
 
-    if prop_type == datetime.datetime:
+    if prop_type is datetime.datetime:
         return {
             "type": "string",
             "format": "date-time",
@@ -111,7 +111,7 @@ def get_property_definition(prop_type: Any) -> dict[str, Any]:
             "required": True,
         }
 
-    if get_origin(prop_type) == list:
+    if get_origin(prop_type) is list:
         type_args = get_args(prop_type)
         item_type = type_args[0]
         item_definition = get_property_definition(item_type)
@@ -136,7 +136,7 @@ def get_property_definition(prop_type: Any) -> dict[str, Any]:
             definition["required"] = False
             return definition
 
-    if get_origin(prop_type) == Annotated:
+    if get_origin(prop_type) is Annotated:
         # We use the annotation metadata as example values
         wrapped_type, example = get_args(prop_type)
         definition = get_property_definition(wrapped_type)

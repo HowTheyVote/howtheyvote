@@ -123,37 +123,37 @@ def get_schema(row_type: type) -> TableSchema:
 
 
 def get_column_definition(col_type: type) -> Column:
-    if col_type == bool:
+    if col_type is bool:
         return {
             "datatype": "boolean",
             "required": True,
         }
 
-    if col_type == int:
+    if col_type is int:
         return {
             "datatype": "integer",
             "required": True,
         }
 
-    if col_type == float:
+    if col_type is float:
         return {
             "datatype": "decimal",
             "required": True,
         }
 
-    if col_type == str:
+    if col_type is str:
         return {
             "datatype": "string",
             "required": True,
         }
 
-    if col_type == datetime.date:
+    if col_type is datetime.date:
         return {
             "datatype": "date",
             "required": True,
         }
 
-    if col_type == datetime.datetime:
+    if col_type is datetime.datetime:
         return {
             "datatype": "dateTime",
             "required": True,
