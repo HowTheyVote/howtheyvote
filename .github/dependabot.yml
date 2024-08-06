@@ -19,6 +19,12 @@ updates:
           # likely also requires regenerating code, so it’s a good idea to update
           # them separately from other dev dependencies.
           - "@hey-api/*"
+      minor-patch:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "docker"
     directory: "/frontend"
@@ -34,10 +40,12 @@ updates:
       dev-dependencies:
         applies-to: "version-updates"
         dependency-type: "development"
-        exclude-patterns:
-          # Maintain option to merge typeshed packages separately, to ensure they
-          # are in sync with the respective package.
-          - "types-*"
+      minor-patch:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "docker"
     directory: "/backend"
