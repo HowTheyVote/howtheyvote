@@ -234,7 +234,7 @@ class SearchQuery(Query[T]):
         results = list(Session.execute(query).scalars())
 
         # Sort in the same order as returned in search response
-        results = sorted(results, key=lambda r, ids=ids: ids.index(r.id))  # type: ignore
+        results = sorted(results, key=lambda r: ids.index(int(r.id)))
 
         response: QueryResponse[T] = {
             "total": res["estimatedTotalHits"],
