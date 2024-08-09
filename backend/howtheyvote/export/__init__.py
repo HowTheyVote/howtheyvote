@@ -18,6 +18,8 @@ DESCRIPTION = """
 # HowTheyVote.eu Database
 HowTheyVote.eu collects data about European Parliament roll-call votes and related data such as biographical information about MEPs and political groups. We provide a full export of the database in CSV format.
 
+**[Read more about HowTheyVote.eu →](https://howtheyvote.eu/about)**
+
 ## Status
 The database export is experimental and the format of the tables may change in the future.
 
