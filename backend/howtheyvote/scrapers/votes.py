@@ -128,6 +128,7 @@ class RCVListScraper(BeautifulSoupScraper):
                 "description": description,
                 "reference": reference,
                 "timestamp": timestamp,
+                "term": self.term,
                 "member_votes": self._member_votes(tag),
             },
         )
