@@ -7,7 +7,7 @@ from structlog import get_logger
 
 from ..db import Session
 from ..files import vote_sharepic_path
-from ..models import Member, PlenarySession, Vote
+from ..models import Fragment, Member, PlenarySession, Vote
 from ..query import member_active_at
 from ..scrapers import (
     EurlexDocumentScraper,
@@ -163,3 +163,24 @@ def rcv_lists() -> None:
                 pass
 
             writer.flush()
+
+
+@temp.command()
+def fill_term_column() -> None:
+    """Set term to 9 for all terms without stored term."""
+    query = select(Vote)
+    query = query.where(Vote.term == None)  # noqa: E711
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            fragment = Fragment(
+                source_id=vote.id,
+                group_key=vote.id,
+                source_name="FillTermColumnCommand",
+                model="Vote",
+                data={"term": 9},
+            )
+            writer.add(fragment)
+        writer.flush()
