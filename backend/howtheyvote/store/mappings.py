@@ -63,6 +63,7 @@ def map_vote(record: CompositeRecord) -> Vote:
     return Vote(
         id=record.group_key,
         timestamp=datetime.datetime.fromisoformat(record.first("timestamp")),
+        term=record.first("term"),
         order=record.first("order"),
         title=record.first("title_en") or record.first("title"),
         description=record.first("description_en") or record.first("description"),
