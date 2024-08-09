@@ -14,9 +14,9 @@
     "label": "European People\u2019s Party",
     "short_label": "EPP",
     "alt_labels": [
+      "Group of the European People\u2019s Party (Christian Democrats) and European Democrats",
       "Group of the European People\u2019s Party (Christian Democrats)",
-      "Group of the European People\u2019s Party (Christian-Democratic Group)",
-      "Group of the European People\u2019s Party (Christian Democrats) and European Democrats"
+      "Group of the European People\u2019s Party (Christian-Democratic Group)"
     ],
     "start_date": "1979-07-17",
     "end_date": null
@@ -38,8 +38,8 @@
     "label": "The Left in the European Parliament \u2013 GUE/NGL",
     "short_label": "GUE/NGL",
     "alt_labels": [
-      "Confederal Group of the European United Left \u2013 Nordic Green Left",
-      "European United Left \u2013 Nordic Green Left"
+      "European United Left \u2013 Nordic Green Left",
+      "Confederal Group of the European United Left \u2013 Nordic Green Left"
     ],
     "start_date": "1995-01-06",
     "end_date": null
@@ -78,7 +78,9 @@
     "official_label": "Group of the Progressive Alliance of Socialists and Democrats in the European Parliament",
     "label": "Progressive Alliance of Socialists and Democrats",
     "short_label": "S&D",
-    "alt_labels": [],
+    "alt_labels": [
+      "Progressive Alliance of Socialists and Democrats in the European Parliament"
+    ],
     "start_date": "2009-07-14",
     "end_date": null
   },
@@ -107,8 +109,8 @@
     "short_label": "Rainbow Group in the European Parliament",
     "alt_labels": [
       "Rainbow",
-      "Rainbow in the European Parliament",
-      "Rainbow Group: Federation of the Green-Alternative European Links, Agelev-Ecolo, the Danish People\u2019s Movement against Membership of the European Community and the European Free Alliance in the European Parliament"
+      "Rainbow Group: Federation of the Green-Alternative European Links, Agelev-Ecolo, the Danish People\u2019s Movement against Membership of the European Community and the European Free Alliance in the European Parliament",
+      "Rainbow in the European Parliament"
     ],
     "start_date": "1984-07-24",
     "end_date": "1994-07-18"
@@ -139,8 +141,8 @@
     "label": "Christian-Democratic Group (Group of the European People\u2019s Party)",
     "short_label": "Christian-Democratic Group (Group of the European People\u2019s Party)",
     "alt_labels": [
-      "Christian-Democratics",
-      "Christian-Democratic Group"
+      "Christian-Democratic Group",
+      "Christian-Democratics"
     ],
     "start_date": "1953-06-23",
     "end_date": "1979-07-16"
@@ -152,8 +154,8 @@
     "short_label": "Communist and Allies",
     "alt_labels": [
       "Communists and Allies",
-      "Communists and Allies (SF, Ind. Sin.)",
-      "Communist and Allies Group (SF, Ind. Sin.)"
+      "Communist and Allies Group (SF, Ind. Sin.)",
+      "Communists and Allies (SF, Ind. Sin.)"
     ],
     "start_date": "1973-10-16",
     "end_date": "1989-07-24"
@@ -386,11 +388,11 @@
     "label": "Socialist Group in the European Parliament",
     "short_label": "Socialist Group in the European Parliament",
     "alt_labels": [
-      "Socialists",
-      "Group of the Party of European Socialists",
       "Party of European Socialists",
-      "Socialist",
-      "Socialist Group"
+      "Socialists",
+      "Socialist Group",
+      "Group of the Party of European Socialists",
+      "Socialist"
     ],
     "start_date": "1953-06-23",
     "end_date": "2009-07-13"
@@ -434,5 +436,22 @@
     ],
     "start_date": "1995-07-05",
     "end_date": "1999-07-19"
+  },
+  {
+    "code": "ESN",
+    "official_label": "Europe of Sovereign Nations Group",
+    "label": "Europe of Sovereign Nations",
+    "short_label": "ESN",
+    "start_date": "2024-07-10",
+    "alt_labels": []
+
+  },
+  {
+    "code": "PFE",
+    "official_label": "Patriots for Europe Group",
+    "label": "Patriots for Europe",
+    "short_label": "PFE",
+    "start_date": "2024-07-08",
+    "alt_labels": []
   }
 ]

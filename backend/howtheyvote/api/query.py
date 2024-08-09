@@ -225,7 +225,7 @@ class SearchQuery(Query[T]):
 
         # Based on the IDs fetched from the search index, fetch full records
         # from the database
-        ids = [hit["id"] for hit in res["hits"]]
+        ids = [int(hit["id"]) for hit in res["hits"]]
 
         # Remove the extra item fetched only to test if there is a next page
         ids = ids[:limit]
@@ -234,7 +234,7 @@ class SearchQuery(Query[T]):
         results = list(Session.execute(query).scalars())
 
         # Sort in the same order as returned in search response
-        results = sorted(results, key=lambda r: ids.index(r.id))
+        results = sorted(results, key=lambda r: ids.index(int(r.id)))
 
         response: QueryResponse[T] = {
             "total": res["estimatedTotalHits"],

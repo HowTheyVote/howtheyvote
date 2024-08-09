@@ -1,7 +1,6 @@
 import datetime
 from collections import defaultdict
 from collections.abc import Iterable, Iterator
-from itertools import chain
 
 from unidecode import unidecode
 
@@ -174,41 +173,53 @@ class VoteDataIssuesAnalyzer:
     def __init__(self, vote: Vote):
         self.vote = vote
 
-    def run(self) -> Iterator[Fragment]:
-        return chain(
+    def run(self) -> Fragment:
+        issues = [
             self.member_votes_count(),
             self.empty_titles(),
-        )
+        ]
 
-    def empty_titles(self) -> Iterator[Fragment]:
-        if self.vote.title or self.vote.procedure_title:
-            return
+        issues = [issue for issue in issues if issue is not None]
 
-        yield Fragment(
-            model="Vote",
-            source_id=self.vote.id,
-            source_name=type(self).__name__,
-            group_key=self.vote.id,
-            data={"issues": [DataIssue.EMPTY_TITLES]},
-        )
-
-    def member_votes_count(self) -> Iterator[Fragment]:
-        brexit_date = datetime.date(2020, 2, 1)
-        date = self.vote.timestamp.date()
-        count = len(self.vote.member_votes)
-
-        issues = []
-
-        if (date < brexit_date and count != 751) or (date >= brexit_date and count != 705):
-            issues = [DataIssue.MEMBER_VOTES_COUNT_MISMATCH]
-
-        yield Fragment(
+        return Fragment(
             model="Vote",
             source_id=self.vote.id,
             source_name=type(self).__name__,
             group_key=self.vote.id,
             data={"issues": issues},
         )
+
+    def empty_titles(self) -> DataIssue | None:
+        if not self.vote.title and not self.vote.procedure_title:
+            return DataIssue.EMPTY_TITLES
+
+        return None
+
+    def member_votes_count(self) -> DataIssue | None:
+        date = self.vote.timestamp.date()
+        count = len(self.vote.member_votes)
+
+        # 9th term, pre Brexit
+        if (
+            date >= datetime.date(2019, 7, 2)
+            and date < datetime.date(2020, 2, 1)
+            and count != 751
+        ):
+            return DataIssue.MEMBER_VOTES_COUNT_MISMATCH
+
+        # 9th term, post Brexit
+        if (
+            date >= datetime.date(2020, 2, 1)
+            and date < datetime.date(2024, 7, 16)
+            and count != 705
+        ):
+            return DataIssue.MEMBER_VOTES_COUNT_MISMATCH
+
+        # 10th term
+        if date >= datetime.date(2024, 7, 16) and count != 720:
+            return DataIssue.MEMBER_VOTES_COUNT_MISMATCH
+
+        return None
 
 
 class VoteGroupsDataIssuesAnalyzer:
