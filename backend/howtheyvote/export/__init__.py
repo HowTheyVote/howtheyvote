@@ -15,13 +15,8 @@ log = get_logger(__name__)
 
 
 DESCRIPTION = """
-# HowTheyVote.eu Database
-HowTheyVote.eu collects data about European Parliament roll-call votes and related data such as biographical information about MEPs and political groups. We provide a full export of the database in CSV format.
-
-**[Read more about HowTheyVote.eu →](https://howtheyvote.eu/about)**
-
 ## Status
-The database export is experimental and the format of the tables may change in the future.
+The dataset is experimental and the format of the tables may change in the future.
 
 ## License
 The HowTheyVote.eu data is made available under an open license. If you use data published by HowTheyVote.eu please make sure you’ve read the [license terms](https://howtheyvote.eu/about#license) and provide proper attribution.
