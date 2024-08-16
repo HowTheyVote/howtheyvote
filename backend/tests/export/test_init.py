@@ -19,7 +19,8 @@ def test_readme(db_session, tmp_path):
 
     readme = tmp_path.joinpath("README.md").read_text()
 
-    assert readme.startswith("# HowTheyVote.eu Database")
+    assert re.search(r"^## Status$", readme, re.MULTILINE)
+    assert re.search(r"^## License$", readme, re.MULTILINE)
     assert re.search(r"^## Tables$", readme, re.MULTILINE)
     assert re.search(r"^### members.csv$", readme, re.MULTILINE)
     assert re.search(r"^### votes.csv$", readme, re.MULTILINE)
