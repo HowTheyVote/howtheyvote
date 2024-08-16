@@ -1,4 +1,4 @@
-FROM python:3.12-alpine3.19
+FROM python:3.12-alpine3.20
 
 RUN apk --update add \
     build-base \
@@ -13,7 +13,9 @@ RUN apk --update add \
     make \
     cargo \
     sqlite \
-    tmux
+    tmux \
+    xapian-core \
+    xapian-bindings-python3
 
 RUN pip install poetry
 
@@ -25,6 +27,9 @@ COPY poetry.toml poetry.toml
 COPY poetry.lock poetry.lock
 RUN poetry env use python3.12
 RUN poetry install
+
+# Make Python packages installed via apk (e.g. xapian) available in venv
+RUN echo "/usr/lib/python3.12/site-packages" > .venv/lib/python3.12/site-packages/system.pth
 
 COPY . .
 

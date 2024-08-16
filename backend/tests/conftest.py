@@ -8,8 +8,8 @@ of Flask’s built-in test client."""
 import pytest
 import responses as responses_lib
 
+from howtheyvote import config
 from howtheyvote.db import Session, engine, migrate, session_factory
-from howtheyvote.meili import configure_indexes, delete_indexes
 from howtheyvote.wsgi import app as flask_app
 
 
@@ -36,10 +36,9 @@ def db_session(migrations):
 
 
 @pytest.fixture()
-def search_index():
-    """Deletes and recreates search indexes before the test runs."""
-    delete_indexes()
-    configure_indexes()
+def search_index(tmp_path):
+    """Create temporary directory for search index."""
+    config.SEARCH_INDEX_DIR = tmp_path
     yield
 
 
