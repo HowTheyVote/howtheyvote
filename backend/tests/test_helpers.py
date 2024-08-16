@@ -4,6 +4,7 @@ from howtheyvote.helpers import (
     ProcedureReference,
     Reference,
     flatten_dict,
+    get_normalized_docstring,
     parse_procedure_reference,
     parse_reference,
     subset_dict,
@@ -97,3 +98,15 @@ def test_subset_dict():
     }
 
     assert subset_dict(data, keys) == expected
+
+
+def test_get_normalized_docstring():
+    class TestClass:
+        """Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+        Aenean commodo ligula eget dolor.
+
+        Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+        montes, nascetur ridiculus mus."""
+
+    expected = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.\n\nAenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+    assert get_normalized_docstring(TestClass) == expected
