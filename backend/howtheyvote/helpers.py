@@ -155,4 +155,7 @@ def get_normalized_docstring(type_: type) -> str:
     docstring = inspect.cleandoc(docstring)
     docstring = docstring.strip()
 
+    # Remove single line breaks, but keep double line breaks
+    docstring = re.sub(r"(?<!\n)\n(?!\n)", " ", docstring, flags=re.MULTILINE)
+
     return docstring
