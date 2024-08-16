@@ -35,7 +35,7 @@ def votes(db_session, search_index):
 
     db_session.add_all(votes)
     db_session.commit()
-    index_search(Vote, votes, sync=True)
+    index_search(Vote, votes)
 
     yield
 
