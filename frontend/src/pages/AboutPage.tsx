@@ -276,11 +276,11 @@ function ReuseSection() {
       </Disclosure>
       <Disclosure title="Can I download all available data at once?">
         <p>
-          Yes. You can find a regularly updated export of our dataset on{" "}
-          <a href="https://github.com/howTheyVote/data">GitHub</a>. Inside of
-          the download, you will also find documentation for all included
-          tables. If you have feedback regarding our export or open questions
-          remaining, please contact us using the mail address below.
+          Yes, we publish a weekly updated export of our dataset and
+          documentation of the data schema on{" "}
+          <a href="https://github.com/howTheyVote/data">GitHub</a>. If you have
+          any feedback or questions, please contact us using the email address
+          below.
         </p>
       </Disclosure>
     </div>
