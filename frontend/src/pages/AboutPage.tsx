@@ -269,17 +269,18 @@ function ReuseSection() {
           We currently provide multiple different ways to download data from
           HowTheyVote.eu. Data for individual votes can be downloaded in JSON
           and CSV formats using the links on vote pages on HowTheyVote.eu. We
-          also provide an <a href="/developers">experimental API</a> and plan to
-          provide full dumps of our entire database in the future.
+          also provide an <a href="/developers">experimental API</a>. A
+          regularly updated export of our dataset can also be found on{" "}
+          <a href="https://github.com/howTheyVote/data">GitHub</a>.
         </p>
       </Disclosure>
       <Disclosure title="Can I download all available data at once?">
         <p>
-          As of now, we do not yet provide a full dump of our database. Please
-          also note, that the API does not easily enumerate all available votes.
-          However, we are working on this and will provide a full dump in due
-          time. If you are interested in this feature or need a full dump for
-          your research, please contact us using the mail address below.
+          Yes, we publish a weekly updated export of our dataset and
+          documentation of the data schema on{" "}
+          <a href="https://github.com/howTheyVote/data">GitHub</a>. If you have
+          any feedback or questions, please contact us using the email address
+          below.
         </p>
       </Disclosure>
     </div>
