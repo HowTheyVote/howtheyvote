@@ -14,7 +14,9 @@ export default function CountriesFilterSelect({
   onChange,
 }: CountriesFilterSelectProps) {
   const options = Object.fromEntries(
-    countries.map((country) => [country.code, country.label]),
+    countries
+      .map((country) => [country.code, country.label])
+      .sort((a, b) => a[1].localeCompare(b[1])),
   );
 
   return (

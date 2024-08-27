@@ -14,7 +14,9 @@ export default function GroupsFilterSelect({
   onChange,
 }: GroupsFilterSelectProps) {
   const options = Object.fromEntries(
-    groups.map((group) => [group.code, group.short_label || group.label]),
+    groups
+      .map((group) => [group.code, group.short_label || group.label])
+      .sort((a, b) => a[1].localeCompare(b[1])),
   );
 
   return (
