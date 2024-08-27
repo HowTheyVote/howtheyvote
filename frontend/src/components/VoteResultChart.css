@@ -24,9 +24,20 @@
   padding: 3px 0;
 }
 
-.vote-result-chart--slim .vote-result-chart__thumb,
-.vote-result-chart--slim .vote-result-chart__percentage {
+.vote-result-chart--slim .vote-result-chart__text {
   display: none;
+}
+
+.vote-result-chart__text {
+  padding: 2px;
+}
+
+.vote-result-chart__bar--for .vote-result-chart__text {
+  background: var(--green);
+}
+
+.vote-result-chart__bar--against .vote-result-chart__text {
+  background: var(--red);
 }
 
 .vote-result-chart__bar--for {
@@ -43,8 +54,7 @@
   background-color: var(--blue);
 }
 
-.vote-result-chart__bar--small .vote-result-chart__thumb,
-.vote-result-chart__bar--small .vote-result-chart__percentage {
+.vote-result-chart__bar--small .vote-result-chart__text {
   display: none;
 }
 
