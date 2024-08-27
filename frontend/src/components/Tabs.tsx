@@ -74,7 +74,6 @@ const Tabs: TabsComponent = ({ children }) => {
             id={panel.props.id}
             role="tab"
             aria-selected={selectedIndex === index}
-            tabIndex={selectedIndex === index ? 0 : -1}
             onClick={() => setSelectedIndex(index)}
           >
             {panel.props.label}
