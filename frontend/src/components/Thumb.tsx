@@ -17,6 +17,7 @@ export default function Thumb({ position, style, className }: ThumbProps) {
     <span
       className={`${bem("thumb", [modifier, style])} ${className || ""}`}
       title={label}
+      aria-label={label}
     >
       {position !== "DID_NOT_VOTE" && (
         <svg aria-hidden="true">

@@ -42,7 +42,7 @@
   --green: hsl(var(--green-h), var(--green-s), var(--green-l));
   --green-dark: hsl(var(--green-h), var(--green-s), calc(var(--green-l) - 10%));
 
-  --green-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M -2 2 l 3 -3 M -1 11 l 11 -11 M 8 12 l 3 -3' stroke='rgba(255, 255, 255, .2)' stroke-width='1'/%3E%3C/svg%3E%0A");
+  --green-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M -2 2 l 3 -3 M -1 11 l 11 -11 M 8 12 l 3 -3' stroke='rgba(255, 255, 255, .5)' stroke-width='1'/%3E%3C/svg%3E%0A");
 
   --red-h: 365;
   --red-s: 100%;
@@ -50,7 +50,7 @@
   --red: hsl(var(--red-h), var(--red-s), var(--red-l));
   --red-dark: hsl(var(--red-h), var(--red-s), calc(var(--red-l) - 10%));
 
-  --red-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M -2 2 l 3 -3 M -1 11 l 11 -11 M 8 12 l 3 -3' stroke='rgba(255, 255, 255, .2)' stroke-width='1' transform='scale(1, -1) translate(0, -10)'/%3E%3C/svg%3E%0A");
+  --red-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cpath d='M -2 2 l 3 -3 M -1 11 l 11 -11 M 8 12 l 3 -3' stroke='rgba(255, 255, 255, .5)' stroke-width='1' transform='scale(1, -1) translate(0, -10)'/%3E%3C/svg%3E%0A");
 
   --blue-h: 203;
   --blue-s: 100%;
