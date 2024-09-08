@@ -11,6 +11,7 @@
 
 .filter-select:focus-within {
   outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }
 
 .filter-select > select {
