@@ -24,6 +24,7 @@ body {
 
 a {
   color: inherit;
+  border-radius: var(--border-radius-xs);
 }
 
 input,
@@ -42,4 +43,5 @@ noscript {
 
 :focus {
   outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }

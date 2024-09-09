@@ -8,12 +8,22 @@
   margin-block-end: var(--space-xxs);
 }
 
+.vote-card__title:focus-within {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+  border-radius: var(--border-radius-xs);
+}
+
 .vote-card__title a {
   text-decoration: none;
 }
 
 .vote-card__title a:hover {
   text-decoration: underline;
+}
+
+.vote-card__title a:focus {
+  outline: none;
 }
 
 .vote-card__meta {

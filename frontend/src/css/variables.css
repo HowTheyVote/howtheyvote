@@ -32,6 +32,7 @@
 
   --border-radius: 8px;
   --border-radius-sm: 4px;
+  --border-radius-xs: 1px;
 
   --shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.075),
     0 5px 20px rgba(0, 0, 0, 0.1);
@@ -97,8 +98,9 @@
   --color-focus-outline: hsla(
     var(--blue-h),
     var(--blue-s),
-    calc(var(--blue-l) + 30%),
-    0.5
+    calc(var(--blue-l) + 15%),
+    1
   );
   --focus-outline: 2px solid var(--color-focus-outline);
+  --focus-outline-offset: 2px;
 }

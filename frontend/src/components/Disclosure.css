@@ -16,6 +16,7 @@
   font-weight: 500;
   cursor: default;
   user-select: none;
+  border-radius: var(--border-radius-xs);
 }
 
 .disclosure > summary::-webkit-details-marker {
