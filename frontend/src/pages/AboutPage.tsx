@@ -371,7 +371,7 @@ function FundingSection() {
         reference 1IS21818.
       </p>
       <p>
-        <a href="https://tota.com">Tuta</a> supports HowTheyVote.eu with a
+        <a href="https://tuta.com">Tuta</a> supports HowTheyVote.eu with a
         secure and ad-free email account.
       </p>
     </div>
