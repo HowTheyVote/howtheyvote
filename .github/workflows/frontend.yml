@@ -32,3 +32,6 @@ jobs:
 
       - name: Run types
         run: make typecheck
+
+      - name: Run tests
+        run: make test
