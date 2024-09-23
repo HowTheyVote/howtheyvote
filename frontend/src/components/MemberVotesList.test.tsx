@@ -65,11 +65,11 @@ describe("MemberVotesList", () => {
 
     assert.strictEqual(items.length, 3);
     assert.ok(within(items[0]).getByText("Max MUSTERMANN"));
-    assert.ok(within(items[0]).getByText("for"));
+    assert.ok(within(items[0]).getByLabelText("for"));
     assert.ok(within(items[1]).getByText("Beate BEISPIEL"));
-    assert.ok(within(items[1]).getByText("against"));
+    assert.ok(within(items[1]).getByLabelText("against"));
     assert.ok(within(items[2]).getByText("Noël TOULEMONDE"));
-    assert.ok(within(items[2]).getByText("abstention"));
+    assert.ok(within(items[2]).getByLabelText("abstention"));
   });
 
   it("can search members by name", async () => {
@@ -86,6 +86,35 @@ describe("MemberVotesList", () => {
     await userEvent.type(getByRole("searchbox"), "muster");
 
     const filtered = getAllByRole("listitem");
+    assert.strictEqual(filtered.length, 1);
+    assert.ok(within(filtered[0]).getByText("Max MUSTERMANN"));
+  });
+
+  it("can search members by name with superfluous whitespace", async () => {
+    const { getAllByRole, getByRole } = render(
+      <MemberVotesList
+        memberVotes={memberVotes}
+        groups={[group]}
+        countries={[country]}
+      />,
+    );
+    const all = getAllByRole("listitem");
+    assert.strictEqual(all.length, 3);
+
+    const searchbox = getByRole("searchbox");
+
+    // duplicate whitespace between name and surname
+    await userEvent.type(searchbox, "max  muster");
+
+    let filtered = getAllByRole("listitem");
+    assert.strictEqual(filtered.length, 1);
+    assert.ok(within(filtered[0]).getByText("Max MUSTERMANN"));
+
+    // leading whitespace
+    await userEvent.clear(searchbox);
+    await userEvent.type(searchbox, " max muster");
+
+    filtered = getAllByRole("listitem");
     assert.strictEqual(filtered.length, 1);
     assert.ok(within(filtered[0]).getByText("Max MUSTERMANN"));
   });
