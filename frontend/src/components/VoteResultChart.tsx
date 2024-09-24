@@ -41,6 +41,7 @@ function Bar({ value, total, position }: BarProps) {
     <div
       className={bem("vote-result-chart__bar", [style, size])}
       style={{ "--ratio": ratio }}
+      title={`${value} MEPs voted ${position} (${percentage}%)`}
     >
       <span className="vote-result-chart__text">
         <Thumb position={position} className="vote-result-chart__thumb" />
