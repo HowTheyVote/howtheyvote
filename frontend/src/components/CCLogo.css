@@ -1,17 +1,17 @@
 .cc-logo {
-    display: inline-block;
-    text-align: center;
-    opacity: 0.5;
+  display: inline-block;
+  text-align: center;
+  opacity: 0.5;
 }
 
 .cc-logo figcaption {
-    font-size: 0.75em;
-    line-height: 1;
-    font-family: var(--font-family-condensed);
-    font-weight: 600;
+  font-size: 0.75em;
+  line-height: 1;
+  font-family: var(--font-family-condensed);
+  font-weight: 600;
 }
 
 .cc-logo svg {
-    fill: currentColor;
-    height: var(--space-sm);
+  fill: currentColor;
+  height: var(--space-sm);
 }

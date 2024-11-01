@@ -1,54 +1,54 @@
 .vote-sharepic {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 600px;
-    height: 315px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 600px;
+  height: 315px;
 
-    /* Center vertically and horizontally */
-    margin: auto;
+  /* Center vertically and horizontally */
+  margin: auto;
 
-    border-top: 4px solid var(--blue-darker);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 10px rgba(0, 0, 0, 0.25);
+  border-top: 4px solid var(--blue-darker);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 0 10px rgba(0, 0, 0, 0.25);
 
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .vote-sharepic__content {
-    padding: calc(0.6 * var(--space)) var(--space-sm) var(--space-xs);
+  padding: calc(0.6 * var(--space)) var(--space-sm) var(--space-xs);
 }
 
 .vote-sharepic__title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
-    text-wrap: balance;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-wrap: balance;
 
-    font-family: var(--font-family-condensed);
-    font-weight: 600;
+  font-family: var(--font-family-condensed);
+  font-weight: 600;
 
-    /* We need `overflow:  hidden` to truncate the title after
+  /* We need `overflow:  hidden` to truncate the title after
      * 3 lines. However, this also cuts off descenders of letters
      * like "g" and "j" on the last line, so we add some extra
      * space at the bottom.
      */
-    padding-bottom: 0.05em;
+  padding-bottom: 0.05em;
 }
 
 .vote-sharepic__subtitle {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .vote-sharepic__footer {
-    display: flex;
-    align-items: center;
-    padding: var(--space-xs) var(--space-sm);
-    font-size: var(--text-sm);
-    background-color: var(--gray-lightest);
+  display: flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-sm);
+  background-color: var(--gray-lightest);
 }
 
 .vote-sharepic__footer-text {
-    flex-grow: 1;
-    flex-shrink: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
 }

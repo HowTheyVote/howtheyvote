@@ -7,11 +7,15 @@
   --text-sm: calc(1 / var(--text-scale-ratio) * var(--text-size));
   --text-lg: calc(var(--text-scale-ratio) * var(--text-size));
   --text-xl: calc(
-    var(--text-scale-ratio) * var(--text-scale-ratio) * var(--text-size)
+    var(--text-scale-ratio) *
+    var(--text-scale-ratio) *
+    var(--text-size)
   );
   --text-xxl: calc(
-    var(--text-scale-ratio) * var(--text-scale-ratio) * var(--text-scale-ratio) *
-      var(--text-size)
+    var(--text-scale-ratio) *
+    var(--text-scale-ratio) *
+    var(--text-scale-ratio) *
+    var(--text-size)
   );
 
   --space: calc(var(--line-height) * var(--text-size));
@@ -24,7 +28,8 @@
 
   --max-width: 45rem;
 
-  --font-family: IBM Plex Sans, system-ui, -apple-system, BlinkMacSystemFont,
+  --font-family:
+    IBM Plex Sans, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue",
     sans-serif;
   --font-family-condensed: IBM Plex Sans Condensed, system-ui;
@@ -34,8 +39,8 @@
   --border-radius-sm: 4px;
   --border-radius-xs: 1px;
 
-  --shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.075),
-    0 5px 20px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.075), 0 5px 20px
+    rgba(0, 0, 0, 0.1);
 
   --green-h: 170;
   --green-s: 90%;
