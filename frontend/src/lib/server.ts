@@ -64,7 +64,7 @@ export const renderVDom = (vdom: VNode<any>) => {
   return doctype + html;
 };
 
-export class App extends BaseApp<object, Request, Response> {
+export class App extends BaseApp<Request, Response> {
   registerPage<Data>(
     path: string | Array<string>,
     page: Page<Data>,
