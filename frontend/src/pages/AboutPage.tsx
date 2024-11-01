@@ -33,7 +33,7 @@ export const AboutPage: Page<Statistics> = ({ data }) => {
 
                 <p>
                   The European Union is one of the largest democracies in the
-                  world. The European Parliament, with its 705 members from the
+                  world. The European Parliament, with its 720 members from the
                   EU’s 27 member states, represents just over 440 million
                   Europeans. Although the Parliament publishes information such
                   as agendas, minutes, and vote results on its website, it can

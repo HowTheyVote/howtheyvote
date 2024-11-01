@@ -2,7 +2,7 @@
 
 **[HowTheyVote.eu](https://howtheyvote.eu)** makes vote results of the European Parliament transparent and accessible – for citizens, journalists, and activists.
 
-The European Union is one of the largest democracies in the world. The European Parliament, with its 705 members from the EU’s 27 member states, represents just over 440 million Europeans. Although the Parliament publishes information such as agendas, minutes, and vote results on its website, it can be quite difficult to find out what MEPs voted on or how a particular vote turned out. HowTheyVote.eu compiles voting data from various official sources and allows anyone to search for votes and view the results.
+The European Union is one of the largest democracies in the world. The European Parliament, with its 720 members from the EU’s 27 member states, represents just over 440 million Europeans. Although the Parliament publishes information such as agendas, minutes, and vote results on its website, it can be quite difficult to find out what MEPs voted on or how a particular vote turned out. HowTheyVote.eu compiles voting data from various official sources and allows anyone to search for votes and view the results.
 
 **[Read more about HowTheyVote.eu →](https://howtheyvote.eu/about)**
 
