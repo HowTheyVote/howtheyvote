@@ -1,4 +1,4 @@
-import { type Vote, api } from "../api";
+import { type Vote, getVote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
@@ -19,7 +19,7 @@ import type { Loader, Page } from "../lib/server";
 const log = getLogger();
 
 export const loader: Loader<Vote> = async (request: Request) => {
-  const data = await api.votes.getVote({ voteId: request.params.id });
+  const { data } = await getVote({ path: { vote_id: request.params.id } });
 
   if (!request.isBot) {
     log.info({ msg: "Handling vote request", vote_id: data.id });

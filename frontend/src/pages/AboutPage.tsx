@@ -1,4 +1,4 @@
-import { type Statistics, api } from "../api";
+import { type Statistics, getStats } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Disclosure from "../components/Disclosure";
@@ -12,7 +12,8 @@ import { getErrorReportFormUrl } from "../lib/links";
 import type { Loader, Page } from "../lib/server";
 
 export const loader: Loader<Statistics> = async () => {
-  return await api.miscellaneous.getStats();
+  const { data } = await getStats();
+  return data;
 };
 
 export const AboutPage: Page<Statistics> = ({ data }) => {
