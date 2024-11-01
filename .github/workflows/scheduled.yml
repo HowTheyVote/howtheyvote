@@ -1,9 +1,9 @@
-name: Backend CI
+name: Scheduled scraper tests
 
 on:
-  push:
-    branches: ["main"]
-  pull_request: {}
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 0 * * 2" # every Tuesday at 00:00
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v5
 
       - name: Install Xapian
         run: sudo apt-get -y -q install python3-xapian
@@ -36,10 +36,10 @@ jobs:
           cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
 
       - name: Install poetry
-        run: pipx install poetry==2.1.4
+        run: pipx install poetry
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.13"
           cache: "poetry"
@@ -48,17 +48,9 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Check formatting
-        run: make format-check
-
-      - name: Run linter
-        run: make lint
-
-      - name: Run types
-        run: make typecheck
-
-      - name: Run tests
+      - name: Run tests against live data sources
         run: make test
         env:
+          HTV_TEST_MOCK_REQUESTS: "false"
           HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
           HTV_SEARCH_INDEX_DIR: "${{ github.workspace }}/storage/index"
