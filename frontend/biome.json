@@ -12,10 +12,23 @@
     "formatter": {
         "indentStyle": "space"
     },
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true
-		}
-	}
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "a11y": {
+                "noLabelWithoutControl": {
+                    "options": {
+                        "inputComponents": [
+                            "Input",
+                            "Select",
+                            "GroupsFilterSelect",
+                            "CountriesFilterSelect",
+                            "PositionFilterSelect"
+                        ]
+                    }
+                }
+            }
+        }
+    }
 }
