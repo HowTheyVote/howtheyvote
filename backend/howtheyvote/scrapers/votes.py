@@ -424,7 +424,7 @@ class ProcedureScraper(BeautifulSoupScraper):
         )
 
     def _title(self, doc: BeautifulSoup) -> str | None:
-        title = doc.select_one("#procedure-file-header .ep-layout_underline")
+        title = doc.select_one("#website-body h2.erpl_title-h2")
 
         if not title:
             return None
