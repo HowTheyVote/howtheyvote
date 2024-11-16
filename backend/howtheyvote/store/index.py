@@ -71,7 +71,11 @@ def index_search(
         return
 
     votes = cast(Iterable[Vote], records)
-    formatted_records = [_serialize_vote(vote) for vote in votes if vote.is_main]
+    formatted_records = []
+
+    for vote in votes:
+        if vote.is_main and vote.display_title:
+            formatted_records.append(_serialize_vote(vote))
 
     if not len(formatted_records):
         log.warning("Skipping indexing to search index as list of records is empty")
