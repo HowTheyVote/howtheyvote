@@ -1,8 +1,6 @@
 from datetime import date
 from pathlib import Path
 
-import pytest
-
 from howtheyvote.scrapers import MemberGroupsScraper, MemberInfoScraper, MembersScraper
 
 from .helpers import load_fixture
@@ -10,7 +8,6 @@ from .helpers import load_fixture
 TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
 
 
-@pytest.mark.always_mock_requests
 def test_members_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/directory/xml/?leg=9",
@@ -20,10 +17,10 @@ def test_members_scraper(responses):
     scraper = MembersScraper(term=9)
     fragments = scraper.run()
 
-    assert len(fragments) == 2
-    assert fragments[0].group_key == 1
+    assert len(fragments) == 875
+    assert fragments[0].group_key == 197490
     assert fragments[0].data.get("term") == 9
-    assert fragments[1].group_key == 2
+    assert fragments[1].group_key == 189525
     assert fragments[1].data.get("term") == 9
 
 
