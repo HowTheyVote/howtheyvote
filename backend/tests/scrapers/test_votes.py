@@ -224,8 +224,8 @@ def test_rcv_list_scraper_timestamp_from_text(responses):
 
 def test_procedure_scraper(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2023/2019(INI)",
-        body=load_fixture("votes/procedure_ficheprocedure-2023-2019-ini.html"),
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
+        body=load_fixture("votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
     scraper = ProcedureScraper(vote_id=162214, procedure_reference="2023/2019(INI)")
@@ -236,7 +236,7 @@ def test_procedure_scraper(responses):
         source_name="ProcedureScraper",
         source_id=162214,
         group_key=162214,
-        source_url="https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2023/2019(INI)",
+        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         data={
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
             "geo_areas": [],
@@ -248,8 +248,8 @@ def test_procedure_scraper(responses):
 
 def test_procedure_scraper_geo_areas(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2022/2852(RSP)",
-        body=load_fixture("votes/procedure_ficheprocedure-2022-2852-rsp.html"),
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2852(RSP)",
+        body=load_fixture("votes/oeil-procedure-file_2022-2852-rsp.html"),
     )
 
     scraper = ProcedureScraper(vote_id=149218, procedure_reference="2022/2852(RSP)")
@@ -259,8 +259,8 @@ def test_procedure_scraper_geo_areas(responses):
 
 def test_procedure_scraper_geo_areas_fuzzy(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2022/2201(INI)",
-        body=load_fixture("votes/procedure_ficheprocedure-2022-2201-ini.html"),
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2201(INI)",
+        body=load_fixture("votes/oeil-procedure-file_2022-2201-ini.html"),
     )
 
     scraper = ProcedureScraper(vote_id=155056, procedure_reference="2022/2201(INI)")

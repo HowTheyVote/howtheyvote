@@ -380,10 +380,7 @@ class DocumentScraper(BeautifulSoupScraper):
 
 class ProcedureScraper(BeautifulSoupScraper):
     BS_PARSER = "lxml"
-    BASE_URL = (
-        "https://oeil.secure.europarl.europa.eu/"
-        "oeil/popups/ficheprocedure.do?lang=en&reference="
-    )
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference="
 
     TITLE_PREFIXES = ["Resolution on", "Motion"]
 
