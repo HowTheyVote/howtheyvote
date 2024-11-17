@@ -65,25 +65,29 @@ class DummyRegistry(FirstMatchRegistry):
 
 
 @pytest.fixture
-def responses():
-    """Allows mocking HTTP requests made with requests."""
+def responses(request):
+    """Allows mocking HTTP requests made with `requests`. Request mocking can be
+    disabled globally using the `HTV_TEST_MOCK_REQUESTS=false` env variable to
+    run tests against the live sources rather than test fixtures. Individual tests
+    can be marked using `always_mock_requests` to mock them even if requests mocks
+    are disabled globally. However, it’s preferred to write tests that can be run
+    against the live data sources."""
 
     mock_requests = os.environ.get("HTV_TEST_MOCK_REQUESTS", "true").lower() in ["true", "1"]
+    marks = [m.name for m in request.node.iter_markers()]
+    always_mock_requests = "always_mock_requests" in marks
 
-    if not mock_requests:
-        # In most cases, we want HTTP requests in tests to be mocked. The `responses` package
-        # doesn’t seem to provide a global configuration option to disable all mocks and pass
-        # through the request.
-        #
-        # When calling `responses.get("http://...", body="Lorem ipsum")` in a test to register
-        # a mock response, the mock is stored in a registry. When the tested then tries to send
-        # a matching request, `responses` tries to find a matching mock in the registry. To
-        # disable all mocks, we simply pass a dummy registry that never actually registers any
-        # mocks and allow all unmatched requests to pass to the original source.
-        with RequestsMock(registry=DummyRegistry) as r:
-            r.add_passthru("http")
-            yield r
-    else:
-        # Return a "normal" requests mock that fails any request that isn’t explicitly mocked.
+    if always_mock_requests or mock_requests:
         with RequestsMock() as r:
+            # Yield a "normal" requests mock that fails any request that isn’t explicitly mocked.
             yield r
+        return
+
+    # When calling `responses.get("http://...", body="Lorem ipsum")` in a test to register
+    # a mock response, the mock is stored in a registry. When the tested then tries to send
+    # a matching request, `responses` tries to find a matching mock in the registry. To
+    # disable all mocks, we simply pass a dummy registry that never actually registers any
+    # mocks and allow all unmatched requests to pass to the original source.
+    with RequestsMock(registry=DummyRegistry) as r:
+        r.add_passthru("http")
+        yield r

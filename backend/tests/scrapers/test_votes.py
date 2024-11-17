@@ -14,6 +14,7 @@ from howtheyvote.scrapers.votes import (
 from .helpers import load_fixture, record_to_dict
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -59,6 +60,7 @@ def test_rcv_list_scraper(responses):
     assert record_to_dict(actual[0]) == record_to_dict(expected[0])
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_incorrect_totals(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -81,6 +83,7 @@ def test_rcv_list_scraper_incorrect_totals(responses):
         scraper.run()
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_did_not_vote(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -110,6 +113,7 @@ def test_rcv_list_scraper_did_not_vote(responses):
     assert actual == expected
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_same_name(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-09-15-RCV_FR.xml",
@@ -135,6 +139,7 @@ def test_rcv_list_scraper_same_name(responses):
     assert actual == expected
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_pers_id(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2023-12-12-RCV_FR.xml",
@@ -161,6 +166,7 @@ def test_rcv_list_scraper_pers_id(responses):
     assert actual == expected
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_pers_id_unknown(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2023-12-12-RCV_FR.xml",
@@ -177,6 +183,7 @@ def test_rcv_list_scraper_pers_id_unknown(responses):
         scraper.run()
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_document_register(responses):
     doceo_mock = responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -204,6 +211,7 @@ def test_rcv_list_scraper_document_register(responses):
     assert register_mock.call_count == 1
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_timestamp_from_text(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2019-07-15-RCV_FR.xml",
