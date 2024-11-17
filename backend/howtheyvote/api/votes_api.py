@@ -6,7 +6,7 @@ from io import StringIO
 from typing import TypeVar
 
 from flask import Blueprint, Response, abort, jsonify, request
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from structlog import get_logger
 
 from ..db import Session
@@ -102,6 +102,7 @@ def index() -> Response:
     query = query.page_size(request.args.get("page_size", type=int))
     query = query.sort("timestamp", Order.DESC)
     query = query.filter("is_main", True)
+    query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
 
     response = query.handle()
     results: list[BaseVoteDict] = [

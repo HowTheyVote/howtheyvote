@@ -139,6 +139,36 @@ def test_votes_api_index(db_session, api):
     assert res.json["results"][0]["display_title"] == "Vote One"
 
 
+def test_votes_api_index_empty_title(db_session, api):
+    empty_title = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        is_main=True,
+    )
+
+    non_empty_vote_title = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
+        title="Vote title",
+        is_main=True,
+    )
+
+    non_empty_procedure_title = Vote(
+        id=3,
+        timestamp=datetime.datetime(2024, 1, 3, 0, 0, 0),
+        title="Procedure title",
+        is_main=True,
+    )
+
+    db_session.add_all([empty_title, non_empty_vote_title, non_empty_procedure_title])
+    db_session.commit()
+
+    res = api.get("/api/votes")
+    assert len(res.json["results"]) == 2
+    assert res.json["results"][0]["display_title"] == "Procedure title"
+    assert res.json["results"][1]["display_title"] == "Vote title"
+
+
 def test_votes_api_search(db_session, search_index, api):
     one = Vote(
         id=1,
