@@ -113,18 +113,18 @@ def test_member_groups_scraper(responses):
 
 def test_member_groups_scraper_ongoing(responses):
     responses.get(
-        "https://www.europarl.europa.eu/meps/en/124831/NAME/history/9",
-        body=load_fixture("members/member_groups_adinolfi_term_9.html"),
+        "https://www.europarl.europa.eu/meps/en/28229/NAME/history/10",
+        body=load_fixture("members/member_groups_weber_term_10.html"),
     )
 
-    scraper = MemberGroupsScraper(web_id=124831, term=9)
+    scraper = MemberGroupsScraper(web_id=28229, term=10)
     fragment = scraper.run()
 
     expected = [
         {
-            "group": "NI",
-            "term": 9,
-            "start_date": date(2019, 7, 2),
+            "group": "EPP",
+            "term": 10,
+            "start_date": date(2024, 7, 16),
             "end_date": None,
         },
     ]
