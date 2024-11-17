@@ -254,7 +254,7 @@ def test_procedure_scraper_geo_areas(responses):
 
     scraper = ProcedureScraper(vote_id=149218, procedure_reference="2022/2852(RSP)")
     fragment = scraper.run()
-    assert fragment.data["geo_areas"] == ["ROU", "BGR"]
+    assert fragment.data["geo_areas"] == ["BGR", "ROU"]
 
 
 def test_procedure_scraper_geo_areas_fuzzy(responses):

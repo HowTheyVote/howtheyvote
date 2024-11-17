@@ -434,23 +434,23 @@ class ProcedureScraper(BeautifulSoupScraper):
         return normalized_title[:1].upper() + normalized_title[1:]
 
     def _geo_areas(self, doc: BeautifulSoup) -> list[str]:
-        start = doc.select_one(
-            '#basic-information-data strong:-soup-contains("Geographical area")'
+        # The website unfortunately doesn't use semantic markup, so we have
+        # to rely on visual properties
+        wrapper = doc.select_one(
+            '#section1 p.font-weight-bold:-soup-contains("Geographical area") + p'
         )
 
-        if not start:
+        if not wrapper:
             return []
 
         geo_areas = []
 
-        for sibling in start.next_siblings:
-            if isinstance(sibling, Tag) and sibling.name == "strong":
-                break
+        for node in wrapper.children:
+            country_name = node.get_text(strip=True)
 
-            if not sibling.get_text(strip=True):
+            if not country_name:
                 continue
 
-            country_name = sibling.get_text(strip=True)
             country = Country.from_label(country_name, fuzzy=True)
 
             if not country:
