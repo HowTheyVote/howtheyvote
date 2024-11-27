@@ -234,7 +234,9 @@ class RCVListPipeline:
         writer = BulkWriter()
 
         for vote in self._votes():
-            analyzer = MainVoteAnalyzer(vote.id, vote.description)
+            analyzer = MainVoteAnalyzer(
+                vote_id=vote.id, description=vote.description, title=vote.title
+            )
             writer.add(analyzer.run())
 
         writer.flush()

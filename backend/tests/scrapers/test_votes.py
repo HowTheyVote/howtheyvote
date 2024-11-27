@@ -11,7 +11,8 @@ from howtheyvote.scrapers.votes import (
     RCVListScraper,
 )
 
-from .helpers import load_fixture, record_to_dict
+from ..helpers import record_to_dict
+from .helpers import load_fixture
 
 
 def test_rcv_list_scraper(responses):
