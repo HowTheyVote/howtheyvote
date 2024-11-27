@@ -56,9 +56,9 @@ class VoteGroupsAnalyzer:
 
 
 class MainVoteAnalyzer:
-    """This analyzer checks the vote description for common keywords that indicate
-    that the vote is a main vote in its vote group. Only main votes are displayed
-    in index pages and are searchable."""
+    """This analyzer checks the vote description and title for common keywords
+    that indicate that the vote is a main vote in its vote group. Only main
+    votes are displayed in index pages and are searchable."""
 
     MAIN_DESCRIPTIONS = set(
         [
@@ -94,27 +94,52 @@ class MainVoteAnalyzer:
         ]
     )
 
-    def __init__(self, vote_id: int, description: str | None):
+    MAIN_TITLES = set(
+        [
+            "election de la commission",
+            "election of the commission",
+        ]
+    )
+
+    def __init__(self, vote_id: int, description: str | None, title: str | None):
         self.vote_id = vote_id
         self.description = description
+        self.title = title
 
     def run(self) -> Fragment | None:
+        if self._description_is_main() or self._title_is_main():
+            return Fragment(
+                model="Vote",
+                source_id=self.vote_id,
+                source_name=type(self).__name__,
+                group_key=self.vote_id,
+                data={"is_main": True},
+            )
+
+        return None
+
+    def _description_is_main(self) -> bool:
         if not self.description:
-            return None
+            return False
 
         description = unidecode(self.description).lower()
         parts = description.split(" - ")
 
-        if all([part not in self.MAIN_DESCRIPTIONS for part in parts]):
-            return None
+        if any([part in self.MAIN_DESCRIPTIONS for part in parts]):
+            return True
 
-        return Fragment(
-            model="Vote",
-            source_id=self.vote_id,
-            source_name=type(self).__name__,
-            group_key=self.vote_id,
-            data={"is_main": True},
-        )
+        return False
+
+    def _title_is_main(self) -> bool:
+        if not self.title:
+            return False
+
+        title = unidecode(self.title).lower()
+
+        if title in self.MAIN_TITLES:
+            return True
+
+        return False
 
 
 class FeaturedVotesAnalyzer:
