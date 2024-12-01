@@ -11,7 +11,7 @@
     "pino": "^9.5.0",
     "preact": "^10.24.3",
     "preact-render-to-string": "^6.5.11",
-    "sirv": "^2.0.4"
+    "sirv": "^3.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
