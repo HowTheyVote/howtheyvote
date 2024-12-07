@@ -4,3 +4,7 @@ class PipelineError(Exception):
 
 class DataUnavailableError(PipelineError):
     pass
+
+
+class DataUnchangedError(PipelineError):
+    pass

@@ -27,7 +27,7 @@ from ..scrapers import (
 )
 from ..sharepics import generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_vote, map_vote_group
-from .common import DataUnavailableError, PipelineError
+from .common import DataUnavailableError, DataUnchangedError, PipelineError
 
 log = get_logger(__name__)
 
@@ -37,9 +37,16 @@ class RCVListPipeline:
     extracted votes and scrapes additional information such as data about legislative
     procedures."""
 
-    def __init__(self, term: int, date: datetime.date):
+    def __init__(
+        self,
+        term: int,
+        date: datetime.date,
+        last_run_checksum: str | None = None,
+    ):
         self.term = term
         self.date = date
+        self.last_run_checksum = last_run_checksum
+        self.checksum: str | None = None
         self._vote_ids: set[str] = set()
         self._vote_group_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
@@ -106,9 +113,20 @@ class RCVListPipeline:
             date=self.date,
             active_members=active_members,
         )
+        fragments = scraper.run()
+
+        if (
+            self.last_run_checksum is not None
+            and self.last_run_checksum == scraper.response_checksum
+        ):
+            raise DataUnchangedError(
+                "The data source hasn't changed since the last pipeline run."
+            )
+
+        self.checksum = scraper.response_checksum
 
         writer = BulkWriter()
-        writer.add(scraper.run())
+        writer.add(fragments)
         writer.flush()
 
         self._vote_ids = writer.get_touched()
