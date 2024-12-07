@@ -15,11 +15,12 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..store import Aggregator, BulkWriter, index_records, map_press_release, map_vote
+from .common import BasePipeline
 
 log = get_logger(__name__)
 
 
-class PressPipeline:
+class PressPipeline(BasePipeline):
     # At the time we introduced this constant, the value covered roughly one term. However,
     # this obviously depends on the amount of press releases published and might need to be
     # adjusted or made configurable in the future.
@@ -30,35 +31,21 @@ class PressPipeline:
         date: datetime.date | None = None,
         with_rss: bool | None = False,
     ):
+        super().__init__(date=date, with_rss=with_rss)
         self.date = date
         self.with_rss = with_rss
         self._release_ids: set[str] = set()
         self._vote_ids: set[str] = set()
 
-    def run(self) -> None:
-        log.info(
-            "Running pipeline",
-            name=type(self).__name__,
-            date=self.date,
-            with_rss=self.with_rss,
-        )
+    def _run(self) -> None:
+        if self.with_rss:
+            self._scrape_press_releases_rss()
 
-        try:
-            if self.with_rss:
-                self._scrape_press_releases_rss()
-
-            self._scrape_press_releases_index()
-            self._scrape_press_releases()
-            self._analyze_featured_votes()
-            self._index_press_releases()
-            self._index_votes()
-        except ScrapingError:
-            log.exception(
-                "Failed running pipeline",
-                name=type(self).__name__,
-                date=self.date,
-                with_rss=self.with_rss,
-            )
+        self._scrape_press_releases_index()
+        self._scrape_press_releases()
+        self._analyze_featured_votes()
+        self._index_press_releases()
+        self._index_votes()
 
     def _scrape_press_releases_rss(self) -> None:
         log.info("Fetching press releases from RSS", date=self.date)

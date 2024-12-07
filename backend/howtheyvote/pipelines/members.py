@@ -13,34 +13,23 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..store import Aggregator, BulkWriter, index_records, map_member
+from .common import BasePipeline
 
 log = get_logger(__name__)
 
 
-class MembersPipeline:
+class MembersPipeline(BasePipeline):
     def __init__(self, term: int):
+        super().__init__(term=term)
         self.term = term
         self._member_ids: set[str] = set()
 
-    def run(self) -> None:
-        log.info(
-            "Running pipeline",
-            name=type(self).__name__,
-            term=self.term,
-        )
-
-        try:
-            self._scrape_members()
-            self._scrape_member_groups()
-            self._scrape_member_infos()
-            self._download_member_photos()
-            self._index_members()
-        except ScrapingError:
-            log.exception(
-                "Failed running pipeline",
-                name=type(self).__name__,
-                term=self.term,
-            )
+    def _run(self) -> None:
+        self._scrape_members()
+        self._scrape_member_groups()
+        self._scrape_member_infos()
+        self._download_member_photos()
+        self._index_members()
 
     def _scrape_members(self) -> None:
         log.info("Scraping RCV lists", term=self.term)

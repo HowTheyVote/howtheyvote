@@ -27,12 +27,12 @@ from ..scrapers import (
 )
 from ..sharepics import generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_vote, map_vote_group
-from .common import DataUnavailableError, DataUnchangedError, PipelineError
+from .common import BasePipeline, DataUnavailableError, DataUnchangedError
 
 log = get_logger(__name__)
 
 
-class RCVListPipeline:
+class RCVListPipeline(BasePipeline):
     """Scrapes the RCV vote results for a single day, then runs analysis on the
     extracted votes and scrapes additional information such as data about legislative
     procedures."""
@@ -43,6 +43,7 @@ class RCVListPipeline:
         date: datetime.date,
         last_run_checksum: str | None = None,
     ):
+        super().__init__(term=term, date=date, last_run_checksum=last_run_checksum)
         self.term = term
         self.date = date
         self.last_run_checksum = last_run_checksum
@@ -51,48 +52,24 @@ class RCVListPipeline:
         self._vote_group_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
-    def run(self) -> None:
-        log.info(
-            "Running pipeline",
-            name=type(self).__name__,
-            term=self.term,
-            date=self.date,
-        )
+    def _run(self) -> None:
+        self._scrape_rcv_list()
+        self._scrape_documents()
+        self._scrape_eurlex_documents()
+        self._scrape_procedures()
+        self._scrape_eurlex_procedures()
+        self._analyze_main_votes()
+        self._analyze_vote_groups()
+        self._analyze_vote_data_issues()
+        self._index_votes()
 
-        try:
-            self._scrape_rcv_list()
-            self._scrape_documents()
-            self._scrape_eurlex_documents()
-            self._scrape_procedures()
-            self._scrape_eurlex_procedures()
-            self._analyze_main_votes()
-            self._analyze_vote_groups()
-            self._analyze_vote_data_issues()
-            self._index_votes()
+        # Share pictures have to be generated after the votes are indexed. Otherwise,
+        # rendering the share pictures fails as data about new votes hasn’t yet been
+        # written to the database.
+        self._generate_vote_sharepics()
 
-            # Share pictures have to be generated after the votes are indexed. Otherwise,
-            # rendering the share pictures fails as data about new votes hasn’t yet been
-            # written to the database.
-            self._generate_vote_sharepics()
-
-            self._analyze_vote_groups_data_issues()
-            self._index_vote_groups()
-        except NoWorkingUrlError as exc:
-            log.exception(
-                "Failed running pipeline",
-                name=type(self).__name__,
-                term=self.term,
-                date=self.date,
-            )
-            raise DataUnavailableError("Pipeline data source is not available") from exc
-        except ScrapingError as exc:
-            log.exception(
-                "Failed running pipeline",
-                name=type(self).__name__,
-                term=self.term,
-                date=self.date,
-            )
-            raise PipelineError("Failed running pipeline") from exc
+        self._analyze_vote_groups_data_issues()
+        self._index_vote_groups()
 
     def _scrape_rcv_list(self) -> None:
         log.info("Fetching active members", date=self.date)
@@ -113,7 +90,11 @@ class RCVListPipeline:
             date=self.date,
             active_members=active_members,
         )
-        fragments = scraper.run()
+
+        try:
+            fragments = scraper.run()
+        except NoWorkingUrlError as exc:
+            raise DataUnavailableError("Pipeline data source is not available") from exc
 
         if (
             self.last_run_checksum is not None
