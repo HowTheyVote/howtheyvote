@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PV.RollCallVoteResults xmlns:chart="http://openoffice.org/2000/chart" xmlns:dr3d="http://openoffice.org/2000/dr3d" xmlns:draw="http://openoffice.org/2000/drawing" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:form="http://openoffice.org/2000/form" xmlns:ino="http://namespaces.softwareag.com/tamino/response2" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:number="http://openoffice.org/2000/datastyle" xmlns:office="http://openoffice.org/2000/office" xmlns:script="http://openoffice.org/2000/script" xmlns:style="http://openoffice.org/2000/style" xmlns:svg="http://www.w3.org/2000/svg" xmlns:table="http://openoffice.org/2000/table" xmlns:text="http://openoffice.org/2000/text" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xql="http://metalab.unc.edu/xql/" Sitting.Identifier="2255" Sitting.Date="2024-04-24" EP.Reference="P9_PV(2024)04-24" EP.Number="PE 762.483" Document.Language="XL">
+  <RollCallVoteResults.PleaseNote>
+    <RollCallVoteResults.PleaseNote.Title>
+      <RollCallVoteResults.PleaseNote.Title.Content Language="FR">AVERTISSEMENT</RollCallVoteResults.PleaseNote.Title.Content>
+      <RollCallVoteResults.PleaseNote.Title.Content Language="EN">NOTICE</RollCallVoteResults.PleaseNote.Title.Content>
+      <RollCallVoteResults.PleaseNote.Title.Content Language="DE">HINWEIS</RollCallVoteResults.PleaseNote.Title.Content>
+    </RollCallVoteResults.PleaseNote.Title>
+    <RollCallVoteResults.PleaseNote.Text>
+      <RollCallVoteResults.PleaseNote.Text.Content Language="FR">Les corrections et intentions de vote sont mentionnées dans ce document sous les points de vote correspondants. Elles sont publiées pour information uniquement et ne modifient en rien le résultat de vote tel qu’annoncé en plénière. Pendant la session, les demandes de corrections et intentions de vote reçues avant 18h30 sont publiées le jour même. Les demandes ultérieures sont publiées à mesure des mises à jour successives de ce document, pendant une durée maximale de deux semaines. Signification des sigles: + (pour), - (contre), 0 (abstention)
+</RollCallVoteResults.PleaseNote.Text.Content>
+      <RollCallVoteResults.PleaseNote.Text.Content Language="EN">Corrections to votes and voting intentions appear below in the section relating to the vote concerned. They are published for information purposes only and do not alter the result of the vote as announced in plenary. During the part-session, requests for corrections to votes and voting intentions received before 18.30 will be published the same day. Subsequent requests will be included in this document each time it is updated in the two weeks following the part-session. Key to symbols: + (in favour), - (against), 0 (abstentions)
+</RollCallVoteResults.PleaseNote.Text.Content>
+      <RollCallVoteResults.PleaseNote.Text.Content Language="DE">In diesem Dokument sind unter den betreffenden Abstimmungspunkten die Berichtigungen des Stimmverhaltens und das beabsichtigte Stimmverhalten aufgeführt. Diese Angaben dienen ausschließlich der Information; keinesfalls wird durch sie das Abstimmungsergebnis geändert, das im Plenum bekannt gegeben wurde. Während der Tagung werden Anträge zu Berichtigungen des Stimmverhaltens und zum beabsichtigten Stimmverhalten, die bis 18.30 Uhr eingehen, am selben Tag veröffentlicht. Später eingehende Anträge werden sukzessive veröffentlicht, indem dieses Dokument während höchstens zwei Wochen regelmäßig aktualisiert wird. Zeichenerklärung: + (dafür), - (dagegen), 0 (Enthaltung)
+</RollCallVoteResults.PleaseNote.Text.Content>
+    </RollCallVoteResults.PleaseNote.Text>
+  </RollCallVoteResults.PleaseNote>
+  <RollCallVoteResults.Titles>
+    <RollCallVoteResults.Title.Text Language="BG">ПРОТОКОЛ<text:line-break/>Резултат от поименни гласувания - Приложение 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="CS">ZÁPIS<text:line-break/>Výsledek jmenovitého hlasování - Příloha 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="DA">PROTOKOL<text:line-break/>Resultat af afstemningerne ved navneopråb - Bilag 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="DE">PROTOKOLL<text:line-break/>Ergebnis der namentlichen Abstimmungen - Anlage 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="EL">ΣΥΝΟΠΤIΚΑ ΠΡΑΚΤIΚΑ<text:line-break/>Αποτέλεσμα των ψηφοφοριών με ονομαστική κλήση - Παράρτηµα 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="EN">MINUTES<text:line-break/>Result of roll-call votes - Annex 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="ES">ACTA<text:line-break/>Resultados de las votaciones nominales - Anexo 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="ET">PROTOKOLL<text:line-break/>Nimelise hääletuse tulemused - lisa 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="FI">PÖYTÄKIRJA<text:line-break/>Nimenhuutoäänestysten tulokset - Liite 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="FR">PROCÈS-VERBAL<text:line-break/>Résultat des votes par appel nominal - Annexe 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="GA">MIONTUAIRISCÍ<text:line-break/>Torthaí na vótála le glaoch rolla - Iarscríbhinn 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="HR">ZAPISNIK<text:line-break/>Rezultat poimeničnog glasovanja - Prilog 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="HU">JEGYZŐKÖNYV<text:line-break/>A név szerinti szavazások eredménye - melléklet 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="IT">PROCESSO VERBALE<text:line-break/>Risultato delle votazioni per appello nominale - Allegato 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="LT">PROTOKOLAS<text:line-break/>Vardinio balsavimo rezultatai - priedas 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="LV">PROTOKOLS<text:line-break/>Rezultāti balsošanai pēc saraksta - pielikums 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="MT">MINUTI<text:line-break/>Riżultat tal-votazzjoni bis-sejħa tal-ismijiet - Anness 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="NL">NOTULEN<text:line-break/>Uitslag van de hoofdelijke stemmingen - Bijlage 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="PL">PROTOKÓŁ<text:line-break/>Wyniki głosowań imiennych - Załącznik 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="PT">ATA<text:line-break/>Resultados das votações nominais - Anexo 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="RO">PROCES-VERBAL<text:line-break/>Rezultatul voturilor prin apel nominal - Anexa 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="SK">ZÁPISNICA<text:line-break/>Výsledok hlasovania podľa mien - Príloha 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="SL">ZAPISNIK<text:line-break/>Izid poimenskega glasovanja - Priloga 2</RollCallVoteResults.Title.Text>
+    <RollCallVoteResults.Title.Text Language="SV">PROTOKOLL<text:line-break/>Resultat av omröstningarna med namnupprop - Bilaga 2</RollCallVoteResults.Title.Text>
+  </RollCallVoteResults.Titles>
+  <RollCallVote.Result Identifier="168834" DlvId="946131" Date="2024-04-24 12:24:12">
+    <RollCallVote.Description.Text>A9-0163/2024 - Gabriele Bischoff - Article 10, § 6, alinéa 2 - Am 1</RollCallVote.Description.Text>
+    <Result.For Number="1">
+      <Result.PoliticalGroup.List Identifier="PPE">
+        <PoliticalGroup.Member.Name MepId="6883" PersId="197490">Adamowicz</PoliticalGroup.Member.Name>
+      </Result.PoliticalGroup.List>
+    </Result.For>
+  </RollCallVote.Result>
+  <VoteTitles>
+    <VoteTitle DlvId="946131">Amendments to Parliament’s Rules of Procedure concerning the training on preventing conflict and harassment in the workplace and on good office management</VoteTitle>
+  </VoteTitles>
+  <Glossary>
+    <Term Code="100">
+      <Text lang="DE">BERICHTIGUNGEN DES STIMMVERHALTENS UND BEABSICHTIGTES STIMMVERHALTEN</Text>
+      <Text lang="SV">RÄTTELSER/AVSIKTSFÖRKLARINGAR TILL AVGIVNA RÖSTER</Text>
+      <Text lang="FI">ÄÄNESTYSKÄYTTÄYTYMISTÄ JA ÄÄNESTYSAIKEITA KOSKEVAT ILMOITUKSET</Text>
+      <Text lang="PT">CORREÇÕES E INTENÇÕES DE VOTO</Text>
+      <Text lang="BG">ПОПРАВКИ В ПОДАДЕНИТЕ ГЛАСОВЕ И НАМЕРЕНИЯ ЗА ГЛАСУВАНЕ</Text>
+      <Text lang="MT">KORREZZJONIJIET U INTENZJONIJIET GĦALL-VOT</Text>
+      <Text lang="EL">ΔΙΟΡΘΩΣΕΙΣ ΚΑΙ ΠΡΟΘΕΣΕΙΣ ΨΗΦΟΥ</Text>
+      <Text lang="LT">BALSAVIMO PATAISYMAI IR KETINIMAI</Text>
+      <Text lang="EN">CORRECTIONS TO VOTES AND VOTING INTENTIONS</Text>
+      <Text lang="LV">BALSOJUMU LABOJUMI UN NODOMI BALSOT</Text>
+      <Text lang="HR">IZMJENE DANIH GLASOVA I NAMJERE GLASAČA</Text>
+      <Text lang="IT">CORREZIONI E INTENZIONI DI VOTO</Text>
+      <Text lang="FR">CORRECTIONS ET INTENTIONS DE VOTE</Text>
+      <Text lang="HU">SZAVAZATOK HELYESBÍTÉSEI ÉS SZAVAZÁSI SZÁNDÉKOK</Text>
+      <Text lang="ES">CORRECCIONES E INTENCIONES DE VOTO</Text>
+      <Text lang="ET">HÄÄLETUSE PARANDUSED JA HÄÄLETUSKAVATSUSED</Text>
+      <Text lang="CS">OPRAVY HLASOVÁNÍ A SDĚLENÍ O ÚMYSLU HLASOVAT</Text>
+      <Text lang="SK">OPRAVY HLASOVANIA A ZÁMERY PRI HLASOVANÍ</Text>
+      <Text lang="SL">POPRAVKI IN NAMERE GLASOVANJA</Text>
+      <Text lang="GA">CEARTÚCHÁIN AR AN VÓTA AGUS INTINNÍ VÓTÁLA</Text>
+      <Text lang="PL">KOREKTY GŁOSOWANIA I ZAMIAR GŁOSOWANIA</Text>
+      <Text lang="RO">CORECTĂRI ŞI INTENŢII DE VOT</Text>
+      <Text lang="DA">STEMMERETTELSER OG -INTENTIONER</Text>
+      <Text lang="NL">RECTIFICATIES STEMGEDRAG/ VOORGENOMEN STEMGEDRAG</Text>
+    </Term>
+  </Glossary>
+</PV.RollCallVoteResults>

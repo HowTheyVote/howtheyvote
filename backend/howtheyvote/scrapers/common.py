@@ -1,3 +1,4 @@
+import hashlib
 import html
 import random
 import time
@@ -94,14 +95,17 @@ ResourceType = TypeVar("ResourceType")
 
 class BaseScraper(ABC, Generic[ResourceType]):
     REQUEST_MAX_RETRIES: int = 0
+    response_checksum: str | None
 
     def __init__(self, request_cache: RequestCache | None = None, **kwargs: Any) -> None:
         self._request_cache = request_cache
         self._log = log.bind(scraper=type(self).__name__, **kwargs)
+        self.response_checksum = None
 
     def run(self) -> Any:
         self._log.info("Running scraper")
         self._response = self._fetch()
+        self.response_checksum = self._compute_checksum(self._response)
         doc = self._parse(self._response)
         return self._extract_data(doc)
 
@@ -163,6 +167,9 @@ class BaseScraper(ABC, Generic[ResourceType]):
             "accept-language": "en-us",
             "user-agent": random.choice(USER_AGENTS),
         }
+
+    def _compute_checksum(self, response: Response) -> str:
+        return hashlib.sha256(response.content).hexdigest()
 
 
 class BeautifulSoupScraper(BaseScraper[BeautifulSoup]):
