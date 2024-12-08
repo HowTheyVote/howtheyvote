@@ -126,7 +126,8 @@ function SessionInfo({ currentSession, lastSession }: SessionInfoProps) {
       <>
         The last plenary session was held{" "}
         {locationName && `in ${locationName} `}
-        from {startDate} to {endDate}.{" "}
+        from {startDate?.replaceAll(" ", "\u00a0")} to{" "}
+        {endDate?.replace(" ", "\u00a0")}.{" "}
         <strong>
           <a href="/votes">View vote results</a>
         </strong>{" "}
