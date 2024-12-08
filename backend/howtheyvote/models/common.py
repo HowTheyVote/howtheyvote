@@ -51,3 +51,4 @@ class PipelineRun(Base):
     finished_at: Mapped[sa.DateTime] = mapped_column(sa.DateTime)
     pipeline: Mapped[str] = mapped_column(sa.Unicode)
     status: Mapped[PipelineStatus] = mapped_column(sa.Enum(PipelineStatus))
+    checksum: Mapped[str] = mapped_column(sa.Unicode)

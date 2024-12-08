@@ -77,6 +77,18 @@ def pipeline_ran_successfully(
     return result >= count
 
 
+def last_pipeline_run_checksum(pipeline: type[object], date: datetime.date) -> str | None:
+    """Returns the checksum of the most recent pipeline run on a given day."""
+    query = (
+        select(PipelineRun.checksum)
+        .where(PipelineRun.pipeline == pipeline.__name__)
+        .where(func.date(PipelineRun.started_at) == func.date(date))
+        .where(PipelineRun.status == PipelineStatus.SUCCESS)
+        .order_by(PipelineRun.finished_at.desc())
+    )
+    return Session.execute(query).scalar()
+
+
 class Worker:
     """Running a worker starts a long-running process that executes data pipelines in regular
     intervals and stores the status of the pipeline runs in the database."""
@@ -166,11 +178,13 @@ class Worker:
             try:
                 result = handler()
                 status = result.status
+                checksum = result.checksum
             except SkipPipelineError:
                 # Do not log skipped pipeline runs
                 return
             except Exception:
                 status = PipelineStatus.FAILURE
+                checksum = None
                 log.exception("Unhandled exception during pipeline run", pipeline=name)
 
             duration = time.time() - start_time
@@ -185,6 +199,7 @@ class Worker:
                 started_at=started_at,
                 finished_at=finished_at,
                 status=status,
+                checksum=checksum,
             )
 
             Session.add(run)
