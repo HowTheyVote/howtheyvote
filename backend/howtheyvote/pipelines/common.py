@@ -1,7 +1,9 @@
+import hashlib
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
 
+from requests import Response
 from structlog import get_logger
 
 from ..models import PipelineStatus
@@ -59,3 +61,8 @@ class BasePipeline(ABC):
     @abstractmethod
     def _run(self) -> None:
         raise NotImplementedError
+
+
+def compute_response_checksum(response: Response) -> str:
+    """Compute the SHA256 hash of the response contents."""
+    return hashlib.sha256(response.content).hexdigest()
