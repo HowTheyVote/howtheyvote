@@ -36,10 +36,11 @@ class DataIssue(Enum):
     VOTE_GROUP_NO_MAIN_VOTE = "VOTE_GROUP_NO_MAIN_VOTE"
 
 
-class PipelineRunResult(Enum):
+class PipelineStatus(Enum):
     SUCCESS = "SUCCESS"
     FAILURE = "FAILURE"
     DATA_UNAVAILABLE = "DATA_UNAVAILABLE"
+    DATA_UNCHANGED = "DATA_UNCHANGED"
 
 
 class PipelineRun(Base):
@@ -49,4 +50,4 @@ class PipelineRun(Base):
     started_at: Mapped[sa.DateTime] = mapped_column(sa.DateTime)
     finished_at: Mapped[sa.DateTime] = mapped_column(sa.DateTime)
     pipeline: Mapped[str] = mapped_column(sa.Unicode)
-    result: Mapped[PipelineRunResult] = mapped_column(sa.Enum(PipelineRunResult))
+    status: Mapped[PipelineStatus] = mapped_column(sa.Enum(PipelineStatus))
