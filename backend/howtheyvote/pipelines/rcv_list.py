@@ -27,7 +27,12 @@ from ..scrapers import (
 )
 from ..sharepics import generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_vote, map_vote_group
-from .common import BasePipeline, DataUnavailableError, DataUnchangedError
+from .common import (
+    BasePipeline,
+    DataUnavailableError,
+    DataUnchangedError,
+    compute_response_checksum,
+)
 
 log = get_logger(__name__)
 
@@ -98,13 +103,13 @@ class RCVListPipeline(BasePipeline):
 
         if (
             self.last_run_checksum is not None
-            and self.last_run_checksum == scraper.response_checksum
+            and self.last_run_checksum == compute_response_checksum(scraper.response)
         ):
             raise DataUnchangedError(
                 "The data source hasn't changed since the last pipeline run."
             )
 
-        self.checksum = scraper.response_checksum
+        self.checksum = compute_response_checksum(scraper.response)
 
         writer = BulkWriter()
         writer.add(fragments)
