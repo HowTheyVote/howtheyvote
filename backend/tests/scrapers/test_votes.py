@@ -15,6 +15,7 @@ from ..helpers import record_to_dict
 from .helpers import load_fixture
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -60,6 +61,7 @@ def test_rcv_list_scraper(responses):
     assert record_to_dict(actual[0]) == record_to_dict(expected[0])
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_incorrect_totals(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -82,6 +84,7 @@ def test_rcv_list_scraper_incorrect_totals(responses):
         scraper.run()
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_did_not_vote(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -111,6 +114,7 @@ def test_rcv_list_scraper_did_not_vote(responses):
     assert actual == expected
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_same_name(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-09-15-RCV_FR.xml",
@@ -136,6 +140,7 @@ def test_rcv_list_scraper_same_name(responses):
     assert actual == expected
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_pers_id(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2023-12-12-RCV_FR.xml",
@@ -162,6 +167,7 @@ def test_rcv_list_scraper_pers_id(responses):
     assert actual == expected
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_pers_id_unknown(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2023-12-12-RCV_FR.xml",
@@ -178,6 +184,7 @@ def test_rcv_list_scraper_pers_id_unknown(responses):
         scraper.run()
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_document_register(responses):
     doceo_mock = responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
@@ -205,6 +212,7 @@ def test_rcv_list_scraper_document_register(responses):
     assert register_mock.call_count == 1
 
 
+@pytest.mark.always_mock_requests
 def test_rcv_list_scraper_timestamp_from_text(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2019-07-15-RCV_FR.xml",
@@ -225,8 +233,8 @@ def test_rcv_list_scraper_timestamp_from_text(responses):
 
 def test_procedure_scraper(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2023/2019(INI)",
-        body=load_fixture("votes/procedure_ficheprocedure-2023-2019-ini.html"),
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
+        body=load_fixture("votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
     scraper = ProcedureScraper(vote_id=162214, procedure_reference="2023/2019(INI)")
@@ -237,7 +245,7 @@ def test_procedure_scraper(responses):
         source_name="ProcedureScraper",
         source_id=162214,
         group_key=162214,
-        source_url="https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2023/2019(INI)",
+        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         data={
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
             "geo_areas": [],
@@ -249,19 +257,19 @@ def test_procedure_scraper(responses):
 
 def test_procedure_scraper_geo_areas(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2022/2852(RSP)",
-        body=load_fixture("votes/procedure_ficheprocedure-2022-2852-rsp.html"),
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2852(RSP)",
+        body=load_fixture("votes/oeil-procedure-file_2022-2852-rsp.html"),
     )
 
     scraper = ProcedureScraper(vote_id=149218, procedure_reference="2022/2852(RSP)")
     fragment = scraper.run()
-    assert fragment.data["geo_areas"] == ["ROU", "BGR"]
+    assert fragment.data["geo_areas"] == ["BGR", "ROU"]
 
 
 def test_procedure_scraper_geo_areas_fuzzy(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?lang=en&reference=2022/2201(INI)",
-        body=load_fixture("votes/procedure_ficheprocedure-2022-2201-ini.html"),
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2201(INI)",
+        body=load_fixture("votes/oeil-procedure-file_2022-2201-ini.html"),
     )
 
     scraper = ProcedureScraper(vote_id=155056, procedure_reference="2022/2201(INI)")

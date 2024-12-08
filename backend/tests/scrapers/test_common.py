@@ -1,9 +1,11 @@
+import pytest
 import requests
 from cachetools import LRUCache
 
 from howtheyvote.scrapers.common import get_url
 
 
+@pytest.mark.always_mock_requests
 def test_get_url(responses):
     mock = responses.get("https://example.org", body="Hello World")
 
@@ -16,6 +18,7 @@ def test_get_url(responses):
     assert mock.call_count == 2
 
 
+@pytest.mark.always_mock_requests
 def test_get_url_timeout(responses):
     responses.get("https://example.org", body=requests.RequestException())
 
@@ -23,6 +26,7 @@ def test_get_url_timeout(responses):
     assert response is None
 
 
+@pytest.mark.always_mock_requests
 def test_get_url_cache(responses):
     mock = responses.get("https://example.org", body="Hello World")
     cache = LRUCache(maxsize=10)
@@ -36,6 +40,7 @@ def test_get_url_cache(responses):
     assert mock.call_count == 1
 
 
+@pytest.mark.always_mock_requests
 def test_get_url_retries(responses):
     error = responses.get("https://example.org", body="Internal Server Error", status=500)
     success = responses.get("https://example.org", body="Hello World")
