@@ -10,14 +10,20 @@ from ..db import Session
 from ..export import generate_export
 from ..files import file_path
 from ..models import PipelineRun, PlenarySession
-from ..pipelines import MembersPipeline, PressPipeline, RCVListPipeline, SessionsPipeline
+from ..pipelines import (
+    MembersPipeline,
+    PipelineResult,
+    PressPipeline,
+    RCVListPipeline,
+    SessionsPipeline,
+)
 from ..query import session_is_current_at
 from .worker import SkipPipelineError, Weekday, Worker, pipeline_ran_successfully
 
 log = get_logger(__name__)
 
 
-def op_rcv_midday() -> None:
+def op_rcv_midday() -> PipelineResult:
     """Checks if there is a current plenary session and, if yes, fetches the latest roll-call
     vote results."""
     today = datetime.date.today()
@@ -29,10 +35,10 @@ def op_rcv_midday() -> None:
         raise SkipPipelineError()
 
     pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
-    pipeline.run()
+    return pipeline.run()
 
 
-def op_rcv_evening() -> None:
+def op_rcv_evening() -> PipelineResult:
     """While on most plenary days, there’s only one voting session around midday, on some days
     there is another sesssion in the evening, usually around 17:00. The vote results of the
     evening sessions are appended to the same source document that also contains the results
@@ -47,10 +53,10 @@ def op_rcv_evening() -> None:
         raise SkipPipelineError()
 
     pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
-    pipeline.run()
+    return pipeline.run()
 
 
-def op_press() -> None:
+def op_press() -> PipelineResult:
     """Checks if there is a current plenary session and, if yes, fetches the latest press
     releases from the Parliament’s news hub."""
     today = datetime.date.today()
@@ -59,19 +65,19 @@ def op_press() -> None:
         raise SkipPipelineError()
 
     pipeline = PressPipeline(date=today, with_rss=True)
-    pipeline.run()
+    return pipeline.run()
 
 
-def op_sessions() -> None:
+def op_sessions() -> PipelineResult:
     """Fetches plenary session dates."""
     pipeline = SessionsPipeline(term=config.CURRENT_TERM)
-    pipeline.run()
+    return pipeline.run()
 
 
-def op_members() -> None:
+def op_members() -> PipelineResult:
     """Fetches information about all members of the current term."""
     pipeline = MembersPipeline(term=config.CURRENT_TERM)
-    pipeline.run()
+    return pipeline.run()
 
 
 EXPORT_LAST_RUN = Gauge(
