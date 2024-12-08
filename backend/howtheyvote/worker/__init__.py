@@ -18,7 +18,13 @@ from ..pipelines import (
     SessionsPipeline,
 )
 from ..query import session_is_current_at
-from .worker import SkipPipelineError, Weekday, Worker, pipeline_ran_successfully
+from .worker import (
+    SkipPipelineError,
+    Weekday,
+    Worker,
+    last_pipeline_run_checksum,
+    pipeline_ran_successfully,
+)
 
 log = get_logger(__name__)
 
@@ -52,7 +58,15 @@ def op_rcv_evening() -> PipelineResult:
     if pipeline_ran_successfully(RCVListPipeline, today, count=2):
         raise SkipPipelineError()
 
-    pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
+    last_run_checksum = last_pipeline_run_checksum(
+        pipeline=RCVListPipeline,
+        date=today,
+    )
+    pipeline = RCVListPipeline(
+        term=config.CURRENT_TERM,
+        date=today,
+        last_run_checksum=last_run_checksum,
+    )
     return pipeline.run()
 
 

@@ -5,7 +5,12 @@ from sqlalchemy import select
 
 from howtheyvote.models import PipelineRun, PipelineStatus
 from howtheyvote.pipelines import PipelineResult
-from howtheyvote.worker.worker import Weekday, Worker, pipeline_ran_successfully
+from howtheyvote.worker.worker import (
+    Weekday,
+    Worker,
+    last_pipeline_run_checksum,
+    pipeline_ran_successfully,
+)
 
 
 def get_handler():
@@ -118,7 +123,7 @@ def test_worker_schedule_pipeline_log_runs(db_session):
     def pipeline_handler():
         return PipelineResult(
             status=PipelineStatus.SUCCESS,
-            checksum=None,
+            checksum="123abc",
         )
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0)):
@@ -137,6 +142,7 @@ def test_worker_schedule_pipeline_log_runs(db_session):
         run = runs[0]
         assert run.pipeline == "test"
         assert run.status == PipelineStatus.SUCCESS
+        assert run.checksum == "123abc"
         assert run.started_at.date() == datetime.date(2024, 1, 1)
         assert run.finished_at.date() == datetime.date(2024, 1, 1)
 
@@ -239,3 +245,55 @@ def test_pipeline_ran_successfully(db_session):
     db_session.commit()
 
     assert pipeline_ran_successfully(TestPipeline, today, count=2) is True
+
+
+def test_last_pipeline_run_checksum(db_session):
+    class TestPipeline:
+        pass
+
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0)):
+        checksum = last_pipeline_run_checksum(
+            pipeline=TestPipeline,
+            date=datetime.date(2024, 1, 1),
+        )
+        assert checksum is None
+
+    run = PipelineRun(
+        started_at=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        finished_at=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        pipeline=TestPipeline.__name__,
+        status=PipelineStatus.SUCCESS,
+        checksum="123abc",
+    )
+    db_session.add(run)
+    db_session.commit()
+
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 1, 0, 0)):
+        checksum = last_pipeline_run_checksum(
+            pipeline=TestPipeline,
+            date=datetime.date(2024, 1, 1),
+        )
+        assert checksum == "123abc"
+
+        checksum = last_pipeline_run_checksum(
+            pipeline=TestPipeline,
+            date=datetime.date(2024, 1, 2),
+        )
+        assert checksum is None
+
+    run = PipelineRun(
+        started_at=datetime.datetime(2024, 1, 1, 12, 0, 0),
+        finished_at=datetime.datetime(2024, 1, 1, 12, 0, 0),
+        pipeline=TestPipeline.__name__,
+        status=PipelineStatus.SUCCESS,
+        checksum="456def",
+    )
+    db_session.add(run)
+    db_session.commit()
+
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 13, 0, 0)):
+        checksum = last_pipeline_run_checksum(
+            pipeline=TestPipeline,
+            date=datetime.date(2024, 1, 1),
+        )
+        assert checksum == "456def"
