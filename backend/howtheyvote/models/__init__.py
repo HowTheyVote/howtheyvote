@@ -1,4 +1,4 @@
-from .common import Base, BaseWithId, DataIssue, Fragment, PipelineRun, PipelineRunResult
+from .common import Base, BaseWithId, DataIssue, Fragment, PipelineRun, PipelineStatus
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
@@ -24,7 +24,7 @@ __all__ = [
     "BaseWithId",
     "Fragment",
     "PipelineRun",
-    "PipelineRunResult",
+    "PipelineStatus",
     "DataIssue",
     "Country",
     "CountryType",

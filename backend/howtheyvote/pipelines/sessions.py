@@ -5,24 +5,21 @@ from structlog import get_logger
 from ..models import PlenarySession
 from ..scrapers import CalendarSessionsScraper, ODPSessionScraper, ScrapingError
 from ..store import Aggregator, BulkWriter, index_records, map_plenary_session
+from .common import BasePipeline
 
 log = get_logger(__name__)
 
 
-class SessionsPipeline:
+class SessionsPipeline(BasePipeline):
     def __init__(self, term: int):
+        super().__init__(term=term)
         self.term = term
         self._session_ids: set[str] = set()
 
-    def run(self) -> None:
-        log.info("Running pipeline", name=type(self).__name__, term=self.term)
-
-        try:
-            self._scrape_sessions()
-            self._scrape_session_locations()
-            self._index_sessions()
-        except ScrapingError:
-            log.exception("Failed running pipeline", name=type(self).__name__, term=self.term)
+    def _run(self) -> None:
+        self._scrape_sessions()
+        self._scrape_session_locations()
+        self._index_sessions()
 
     def _scrape_sessions(self) -> None:
         log.info("Scrapping plenary sessions", term=self.term)
