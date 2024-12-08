@@ -1,11 +1,19 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Any
 
 from structlog import get_logger
 
+from ..models import PipelineStatus
 from ..scrapers import ScrapingError
 
 log = get_logger(__name__)
+
+
+@dataclass
+class PipelineResult:
+    status: PipelineStatus
+    checksum: str | None
 
 
 class PipelineError(Exception):
@@ -29,13 +37,24 @@ class BasePipeline(ABC):
         self.checksum = None
         self._log = log.bind(pipeline=type(self).__name__, **kwargs)
 
-    def run(self) -> None:
+    def run(self) -> PipelineResult:
         self._log.info("Running pipeline")
 
         try:
             self._run()
+            status = PipelineStatus.SUCCESS
+        except DataUnavailableError:
+            status = PipelineStatus.DATA_UNAVAILABLE
+        except DataUnchangedError:
+            status = PipelineStatus.DATA_UNCHANGED
         except ScrapingError:
+            status = PipelineStatus.FAILURE
             self._log.exception("Failed running pipeline")
+
+        return PipelineResult(
+            status=status,
+            checksum=self.checksum,
+        )
 
     @abstractmethod
     def _run(self) -> None:

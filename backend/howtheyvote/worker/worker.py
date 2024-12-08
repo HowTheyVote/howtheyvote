@@ -15,7 +15,7 @@ from structlog import get_logger
 from .. import config
 from ..db import Session
 from ..models import PipelineRun, PipelineStatus
-from ..pipelines import DataUnavailableError
+from ..pipelines import PipelineResult
 
 log = get_logger(__name__)
 
@@ -150,7 +150,7 @@ class Worker:
 
     def schedule_pipeline(
         self,
-        handler: Handler,
+        handler: Callable[..., PipelineResult],
         name: str,
         weekdays: Iterable[Weekday] = set(Weekday),
         hours: Iterable[int] = {0},
@@ -164,15 +164,14 @@ class Worker:
             started_at = datetime.datetime.now(datetime.UTC)
 
             try:
-                handler()
-                status = PipelineStatus.SUCCESS
+                result = handler()
+                status = result.status
             except SkipPipelineError:
                 # Do not log skipped pipeline runs
                 return
-            except DataUnavailableError:
-                status = PipelineStatus.DATA_UNAVAILABLE
             except Exception:
                 status = PipelineStatus.FAILURE
+                log.exception("Unhandled exception during pipeline run", pipeline=name)
 
             duration = time.time() - start_time
             finished_at = datetime.datetime.now(datetime.UTC)
