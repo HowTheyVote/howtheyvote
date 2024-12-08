@@ -9,7 +9,7 @@ from .. import config
 from ..db import Session
 from ..export import generate_export
 from ..files import file_path
-from ..models import PipelineRun, PipelineRunResult, PlenarySession
+from ..models import PipelineRun, PlenarySession
 from ..pipelines import MembersPipeline, PressPipeline, RCVListPipeline, SessionsPipeline
 from ..query import session_is_current_at
 from .worker import SkipPipelineError, Weekday, Worker, pipeline_ran_successfully

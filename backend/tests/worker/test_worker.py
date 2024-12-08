@@ -3,7 +3,7 @@ import datetime
 import time_machine
 from sqlalchemy import select
 
-from howtheyvote.models import PipelineRun, PipelineRunResult
+from howtheyvote.models import PipelineRun, PipelineStatus
 from howtheyvote.pipelines import DataUnavailableError, PipelineError
 from howtheyvote.worker.worker import Weekday, Worker, pipeline_ran_successfully
 
@@ -133,7 +133,7 @@ def test_worker_schedule_pipeline_log_runs(db_session):
 
         run = runs[0]
         assert run.pipeline == "test"
-        assert run.result == PipelineRunResult.SUCCESS
+        assert run.status == PipelineStatus.SUCCESS
         assert run.started_at.date() == datetime.date(2024, 1, 1)
         assert run.finished_at.date() == datetime.date(2024, 1, 1)
 
@@ -166,10 +166,10 @@ def test_worker_schedule_pipeline_log_runs_exceptions(db_session):
         assert len(runs) == 2
 
         assert runs[0].pipeline == "data_unavailable_error"
-        assert runs[0].result == PipelineRunResult.DATA_UNAVAILABLE
+        assert runs[0].status == PipelineStatus.DATA_UNAVAILABLE
 
         assert runs[1].pipeline == "pipeline_error"
-        assert runs[1].result == PipelineRunResult.FAILURE
+        assert runs[1].status == PipelineStatus.FAILURE
 
 
 def test_pipeline_ran_successfully(db_session):
@@ -183,7 +183,7 @@ def test_pipeline_ran_successfully(db_session):
         started_at=now,
         finished_at=now,
         pipeline=TestPipeline.__name__,
-        result=PipelineRunResult.FAILURE,
+        status=PipelineStatus.FAILURE,
     )
     db_session.add(run)
     db_session.commit()
@@ -194,7 +194,7 @@ def test_pipeline_ran_successfully(db_session):
         started_at=now,
         finished_at=now,
         pipeline=TestPipeline.__name__,
-        result=PipelineRunResult.SUCCESS,
+        status=PipelineStatus.SUCCESS,
     )
     db_session.add(run)
     db_session.commit()
@@ -206,7 +206,7 @@ def test_pipeline_ran_successfully(db_session):
         started_at=now,
         finished_at=now,
         pipeline=TestPipeline.__name__,
-        result=PipelineRunResult.SUCCESS,
+        status=PipelineStatus.SUCCESS,
     )
     db_session.add(run)
     db_session.commit()
