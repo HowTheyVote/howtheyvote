@@ -1,0 +1,47 @@
+name: Scheduled scraper tests
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 0 * * 2" # every Tuesday at 00:00
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    services:
+      meilisearch:
+        image: "getmeili/meilisearch:v1.3.1"
+        ports: ["7700:7700"]
+        env:
+          MEILI_MASTER_KEY: "1234567890"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "poetry"
+          cache-dependency-path: "./backend/poetry.lock"
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run tests against live data sources
+        run: make test
+        env:
+          HTV_TEST_MOCK_REQUESTS: "false"
+          HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
+          HTV_BACKEND_USERS_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/users.sqlite3"
+          MEILI_MASTER_KEY: "1234567890"
+          MEILI_URL: "http://localhost:7700"

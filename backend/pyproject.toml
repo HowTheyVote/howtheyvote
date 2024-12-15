@@ -73,6 +73,9 @@ env = [
     "HTV_BACKEND_PUBLIC_URL=https://example.org/api",
     "HTV_SEARCH_INDEX_PREFIX=test",
 ]
+markers = [
+    "always_mock_requests: Always mock HTTP requests, even when request mocks are disabled globally"
+]
 addopts = [
     "--import-mode=importlib",
 ]
