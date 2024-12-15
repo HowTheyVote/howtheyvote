@@ -1,7 +1,6 @@
 name: Scheduled scraper tests
 
 on:
-  pull_request: {}
   workflow_dispatch: {}
   schedule:
     - cron: "0 0 * * 2" # every Tuesday at 00:00
