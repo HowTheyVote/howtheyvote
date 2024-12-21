@@ -68,18 +68,26 @@ export const ImprintPage: Page = () => {
                   Article 6(1)(f) GDPR.
                 </p>
 
-                <h3 class="gamma">Data error report form</h3>
+                <h3 class="gamma">Contact forms</h3>
 
                 <p>
-                  We provide a form that you can use to contact us if you have
-                  found an error in our data. You can submit this form without
+                  We provide forms that you can use to contact us if you have
+                  found an error in our data or would like to give feedback
+                  about HowTheyVote.eu. You can submit these forms without
                   providing personal information such as your name or email
-                  address.
+                  address. However, if you’d like to allow us to contact you in
+                  case of follow-up questions, you can optionally provide your
+                  email address.
+                </p>
+
+                <p>
+                  The legal basis for processing personal information submitted
+                  through contact forms is Article 6(1)(a) GDPR.
                 </p>
 
                 <p>
                   We use a subprocessor, Tally, August van Lokerenstraat 71,
-                  9050 Gent, Belgium, to provide the form and collect form
+                  9050 Gent, Belgium, to provide the forms and collect form
                   submissions. When you access or submit the form the
                   subprocessor processes personal information. You can learn
                   more about how Tally processes personal data in{" "}
