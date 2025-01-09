@@ -15,7 +15,7 @@ RUN apk --update add \
     sqlite \
     tmux
 
-RUN pip install poetry
+RUN pip install "poetry<2.0"
 
 WORKDIR /howtheyvote/backend
 
