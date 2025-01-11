@@ -15,12 +15,7 @@ typecheck:
 	./node_modules/.bin/tsc --noEmit
 
 typegen:
-	./node_modules/.bin/openapi-ts \
-		--input http://backend:5000/api \
-		--output ./src/api/generated \
-		--name ApiClient \
-		--exportSchemas false \
-		--useOptions
+	./node_modules/.bin/openapi-ts
 
 test:
 	node \
