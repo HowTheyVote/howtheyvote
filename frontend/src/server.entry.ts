@@ -35,7 +35,7 @@ app.get("/:id", (request, response, next) => {
   const voteId = request.params.id;
 
   if (!voteIdRegex.test(voteId)) {
-    return next();
+    return next?.();
   }
 
   redirect(`/votes/${voteId}`);
