@@ -1,3 +1,4 @@
+import Banner from "./components/Banner";
 import CountryStatsList from "./components/CountryStatsList";
 import Eyes from "./components/Eyes";
 import GroupStatsList from "./components/GroupStatsList";
@@ -13,4 +14,5 @@ hydrateIslands([
   VoteTabs,
   Eyes,
   ShareButton,
+  Banner,
 ]);
