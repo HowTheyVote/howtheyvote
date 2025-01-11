@@ -30,17 +30,17 @@ export type Page<Data = undefined> = FunctionComponent<{
 export function isBot(
   request: Request,
   response: Response,
-  next: NextFunction,
+  next?: NextFunction,
 ) {
   request.isBot = requestIsBot(request.path, request.headers["user-agent"]);
-  next();
+  next?.();
 }
 
 // This middleware emits structured log for every handled request
 export function logRequests(
   request: Request,
   response: Response,
-  next: NextFunction,
+  next?: NextFunction,
 ) {
   response.on("finish", () => {
     log.info({
@@ -51,7 +51,7 @@ export function logRequests(
     });
   });
 
-  next();
+  next?.();
 }
 
 // The default VNode<{}> type mismatches when calling something like
