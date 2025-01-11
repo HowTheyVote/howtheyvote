@@ -30,9 +30,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
           cache: "poetry"
           cache-dependency-path: "./backend/poetry.lock"
+
+      - name: Debug
+        run: pip wheel --no-cache-dir --use-pep517 "pydantic-core (==2.14.5)"
 
       - name: Install dependencies
         run: poetry install
