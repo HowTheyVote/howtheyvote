@@ -2,7 +2,7 @@ import type { ComponentChildren, FunctionComponent, JSX } from "preact";
 import { bem } from "../lib/bem";
 import "./Button.css";
 
-type ButtonProps = Omit<JSX.HTMLAttributes<HTMLButtonElement>, "size"> & {
+type ButtonProps = Omit<JSX.ButtonHTMLAttributes, "size"> & {
   size?: "lg";
   style?: "fill" | "block";
   className?: string;

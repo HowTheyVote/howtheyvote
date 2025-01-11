@@ -3,7 +3,7 @@ import { bem } from "../lib/bem";
 
 import "./Input.css";
 
-type InputProps = Omit<JSX.HTMLAttributes<HTMLInputElement>, "size"> & {
+type InputProps = Omit<JSX.InputHTMLAttributes, "size"> & {
   size?: "lg";
   className?: string;
 };
