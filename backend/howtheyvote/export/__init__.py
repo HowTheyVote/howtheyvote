@@ -214,6 +214,7 @@ class Export:
 
     def run(self) -> None:
         self.fetch_members()
+        self.write_export_timestamp()
         self.write_readme(
             [
                 self.members,
@@ -247,6 +248,10 @@ class Export:
 
         text = "\n\n".join(blocks) + "\n"
         readme.write_text(text)
+
+    def write_export_timestamp(self) -> None:
+        timestamp = self.outdir.joinpath("last_updated.txt")
+        timestamp.write_text(datetime.datetime.now(datetime.timezone.utc).isoformat())
 
     def export_members(self) -> None:
         log.info("Exporting members")
