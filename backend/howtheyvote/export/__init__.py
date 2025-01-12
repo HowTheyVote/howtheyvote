@@ -251,7 +251,7 @@ class Export:
 
     def write_export_timestamp(self) -> None:
         timestamp = self.outdir.joinpath("last_updated.txt")
-        timestamp.write_text(datetime.datetime.now(datetime.timezone.utc).isoformat())
+        timestamp.write_text(datetime.datetime.now(datetime.UTC).isoformat())
 
     def export_members(self) -> None:
         log.info("Exporting members")
