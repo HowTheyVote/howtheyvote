@@ -372,9 +372,18 @@ function FundingSection() {
         reference 1IS21818.
       </p>
       <p>
+        Throughout 2025, HowTheyVote.eu is supported by the{" "}
+        <a href="https://www.miz-babelsberg.de">MIZ Babelsberg</a>.
+      </p>
+      <p>
         <a href="https://tuta.com">Tuta</a> supports HowTheyVote.eu with a
         secure and ad-free email account.
       </p>
+      <img
+        src="/static/funders.png"
+        alt="Logo of the Federal Ministry of Education and Research of Germany, the Prototype Fund and the MIZ Babelsberg."
+        style="max-width: 100%; max-height: 100%; display: block;"
+      />
     </div>
   );
 }
