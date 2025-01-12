@@ -1,17 +1,14 @@
 from datetime import date
-from pathlib import Path
 
 from howtheyvote.scrapers import MemberGroupsScraper, MemberInfoScraper, MembersScraper
 
-from .helpers import load_fixture
-
-TEST_DATA_DIR = Path(__file__).resolve().parent / "data"
+from ..helpers import load_fixture
 
 
 def test_members_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/directory/xml/?leg=9",
-        body=load_fixture("members/members_directory_term_9.xml"),
+        body=load_fixture("scrapers/data/members/members_directory_term_9.xml"),
     )
 
     scraper = MembersScraper(term=9)
@@ -27,7 +24,7 @@ def test_members_scraper(responses):
 def test_member_info_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/124834/NAME/home",
-        body=load_fixture("members/member_info_sonneborn_home.html"),
+        body=load_fixture("scrapers/data/members/member_info_sonneborn_home.html"),
     )
 
     scraper = MemberInfoScraper(web_id=124834)
@@ -48,7 +45,7 @@ def test_member_info_scraper(responses):
 def test_member_info_scraper_date_of_birth_without(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/124831/NAME/home",
-        body=load_fixture("members/member_info_adinolfi_home.html"),
+        body=load_fixture("scrapers/data/members/member_info_adinolfi_home.html"),
     )
 
     scraper = MemberInfoScraper(web_id=124831)
@@ -59,7 +56,7 @@ def test_member_info_scraper_date_of_birth_without(responses):
 def test_member_info_scraper_multiple_emails(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/28229/NAME/home",
-        body=load_fixture("members/member_info_weber_home.html"),
+        body=load_fixture("scrapers/data/members/member_info_weber_home.html"),
     )
 
     scraper = MemberInfoScraper(web_id=28229)
@@ -70,7 +67,7 @@ def test_member_info_scraper_multiple_emails(responses):
 def test_member_info_scraper_no_social_media(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/124831/NAME/home",
-        body=load_fixture("members/member_info_adinolfi_home.html"),
+        body=load_fixture("scrapers/data/members/member_info_adinolfi_home.html"),
     )
 
     scraper = MemberInfoScraper(web_id=124831)
@@ -81,7 +78,7 @@ def test_member_info_scraper_no_social_media(responses):
 def test_member_groups_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/124831/NAME/history/8",
-        body=load_fixture("members/member_groups_adinolfi_term_8.html"),
+        body=load_fixture("scrapers/data/members/member_groups_adinolfi_term_8.html"),
     )
 
     scraper = MemberGroupsScraper(web_id=124831, term=8)
@@ -114,7 +111,7 @@ def test_member_groups_scraper(responses):
 def test_member_groups_scraper_ongoing(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/28229/NAME/history/10",
-        body=load_fixture("members/member_groups_weber_term_10.html"),
+        body=load_fixture("scrapers/data/members/member_groups_weber_term_10.html"),
     )
 
     scraper = MemberGroupsScraper(web_id=28229, term=10)

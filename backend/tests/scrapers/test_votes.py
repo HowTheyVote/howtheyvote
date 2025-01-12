@@ -11,15 +11,14 @@ from howtheyvote.scrapers.votes import (
     RCVListScraper,
 )
 
-from ..helpers import record_to_dict
-from .helpers import load_fixture
+from ..helpers import load_fixture, record_to_dict
 
 
 @pytest.mark.always_mock_requests
 def test_rcv_list_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_pv-9-2020-07-23-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-9-2020-07-23-rcv-fr.xml"),
     )
 
     scraper = RCVListScraper(
@@ -65,7 +64,7 @@ def test_rcv_list_scraper(responses):
 def test_rcv_list_scraper_incorrect_totals(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_incorrect_pv-9-2020-07-23-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_incorrect_pv-9-2020-07-23-rcv-fr.xml"),
     )
 
     scraper = RCVListScraper(
@@ -88,7 +87,7 @@ def test_rcv_list_scraper_incorrect_totals(responses):
 def test_rcv_list_scraper_did_not_vote(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-07-23-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_pv-9-2020-07-23-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-9-2020-07-23-rcv-fr.xml"),
     )
 
     scraper = RCVListScraper(
@@ -118,7 +117,7 @@ def test_rcv_list_scraper_did_not_vote(responses):
 def test_rcv_list_scraper_same_name(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2020-09-15-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_pv-9-2020-09-15-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-9-2020-09-15-rcv-fr.xml"),
     )
 
     scraper = RCVListScraper(
@@ -144,7 +143,7 @@ def test_rcv_list_scraper_same_name(responses):
 def test_rcv_list_scraper_pers_id(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2023-12-12-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_pv-9-2023-12-12-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-9-2023-12-12-rcv-fr.xml"),
     )
 
     # The voting list has a different spelling ("Glueck" instead of "Glück"). Cases like this
@@ -171,7 +170,7 @@ def test_rcv_list_scraper_pers_id(responses):
 def test_rcv_list_scraper_pers_id_unknown(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2023-12-12-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_pv-9-2023-12-12-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-9-2023-12-12-rcv-fr.xml"),
     )
 
     scraper = RCVListScraper(
@@ -192,7 +191,7 @@ def test_rcv_list_scraper_document_register(responses):
     )
     register_mock = responses.get(
         "https://www.europarl.europa.eu/RegData/seance_pleniere/proces_verbal/2020/07-23/liste_presence/P9_PV(2020)07-23(RCV)_XC.xml",
-        body=load_fixture("votes/rcv_list_p9-pv(2020)07-23(rcv)_xc.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_p9-pv(2020)07-23(rcv)_xc.xml"),
     )
 
     scraper = RCVListScraper(
@@ -216,7 +215,7 @@ def test_rcv_list_scraper_document_register(responses):
 def test_rcv_list_scraper_timestamp_from_text(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2019-07-15-RCV_FR.xml",
-        body=load_fixture("votes/rcv_list_pv-9-2019-07-15-rcv-fr.xml"),
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-9-2019-07-15-rcv-fr.xml"),
     )
 
     scraper = RCVListScraper(
@@ -234,7 +233,7 @@ def test_rcv_list_scraper_timestamp_from_text(responses):
 def test_procedure_scraper(responses):
     responses.get(
         "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
-        body=load_fixture("votes/oeil-procedure-file_2023-2019-ini.html"),
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
     scraper = ProcedureScraper(vote_id=162214, procedure_reference="2023/2019(INI)")
@@ -258,7 +257,7 @@ def test_procedure_scraper(responses):
 def test_procedure_scraper_geo_areas(responses):
     responses.get(
         "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2852(RSP)",
-        body=load_fixture("votes/oeil-procedure-file_2022-2852-rsp.html"),
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022-2852-rsp.html"),
     )
 
     scraper = ProcedureScraper(vote_id=149218, procedure_reference="2022/2852(RSP)")
@@ -269,7 +268,7 @@ def test_procedure_scraper_geo_areas(responses):
 def test_procedure_scraper_geo_areas_fuzzy(responses):
     responses.get(
         "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2201(INI)",
-        body=load_fixture("votes/oeil-procedure-file_2022-2201-ini.html"),
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022-2201-ini.html"),
     )
 
     scraper = ProcedureScraper(vote_id=155056, procedure_reference="2022/2201(INI)")
@@ -280,7 +279,7 @@ def test_procedure_scraper_geo_areas_fuzzy(responses):
 def test_eurlex_procedure_scraper_eurovoc_concepts(responses):
     responses.get(
         "https://eur-lex.europa.eu/procedure/EN/2021_106",
-        body=load_fixture("votes/eurlex-procedure_2021-106.html"),
+        body=load_fixture("scrapers/data/votes/eurlex-procedure_2021-106.html"),
     )
 
     scraper = EurlexProcedureScraper(vote_id=166051, procedure_reference="2021/0106(COD)")
@@ -304,7 +303,7 @@ def test_eurlex_procedure_scraper_eurovoc_concepts(responses):
 def test_eurlex_procedure_scraper_geo_areas(responses):
     responses.get(
         "https://eur-lex.europa.eu/procedure/EN/2023_102",
-        body=load_fixture("votes/eurlex-procedure_2023-102.html"),
+        body=load_fixture("scrapers/data/votes/eurlex-procedure_2023-102.html"),
     )
 
     scraper = EurlexProcedureScraper(vote_id=161383, procedure_reference="2023/0102(NLE)")
@@ -326,7 +325,7 @@ def test_eurlex_procedure_scraper_geo_areas(responses):
 def test_eurlex_document_scraper_eurovoc_concepts(responses):
     responses.get(
         "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2021)0270",
-        body=load_fixture("votes/eurlex-document_p9-a-2021-0270.html"),
+        body=load_fixture("scrapers/data/votes/eurlex-document_p9-a-2021-0270.html"),
     )
 
     scraper = EurlexDocumentScraper(vote_id=136238, reference="A9-0270/2021")
@@ -348,7 +347,7 @@ def test_eurlex_document_scraper_eurovoc_concepts(responses):
 def test_eurlex_document_scraper_geo_areas(responses):
     responses.get(
         "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2023)0369",
-        body=load_fixture("votes/eurlex-document_p9-a-2023-0369.html"),
+        body=load_fixture("scrapers/data/votes/eurlex-document_p9-a-2023-0369.html"),
     )
 
     scraper = EurlexDocumentScraper(vote_id=136238, reference="A9-0369/2023")

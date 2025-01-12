@@ -9,12 +9,13 @@ import prometheus_client
 from prometheus_client import Counter, Gauge, Histogram
 from prometheus_client import start_http_server as start_metrics_server
 from schedule import Scheduler
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from .. import config
 from ..db import Session
-from ..models import PipelineRun, PipelineRunResult
-from ..pipelines import DataUnavailableError
+from ..models import PipelineRun, PipelineStatus
+from ..pipelines import PipelineResult
 
 log = get_logger(__name__)
 
@@ -25,13 +26,13 @@ prometheus_client.REGISTRY.unregister(prometheus_client.PROCESS_COLLECTOR)
 PIPELINE_RUN_DURATION = Histogram(
     "htv_worker_pipeline_run_duration_seconds",
     "Duration of pipeline runs executed by the worker",
-    ["pipeline", "result"],
+    ["pipeline", "status"],
 )
 
 PIPELINE_RUNS = Counter(
     "htv_worker_pipeline_runs_total",
     "Total number of pipeline runs executed by the worker",
-    ["pipeline", "result"],
+    ["pipeline", "status"],
 )
 
 PIPELINE_NEXT_RUN = Gauge(
@@ -58,9 +59,39 @@ class Weekday(enum.Enum):
 Handler = Callable[..., Any]
 
 
+def pipeline_ran_successfully(
+    pipeline: type[object],
+    date: datetime.date,
+    count: int = 1,
+) -> bool:
+    """Check if a given pipeline has been run successfully on a given day."""
+    query = (
+        select(func.count())
+        .select_from(PipelineRun)
+        .where(PipelineRun.pipeline == pipeline.__name__)
+        .where(func.date(PipelineRun.started_at) == func.date(date))
+        .where(PipelineRun.status == PipelineStatus.SUCCESS)
+    )
+    result = Session.execute(query).scalar() or 0
+
+    return result >= count
+
+
+def last_pipeline_run_checksum(pipeline: type[object], date: datetime.date) -> str | None:
+    """Returns the checksum of the most recent pipeline run on a given day."""
+    query = (
+        select(PipelineRun.checksum)
+        .where(PipelineRun.pipeline == pipeline.__name__)
+        .where(func.date(PipelineRun.started_at) == func.date(date))
+        .where(PipelineRun.status == PipelineStatus.SUCCESS)
+        .order_by(PipelineRun.finished_at.desc())
+    )
+    return Session.execute(query).scalar()
+
+
 class Worker:
     """Running a worker starts a long-running process that executes data pipelines in regular
-    intervals and stores the result of the pipeline runs in the database."""
+    intervals and stores the status of the pipeline runs in the database."""
 
     def __init__(self) -> None:
         self._scheduler = Scheduler()
@@ -131,7 +162,7 @@ class Worker:
 
     def schedule_pipeline(
         self,
-        handler: Handler,
+        handler: Callable[..., PipelineResult],
         name: str,
         weekdays: Iterable[Weekday] = set(Weekday),
         hours: Iterable[int] = {0},
@@ -145,20 +176,21 @@ class Worker:
             started_at = datetime.datetime.now(datetime.UTC)
 
             try:
-                handler()
-                result = PipelineRunResult.SUCCESS
+                result = handler()
+                status = result.status
+                checksum = result.checksum
             except SkipPipelineError:
                 # Do not log skipped pipeline runs
                 return
-            except DataUnavailableError:
-                result = PipelineRunResult.DATA_UNAVAILABLE
             except Exception:
-                result = PipelineRunResult.FAILURE
+                status = PipelineStatus.FAILURE
+                checksum = None
+                log.exception("Unhandled exception during pipeline run", pipeline=name)
 
             duration = time.time() - start_time
             finished_at = datetime.datetime.now(datetime.UTC)
 
-            labels = {"pipeline": name, "result": result.value}
+            labels = {"pipeline": name, "status": status.value}
             PIPELINE_RUNS.labels(**labels).inc()
             PIPELINE_RUN_DURATION.labels(**labels).observe(duration)
 
@@ -166,7 +198,8 @@ class Worker:
                 pipeline=name,
                 started_at=started_at,
                 finished_at=finished_at,
-                result=result.value,
+                status=status,
+                checksum=checksum,
             )
 
             Session.add(run)
@@ -179,7 +212,7 @@ class Worker:
                 started_at=started_at.isoformat(),
                 finished_at=finished_at.isoformat(),
                 duration=duration,
-                result=result.value,
+                status=status.value,
             )
 
             Session.remove()

@@ -101,8 +101,8 @@ class BaseScraper(ABC, Generic[ResourceType]):
 
     def run(self) -> Any:
         self._log.info("Running scraper")
-        self._response = self._fetch()
-        doc = self._parse(self._response)
+        self.response = self._fetch()
+        doc = self._parse(self.response)
         return self._extract_data(doc)
 
     @abstractmethod
@@ -128,7 +128,7 @@ class BaseScraper(ABC, Generic[ResourceType]):
             model=model.__name__,
             source_id=source_id,
             source_name=type(self).__name__,
-            source_url=self._response.request.url,
+            source_url=self.response.request.url,
             group_key=group_key,
             data=data,
         )
