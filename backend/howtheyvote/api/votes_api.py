@@ -99,7 +99,6 @@ def index() -> Response:
     query = DatabaseQuery(Vote)
     query = query.page(request.args.get("page", type=int))
     query = query.page_size(request.args.get("page_size", type=int))
-    query = query.sort("timestamp", Order.DESC)
     query = query.filter("is_main", True)
     query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
 
