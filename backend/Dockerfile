@@ -37,4 +37,7 @@ ENV TZ=UTC
 ENV ALEMBIC_CONFIG=./howtheyvote/alembic/alembic.ini
 ENV PATH="/howtheyvote/backend/.venv/bin:$PATH"
 
+# Make Python system packages (such as Xapian) accessible
+ENV PYTHONPATH=/usr/lib/python3.12/site-packages
+
 CMD gunicorn -b [::]:5000 --workers=5 --forwarded-allow-ips=* howtheyvote.wsgi:app
