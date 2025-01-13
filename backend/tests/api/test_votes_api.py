@@ -186,7 +186,7 @@ def test_votes_api_search(db_session, search_index, api):
 
     db_session.add_all([one, two])
     db_session.commit()
-    index_search(Vote, [one, two], sync=True)
+    index_search(Vote, [one, two])
 
     res = api.get("/api/votes/search")
     assert res.json["total"] == 2
@@ -232,7 +232,7 @@ def test_votes_api_search_references(db_session, search_index, api):
 
     db_session.add_all([one, two])
     db_session.commit()
-    index_search(Vote, [one, two], sync=True)
+    index_search(Vote, [one, two])
 
     res = api.get("/api/votes/search", query_string={"q": "A9-0043/2024"})
     assert res.json["total"] == 1
