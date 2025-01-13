@@ -51,12 +51,12 @@ class QueryResponse(TypedDict, Generic[T]):
 class Query(ABC, Generic[T]):
     MAX_PAGE_SIZE = 200
     DEFAULT_PAGE_SIZE = 20
-    DEFAULT_SORT_FIELD = "id"
-    DEFAULT_SORT_ORDER = Order.ASC
+    DEFAULT_SORT_FIELD = "timestamp"
+    DEFAULT_SORT_ORDER = Order.DESC
 
     def __init__(self, model: type[T]):
         self.model: type[T] = model
-        self._sort: tuple[str, Order | None] | None = None
+        self._sort: tuple[str, Order] | None = None
         self._page: int | None = None
         self._page_size: int | None = None
         self._filters: dict[str, str | bool | int] = {}
@@ -104,6 +104,9 @@ class Query(ABC, Generic[T]):
     def sort(self, field: str | None = None, order: Order | None = None) -> Self:
         query = self.copy()
 
+        if not order:
+            order = self.DEFAULT_SORT_ORDER
+
         if not field:
             query._sort = None
         else:
@@ -115,8 +118,7 @@ class Query(ABC, Generic[T]):
         if not self._sort:
             return None
 
-        field, order = self._sort
-        return (field, order or self.DEFAULT_SORT_ORDER)
+        return self._sort
 
     def filter(self, field: str, value: str | bool | int | None) -> Self:
         query = self.copy()
