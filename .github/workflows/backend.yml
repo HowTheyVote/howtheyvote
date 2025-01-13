@@ -24,6 +24,17 @@ jobs:
       - name: Install Xapian
         run: sudo apt-get -y -q install python3-xapian
 
+      # Stopwords are included in the Alpine Xapian package, but for some reason they are not included
+      # in the Ubuntu package. This downloads them from the same source as the Alpine package:
+      # https://gitlab.alpinelinux.org/alpine/aports/-/blob/3.19-stable/community/xapian-core/APKBUILD#L12
+      - name: Download stopwords
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -o xapian-core-1.4.26.tar.xz https://oligarchy.co.uk/xapian/1.4.26/xapian-core-1.4.26.tar.xz
+          tar -xf xapian-core-1.4.26.tar.xz
+          mkdir -p /usr/share/xapian-core/stopwords
+          cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
+
       - name: Install poetry
         run: pipx install "poetry<2.0"
 
