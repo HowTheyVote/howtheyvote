@@ -109,6 +109,9 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     doc = Document()
     generator.set_document(doc)
 
+    if not vote.display_title:
+        raise ValueError("Cannot index vote without `display_title`.")
+
     generator.index_text(vote.display_title, BOOST_DISPLAY_TITLE)
 
     # Calling this method between indexing of different fields prevents

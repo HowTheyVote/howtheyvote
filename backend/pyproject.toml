@@ -64,6 +64,7 @@ select = ["E", "F", "W", "I", "N", "B", "UP", "UP006"]
 
 [tool.mypy]
 exclude = ["alembic", ".venv"]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/stubs"
 
 [tool.pytest.ini_options]
 env = [
