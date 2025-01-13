@@ -1,2 +1,6 @@
 [virtualenvs]
 in-project = true
+
+[virtualenvs.options]
+# Xapian is installed as a system package, make it accessible in venv
+system-site-packages = true

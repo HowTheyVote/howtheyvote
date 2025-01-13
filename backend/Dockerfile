@@ -13,7 +13,9 @@ RUN apk --update add \
     make \
     cargo \
     sqlite \
-    tmux
+    tmux \
+    xapian-core \
+    xapian-bindings-python3
 
 RUN pip install "poetry<2.0"
 

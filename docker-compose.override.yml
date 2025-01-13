@@ -27,12 +27,6 @@ services:
     stdin_open: true
     tty: true
 
-  meilisearch:
-    ports:
-      - "7700:7700"
-    stdin_open: true
-    tty: true
-
   caddy:
     stdin_open: true
     tty: true
