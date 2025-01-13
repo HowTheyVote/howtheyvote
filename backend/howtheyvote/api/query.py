@@ -254,19 +254,17 @@ class SearchQuery(Query[T]):
 
             sort = self.get_sort()
             if sort:
+                # Use strict sorting if specified explicitly
                 field, order = sort
-
-                # Fields need to be stored as values in order to be used for sorting
-                slot = FIELD_TO_SLOT_MAPPING.get(field)
-
+                slot = FIELD_TO_SLOT_MAPPING[field]
                 reverse = order == Order.DESC
-            else:
-                slot = None
-
-            if slot is not None:
                 enquire.set_sort_by_value(slot, reverse)
             else:
-                enquire.set_sort_by_relevance_then_value(SLOT_TIMESTAMP, False)
+                # Otherwise sort by relevance first and only use default sort params
+                # if two documents have the same relevance score
+                slot = FIELD_TO_SLOT_MAPPING[self.DEFAULT_SORT_FIELD]
+                reverse = self.DEFAULT_SORT_ORDER == Order.DESC
+                enquire.set_sort_by_relevance_then_value(slot, reverse)
 
             # Fetch one extra result to check if there is a next page
             mset = enquire.get_mset(offset, limit + 1)
