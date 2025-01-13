@@ -23,10 +23,8 @@ from xapian import (
 from ..db import Session
 from ..models import BaseWithId
 from ..search import (
-    FIELD_TO_SLOT_MAPPING,
-    SLOT_IS_FEATURED,
-    SLOT_TIMESTAMP,
     boolean_term,
+    field_to_slot,
     get_index,
     get_stopper,
 )
@@ -256,13 +254,13 @@ class SearchQuery(Query[T]):
             if sort:
                 # Use strict sorting if specified explicitly
                 field, order = sort
-                slot = FIELD_TO_SLOT_MAPPING[field]
+                slot = field_to_slot(field)
                 reverse = order == Order.DESC
                 enquire.set_sort_by_value(slot, reverse)
             else:
                 # Otherwise sort by relevance first and only use default sort params
                 # if two documents have the same relevance score
-                slot = FIELD_TO_SLOT_MAPPING[self.DEFAULT_SORT_FIELD]
+                slot = field_to_slot(self.DEFAULT_SORT_FIELD)
                 reverse = self.DEFAULT_SORT_ORDER == Order.DESC
                 enquire.set_sort_by_relevance_then_value(slot, reverse)
 
@@ -358,7 +356,7 @@ class SearchQuery(Query[T]):
         # This subquery assigns a constant weight to featured votes and 0 otherwise.
         return XapianQuery(
             XapianQuery.OP_SCALE_WEIGHT,
-            XapianQuery(ValueWeightPostingSource(SLOT_IS_FEATURED)),
+            XapianQuery(ValueWeightPostingSource(field_to_slot("is_featured"))),
             self.BOOST_FEATURED,
         )
 
@@ -368,7 +366,7 @@ class SearchQuery(Query[T]):
         now = datetime.datetime.now().timestamp()
         max_diff = datetime.timedelta(days=self.AGE_DECAY_DAYS).total_seconds()
 
-        age_source = ValueDecayWeightPostingSource(SLOT_TIMESTAMP)
+        age_source = ValueDecayWeightPostingSource(field_to_slot("timestamp"))
         age_source.set_max_diff(max_diff)
         age_source.set_origin(now)
 
