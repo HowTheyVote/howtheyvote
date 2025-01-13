@@ -26,6 +26,7 @@ from ..search import (
     FIELD_TO_SLOT_MAPPING,
     SLOT_IS_FEATURED,
     SLOT_TIMESTAMP,
+    boolean_term,
     get_index,
     get_stopper,
 )
@@ -331,6 +332,11 @@ class SearchQuery(Query[T]):
                 query,
                 self._xapian_phrase_subquery(index),
             )
+
+        for field, value in self.get_filters().items():
+            # Fields have to be indexed as boolean terms to be used as filters
+            term = boolean_term(field, value)
+            query = XapianQuery(XapianQuery.OP_FILTER, query, XapianQuery(term))
 
         return query
 
