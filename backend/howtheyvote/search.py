@@ -52,6 +52,10 @@ BOOST_EUROVOC_CONCEPTS = 2
 BOOST_GEO_AREAS = 2
 
 
+def field_to_slot(field: str) -> int:
+    return FIELD_TO_SLOT_MAPPING[field]
+
+
 def boolean_term(field: str, value: str | int | bool) -> str:
     prefix = FIELD_TO_PREFIX_MAPPING[field]
 
