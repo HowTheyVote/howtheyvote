@@ -242,6 +242,19 @@ def test_votes_api_search_references(db_session, search_index, api):
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 2
 
+    res = api.get("/api/votes/search", query_string={"q": "A9-0043/2024 2022/0362(NLE)"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"q": "A9-0043/2024 2022/2148(INI)"})
+    assert res.json["total"] == 0
+
+    # At the moment, this will only match votes with the correct reference and that contain
+    # the remaining query terms. Maybe reconsider this in the future, could be more intuitive
+    # to make it an OR, simply ranking votes that match both higher.
+    res = api.get("/api/votes/search", query_string={"q": "two A9-0043/2024"})
+    assert res.json["total"] == 0
+
 
 def test_votes_api_show(records, db_session, api):
     fragment = Fragment(
