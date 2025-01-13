@@ -12,11 +12,10 @@ from ..search import (
     BOOST_DISPLAY_TITLE,
     BOOST_EUROVOC_CONCEPTS,
     BOOST_GEO_AREAS,
-    PREFIX_PROCEDURE_REFERENCE,
-    PREFIX_REFERENCE,
     SLOT_IS_FEATURED,
     SLOT_TIMESTAMP,
     AccessType,
+    boolean_term,
     get_index,
     get_stopper,
 )
@@ -148,14 +147,18 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     is_featured = sortable_serialise(int(vote.is_featured))
     doc.add_value(SLOT_IS_FEATURED, is_featured)
 
+    # Also store is_featured as boolean term for filtering
+    term = boolean_term("is_featured", vote.is_featured)
+    doc.add_boolean_term(term)
+
     # Store document and procedure references as boolean terms. Boolean terms
     # aren’t searchable, but can be used for filtering.
     if vote.reference:
-        term = f"{PREFIX_REFERENCE}{vote.reference.lower()}"
+        term = boolean_term("reference", vote.reference)
         doc.add_boolean_term(term)
 
     if vote.procedure_reference:
-        term = f"{PREFIX_PROCEDURE_REFERENCE}{vote.procedure_reference.lower()}"
+        term = boolean_term("procedure_reference", vote.procedure_reference)
         doc.add_boolean_term(term)
 
     return doc

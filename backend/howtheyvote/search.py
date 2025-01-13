@@ -21,8 +21,11 @@ class AccessType(enum.Enum):
 
 # By convention, field prefixes in Xapian start with an uppercase X
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/boolean_filters.html
-PREFIX_REFERENCE = "XDR"
-PREFIX_PROCEDURE_REFERENCE = "XPR"
+FIELD_TO_PREFIX_MAPPING = {
+    "reference": "XR",
+    "procedure_reference": "XPR",
+    "is_featured": "XF",
+}
 
 # Each document can have a set of values associated with it. Values are similar to DocValues
 # in Lucene and stored in a column-oriented way that makes value lookups for many documents
@@ -47,6 +50,19 @@ FIELD_TO_SLOT_MAPPING = {
 BOOST_DISPLAY_TITLE = 15
 BOOST_EUROVOC_CONCEPTS = 2
 BOOST_GEO_AREAS = 2
+
+
+def boolean_term(field: str, value: str | int | bool) -> str:
+    prefix = FIELD_TO_PREFIX_MAPPING[field]
+
+    if type(value) is bool:
+        # Index bools as integers
+        value = int(value)
+    elif type(value) is str:
+        # Normalize strings
+        value = value.lower()
+
+    return f"{prefix}{value}"
 
 
 @overload
