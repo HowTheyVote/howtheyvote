@@ -16,6 +16,7 @@ def test_run_source_not_available(responses, db_session):
     assert result.status == PipelineStatus.DATA_UNAVAILABLE
 
 
+@pytest.mark.always_mock_requests
 def test_run_data_unchanged(responses, db_session):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-RCV_FR.xml",

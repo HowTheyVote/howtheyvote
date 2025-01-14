@@ -23,23 +23,26 @@ def test_members_scraper(responses):
 
 def test_member_info_scraper(responses):
     responses.get(
-        "https://www.europarl.europa.eu/meps/en/124834/NAME/home",
-        body=load_fixture("scrapers/data/members/member_info_sonneborn_home.html"),
+        "https://www.europarl.europa.eu/meps/en/256810/NAME/home",
+        body=load_fixture("scrapers/data/members/member_info_aaltola_home.html"),
     )
 
-    scraper = MemberInfoScraper(web_id=124834)
+    scraper = MemberInfoScraper(web_id=256810)
     fragment = scraper.run()
 
-    assert fragment.data.get("first_name") == "Martin"
-    assert fragment.data.get("last_name") == "SONNEBORN"
-    assert fragment.data.get("date_of_birth") == date(1965, 5, 15)
-    assert fragment.data.get("country") == "DEU"
+    assert fragment.data.get("first_name") == "Mika"
+    assert fragment.data.get("last_name") == "AALTOLA"
+    assert fragment.data.get("date_of_birth") == date(1969, 5, 2)
+    assert fragment.data.get("country") == "FIN"
     assert (
         fragment.data.get("facebook")
-        == "https://www.facebook.com/Martin-Sonneborn-178442508884215"
+        == "https://www.facebook.com/MikaAaltola2024/?locale=fi_FI"
     )
-    assert fragment.data.get("twitter") == "https://twitter.com/MartinSonneborn"
-    assert fragment.data.get("email") == "martin.sonneborn@europarl.europa.eu"
+    assert (
+        fragment.data.get("twitter")
+        == "https://x.com/MikaAaltola?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"
+    )
+    assert fragment.data.get("email") == "mika.aaltola@europarl.europa.eu"
 
 
 def test_member_info_scraper_date_of_birth_without(responses):

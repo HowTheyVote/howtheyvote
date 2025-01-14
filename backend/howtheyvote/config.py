@@ -21,7 +21,7 @@ MEILI_URL = env.get("MEILI_URL")
 MEILI_MASTER_KEY = env.get("MEILI_MASTER_KEY")
 
 # Request configuration
-REQUEST_TIMEOUT = 10
+REQUEST_TIMEOUT = 20
 REQUEST_SLEEP = 0.25
 
 # Misc
