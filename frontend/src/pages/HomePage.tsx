@@ -26,16 +26,16 @@ export const loader: Loader<HomePageData> = async () => {
   const { data: current } = await getSessions({
     query: {
       status: "current",
-      pageSize: 1,
-      sortOrder: "asc",
+      page_size: 1,
+      sort_order: "asc",
     },
   });
 
   const { data: past } = await getSessions({
     query: {
       status: "past",
-      pageSize: 1,
-      sortOrder: "desc",
+      page_size: 1,
+      sort_order: "desc",
     },
   });
 
