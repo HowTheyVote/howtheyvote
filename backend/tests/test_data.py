@@ -16,7 +16,7 @@ class ExampleDataclass(DeserializableDataclass):
         return cls(**data)
 
 
-def test_dataclass_container__save(tmp_path: Path):
+def test_dataclass_container_save(tmp_path: Path):
     file_path = tmp_path.joinpath("container.json")
 
     container = DataclassContainer(
@@ -29,6 +29,29 @@ def test_dataclass_container__save(tmp_path: Path):
     container.save()
 
     expected = json.dumps([{"id": "foo", "label": "bar"}], indent=2)
+    assert file_path.read_text() == expected
+
+
+def test_dataclass_container_save_sorted(tmp_path: Path):
+    file_path = tmp_path.joinpath("container.json")
+
+    container = DataclassContainer(
+        dataclass=ExampleDataclass,
+        file_path=file_path,
+        key_attr="id",
+    )
+
+    container.add(ExampleDataclass(id="foo", label="foo"))
+    container.add(ExampleDataclass(id="bar", label="bar"))
+    container.save()
+
+    expected = json.dumps(
+        [
+            {"id": "bar", "label": "bar"},
+            {"id": "foo", "label": "foo"},
+        ],
+        indent=2,
+    )
     assert file_path.read_text() == expected
 
 
