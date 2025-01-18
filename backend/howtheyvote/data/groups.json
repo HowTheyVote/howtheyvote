@@ -1,99 +1,5 @@
 [
   {
-    "code": "ECR",
-    "official_label": "European Conservatives and Reformists Group",
-    "label": "European Conservatives and Reformists",
-    "short_label": "ECR",
-    "alt_labels": [],
-    "start_date": "2009-07-14",
-    "end_date": null
-  },
-  {
-    "code": "EPP",
-    "official_label": "Group of the European People\u2019s Party",
-    "label": "European People\u2019s Party",
-    "short_label": "EPP",
-    "alt_labels": [
-      "Group of the European People\u2019s Party (Christian Democrats) and European Democrats",
-      "Group of the European People\u2019s Party (Christian Democrats)",
-      "Group of the European People\u2019s Party (Christian-Democratic Group)"
-    ],
-    "start_date": "1979-07-17",
-    "end_date": null
-  },
-  {
-    "code": "GREEN_EFA",
-    "official_label": "Group of the Greens/European Free Alliance",
-    "label": "Greens/European Free Alliance",
-    "short_label": "Greens/EFA",
-    "alt_labels": [
-      "Verts/ALE"
-    ],
-    "start_date": "1999-07-20",
-    "end_date": null
-  },
-  {
-    "code": "GUE_NGL",
-    "official_label": "The Left group in the European Parliament \u2013 GUE/NGL",
-    "label": "The Left in the European Parliament \u2013 GUE/NGL",
-    "short_label": "GUE/NGL",
-    "alt_labels": [
-      "European United Left \u2013 Nordic Green Left",
-      "Confederal Group of the European United Left \u2013 Nordic Green Left"
-    ],
-    "start_date": "1995-01-06",
-    "end_date": null
-  },
-  {
-    "code": "ID",
-    "official_label": "Identity and Democracy Group",
-    "label": "Identity and Democracy",
-    "short_label": "ID",
-    "alt_labels": [],
-    "start_date": "2019-07-02",
-    "end_date": null
-  },
-  {
-    "code": "NI",
-    "official_label": "Non-attached Members",
-    "label": "Non-attached Members",
-    "short_label": "Non-attached",
-    "alt_labels": [
-      "NI"
-    ],
-    "start_date": "1953-06-23",
-    "end_date": null
-  },
-  {
-    "code": "RENEW",
-    "official_label": "Renew Europe Group",
-    "label": "Renew Europe",
-    "short_label": "Renew",
-    "alt_labels": [],
-    "start_date": "2019-06-12",
-    "end_date": null
-  },
-  {
-    "code": "SD",
-    "official_label": "Group of the Progressive Alliance of Socialists and Democrats in the European Parliament",
-    "label": "Progressive Alliance of Socialists and Democrats",
-    "short_label": "S&D",
-    "alt_labels": [
-      "Progressive Alliance of Socialists and Democrats in the European Parliament"
-    ],
-    "start_date": "2009-07-14",
-    "end_date": null
-  },
-  {
-    "code": "SEC",
-    "official_label": "Political groups\u2019 secretariats",
-    "label": "Political groups\u2019 secretariats",
-    "short_label": "Political groups\u2019 secretariats",
-    "alt_labels": [],
-    "start_date": "1958-03-19",
-    "end_date": null
-  },
-  {
     "code": "ALDE",
     "official_label": "Group of the Alliance of Liberals and Democrats for Europe",
     "label": "Alliance of Liberals and Democrats for Europe",
@@ -153,8 +59,8 @@
     "label": "Communist and Allies",
     "short_label": "Communist and Allies",
     "alt_labels": [
-      "Communists and Allies",
       "Communist and Allies Group (SF, Ind. Sin.)",
+      "Communists and Allies",
       "Communists and Allies (SF, Ind. Sin.)"
     ],
     "start_date": "1973-10-16",
@@ -197,8 +103,8 @@
     "label": "Technical Group of the European Right",
     "short_label": "Technical Group of the European Right",
     "alt_labels": [
-      "Group of the European Right",
-      "European Right"
+      "European Right",
+      "Group of the European Right"
     ],
     "start_date": "1984-07-24",
     "end_date": "1994-07-18"
@@ -213,6 +119,15 @@
     ],
     "start_date": "1973-01-16",
     "end_date": "1979-07-16"
+  },
+  {
+    "code": "ECR",
+    "official_label": "European Conservatives and Reformists Group",
+    "label": "European Conservatives and Reformists",
+    "short_label": "ECR",
+    "alt_labels": [],
+    "start_date": "2009-07-14",
+    "end_date": null
   },
   {
     "code": "ED",
@@ -279,6 +194,28 @@
     "end_date": "2019-07-01"
   },
   {
+    "code": "EPP",
+    "official_label": "Group of the European People\u2019s Party",
+    "label": "European People\u2019s Party",
+    "short_label": "EPP",
+    "alt_labels": [
+      "Group of the European People\u2019s Party (Christian Democrats)",
+      "Group of the European People\u2019s Party (Christian Democrats) and European Democrats",
+      "Group of the European People\u2019s Party (Christian-Democratic Group)"
+    ],
+    "start_date": "1979-07-17",
+    "end_date": null
+  },
+  {
+    "code": "ESN",
+    "official_label": "Europe of Sovereign Nations Group",
+    "label": "Europe of Sovereign Nations",
+    "short_label": "ESN",
+    "alt_labels": [],
+    "start_date": "2024-07-10",
+    "end_date": null
+  },
+  {
     "code": "EUL",
     "official_label": "Group for the European United Left",
     "label": "Group for the European United Left",
@@ -310,6 +247,17 @@
     "end_date": "1999-07-19"
   },
   {
+    "code": "GREEN_EFA",
+    "official_label": "Group of the Greens/European Free Alliance",
+    "label": "Greens/European Free Alliance",
+    "short_label": "Greens/EFA",
+    "alt_labels": [
+      "Verts/ALE"
+    ],
+    "start_date": "1999-07-20",
+    "end_date": null
+  },
+  {
     "code": "GUE",
     "official_label": "Confederal Group of the European United Left",
     "label": "Confederal Group of the European United Left",
@@ -319,6 +267,28 @@
     ],
     "start_date": "1994-07-19",
     "end_date": "1995-01-05"
+  },
+  {
+    "code": "GUE_NGL",
+    "official_label": "The Left group in the European Parliament \u2013 GUE/NGL",
+    "label": "The Left in the European Parliament \u2013 GUE/NGL",
+    "short_label": "GUE/NGL",
+    "alt_labels": [
+      "Confederal Group of the European United Left \u2013 Nordic Green Left",
+      "European United Left \u2013 Nordic Green Left",
+      "The Left group in the European Parliament"
+    ],
+    "start_date": "1995-01-06",
+    "end_date": null
+  },
+  {
+    "code": "ID",
+    "official_label": "Identity and Democracy Group",
+    "label": "Identity and Democracy",
+    "short_label": "ID",
+    "alt_labels": [],
+    "start_date": "2019-07-02",
+    "end_date": "2024-07-07"
   },
   {
     "code": "IEDN",
@@ -383,16 +353,36 @@
     "end_date": "1994-07-18"
   },
   {
+    "code": "NI",
+    "official_label": "Non-attached Members",
+    "label": "Non-attached Members",
+    "short_label": "Non-attached",
+    "alt_labels": [
+      "NI"
+    ],
+    "start_date": "1953-06-23",
+    "end_date": null
+  },
+  {
+    "code": "PFE",
+    "official_label": "Patriots for Europe Group",
+    "label": "Patriots for Europe",
+    "short_label": "Patriots for Europe",
+    "alt_labels": [],
+    "start_date": "2024-07-08",
+    "end_date": null
+  },
+  {
     "code": "PSE",
     "official_label": "Socialist Group in the European Parliament",
     "label": "Socialist Group in the European Parliament",
     "short_label": "Socialist Group in the European Parliament",
     "alt_labels": [
-      "Party of European Socialists",
-      "Socialists",
-      "Socialist Group",
       "Group of the Party of European Socialists",
-      "Socialist"
+      "Party of European Socialists",
+      "Socialist",
+      "Socialist Group",
+      "Socialists"
     ],
     "start_date": "1953-06-23",
     "end_date": "2009-07-13"
@@ -405,6 +395,35 @@
     "alt_labels": [],
     "start_date": "1984-07-23",
     "end_date": "1995-07-04"
+  },
+  {
+    "code": "RENEW",
+    "official_label": "Renew Europe Group",
+    "label": "Renew Europe",
+    "short_label": "Renew",
+    "alt_labels": [],
+    "start_date": "2019-06-12",
+    "end_date": null
+  },
+  {
+    "code": "SD",
+    "official_label": "Group of the Progressive Alliance of Socialists and Democrats in the European Parliament",
+    "label": "Progressive Alliance of Socialists and Democrats",
+    "short_label": "S&D",
+    "alt_labels": [
+      "Progressive Alliance of Socialists and Democrats in the European Parliament"
+    ],
+    "start_date": "2009-07-14",
+    "end_date": null
+  },
+  {
+    "code": "SEC",
+    "official_label": "Political groups\u2019 secretariats",
+    "label": "Political groups\u2019 secretariats",
+    "short_label": "Political groups\u2019 secretariats",
+    "alt_labels": [],
+    "start_date": "1958-03-19",
+    "end_date": null
   },
   {
     "code": "TDI",
@@ -436,22 +455,5 @@
     ],
     "start_date": "1995-07-05",
     "end_date": "1999-07-19"
-  },
-  {
-    "code": "ESN",
-    "official_label": "Europe of Sovereign Nations Group",
-    "label": "Europe of Sovereign Nations",
-    "short_label": "ESN",
-    "start_date": "2024-07-10",
-    "alt_labels": []
-
-  },
-  {
-    "code": "PFE",
-    "official_label": "Patriots for Europe Group",
-    "label": "Patriots for Europe",
-    "short_label": "PFE",
-    "start_date": "2024-07-08",
-    "alt_labels": []
   }
 ]
