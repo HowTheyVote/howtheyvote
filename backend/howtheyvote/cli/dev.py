@@ -357,10 +357,9 @@ def _load_alt_labels(group_code: str) -> set[str]:
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:
-    params = {
-        "format": "application/sparql-results+json",
-        "query": query,
-    }
-
-    response = requests.get(endpoint, params=params)
+    response = requests.post(
+        endpoint,
+        data={"query": query},
+        headers={"Accept": "application/sparql-results+json"},
+    )
     return response.json()["results"]["bindings"]
