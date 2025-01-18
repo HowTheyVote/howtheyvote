@@ -94,7 +94,6 @@ def load_eurovoc() -> None:
       }
     }
     GROUP BY ?id ?label ?geo_area_code
-    ORDER BY ?id
     """
     log.info("Retrieving EuroVoc terms")
     results = exec_sparql_query(DATA_ENDPOINT, query)
@@ -129,9 +128,9 @@ def load_eurovoc() -> None:
             EurovocConcept(
                 id=result["id"]["value"],
                 label=result["label"]["value"],
-                alt_labels=alt_labels,
-                related_ids=related_ids,
-                broader_ids=broader_ids,
+                alt_labels=sorted(alt_labels),
+                related_ids=sorted(related_ids),
+                broader_ids=sorted(broader_ids),
                 geo_area_code=geo_area_code,
             )
         )
@@ -194,11 +193,7 @@ def load_countries() -> None:
         # The Named Authority Code assigned by the EU. In case of countries listed in ISO-3166-1, this
         # this is the 3-letter country code.
         ?country dc:identifier ?code.
-
-        # Protocol order for EU member states
-        OPTIONAL { ?country euvoc:order ?order. }
     }
-    ORDER BY (!BOUND(?order)) ?order ?code
     """  # noqa: E501
 
     log.info("Retrieving countries")
@@ -274,7 +269,6 @@ def load_groups() -> None:
             )
         }
     }
-    ORDER BY (BOUND(?end_date)) ?code
     """  # noqa: E501
 
     log.info("Retrieving groups")
@@ -330,7 +324,7 @@ def load_groups() -> None:
                 short_label=short_label,
                 start_date=start_date,
                 end_date=end_date,
-                alt_labels=list(alt_labels),
+                alt_labels=sorted(alt_labels),
             )
         )
 

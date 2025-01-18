@@ -22,9 +22,9 @@ class EurovocConceptMeta(type):
 class EurovocConcept(DeserializableDataclass, metaclass=EurovocConceptMeta):
     id: str
     label: str
-    alt_labels: set[str]
-    related_ids: set[str]
-    broader_ids: set[str]
+    alt_labels: list[str]
+    related_ids: list[str]
+    broader_ids: list[str]
     geo_area_code: str | None
 
     def __hash__(self) -> int:
