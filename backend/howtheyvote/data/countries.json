@@ -1,167 +1,5 @@
 [
   {
-    "code": "BEL",
-    "label": "Belgium",
-    "alt_label": "Kingdom of Belgium",
-    "iso_alpha_2": "BE"
-  },
-  {
-    "code": "BGR",
-    "label": "Bulgaria",
-    "alt_label": "Republic of Bulgaria",
-    "iso_alpha_2": "BG"
-  },
-  {
-    "code": "CZE",
-    "label": "Czechia",
-    "alt_label": "Czech Republic",
-    "iso_alpha_2": "CZ"
-  },
-  {
-    "code": "DNK",
-    "label": "Denmark",
-    "alt_label": "Kingdom of Denmark",
-    "iso_alpha_2": "DK"
-  },
-  {
-    "code": "DEU",
-    "label": "Germany",
-    "alt_label": "Federal Republic of Germany",
-    "iso_alpha_2": "DE"
-  },
-  {
-    "code": "EST",
-    "label": "Estonia",
-    "alt_label": "Republic of Estonia",
-    "iso_alpha_2": "EE"
-  },
-  {
-    "code": "IRL",
-    "label": "Ireland",
-    "alt_label": "Ireland",
-    "iso_alpha_2": "IE"
-  },
-  {
-    "code": "GRC",
-    "label": "Greece",
-    "alt_label": "Hellenic Republic",
-    "iso_alpha_2": "GR"
-  },
-  {
-    "code": "ESP",
-    "label": "Spain",
-    "alt_label": "Kingdom of Spain",
-    "iso_alpha_2": "ES"
-  },
-  {
-    "code": "FRA",
-    "label": "France",
-    "alt_label": "French Republic",
-    "iso_alpha_2": "FR"
-  },
-  {
-    "code": "HRV",
-    "label": "Croatia",
-    "alt_label": "Republic of Croatia",
-    "iso_alpha_2": "HR"
-  },
-  {
-    "code": "ITA",
-    "label": "Italy",
-    "alt_label": "Italian Republic",
-    "iso_alpha_2": "IT"
-  },
-  {
-    "code": "CYP",
-    "label": "Cyprus",
-    "alt_label": "Republic of Cyprus",
-    "iso_alpha_2": "CY"
-  },
-  {
-    "code": "LVA",
-    "label": "Latvia",
-    "alt_label": "Republic of Latvia",
-    "iso_alpha_2": "LV"
-  },
-  {
-    "code": "LTU",
-    "label": "Lithuania",
-    "alt_label": "Republic of Lithuania",
-    "iso_alpha_2": "LT"
-  },
-  {
-    "code": "LUX",
-    "label": "Luxembourg",
-    "alt_label": "Grand Duchy of Luxembourg",
-    "iso_alpha_2": "LU"
-  },
-  {
-    "code": "HUN",
-    "label": "Hungary",
-    "alt_label": "Hungary",
-    "iso_alpha_2": "HU"
-  },
-  {
-    "code": "MLT",
-    "label": "Malta",
-    "alt_label": "Republic of Malta",
-    "iso_alpha_2": "MT"
-  },
-  {
-    "code": "NLD",
-    "label": "Netherlands",
-    "alt_label": "Kingdom of the Netherlands",
-    "iso_alpha_2": "NL"
-  },
-  {
-    "code": "AUT",
-    "label": "Austria",
-    "alt_label": "Republic of Austria",
-    "iso_alpha_2": "AT"
-  },
-  {
-    "code": "POL",
-    "label": "Poland",
-    "alt_label": "Republic of Poland",
-    "iso_alpha_2": "PL"
-  },
-  {
-    "code": "PRT",
-    "label": "Portugal",
-    "alt_label": "Portuguese Republic",
-    "iso_alpha_2": "PT"
-  },
-  {
-    "code": "ROU",
-    "label": "Romania",
-    "alt_label": "Romania",
-    "iso_alpha_2": "RO"
-  },
-  {
-    "code": "SVN",
-    "label": "Slovenia",
-    "alt_label": "Republic of Slovenia",
-    "iso_alpha_2": "SI"
-  },
-  {
-    "code": "SVK",
-    "label": "Slovakia",
-    "alt_label": "Slovak Republic",
-    "iso_alpha_2": "SK"
-  },
-  {
-    "code": "FIN",
-    "label": "Finland",
-    "alt_label": "Republic of Finland",
-    "iso_alpha_2": "FI"
-  },
-  {
-    "code": "SWE",
-    "label": "Sweden",
-    "alt_label": "Kingdom of Sweden",
-    "iso_alpha_2": "SE"
-  },
-  {
     "code": "ABW",
     "label": "Aruba",
     "alt_label": "Aruba",
@@ -252,6 +90,12 @@
     "iso_alpha_2": "AU"
   },
   {
+    "code": "AUT",
+    "label": "Austria",
+    "alt_label": "Republic of Austria",
+    "iso_alpha_2": "AT"
+  },
+  {
     "code": "AZE",
     "label": "Azerbaijan",
     "alt_label": "Republic of Azerbaijan",
@@ -262,6 +106,12 @@
     "label": "Burundi",
     "alt_label": "Republic of Burundi",
     "iso_alpha_2": "BI"
+  },
+  {
+    "code": "BEL",
+    "label": "Belgium",
+    "alt_label": "Kingdom of Belgium",
+    "iso_alpha_2": "BE"
   },
   {
     "code": "BEN",
@@ -286,6 +136,12 @@
     "label": "Bangladesh",
     "alt_label": "People\u2019s Republic of Bangladesh",
     "iso_alpha_2": "BD"
+  },
+  {
+    "code": "BGR",
+    "label": "Bulgaria",
+    "alt_label": "Republic of Bulgaria",
+    "iso_alpha_2": "BG"
   },
   {
     "code": "BHR",
@@ -498,6 +354,24 @@
     "iso_alpha_2": "KY"
   },
   {
+    "code": "CYP",
+    "label": "Cyprus",
+    "alt_label": "Republic of Cyprus",
+    "iso_alpha_2": "CY"
+  },
+  {
+    "code": "CZE",
+    "label": "Czechia",
+    "alt_label": "Czech Republic",
+    "iso_alpha_2": "CZ"
+  },
+  {
+    "code": "DEU",
+    "label": "Germany",
+    "alt_label": "Federal Republic of Germany",
+    "iso_alpha_2": "DE"
+  },
+  {
     "code": "DJI",
     "label": "Djibouti",
     "alt_label": "Republic of Djibouti",
@@ -508,6 +382,12 @@
     "label": "Dominica",
     "alt_label": "Commonwealth of Dominica",
     "iso_alpha_2": "DM"
+  },
+  {
+    "code": "DNK",
+    "label": "Denmark",
+    "alt_label": "Kingdom of Denmark",
+    "iso_alpha_2": "DK"
   },
   {
     "code": "DOM",
@@ -546,6 +426,18 @@
     "iso_alpha_2": "EH"
   },
   {
+    "code": "ESP",
+    "label": "Spain",
+    "alt_label": "Kingdom of Spain",
+    "iso_alpha_2": "ES"
+  },
+  {
+    "code": "EST",
+    "label": "Estonia",
+    "alt_label": "Republic of Estonia",
+    "iso_alpha_2": "EE"
+  },
+  {
     "code": "ETH",
     "label": "Ethiopia",
     "alt_label": "Federal Democratic Republic of Ethiopia",
@@ -558,6 +450,12 @@
     "iso_alpha_2": "EU"
   },
   {
+    "code": "FIN",
+    "label": "Finland",
+    "alt_label": "Republic of Finland",
+    "iso_alpha_2": "FI"
+  },
+  {
     "code": "FJI",
     "label": "Fiji",
     "alt_label": "Republic of Fiji",
@@ -568,6 +466,12 @@
     "label": "Falkland Islands",
     "alt_label": "Falkland Islands",
     "iso_alpha_2": "FK"
+  },
+  {
+    "code": "FRA",
+    "label": "France",
+    "alt_label": "French Republic",
+    "iso_alpha_2": "FR"
   },
   {
     "code": "FRO",
@@ -648,6 +552,12 @@
     "iso_alpha_2": "GQ"
   },
   {
+    "code": "GRC",
+    "label": "Greece",
+    "alt_label": "Hellenic Republic",
+    "iso_alpha_2": "GR"
+  },
+  {
     "code": "GRD",
     "label": "Grenada",
     "alt_label": "Grenada",
@@ -702,10 +612,22 @@
     "iso_alpha_2": "HN"
   },
   {
+    "code": "HRV",
+    "label": "Croatia",
+    "alt_label": "Republic of Croatia",
+    "iso_alpha_2": "HR"
+  },
+  {
     "code": "HTI",
     "label": "Haiti",
     "alt_label": "Republic of Haiti",
     "iso_alpha_2": "HT"
+  },
+  {
+    "code": "HUN",
+    "label": "Hungary",
+    "alt_label": "Hungary",
+    "iso_alpha_2": "HU"
   },
   {
     "code": "IDN",
@@ -732,6 +654,12 @@
     "iso_alpha_2": "IO"
   },
   {
+    "code": "IRL",
+    "label": "Ireland",
+    "alt_label": "Ireland",
+    "iso_alpha_2": "IE"
+  },
+  {
     "code": "IRN",
     "label": "Iran",
     "alt_label": "Islamic Republic of Iran",
@@ -754,6 +682,12 @@
     "label": "Israel",
     "alt_label": "State of Israel",
     "iso_alpha_2": "IL"
+  },
+  {
+    "code": "ITA",
+    "label": "Italy",
+    "alt_label": "Italian Republic",
+    "iso_alpha_2": "IT"
   },
   {
     "code": "JAM",
@@ -876,6 +810,24 @@
     "iso_alpha_2": "LS"
   },
   {
+    "code": "LTU",
+    "label": "Lithuania",
+    "alt_label": "Republic of Lithuania",
+    "iso_alpha_2": "LT"
+  },
+  {
+    "code": "LUX",
+    "label": "Luxembourg",
+    "alt_label": "Grand Duchy of Luxembourg",
+    "iso_alpha_2": "LU"
+  },
+  {
+    "code": "LVA",
+    "label": "Latvia",
+    "alt_label": "Republic of Latvia",
+    "iso_alpha_2": "LV"
+  },
+  {
     "code": "MAC",
     "label": "Macao",
     "alt_label": "Macao Special Administrative Region of the People\u2019s Republic of China",
@@ -940,6 +892,12 @@
     "label": "Mali",
     "alt_label": "Republic of Mali",
     "iso_alpha_2": "ML"
+  },
+  {
+    "code": "MLT",
+    "label": "Malta",
+    "alt_label": "Republic of Malta",
+    "iso_alpha_2": "MT"
   },
   {
     "code": "MMR",
@@ -1056,6 +1014,12 @@
     "iso_alpha_2": "NU"
   },
   {
+    "code": "NLD",
+    "label": "Netherlands",
+    "alt_label": "Kingdom of the Netherlands",
+    "iso_alpha_2": "NL"
+  },
+  {
     "code": "NOR",
     "label": "Norway",
     "alt_label": "Kingdom of Norway",
@@ -1064,7 +1028,7 @@
   {
     "code": "NPL",
     "label": "Nepal",
-    "alt_label": "Federal Democratic Republic of Nepal",
+    "alt_label": "Nepal",
     "iso_alpha_2": "NP"
   },
   {
@@ -1084,6 +1048,12 @@
     "label": "Oman",
     "alt_label": "Sultanate of Oman",
     "iso_alpha_2": "OM"
+  },
+  {
+    "code": "OP_DATPRO",
+    "label": "Provisional data",
+    "alt_label": null,
+    "iso_alpha_2": null
   },
   {
     "code": "PAK",
@@ -1128,6 +1098,12 @@
     "iso_alpha_2": "PG"
   },
   {
+    "code": "POL",
+    "label": "Poland",
+    "alt_label": "Republic of Poland",
+    "iso_alpha_2": "PL"
+  },
+  {
     "code": "PRI",
     "label": "Puerto Rico",
     "alt_label": "Commonwealth of Puerto Rico",
@@ -1138,6 +1114,12 @@
     "label": "North Korea",
     "alt_label": "Democratic People\u2019s Republic of Korea",
     "iso_alpha_2": "KP"
+  },
+  {
+    "code": "PRT",
+    "label": "Portugal",
+    "alt_label": "Portuguese Republic",
+    "iso_alpha_2": "PT"
   },
   {
     "code": "PRY",
@@ -1168,6 +1150,12 @@
     "label": "R\u00e9union",
     "alt_label": "R\u00e9union",
     "iso_alpha_2": "RE"
+  },
+  {
+    "code": "ROU",
+    "label": "Romania",
+    "alt_label": "Romania",
+    "iso_alpha_2": "RO"
   },
   {
     "code": "RUS",
@@ -1282,6 +1270,24 @@
     "label": "Suriname",
     "alt_label": "Republic of Suriname",
     "iso_alpha_2": "SR"
+  },
+  {
+    "code": "SVK",
+    "label": "Slovakia",
+    "alt_label": "Slovak Republic",
+    "iso_alpha_2": "SK"
+  },
+  {
+    "code": "SVN",
+    "label": "Slovenia",
+    "alt_label": "Republic of Slovenia",
+    "iso_alpha_2": "SI"
+  },
+  {
+    "code": "SWE",
+    "label": "Sweden",
+    "alt_label": "Kingdom of Sweden",
+    "iso_alpha_2": "SE"
   },
   {
     "code": "SWZ",
@@ -1465,8 +1471,8 @@
   },
   {
     "code": "VNM",
-    "label": "Vietnam",
-    "alt_label": "Socialist Republic of Vietnam",
+    "label": "Viet Nam",
+    "alt_label": "Socialist Republic of Viet Nam",
     "iso_alpha_2": "VN"
   },
   {
@@ -1747,7 +1753,19 @@
   },
   {
     "code": "XXP",
-    "label": "China/Philippines/Vietnam/Taiwan/Malaysia (disputed territory)",
+    "label": "China/Philippines/Viet Nam/Taiwan/Malaysia (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXR",
+    "label": "Gabon/Equatorial Guinea (disputed territory)",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXS",
+    "label": "Chagos Islands (disputed territory)",
     "alt_label": null,
     "iso_alpha_2": null
   },

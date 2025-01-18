@@ -3029,21 +3029,10 @@
   },
   {
     "id": "12",
-    "label": "accession to the European Union",
-    "alt_labels": [
-      "EU accession",
-      "accession to the Community",
-      "act of accession",
-      "application for accession",
-      "consequence of accession",
-      "request for accession"
-    ],
-    "related_ids": [
-      "6725"
-    ],
-    "broader_ids": [
-      "4057"
-    ],
+    "label": "12 LAW",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
     "geo_area_code": null
   },
   {
@@ -15427,10 +15416,16 @@
   },
   {
     "id": "20",
-    "label": "20 TRADE",
-    "alt_labels": [],
+    "label": "award of contract",
+    "alt_labels": [
+      "automatic public tendering",
+      "award notice",
+      "award procedure"
+    ],
     "related_ids": [],
-    "broader_ids": [],
+    "broader_ids": [
+      "1810"
+    ],
     "geo_area_code": null
   },
   {
@@ -34138,10 +34133,16 @@
   },
   {
     "id": "32",
-    "label": "32 EDUCATION AND COMMUNICATIONS",
+    "label": "Communism",
     "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
+    "related_ids": [
+      "2250",
+      "382",
+      "7134"
+    ],
+    "broader_ids": [
+      "1282"
+    ],
     "geo_area_code": null
   },
   {
@@ -46057,10 +46058,16 @@
   },
   {
     "id": "40",
-    "label": "40 BUSINESS AND COMPETITION",
-    "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
+    "label": "competence of the Member States",
+    "alt_labels": [
+      "supporting competence"
+    ],
+    "related_ids": [
+      "36"
+    ],
+    "broader_ids": [
+      "4017"
+    ],
     "geo_area_code": null
   },
   {
@@ -59331,10 +59338,15 @@
   },
   {
     "id": "48",
-    "label": "48 TRANSPORT",
-    "alt_labels": [],
+    "label": "educational administration",
+    "alt_labels": [
+      "school administration",
+      "university administration"
+    ],
     "related_ids": [],
-    "broader_ids": [],
+    "broader_ids": [
+      "4705"
+    ],
     "geo_area_code": null
   },
   {
@@ -63870,8 +63882,10 @@
   },
   {
     "id": "52",
-    "label": "52 ENVIRONMENT",
-    "alt_labels": [],
+    "label": "composition of the population",
+    "alt_labels": [
+      "population structure"
+    ],
     "related_ids": [],
     "broader_ids": [],
     "geo_area_code": null
@@ -67789,7 +67803,7 @@
       "5775",
       "914"
     ],
-    "geo_area_code": "BYS"
+    "geo_area_code": "BLR"
   },
   {
     "id": "5459",
@@ -69917,18 +69931,9 @@
   },
   {
     "id": "56",
-    "label": "national accounts",
-    "alt_labels": [
-      "national account"
-    ],
-    "related_ids": [
-      "1800",
-      "3193",
-      "4369",
-      "4633",
-      "54",
-      "655"
-    ],
+    "label": "56 AGRICULTURE, FORESTRY AND FISHERIES",
+    "alt_labels": [],
+    "related_ids": [],
     "broader_ids": [],
     "geo_area_code": null
   },
@@ -81761,12 +81766,10 @@
   },
   {
     "id": "66",
-    "label": "concentration of the population",
+    "label": "66 ENERGY",
     "alt_labels": [],
     "related_ids": [],
-    "broader_ids": [
-      "3300"
-    ],
+    "broader_ids": [],
     "geo_area_code": null
   },
   {
@@ -86980,14 +86983,10 @@
   },
   {
     "id": "76",
-    "label": "international competition",
+    "label": "76 INTERNATIONAL ORGANISATIONS",
     "alt_labels": [],
-    "related_ids": [
-      "11"
-    ],
-    "broader_ids": [
-      "75"
-    ],
+    "related_ids": [],
+    "broader_ids": [],
     "geo_area_code": null
   },
   {
@@ -90767,7 +90766,7 @@
     "broader_ids": [
       "1087"
     ],
-    "geo_area_code": "ATF"
+    "geo_area_code": "FQ0"
   },
   {
     "id": "8375",
