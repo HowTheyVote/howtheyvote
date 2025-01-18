@@ -42,7 +42,7 @@ PIPELINE_NEXT_RUN = Gauge(
 )
 
 
-class SkipPipelineError(Exception):
+class SkipPipeline(Exception):  # noqa: N818
     pass
 
 
@@ -179,7 +179,7 @@ class Worker:
                 result = handler()
                 status = result.status
                 checksum = result.checksum
-            except SkipPipelineError:
+            except SkipPipeline:
                 # Do not log skipped pipeline runs
                 return
             except Exception:

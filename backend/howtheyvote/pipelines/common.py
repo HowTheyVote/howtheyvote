@@ -18,15 +18,11 @@ class PipelineResult:
     checksum: str | None
 
 
-class PipelineError(Exception):
+class DataUnavailable(Exception):  # noqa: N818
     pass
 
 
-class DataUnavailableError(PipelineError):
-    pass
-
-
-class DataUnchangedError(PipelineError):
+class DataUnchanged(Exception):  # noqa: N818
     pass
 
 
@@ -45,9 +41,9 @@ class BasePipeline(ABC):
         try:
             self._run()
             status = PipelineStatus.SUCCESS
-        except DataUnavailableError:
+        except DataUnavailable:
             status = PipelineStatus.DATA_UNAVAILABLE
-        except DataUnchangedError:
+        except DataUnchanged:
             status = PipelineStatus.DATA_UNCHANGED
         except ScrapingError:
             status = PipelineStatus.FAILURE
