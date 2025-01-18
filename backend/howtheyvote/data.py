@@ -38,6 +38,7 @@ class DataclassContainer(Generic[DataclassType]):
     def save(self) -> None:
         """Save data to file."""
         records = [dataclasses.asdict(r) for r in self.index.values()]  # type: ignore
+        records = sorted(records, key=lambda r: r[self.key_attr])
         text = json_dumps(records, indent=2)
         self.file_path.write_text(text)
 
