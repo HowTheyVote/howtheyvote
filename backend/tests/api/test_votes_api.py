@@ -169,6 +169,69 @@ def test_votes_api_index_empty_title(db_session, api):
     assert res.json["results"][1]["display_title"] == "Vote title"
 
 
+def test_votes_api_index_sort(db_session, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        reference="A9-0043/2024",
+        procedure_reference="2022/0362(NLE)",
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        reference="A9-0282/2023",
+        procedure_reference="2022/2148(INI)",
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+
+    # By default, results are sorted by timestamp in descending order
+    res = api.get("/api/votes")
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 2
+    assert res.json["results"][1]["id"] == 1
+
+    # Sorting can be controlled via query params
+    res = api.get(
+        "/api/votes",
+        query_string={
+            "sort_by": "timestamp",
+            "sort_order": "asc",
+        },
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 2
+
+    res = api.get(
+        "/api/votes",
+        query_string={
+            "sort_by": "timestamp",
+            "sort_order": "desc",
+        },
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 2
+    assert res.json["results"][1]["id"] == 1
+
+    # Ignores invalid parameters
+    res = api.get(
+        "/api/votes",
+        query_string={
+            "sort_by": "invalid",
+            "sort_order": "invalid",
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["total"] == 2
+
+
 def test_votes_api_search(db_session, search_index, api):
     one = Vote(
         id=1,
@@ -209,6 +272,18 @@ def test_votes_api_search(db_session, search_index, api):
     assert len(res.json["results"]) == 1
     assert res.json["results"][0]["id"] == 2
     assert res.json["results"][0]["display_title"] == "Vote Two"
+
+    # Ignores invalid parameters
+    res = api.get(
+        "/api/votes/search",
+        query_string={
+            "q": "vote",
+            "sort_by": "invalid",
+            "sort_order": "invalid",
+        },
+    )
+    assert res.status_code == 200
+    assert res.json["total"] == 2
 
 
 def test_votes_api_search_references(db_session, search_index, api):
@@ -254,6 +329,67 @@ def test_votes_api_search_references(db_session, search_index, api):
     # to make it an OR, simply ranking votes that match both higher.
     res = api.get("/api/votes/search", query_string={"q": "two A9-0043/2024"})
     assert res.json["total"] == 0
+
+
+def test_votes_api_search_sort(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        reference="A9-0043/2024",
+        procedure_reference="2022/0362(NLE)",
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        reference="A9-0282/2023",
+        procedure_reference="2022/2148(INI)",
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+    index_search(Vote, [one, two])
+
+    # If all results are equally relevant, results are sorted by timestamp in descending order
+    res = api.get("/api/votes/search", query_string={"q": "vote"})
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 2
+    assert res.json["results"][1]["id"] == 1
+
+    # By default, results are sorted by relevance
+    res = api.get("/api/votes/search", query_string={"q": "vote one"})
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 2
+
+    # Sorting can be controlled via query params
+    res = api.get(
+        "/api/votes/search",
+        query_string={
+            "q": "vote",
+            "sort_by": "timestamp",
+            "sort_order": "asc",
+        },
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 2
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={
+            "q": "vote",
+            "sort_by": "timestamp",
+            "sort_order": "desc",
+        },
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 2
+    assert res.json["results"][1]["id"] == 1
 
 
 def test_votes_api_show(records, db_session, api):
