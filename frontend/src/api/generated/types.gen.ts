@@ -354,6 +354,14 @@ export type GetVotesData = {
          * Number of results per page
          */
         page_size?: number;
+        /**
+         * Sort results by this field. Omit to sort by relevance.
+         */
+        sort_by?: 'timestamp';
+        /**
+         * Sort results in ascending or descending order
+         */
+        sort_order?: 'asc' | 'desc';
     };
 };
 
@@ -375,6 +383,14 @@ export type SearchVotesData = {
          * Search query
          */
         q?: string;
+        /**
+         * Sort results by this field. Omit to sort by relevance.
+         */
+        sort_by?: 'timestamp';
+        /**
+         * Sort results in ascending or descending order
+         */
+        sort_order?: 'asc' | 'desc';
     };
 };
 
