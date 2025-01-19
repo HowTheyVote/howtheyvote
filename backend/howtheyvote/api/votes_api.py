@@ -31,6 +31,7 @@ from .serializers import (
     serialize_group,
     serialize_member,
 )
+from .util import one_of
 
 log = get_logger(__name__)
 
@@ -88,6 +89,23 @@ def index() -> Response:
                 schema:
                     type: integer
                     default: 20
+            -
+                in: query
+                name: sort_by
+                description: Sort results by this field. Omit to sort by relevance.
+                schema:
+                    type: string
+                    enum:
+                        - timestamp
+            -
+                in: query
+                name: sort_order
+                description: Sort results in ascending or descending order
+                schema:
+                    type: string
+                    enum:
+                        - asc
+                        - desc
         responses:
             '200':
                 description: Ok
@@ -101,6 +119,12 @@ def index() -> Response:
     query = query.page_size(request.args.get("page_size", type=int))
     query = query.filter("is_main", True)
     query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
+
+    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
+    sort_order = request.args.get("sort_order", type=Order)
+
+    if sort_field:
+        query = query.sort(field=sort_field, order=sort_order)
 
     response = query.handle()
     results: list[BaseVoteDict] = [
@@ -149,6 +173,23 @@ def search() -> Response:
                 schema:
                     type: integer
                     default: 20
+            -
+                in: query
+                name: sort_by
+                description: Sort results by this field. Omit to sort by relevance.
+                schema:
+                    type: string
+                    enum:
+                        - timestamp
+            -
+                in: query
+                name: sort_order
+                description: Sort results in ascending or descending order
+                schema:
+                    type: string
+                    enum:
+                        - asc
+                        - desc
         responses:
             '200':
                 description: Ok
@@ -183,6 +224,12 @@ def search() -> Response:
         query = query.sort("timestamp", Order.DESC)
     else:
         query = query.query(q)
+
+    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
+    sort_order = request.args.get("sort_order", type=Order)
+
+    if sort_field:
+        query = query.sort(field=sort_field, order=sort_order)
 
     response = query.handle()
     results: list[BaseVoteDict] = [
