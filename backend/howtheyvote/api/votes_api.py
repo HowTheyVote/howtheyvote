@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 from io import StringIO
 from typing import TypeVar
 
-from flask import Blueprint, Response, abort, jsonify, request
+from flask import Blueprint, Request, Response, abort, jsonify, request
 from sqlalchemy import or_, select
 from structlog import get_logger
 
@@ -12,7 +12,7 @@ from ..db import Session
 from ..helpers import PROCEDURE_REFERENCE_REGEX, REFERENCE_REGEX, flatten_dict, subset_dict
 from ..models import Fragment, Member, PressRelease, Vote, VotePosition
 from ..query import fragments_for_records, press_release_references_vote
-from .query import DatabaseQuery, Order, SearchQuery
+from .query import DatabaseQuery, Order, Query, SearchQuery
 from .serializers import (
     BaseVoteDict,
     MemberVoteDict,
@@ -114,29 +114,11 @@ def index() -> Response:
                         schema:
                             $ref: '#/components/schemas/VotesQueryResponse'
     """
-    query = DatabaseQuery(Vote)
-    query = query.page(request.args.get("page", type=int))
-    query = query.page_size(request.args.get("page_size", type=int))
+    query = _query_from_request(DatabaseQuery, request)
     query = query.filter("is_main", True)
     query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
 
-    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
-    sort_order = request.args.get("sort_order", type=Order)
-
-    if sort_field:
-        query = query.sort(field=sort_field, order=sort_order)
-
-    response = query.handle()
-    results: list[BaseVoteDict] = [
-        serialize_base_vote(result) for result in response["results"]
-    ]
-
-    data = {
-        **response,
-        "results": results,
-    }
-
-    return jsonify(data)
+    return jsonify(_serialize_query(query))
 
 
 @bp.route("/votes/search")
@@ -199,11 +181,8 @@ def search() -> Response:
                             $ref: '#/components/schemas/VotesQueryResponse'
 
     """
-    q = request.args.get("q", "")
-
-    query = SearchQuery(Vote)
-    query = query.page(request.args.get("page", type=int))
-    query = query.page_size(request.args.get("page_size", type=int))
+    q = request.args.get("q", "").strip()
+    query = _query_from_request(SearchQuery, request)
 
     # Detect document references and apply a filter
     references = [match.group(0) for match in REFERENCE_REGEX.finditer(q)]
@@ -219,29 +198,10 @@ def search() -> Response:
     for procedure_reference in procedure_references:
         query = query.filter("procedure_reference", procedure_reference)
 
-    # Use inverse chronological filter if query is empty
-    if not q.strip():
-        query = query.sort("timestamp", Order.DESC)
-    else:
+    if q:
         query = query.query(q)
 
-    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
-    sort_order = request.args.get("sort_order", type=Order)
-
-    if sort_field:
-        query = query.sort(field=sort_field, order=sort_order)
-
-    response = query.handle()
-    results: list[BaseVoteDict] = [
-        serialize_base_vote(result) for result in response["results"]
-    ]
-
-    data: VotesQueryResponseDict = {
-        **response,
-        "results": results,
-    }
-
-    return jsonify(data)
+    return jsonify(_serialize_query(query))
 
 
 @bp.route("/votes/<int:vote_id>")
@@ -382,6 +342,38 @@ def show_csv(vote_id: int) -> Response:
             "Content-Type": "text/csv",
         },
     )
+
+
+QueryType = TypeVar("QueryType", bound=Query[Vote])
+
+
+def _query_from_request(cls: type[QueryType], request: Request) -> QueryType:
+    query = cls(Vote)
+
+    # Pagination
+    query = query.page(request.args.get("page", type=int))
+    query = query.page_size(request.args.get("page_size", type=int))
+
+    # Sort
+    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
+    sort_order = request.args.get("sort_order", type=Order)
+
+    if sort_field:
+        query = query.sort(field=sort_field, order=sort_order)
+
+    return query
+
+
+def _serialize_query(query: Query[Vote]) -> VotesQueryResponseDict:
+    response = query.handle()
+    results: list[BaseVoteDict] = [
+        serialize_base_vote(result) for result in response["results"]
+    ]
+
+    return {
+        **response,
+        "results": results,
+    }
 
 
 def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[Fragment]:
