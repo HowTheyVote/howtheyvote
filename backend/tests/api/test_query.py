@@ -35,7 +35,7 @@ def votes(db_session, search_index):
 
     db_session.add_all(votes)
     db_session.commit()
-    index_search(Vote, votes, sync=True)
+    index_search(Vote, votes)
 
     yield
 
@@ -45,7 +45,7 @@ def test_database_query_handle():
     results = response["results"]
     assert response["total"] == 3
     assert len(results) == 3
-    assert [r.id for r in results] == [1, 2, 3]
+    assert [r.id for r in results] == [3, 2, 1]
 
 
 def test_database_query_handle_sort():
@@ -53,18 +53,18 @@ def test_database_query_handle_sort():
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
-        datetime.datetime(2024, 1, 1),
-        datetime.datetime(2024, 1, 2),
         datetime.datetime(2024, 1, 3),
+        datetime.datetime(2024, 1, 2),
+        datetime.datetime(2024, 1, 1),
     ]
 
-    response = DatabaseQuery(Vote).sort("timestamp", Order.DESC).handle()
+    response = DatabaseQuery(Vote).sort("timestamp", Order.ASC).handle()
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
-        datetime.datetime(2024, 1, 3),
-        datetime.datetime(2024, 1, 2),
         datetime.datetime(2024, 1, 1),
+        datetime.datetime(2024, 1, 2),
+        datetime.datetime(2024, 1, 3),
     ]
 
 
@@ -79,7 +79,7 @@ def test_database_query_handle_pagination():
     assert response["page"] == 1
     assert response["has_prev"] is False
     assert response["has_next"] is True
-    assert response["results"][0].id == 1
+    assert response["results"][0].id == 3
 
     response = DatabaseQuery(Vote).page(2).page_size(1).handle()
     assert response["page"] == 2
@@ -91,7 +91,7 @@ def test_database_query_handle_pagination():
     assert response["page"] == 3
     assert response["has_prev"] is True
     assert response["has_next"] is False
-    assert response["results"][0].id == 3
+    assert response["results"][0].id == 1
 
 
 def test_database_query_handle_filters():
@@ -107,10 +107,10 @@ def test_database_query_handle_filters():
     response = DatabaseQuery(Vote).filter("is_featured", False).handle()
     assert response["total"] == 2
     assert len(response["results"]) == 2
-    assert response["results"][0].id == 1
-    assert response["results"][0].display_title == "Vote One"
-    assert response["results"][1].id == 3
-    assert response["results"][1].display_title == "Vote Three"
+    assert response["results"][0].id == 3
+    assert response["results"][0].display_title == "Vote Three"
+    assert response["results"][1].id == 1
+    assert response["results"][1].display_title == "Vote One"
 
 
 def test_database_query_sql_where():
@@ -119,10 +119,10 @@ def test_database_query_sql_where():
 
     response = DatabaseQuery(Vote).where(Vote.timestamp >= "2024-01-02").handle()
     assert response["total"] == 2
-    assert response["results"][0].id == 2
-    assert response["results"][0].display_title == "Vote Two"
-    assert response["results"][1].id == 3
-    assert response["results"][1].display_title == "Vote Three"
+    assert response["results"][0].id == 3
+    assert response["results"][0].display_title == "Vote Three"
+    assert response["results"][1].id == 2
+    assert response["results"][1].display_title == "Vote Two"
 
 
 def test_search_query_handle():
@@ -133,7 +133,7 @@ def test_search_query_handle():
 
     results = response["results"]
     assert len(results) == 3
-    assert [r.id for r in results] == [1, 2, 3]
+    assert [r.id for r in results] == [3, 2, 1]
 
 
 def test_search_query_handle_sort():
@@ -141,18 +141,18 @@ def test_search_query_handle_sort():
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
-        datetime.datetime(2024, 1, 1),
-        datetime.datetime(2024, 1, 2),
         datetime.datetime(2024, 1, 3),
+        datetime.datetime(2024, 1, 2),
+        datetime.datetime(2024, 1, 1),
     ]
 
-    response = SearchQuery(Vote).sort("timestamp", Order.DESC).handle()
+    response = SearchQuery(Vote).sort("timestamp", Order.ASC).handle()
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
-        datetime.datetime(2024, 1, 3),
-        datetime.datetime(2024, 1, 2),
         datetime.datetime(2024, 1, 1),
+        datetime.datetime(2024, 1, 2),
+        datetime.datetime(2024, 1, 3),
     ]
 
 
@@ -182,7 +182,7 @@ def test_search_query_handle_pagination():
     assert response["page"] == 1
     assert response["has_prev"] is False
     assert response["has_next"] is True
-    assert response["results"][0].id == 1
+    assert response["results"][0].id == 3
 
     response = SearchQuery(Vote).page(2).page_size(1).handle()
     assert response["total"] == 3
@@ -196,7 +196,7 @@ def test_search_query_handle_pagination():
     assert response["page"] == 3
     assert response["has_prev"] is True
     assert response["has_next"] is False
-    assert response["results"][0].id == 3
+    assert response["results"][0].id == 1
 
 
 def test_search_query_handle_filters():
@@ -212,7 +212,7 @@ def test_search_query_handle_filters():
     response = SearchQuery(Vote).filter("is_featured", False).handle()
     assert response["total"] == 2
     assert len(response["results"]) == 2
-    assert response["results"][0].id == 1
-    assert response["results"][0].display_title == "Vote One"
-    assert response["results"][1].id == 3
-    assert response["results"][1].display_title == "Vote Three"
+    assert response["results"][0].id == 3
+    assert response["results"][0].display_title == "Vote Three"
+    assert response["results"][1].id == 1
+    assert response["results"][1].display_title == "Vote One"

@@ -1,5 +1,4 @@
 volumes:
-  meilisearch_data: {}
   caddy_data: {}
   caddy_config: {}
 
@@ -29,7 +28,6 @@ services:
   backend:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
     depends_on:
-      - meilisearch
       - chromium
     networks:
       - "default"
@@ -40,19 +38,17 @@ services:
     volumes:
       - "./storage/database:/howtheyvote/database"
       - "./storage/files:/howtheyvote/files"
+      - "./storage/index:/howtheyvote/index"
     restart: "unless-stopped"
     environment:
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
       HTV_FRONTEND_PRIVATE_URL: "http://frontend:8000"
-      MEILI_URL: "http://meilisearch:7700"
-      MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
 
   worker:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
     command: "htv worker"
     depends_on:
-      - meilisearch
       - chromium
     ports:
       # Make Prometheus metrics available on host machine
@@ -60,22 +56,11 @@ services:
     volumes:
       - "./storage/database:/howtheyvote/database"
       - "./storage/files:/howtheyvote/files"
+      - "./storage/index:/howtheyvote/index"
     restart: "unless-stopped"
     environment:
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
-      MEILI_URL: "http://meilisearch:7700"
-      MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
-
-  meilisearch:
-    image: "getmeili/meilisearch:v1.3.1"
-    expose:
-      - "7700"
-    volumes:
-      - "meilisearch_data:/meili_data"
-    restart: "unless-stopped"
-    environment:
-      MEILI_MASTER_KEY: "${MEILI_MASTER_KEY}"
 
   caddy:
     image: "caddy:2.7.6-alpine"
