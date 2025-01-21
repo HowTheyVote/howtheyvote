@@ -29,8 +29,8 @@ from ..sharepics import generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_vote, map_vote_group
 from .common import (
     BasePipeline,
-    DataUnavailableError,
-    DataUnchangedError,
+    DataUnavailable,
+    DataUnchanged,
     compute_response_checksum,
 )
 
@@ -99,15 +99,13 @@ class RCVListPipeline(BasePipeline):
         try:
             fragments = scraper.run()
         except NoWorkingUrlError as exc:
-            raise DataUnavailableError("Pipeline data source is not available") from exc
+            raise DataUnavailable("Pipeline data source is not available") from exc
 
         if (
             self.last_run_checksum is not None
             and self.last_run_checksum == compute_response_checksum(scraper.response)
         ):
-            raise DataUnchangedError(
-                "The data source hasn't changed since the last pipeline run."
-            )
+            raise DataUnchanged("The data source hasn't changed since the last pipeline run.")
 
         self.checksum = compute_response_checksum(scraper.response)
 

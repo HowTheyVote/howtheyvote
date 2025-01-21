@@ -19,7 +19,7 @@ from ..pipelines import (
 )
 from ..query import session_is_current_at
 from .worker import (
-    SkipPipelineError,
+    SkipPipeline,
     Weekday,
     Worker,
     last_pipeline_run_checksum,
@@ -35,10 +35,10 @@ def op_rcv_midday() -> PipelineResult:
     today = datetime.date.today()
 
     if not _is_session_day(today):
-        raise SkipPipelineError()
+        raise SkipPipeline()
 
     if pipeline_ran_successfully(RCVListPipeline, today):
-        raise SkipPipelineError()
+        raise SkipPipeline()
 
     pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
     return pipeline.run()
@@ -53,10 +53,10 @@ def op_rcv_evening() -> PipelineResult:
     today = datetime.date.today()
 
     if not _is_session_day(today):
-        raise SkipPipelineError()
+        raise SkipPipeline()
 
     if pipeline_ran_successfully(RCVListPipeline, today, count=2):
-        raise SkipPipelineError()
+        raise SkipPipeline()
 
     last_run_checksum = last_pipeline_run_checksum(
         pipeline=RCVListPipeline,
@@ -76,7 +76,7 @@ def op_press() -> PipelineResult:
     today = datetime.date.today()
 
     if not _is_session_day(today):
-        raise SkipPipelineError()
+        raise SkipPipeline()
 
     pipeline = PressPipeline(date=today, with_rss=True)
     return pipeline.run()
