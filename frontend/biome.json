@@ -24,7 +24,8 @@
                             "Select",
                             "GroupsFilterSelect",
                             "CountriesFilterSelect",
-                            "PositionFilterSelect"
+                            "PositionFilterSelect",
+                            "SortSelect"
                         ]
                     }
                 }
