@@ -1,6 +1,6 @@
 import type { JSX } from "preact/jsx-runtime";
 import type { Country } from "../api";
-import FilterSelect from "./FilterSelect";
+import Select from "./Select";
 
 type CountriesFilterSelectProps = {
   countries: Array<Country>;
@@ -20,7 +20,7 @@ export default function CountriesFilterSelect({
   );
 
   return (
-    <FilterSelect
+    <Select
       options={{
         "": "All countries",
         ...options,
