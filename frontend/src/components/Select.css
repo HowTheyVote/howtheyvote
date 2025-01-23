@@ -1,4 +1,4 @@
-.filter-select {
+.select {
   position: relative;
   overflow: hidden;
   display: inline-flex;
@@ -9,12 +9,12 @@
   color: var(--color-text-light);
 }
 
-.filter-select:focus-within {
+.select:focus-within {
   outline: var(--focus-outline);
   outline-offset: var(--focus-outline-offset);
 }
 
-.filter-select > select {
+.select > select {
   position: absolute;
   top: 0;
   left: 0;
@@ -24,7 +24,7 @@
   opacity: 0;
 }
 
-.filter-select__icon {
+.select__icon {
   width: 1.25em;
   height: 1.25em;
   fill: currentColor;

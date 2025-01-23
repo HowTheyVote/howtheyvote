@@ -1,5 +1,5 @@
 import type { JSX } from "preact/jsx-runtime";
-import FilterSelect from "./FilterSelect";
+import Select from "./Select";
 
 type PositionFilterSelectProps = {
   value?: string;
@@ -18,5 +18,5 @@ export default function PositionFilterSelect({
     DID_NOT_VOTE: "Did not vote",
   };
 
-  return <FilterSelect value={value} options={options} onChange={onChange} />;
+  return <Select value={value} options={options} onChange={onChange} />;
 }

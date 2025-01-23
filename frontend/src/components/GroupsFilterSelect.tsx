@@ -1,6 +1,6 @@
 import type { JSX } from "preact/jsx-runtime";
 import type { Group } from "../api";
-import FilterSelect from "./FilterSelect";
+import Select from "./Select";
 
 type GroupsFilterSelectProps = {
   groups: Array<Group>;
@@ -20,7 +20,7 @@ export default function GroupsFilterSelect({
   );
 
   return (
-    <FilterSelect
+    <Select
       options={{
         "": "All groups",
         ...options,
