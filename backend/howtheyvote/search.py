@@ -46,12 +46,9 @@ FIELD_TO_PREFIX_MAPPING = {
 # sorting, custom scoring, aggregations, etc. it makes sense to store them as a value. Each
 # value is stored in a numbered slot.
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/indexing/values.html
-SLOT_TIMESTAMP = 0
-SLOT_IS_FEATURED = 1
-
 FIELD_TO_SLOT_MAPPING = {
-    "timestamp": SLOT_TIMESTAMP,
-    "is_featured": SLOT_IS_FEATURED,
+    "timestamp": 0,
+    "is_featured": 1,
 }
 
 # Some document fields are more important than others. The following factors are applied

@@ -9,11 +9,10 @@ from ..db import Session
 from ..helpers import chunks
 from ..models import BaseWithId, Vote
 from ..search import (
-    SLOT_IS_FEATURED,
-    SLOT_TIMESTAMP,
     AccessType,
     boolean_term,
     field_to_prefix,
+    field_to_slot,
     get_index,
     get_stopper,
 )
@@ -133,10 +132,10 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
 
     # Store timestamp and is_featured as sortable values for ranking
     timestamp = sortable_serialise(vote.timestamp.timestamp())
-    doc.add_value(SLOT_TIMESTAMP, timestamp)
+    doc.add_value(field_to_slot("timestamp"), timestamp)
 
     is_featured = sortable_serialise(int(vote.is_featured))
-    doc.add_value(SLOT_IS_FEATURED, is_featured)
+    doc.add_value(field_to_slot("is_featured"), is_featured)
 
     # Also store is_featured as boolean term for filtering
     term = boolean_term("is_featured", vote.is_featured)
