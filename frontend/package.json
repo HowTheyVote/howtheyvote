@@ -6,12 +6,12 @@
   "author": "Till Prochaska <mail@tillprochaska.de>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@hey-api/client-fetch": "^0.6.0",
-    "@tinyhttp/app": "^2.4.0",
-    "isbot": "^5.1.21",
+    "@hey-api/client-fetch": "^0.7.3",
+    "@tinyhttp/app": "^2.5.0",
+    "isbot": "^5.1.22",
     "pino": "^9.6.0",
     "preact": "^10.25.4",
-    "preact-render-to-string": "^6.5.12",
+    "preact-render-to-string": "^6.5.13",
     "sirv": "^3.0.0"
   },
   "devDependencies": {
