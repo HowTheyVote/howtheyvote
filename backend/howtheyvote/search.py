@@ -60,9 +60,7 @@ FIELD_TO_SLOT_MAPPING = {
 # than if it is found in another field.
 # See: https://trac.xapian.org/wiki/FAQ/ExtraWeight
 FIELD_TO_BOOST_MAPPING = {
-    "display_title": 15,
-    "geo_areas": 2,
-    "eurovoc_concepts": 2,
+    "display_title": 5,
 }
 
 
