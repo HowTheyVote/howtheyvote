@@ -69,7 +69,6 @@ mypy_path = "$MYPY_CONFIG_FILE_DIR/stubs"
 [tool.pytest.ini_options]
 env = [
     "D:HTV_BACKEND_DATABASE_URI=sqlite:////howtheyvote/database/database.test.sqlite3",
-    "D:HTV_BACKEND_USERS_DATABASE_URI=sqlite:////howtheyvote/database/users.test.sqlite3",
     "HTV_BACKEND_PUBLIC_URL=https://example.org/api",
     "HTV_SEARCH_INDEX_PREFIX=test",
 ]

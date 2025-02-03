@@ -9,9 +9,6 @@ FRONTEND_PRIVATE_URL = env.get("HTV_FRONTEND_PRIVATE_URL", "")
 DATABASE_URI = env.get(
     "HTV_BACKEND_DATABASE_URI", "sqlite:////howtheyvote/database/database.sqlite3"
 )
-USERS_DATABASE_URI = env.get(
-    "HTV_BACKEND_USERS_DATABASE_URI", "sqlite:////howtheyvote/database/users.sqlite3"
-)
 
 # File storage
 FILES_DIR = env.get("HTV_BACKEND_FILES_DIR", "/howtheyvote/files")
