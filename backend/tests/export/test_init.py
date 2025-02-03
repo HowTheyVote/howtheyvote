@@ -74,7 +74,7 @@ def test_export_members(db_session, tmp_path):
     countries_csv = tmp_path.joinpath("countries.csv")
     countries_meta = tmp_path.joinpath("countries.csv-metadata.json")
 
-    expected = "code,iso_alpha_2,label\n" "DEU,DE,Germany\n"
+    expected = "code,iso_alpha_2,label\nDEU,DE,Germany\n"
 
     assert countries_csv.read_text() == expected
     assert countries_meta.is_file()
@@ -93,7 +93,7 @@ def test_export_members(db_session, tmp_path):
     group_memberships_csv = tmp_path.joinpath("group_memberships.csv")
     group_memberships_meta = tmp_path.joinpath("group_memberships.csv-metadata.json")
 
-    expected = "member_id,group_code,term,start_date,end_date\n" "123,EPP,9,2024-01-01,\n"
+    expected = "member_id,group_code,term,start_date,end_date\n123,EPP,9,2024-01-01,\n"
 
     assert group_memberships_csv.read_text() == expected
     assert group_memberships_meta.is_file()
@@ -148,9 +148,7 @@ def test_export_votes(db_session, tmp_path):
     member_votes_csv = tmp_path.joinpath("member_votes.csv")
     member_votes_meta = tmp_path.joinpath("member_votes.csv-metadata.json")
 
-    expected = (
-        "vote_id,member_id,position,country_code,group_code\n" "123456,123,FOR,DEU,EPP\n"
-    )
+    expected = "vote_id,member_id,position,country_code,group_code\n123456,123,FOR,DEU,EPP\n"
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
