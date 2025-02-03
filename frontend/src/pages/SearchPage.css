@@ -1,0 +1,12 @@
+.search-page__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+}
+
+.search-page__sort {
+  display: flex;
+  align-items: center;
+}
