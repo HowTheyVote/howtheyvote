@@ -6,9 +6,3 @@
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--gray-light);
 }
-
-.tag--featured {
-  background-color: var(--orange-lightest);
-  color: var(--orange-darker);
-  border-color: var(--orange-light);
-}
