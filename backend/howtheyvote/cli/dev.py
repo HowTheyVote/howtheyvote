@@ -49,15 +49,14 @@ def load_eurovoc() -> None:
     PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
 
     SELECT
+      ?term
       ?label
-      ?id
       ?geo_area_code
       (GROUP_CONCAT(DISTINCT ?related_id, ",") as ?related_ids)
       (GROUP_CONCAT(DISTINCT ?broader_id, ",") as ?broader_ids)
       (GROUP_CONCAT(DISTINCT ?alt_label, ",") as ?alt_labels)
     WHERE {
       GRAPH <http://publications.europa.eu/resource/dataset/eurovoc> {
-        ?term dc:identifier ?id.
         ?term euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
 
         ?term skos:prefLabel ?label_.
@@ -93,8 +92,7 @@ def load_eurovoc() -> None:
         }
       }
     }
-    GROUP BY ?id ?label ?geo_area_code
-    ORDER BY ?id
+    GROUP BY ?term ?label ?geo_area_code
     """
     log.info("Retrieving EuroVoc terms")
     results = exec_sparql_query(DATA_ENDPOINT, query)
@@ -105,6 +103,17 @@ def load_eurovoc() -> None:
     )
 
     for result in results:
+        # `term` is the resource URI (e.g. `http://eurovoc.europa.eu/162`) which contains the
+        # ID. We previously used the DC Terms `identifier` property. However, this property is
+        # sometimes ambiguous. For example, the domain concept "AGRICULTURE, FORESTRY AND
+        # FISHERIES" has the DC Terms identifier `56`, but the correct ID is `100156`.
+        if result["term"]["value"]:
+            uri = result["term"]["value"]
+            _, id_ = uri.rsplit("/", 1)
+        else:
+            log.warn("Missing resource URI")
+            continue
+
         if result["alt_labels"]["value"]:
             alt_labels = set(result["alt_labels"]["value"].split(","))
         else:
@@ -127,11 +136,11 @@ def load_eurovoc() -> None:
 
         container.add(
             EurovocConcept(
-                id=result["id"]["value"],
+                id=id_,
                 label=result["label"]["value"],
-                alt_labels=alt_labels,
-                related_ids=related_ids,
-                broader_ids=broader_ids,
+                alt_labels=sorted(alt_labels),
+                related_ids=sorted(related_ids),
+                broader_ids=sorted(broader_ids),
                 geo_area_code=geo_area_code,
             )
         )
@@ -194,11 +203,7 @@ def load_countries() -> None:
         # The Named Authority Code assigned by the EU. In case of countries listed in ISO-3166-1, this
         # this is the 3-letter country code.
         ?country dc:identifier ?code.
-
-        # Protocol order for EU member states
-        OPTIONAL { ?country euvoc:order ?order. }
     }
-    ORDER BY (!BOUND(?order)) ?order ?code
     """  # noqa: E501
 
     log.info("Retrieving countries")
@@ -274,7 +279,6 @@ def load_groups() -> None:
             )
         }
     }
-    ORDER BY (BOUND(?end_date)) ?code
     """  # noqa: E501
 
     log.info("Retrieving groups")
@@ -330,7 +334,7 @@ def load_groups() -> None:
                 short_label=short_label,
                 start_date=start_date,
                 end_date=end_date,
-                alt_labels=list(alt_labels),
+                alt_labels=sorted(alt_labels),
             )
         )
 
@@ -363,10 +367,9 @@ def _load_alt_labels(group_code: str) -> set[str]:
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:
-    params = {
-        "format": "application/sparql-results+json",
-        "query": query,
-    }
-
-    response = requests.get(endpoint, params=params)
+    response = requests.post(
+        endpoint,
+        data={"query": query},
+        headers={"Accept": "application/sparql-results+json"},
+    )
     return response.json()["results"]["bindings"]
