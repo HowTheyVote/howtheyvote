@@ -103,10 +103,10 @@ def load_eurovoc() -> None:
     )
 
     for result in results:
-        # `term` is the resource URI (e.g. `http://eurovoc.europa.eu/162`) which contains the ID.
-        # We previously used the DC Terms `identifier` property. However, this property is sometimes
-        # ambiguous. For example, the domain concept "AGRICULTURE, FORESTRY AND FISHERIES" has the
-        # DC Terms identifier `56`, but the correct ID is `100156`.
+        # `term` is the resource URI (e.g. `http://eurovoc.europa.eu/162`) which contains the
+        # ID. We previously used the DC Terms `identifier` property. However, this property is
+        # sometimes ambiguous. For example, the domain concept "AGRICULTURE, FORESTRY AND
+        # FISHERIES" has the DC Terms identifier `56`, but the correct ID is `100156`.
         if result["term"]["value"]:
             uri = result["term"]["value"]
             _, id_ = uri.rsplit("/", 1)

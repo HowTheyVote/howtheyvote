@@ -1,27 +1,15 @@
 [
   {
-    "id": "04",
-    "label": "04 POLITICS",
-    "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
-    "geo_area_code": null
-  },
-  {
-    "id": "08",
-    "label": "08 INTERNATIONAL RELATIONS",
-    "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
-    "geo_area_code": null
-  },
-  {
     "id": "10",
-    "label": "10 EUROPEAN UNION",
+    "label": "domestic trade",
     "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
-    "geo_area_code": "EUR"
+    "related_ids": [
+      "1806"
+    ],
+    "broader_ids": [
+      "2449"
+    ],
+    "geo_area_code": null
   },
   {
     "id": "100",
@@ -55,6 +43,174 @@
     "broader_ids": [
       "1000"
     ],
+    "geo_area_code": null
+  },
+  {
+    "id": "100142",
+    "label": "04 POLITICS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100143",
+    "label": "08 INTERNATIONAL RELATIONS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100144",
+    "label": "10 EUROPEAN UNION",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": "EUR"
+  },
+  {
+    "id": "100145",
+    "label": "12 LAW",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100146",
+    "label": "16 ECONOMICS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100147",
+    "label": "20 TRADE",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100148",
+    "label": "24 FINANCE",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100149",
+    "label": "28 SOCIAL QUESTIONS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100150",
+    "label": "32 EDUCATION AND COMMUNICATIONS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100151",
+    "label": "36 SCIENCE",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100152",
+    "label": "40 BUSINESS AND COMPETITION",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100153",
+    "label": "44 EMPLOYMENT AND WORKING CONDITIONS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100154",
+    "label": "48 TRANSPORT",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100155",
+    "label": "52 ENVIRONMENT",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100156",
+    "label": "56 AGRICULTURE, FORESTRY AND FISHERIES",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100157",
+    "label": "60 AGRI-FOODSTUFFS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100158",
+    "label": "64 PRODUCTION, TECHNOLOGY AND RESEARCH",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100159",
+    "label": "66 ENERGY",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100160",
+    "label": "68 INDUSTRY",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100161",
+    "label": "72 GEOGRAPHY",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "100162",
+    "label": "76 INTERNATIONAL ORGANISATIONS",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
     "geo_area_code": null
   },
   {
@@ -3029,10 +3185,21 @@
   },
   {
     "id": "12",
-    "label": "12 LAW",
-    "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
+    "label": "accession to the European Union",
+    "alt_labels": [
+      "EU accession",
+      "accession to the Community",
+      "act of accession",
+      "application for accession",
+      "consequence of accession",
+      "request for accession"
+    ],
+    "related_ids": [
+      "6725"
+    ],
+    "broader_ids": [
+      "4057"
+    ],
     "geo_area_code": null
   },
   {
@@ -9285,14 +9452,6 @@
     "broader_ids": [
       "41"
     ],
-    "geo_area_code": null
-  },
-  {
-    "id": "16",
-    "label": "16 ECONOMICS",
-    "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
     "geo_area_code": null
   },
   {
@@ -52518,10 +52677,12 @@
   },
   {
     "id": "44",
-    "label": "44 EMPLOYMENT AND WORKING CONDITIONS",
+    "label": "territorial jurisdiction",
     "alt_labels": [],
     "related_ids": [],
-    "broader_ids": [],
+    "broader_ids": [
+      "42"
+    ],
     "geo_area_code": null
   },
   {
@@ -67803,7 +67964,7 @@
       "5775",
       "914"
     ],
-    "geo_area_code": "BLR"
+    "geo_area_code": "BYS"
   },
   {
     "id": "5459",
@@ -69931,9 +70092,18 @@
   },
   {
     "id": "56",
-    "label": "56 AGRICULTURE, FORESTRY AND FISHERIES",
-    "alt_labels": [],
-    "related_ids": [],
+    "label": "national accounts",
+    "alt_labels": [
+      "national account"
+    ],
+    "related_ids": [
+      "1800",
+      "3193",
+      "4369",
+      "4633",
+      "54",
+      "655"
+    ],
     "broader_ids": [],
     "geo_area_code": null
   },
@@ -80801,10 +80971,14 @@
   },
   {
     "id": "64",
-    "label": "64 PRODUCTION, TECHNOLOGY AND RESEARCH",
+    "label": "tied sales outlet",
     "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
+    "related_ids": [
+      "4663"
+    ],
+    "broader_ids": [
+      "806"
+    ],
     "geo_area_code": null
   },
   {
@@ -81766,10 +81940,12 @@
   },
   {
     "id": "66",
-    "label": "66 ENERGY",
+    "label": "concentration of the population",
     "alt_labels": [],
     "related_ids": [],
-    "broader_ids": [],
+    "broader_ids": [
+      "3300"
+    ],
     "geo_area_code": null
   },
   {
@@ -83405,10 +83581,23 @@
   },
   {
     "id": "68",
-    "label": "68 INDUSTRY",
-    "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
+    "label": "local government",
+    "alt_labels": [
+      "county council",
+      "local administration",
+      "local powers",
+      "municipal authority",
+      "town council"
+    ],
+    "related_ids": [
+      "1017",
+      "2515",
+      "3924",
+      "699"
+    ],
+    "broader_ids": [
+      "77"
+    ],
     "geo_area_code": null
   },
   {
@@ -85261,10 +85450,12 @@
   },
   {
     "id": "72",
-    "label": "72 GEOGRAPHY",
+    "label": "concessionaire",
     "alt_labels": [],
     "related_ids": [],
-    "broader_ids": [],
+    "broader_ids": [
+      "3218"
+    ],
     "geo_area_code": null
   },
   {
@@ -86983,10 +87174,14 @@
   },
   {
     "id": "76",
-    "label": "76 INTERNATIONAL ORGANISATIONS",
+    "label": "international competition",
     "alt_labels": [],
-    "related_ids": [],
-    "broader_ids": [],
+    "related_ids": [
+      "11"
+    ],
+    "broader_ids": [
+      "75"
+    ],
     "geo_area_code": null
   },
   {
