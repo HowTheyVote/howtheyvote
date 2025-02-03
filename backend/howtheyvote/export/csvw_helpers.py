@@ -184,10 +184,10 @@ def get_markdown_docs(schema: TableSchema) -> str:
     for column in schema["columns"]:
         rows.append(
             [
-                f"`{column["name"]}`",
+                f"`{column['name']}`",
                 column["datatype"]
                 if column["required"]
-                else f"{column["datatype"]} (optional)",
+                else f"{column['datatype']} (optional)",
                 column.get("dc:description"),
             ]
         )
