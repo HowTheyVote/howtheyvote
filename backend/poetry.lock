@@ -1373,20 +1373,6 @@ files = [
 python-dateutil = "*"
 
 [[package]]
-name = "types-beautifulsoup4"
-version = "4.12.0.20241020"
-description = "Typing stubs for beautifulsoup4"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "types-beautifulsoup4-4.12.0.20241020.tar.gz", hash = "sha256:158370d08d0cd448bd11b132a50ff5279237a5d4b5837beba074de152a513059"},
-    {file = "types_beautifulsoup4-4.12.0.20241020-py3-none-any.whl", hash = "sha256:c95e66ce15a4f5f0835f7fbc5cd886321ae8294f977c495424eaf4225307fd30"},
-]
-
-[package.dependencies]
-types-html5lib = "*"
-
-[[package]]
 name = "types-cachetools"
 version = "5.5.0.20240820"
 description = "Typing stubs for cachetools"
@@ -1395,17 +1381,6 @@ python-versions = ">=3.8"
 files = [
     {file = "types-cachetools-5.5.0.20240820.tar.gz", hash = "sha256:b888ab5c1a48116f7799cd5004b18474cd82b5463acb5ffb2db2fc9c7b053bc0"},
     {file = "types_cachetools-5.5.0.20240820-py3-none-any.whl", hash = "sha256:efb2ed8bf27a4b9d3ed70d33849f536362603a90b8090a328acf0cd42fda82e2"},
-]
-
-[[package]]
-name = "types-html5lib"
-version = "1.1.11.15"
-description = "Typing stubs for html5lib"
-optional = false
-python-versions = "*"
-files = [
-    {file = "types-html5lib-1.1.11.15.tar.gz", hash = "sha256:80e1a2062d22a3affe5c28d97da30bffbf3a076d393c80fc6f1671216c1bd492"},
-    {file = "types_html5lib-1.1.11.15-py3-none-any.whl", hash = "sha256:16fe936d99b9f7fc210e2e21a2aed1b6bbbc554ad8242a6ef75f6f2bddb27e58"},
 ]
 
 [[package]]
@@ -1519,4 +1494,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<4.0"
-content-hash = "ca73a61770417622c6292e6011c614d7e243635f6ab69c71311204255428c637"
+content-hash = "0da7f2283eacba09fa3bfd9e7523b28aa6abb215531491be4498dc19e60cb868"
