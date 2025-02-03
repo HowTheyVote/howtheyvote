@@ -231,14 +231,6 @@ function MethodologySection() {
           </p>
         </Stack>
       </Disclosure>
-      <Disclosure title="What is a featured vote?">
-        <p>
-          HowTheyVote.eu marks a vote as featured when we have found a press
-          release about the vote published by the European Parliament. However,
-          we are not always able to reliably link press releases to votes. In
-          the future, we may use additional indicators for featured votes.
-        </p>
-      </Disclosure>
     </div>
   );
 }

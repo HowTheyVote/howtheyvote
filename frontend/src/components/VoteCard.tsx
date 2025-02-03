@@ -15,7 +15,6 @@ export default function VoteCard({ vote }: VoteCardProps) {
         <a href={`/votes/${vote.id}`}>{vote.display_title}</a>
       </h2>
       <div class="vote-card__meta">
-        {vote.is_featured && <Tag style="featured">Featured</Tag>}
         {vote.geo_areas.length > 0 &&
           vote.geo_areas.map((area) => <Tag key={area.code}>{area.label}</Tag>)}
         {formatDate(new Date(vote.timestamp))}
