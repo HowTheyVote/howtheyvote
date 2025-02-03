@@ -49,15 +49,14 @@ def load_eurovoc() -> None:
     PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
 
     SELECT
+      ?term
       ?label
-      ?id
       ?geo_area_code
       (GROUP_CONCAT(DISTINCT ?related_id, ",") as ?related_ids)
       (GROUP_CONCAT(DISTINCT ?broader_id, ",") as ?broader_ids)
       (GROUP_CONCAT(DISTINCT ?alt_label, ",") as ?alt_labels)
     WHERE {
       GRAPH <http://publications.europa.eu/resource/dataset/eurovoc> {
-        ?term dc:identifier ?id.
         ?term euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
 
         ?term skos:prefLabel ?label_.
@@ -93,7 +92,7 @@ def load_eurovoc() -> None:
         }
       }
     }
-    GROUP BY ?id ?label ?geo_area_code
+    GROUP BY ?term ?label ?geo_area_code
     """
     log.info("Retrieving EuroVoc terms")
     results = exec_sparql_query(DATA_ENDPOINT, query)
@@ -104,6 +103,17 @@ def load_eurovoc() -> None:
     )
 
     for result in results:
+        # `term` is the resource URI (e.g. `http://eurovoc.europa.eu/162`) which contains the ID.
+        # We previously used the DC Terms `identifier` property. However, this property is sometimes
+        # ambiguous. For example, the domain concept "AGRICULTURE, FORESTRY AND FISHERIES" has the
+        # DC Terms identifier `56`, but the correct ID is `100156`.
+        if result["term"]["value"]:
+            uri = result["term"]["value"]
+            _, id_ = uri.rsplit("/", 1)
+        else:
+            log.warn("Missing resource URI")
+            continue
+
         if result["alt_labels"]["value"]:
             alt_labels = set(result["alt_labels"]["value"].split(","))
         else:
@@ -126,7 +136,7 @@ def load_eurovoc() -> None:
 
         container.add(
             EurovocConcept(
-                id=result["id"]["value"],
+                id=id_,
                 label=result["label"]["value"],
                 alt_labels=sorted(alt_labels),
                 related_ids=sorted(related_ids),
