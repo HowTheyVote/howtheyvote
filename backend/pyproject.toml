@@ -25,7 +25,6 @@ click = "^8.1.8"
 structlog = "^24.4.0"
 flask = "^3.1.0"
 cachetools = "^5.5.1"
-meilisearch = "^0.33.1"
 pillow = "^11.1.0"
 gunicorn = "^23.0.0"
 apispec = "^6.8.1"
@@ -65,6 +64,7 @@ select = ["E", "F", "W", "I", "N", "B", "UP", "UP006"]
 
 [tool.mypy]
 exclude = ["alembic", ".venv"]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/stubs"
 
 [tool.pytest.ini_options]
 env = [

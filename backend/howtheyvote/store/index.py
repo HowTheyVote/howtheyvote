@@ -1,13 +1,21 @@
 from collections.abc import Iterable, Iterator
-from typing import Literal, TypedDict, TypeVar, cast
+from typing import TypeVar, cast
 
 from sqlalchemy.dialects.sqlite import insert
 from structlog import get_logger
+from xapian import Document, TermGenerator, sortable_serialise
 
 from ..db import Session
 from ..helpers import chunks
-from ..meili import votes_index
 from ..models import BaseWithId, Vote
+from ..search import (
+    AccessType,
+    boolean_term,
+    field_to_prefix,
+    field_to_slot,
+    get_index,
+    get_stopper,
+)
 
 log = get_logger(__name__)
 
@@ -64,64 +72,83 @@ def index_db(model_cls: type[RecordType], records: Iterable[RecordType]) -> None
 def index_search(
     model_cls: type[RecordType],
     records: Iterable[RecordType],
-    sync: bool = False,
 ) -> None:
-    # At the moment, only votes are indexed in Meilisearch
+    # At the moment, only votes are searchable
     if model_cls != Vote:
         return
 
     votes = cast(Iterable[Vote], records)
-    formatted_records = []
+    filtered_votes = [vote for vote in votes if vote.is_main and vote.display_title]
 
-    for vote in votes:
-        if vote.is_main and vote.display_title:
-            formatted_records.append(_serialize_vote(vote))
-
-    if not len(formatted_records):
+    if not filtered_votes:
         log.warning("Skipping indexing to search index as list of records is empty")
         return
 
-    log.info("Writing aggregated records to search index", count=len(formatted_records))
+    log.info("Indexing aggregated records", count=len(filtered_votes))
 
-    # `Index.add_documents` requires `list[dict[str, any]]` which is incompatible with
-    # the `SerializedVote` typed dict. See https://github.com/python/mypy/issues/4976
-    documents = [dict(td) for td in formatted_records]
-    task = votes_index.add_documents(documents)
+    with get_index(Vote, AccessType.WRITE) as index:
+        generator = TermGenerator()
+        generator.set_database(index)
+        generator.set_stopper(get_stopper())
+        generator.set_stopper_strategy(TermGenerator.STOP_ALL)
 
-    if sync:
-        # This is primarily used in tests
-        votes_index.wait_for_task(task.task_uid)
+        # Automatically add words from indexed documents to spelling dictionary to
+        # enable spelling correction
+        generator.set_flags(TermGenerator.FLAG_SPELLING)
 
-
-class SerializedVote(TypedDict):
-    id: int
-    timestamp: float
-    display_title: str | None
-    reference: str | None
-    procedure_reference: str | None
-    description: str | None
-    is_featured: Literal[0, 1]
-    geo_areas: list[str]
-    keywords: list[str]
+        for vote in filtered_votes:
+            doc = _serialize_vote(vote, generator)
+            index.replace_document(int(vote.id), doc)
 
 
-def _serialize_vote(vote: Vote) -> SerializedVote:
-    keywords = set()
+def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
+    doc = Document()
+    generator.set_document(doc)
 
+    if not vote.display_title:
+        raise ValueError("Cannot index vote without `display_title`.")
+
+    generator.index_text(vote.display_title, 1, field_to_prefix("display_title"))
+
+    # Calling this method between indexing of different fields prevents
+    # searches matching terms from different fields, (e.g. last term of
+    # the title and first term of the following field).
+    generator.increase_termpos()
+
+    # Index EuroVoc concepts for full-text search
     for concept in vote.eurovoc_concepts:
-        keywords.add(concept.label)
-        keywords.update(concept.alt_labels)
-        keywords.update(bc.label for bc in concept.broader)
+        for term in set([concept.label, *concept.alt_labels]):
+            generator.index_text(term, 1, field_to_prefix("eurovoc_concepts"))
+            generator.increase_termpos()
 
-    return {
-        "id": vote.id,
-        # Meilisearch requires dates to be indexed as a numeric timestamp
-        "timestamp": vote.timestamp.timestamp(),
-        "display_title": vote.display_title,
-        "reference": vote.reference,
-        "procedure_reference": vote.procedure_reference,
-        "description": vote.description,
-        "is_featured": 1 if vote.is_featured else 0,
-        "geo_areas": [country.label for country in vote.geo_areas],
-        "keywords": list(keywords),
-    }
+    # Index geographic areas for full-text search
+    for geo_area in vote.geo_areas:
+        generator.index_text(geo_area.label, 1, field_to_prefix("geo_areas"))
+        generator.increase_termpos()
+
+    # Index rapporteur name
+    if vote.rapporteur:
+        generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
+
+    # Store timestamp and is_featured as sortable values for ranking
+    timestamp = sortable_serialise(vote.timestamp.timestamp())
+    doc.add_value(field_to_slot("timestamp"), timestamp)
+
+    is_featured = sortable_serialise(int(vote.is_featured))
+    doc.add_value(field_to_slot("is_featured"), is_featured)
+
+    # Also store is_featured as boolean term for filtering
+    term = boolean_term("is_featured", vote.is_featured)
+    doc.add_boolean_term(term)
+
+    # Store document and procedure references as boolean terms. Boolean terms
+    # aren’t searchable, but can be used for filtering.
+    if vote.reference:
+        term = boolean_term("reference", vote.reference)
+        doc.add_boolean_term(term)
+
+    if vote.procedure_reference:
+        term = boolean_term("procedure_reference", vote.procedure_reference)
+        doc.add_boolean_term(term)
+
+    return doc

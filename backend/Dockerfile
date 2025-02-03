@@ -1,4 +1,4 @@
-FROM python:3.12-alpine3.19
+FROM python:3.12-alpine3.21
 
 RUN apk --update add \
     build-base \
@@ -13,7 +13,9 @@ RUN apk --update add \
     make \
     cargo \
     sqlite \
-    tmux
+    tmux \
+    xapian-core \
+    xapian-bindings-python3
 
 RUN pip install "poetry<2.0"
 
@@ -34,5 +36,8 @@ RUN poetry install
 ENV TZ=UTC
 ENV ALEMBIC_CONFIG=./howtheyvote/alembic/alembic.ini
 ENV PATH="/howtheyvote/backend/.venv/bin:$PATH"
+
+# Make Python system packages (such as Xapian) accessible
+ENV PYTHONPATH=/usr/lib/python3.12/site-packages
 
 CMD gunicorn -b [::]:5000 --workers=5 --forwarded-allow-ips=* howtheyvote.wsgi:app

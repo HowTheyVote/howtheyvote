@@ -1,5 +1,4 @@
 import csv
-import re
 from collections import defaultdict
 from collections.abc import Callable, Iterable
 from io import StringIO
@@ -100,7 +99,6 @@ def index() -> Response:
     query = DatabaseQuery(Vote)
     query = query.page(request.args.get("page", type=int))
     query = query.page_size(request.args.get("page_size", type=int))
-    query = query.sort("timestamp", Order.DESC)
     query = query.filter("is_main", True)
     query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
 
@@ -165,10 +163,26 @@ def search() -> Response:
     query = SearchQuery(Vote)
     query = query.page(request.args.get("page", type=int))
     query = query.page_size(request.args.get("page_size", type=int))
-    query = query.query(_transform_query(q))
 
-    if not q:
+    # Detect document references and apply a filter
+    references = [match.group(0) for match in REFERENCE_REGEX.finditer(q)]
+    q = REFERENCE_REGEX.sub("", q)
+
+    for reference in references:
+        query = query.filter("reference", reference)
+
+    # Detect procedure references and apply a filter
+    procedure_references = [match.group(0) for match in PROCEDURE_REFERENCE_REGEX.finditer(q)]
+    q = PROCEDURE_REFERENCE_REGEX.sub("", q)
+
+    for procedure_reference in procedure_references:
+        query = query.filter("procedure_reference", procedure_reference)
+
+    # Use inverse chronological filter if query is empty
+    if not q.strip():
         query = query.sort("timestamp", Order.DESC)
+    else:
+        query = query.query(q)
 
     response = query.handle()
     results: list[BaseVoteDict] = [
@@ -321,16 +335,6 @@ def show_csv(vote_id: int) -> Response:
             "Content-Type": "text/csv",
         },
     )
-
-
-def _transform_query(query: str) -> str:
-    # Enclose document references in quotes to perform an exact search
-    query = re.sub(r'(?<!")' + REFERENCE_REGEX.pattern + r'(?!")', r'"\g<0>"', query)
-
-    # Enclose procedure references in quotes to perform an exact search
-    query = re.sub(r'(?<!")' + PROCEDURE_REFERENCE_REGEX.pattern + r'(?!")', r'"\g<0>"', query)
-
-    return query
 
 
 def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[Fragment]:

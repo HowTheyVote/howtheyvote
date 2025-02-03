@@ -16,10 +16,6 @@ USERS_DATABASE_URI = env.get(
 # File storage
 FILES_DIR = env.get("HTV_BACKEND_FILES_DIR", "/howtheyvote/files")
 
-# Meilisearch
-MEILI_URL = env.get("MEILI_URL")
-MEILI_MASTER_KEY = env.get("MEILI_MASTER_KEY")
-
 # Request configuration
 REQUEST_TIMEOUT = 20
 REQUEST_SLEEP = 0.25
@@ -29,3 +25,7 @@ CURRENT_TERM = 10
 TIMEZONE = "Europe/Brussels"
 WORKER_PROMETHEUS_PORT = 3000
 SEARCH_INDEX_PREFIX = env.get("HTV_SEARCH_INDEX_PREFIX", None)
+SEARCH_INDEX_DIR = env.get("HTV_SEARCH_INDEX_DIR", "/howtheyvote/index")
+
+# The Alpine package `xapian-core` installs stop word lists in this location
+SEARCH_STOPWORDS_PATH = "/usr/share/xapian-core/stopwords/english.list"

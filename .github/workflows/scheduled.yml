@@ -13,16 +13,27 @@ jobs:
       run:
         working-directory: ./backend
 
-    services:
-      meilisearch:
-        image: "getmeili/meilisearch:v1.3.1"
-        ports: ["7700:7700"]
-        env:
-          MEILI_MASTER_KEY: "1234567890"
+    env:
+      # Make Python system packages (such as Xapian) accessible
+      PYTHONPATH: /usr/lib/python3/dist-packages
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Install Xapian
+        run: sudo apt-get -y -q install python3-xapian
+
+      # Stopwords are included in the Alpine Xapian package, but for some reason they are not included
+      # in the Ubuntu package. This downloads them from the same source as the Alpine package:
+      # https://gitlab.alpinelinux.org/alpine/aports/-/blob/3.19-stable/community/xapian-core/APKBUILD#L12
+      - name: Download stopwords
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl -o xapian-core-1.4.26.tar.xz https://oligarchy.co.uk/xapian/1.4.26/xapian-core-1.4.26.tar.xz
+          tar -xf xapian-core-1.4.26.tar.xz
+          mkdir -p /usr/share/xapian-core/stopwords
+          cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
 
       - name: Install poetry
         run: pipx install "poetry<2.0"
@@ -43,5 +54,4 @@ jobs:
           HTV_TEST_MOCK_REQUESTS: "false"
           HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
           HTV_BACKEND_USERS_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/users.sqlite3"
-          MEILI_MASTER_KEY: "1234567890"
-          MEILI_URL: "http://localhost:7700"
+          HTV_SEARCH_INDEX_DIR: "${{ github.workspace }}/storage/index"
