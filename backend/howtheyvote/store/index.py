@@ -9,13 +9,11 @@ from ..db import Session
 from ..helpers import chunks
 from ..models import BaseWithId, Vote
 from ..search import (
-    BOOST_DISPLAY_TITLE,
-    BOOST_EUROVOC_CONCEPTS,
-    BOOST_GEO_AREAS,
     SLOT_IS_FEATURED,
     SLOT_TIMESTAMP,
     AccessType,
     boolean_term,
+    field_to_prefix,
     get_index,
     get_stopper,
 )
@@ -111,7 +109,7 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     if not vote.display_title:
         raise ValueError("Cannot index vote without `display_title`.")
 
-    generator.index_text(vote.display_title, BOOST_DISPLAY_TITLE)
+    generator.index_text(vote.display_title, 1, field_to_prefix("display_title"))
 
     # Calling this method between indexing of different fields prevents
     # searches matching terms from different fields, (e.g. last term of
@@ -121,24 +119,17 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     # Index EuroVoc concepts for full-text search
     for concept in vote.eurovoc_concepts:
         for term in set([concept.label, *concept.alt_labels]):
-            generator.index_text(term, BOOST_EUROVOC_CONCEPTS)
+            generator.index_text(term, 1, field_to_prefix("eurovoc_concepts"))
             generator.increase_termpos()
-
-        for broader in concept.broader:
-            for term in set([broader.label, *broader.alt_labels]):
-                # Index broader concepts, too, but do not boost them as this may
-                # cause too many high-ranking false positives
-                generator.index_text(term)
-                generator.increase_termpos()
 
     # Index geographic areas for full-text search
     for geo_area in vote.geo_areas:
-        generator.index_text(geo_area.label, BOOST_GEO_AREAS)
+        generator.index_text(geo_area.label, 1, field_to_prefix("geo_areas"))
         generator.increase_termpos()
 
     # Index rapporteur name
     if vote.rapporteur:
-        generator.index_text(vote.rapporteur)
+        generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
     # Store timestamp and is_featured as sortable values for ranking
     timestamp = sortable_serialise(vote.timestamp.timestamp())

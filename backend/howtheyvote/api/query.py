@@ -23,7 +23,10 @@ from xapian import (
 from ..db import Session
 from ..models import BaseWithId
 from ..search import (
+    SEARCH_FIELDS,
     boolean_term,
+    field_to_boost,
+    field_to_prefix,
     field_to_slot,
     get_index,
     get_stopper,
@@ -307,8 +310,7 @@ class SearchQuery(Query[T]):
         return parser
 
     def _xapian_query(self, index: Database) -> XapianQuery:
-        parser = self._xapian_query_parser(index)
-        query = parser.parse_query(self.get_query())
+        query = self._xapian_main_query(index)
 
         if query.empty():
             query = XapianQuery.MatchAll
@@ -335,6 +337,36 @@ class SearchQuery(Query[T]):
             # Fields have to be indexed as boolean terms to be used as filters
             term = boolean_term(field, value)
             query = XapianQuery(XapianQuery.OP_FILTER, query, XapianQuery(term))
+
+        return query
+
+    def _xapian_main_query(self, index: Database) -> XapianQuery:
+        # This subquery contains multiple other queries matching terms in different
+        # fields and assigning different boost factors depending on the field. For
+        # example, searching for "ukraine" would result in a subquery for this term
+        # for the `display_title` field with a boost factor of 15, another subquery
+        # for the `geo_areas` field with a boost factor of 2, etc. This means that
+        # search terms can occur in any of these fields, but if they occur in certain
+        # fields that leads to a higher result score.
+        parser = self._xapian_query_parser(index)
+        query = XapianQuery.MatchNothing
+
+        for field in SEARCH_FIELDS:
+            subquery = XapianQuery(
+                XapianQuery.OP_SCALE_WEIGHT,
+                parser.parse_query(
+                    self.get_query(),
+                    QueryParser.FLAG_DEFAULT,
+                    field_to_prefix(field),
+                ),
+                field_to_boost(field),
+            )
+
+            query = XapianQuery(
+                XapianQuery.OP_OR,
+                query,
+                subquery,
+            )
 
         return query
 
@@ -383,9 +415,16 @@ class SearchQuery(Query[T]):
         # (and we start indexing longer documents), we should reconsider this.
         b = 0  # Xapian default: 0.5
 
+        # This parameter controls the impact of within-document frequency (WDF). Right now, we
+        # only index vote titles and some keywords, all very short texts. In most cases, it
+        # doesn’t make a difference if a search term occurs one or multiple times in the title,
+        # and we wouldn’t want votes to be ranked differently just because of this. Setting k=0
+        # means that WDF does not affect scores. When we start indexing longer texts (such as
+        # vote summaries), we should reconsider this.
+        k1 = 0
+
         # The following BM25 parameters are Xapian’s defaults.
         # See: https://xapian.org/docs/apidoc/html/classXapian_1_1BM25Weight.html
-        k1 = 1
         k2 = 0
         k3 = 1
         min_normlen = 0.5

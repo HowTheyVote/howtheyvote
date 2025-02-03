@@ -19,9 +19,22 @@ class AccessType(enum.Enum):
     WRITE = "WRITE"
 
 
+# These are the fields that are used for full-text search.
+SEARCH_FIELDS = [
+    "display_title",
+    "geo_areas",
+    "eurovoc_concepts",
+    "rapporteur",
+]
+
+
 # By convention, field prefixes in Xapian start with an uppercase X
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/boolean_filters.html
 FIELD_TO_PREFIX_MAPPING = {
+    "display_title": "XDT",
+    "geo_areas": "XGA",
+    "eurovoc_concepts": "XEC",
+    "rapporteur": "XRA",
     "reference": "XR",
     "procedure_reference": "XPR",
     "is_featured": "XF",
@@ -41,19 +54,28 @@ FIELD_TO_SLOT_MAPPING = {
     "is_featured": SLOT_IS_FEATURED,
 }
 
-# Constant WDF (within-document frequency) boost. This can be used to attach extra importance
-# to certain parts of a document (such as the title) compared to the rest of the document.
-# For example, a factor of 5 means that a single occurence of a term is counted as if it had
-# occurred 5 times. Applied at index time (not query time).
-# See: https://xapian.org/docs/intro_ir.html#wdp-wdf-ndl-and-wqf
+# Some document fields are more important than others. The following factors are applied
+# at search time if search terms are found in the respective document fields. For example,
+# if a search term is found in the `display_title` field, this results in a higher score
+# than if it is found in another field.
 # See: https://trac.xapian.org/wiki/FAQ/ExtraWeight
-BOOST_DISPLAY_TITLE = 15
-BOOST_EUROVOC_CONCEPTS = 2
-BOOST_GEO_AREAS = 2
+FIELD_TO_BOOST_MAPPING = {
+    "display_title": 15,
+    "geo_areas": 2,
+    "eurovoc_concepts": 2,
+}
 
 
 def field_to_slot(field: str) -> int:
     return FIELD_TO_SLOT_MAPPING[field]
+
+
+def field_to_prefix(field: str) -> str:
+    return FIELD_TO_PREFIX_MAPPING[field]
+
+
+def field_to_boost(field: str) -> float:
+    return FIELD_TO_BOOST_MAPPING.get(field, 1)
 
 
 def boolean_term(field: str, value: str | int | bool) -> str:
