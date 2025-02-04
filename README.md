@@ -35,6 +35,11 @@ You can now access the application at `https://localhost`. Note that we use self
 
 At this point, there isn’t yet any data in your local database. You can use the [CLI](#cli) to run data pipelines.
 
+> [!TIP]
+> On Linux systems, due to the way Docker works by default, files created within the containers (such as the database file), will be owned by `root`.
+> In order to easily work with them via your ordinary user account, you can use the solution described [here](https://stackoverflow.com/a/70613576/4418325).
+> As a workaround, running `sudo chown -R $USER .` from the root directory of the project also works.           
+
 ## CLI
 
 The `htv` CLI is installed in the `backend` container and provides a few commands that can be helpful during development. In order to run CLI commands make sure to first create a shell in the `backend` container:
