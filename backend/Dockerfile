@@ -1,4 +1,4 @@
-FROM python:3.12-alpine3.21
+FROM python:3.13-alpine3.21
 
 RUN apk --update add \
     build-base \
@@ -25,7 +25,7 @@ WORKDIR /howtheyvote/backend
 COPY pyproject.toml pyproject.toml
 COPY poetry.toml poetry.toml
 COPY poetry.lock poetry.lock
-RUN poetry env use python3.12
+RUN poetry env use python3.13
 RUN poetry install
 
 COPY . .
@@ -37,7 +37,9 @@ ENV TZ=UTC
 ENV ALEMBIC_CONFIG=./howtheyvote/alembic/alembic.ini
 ENV PATH="/howtheyvote/backend/.venv/bin:$PATH"
 
-# Make Python system packages (such as Xapian) accessible
+# Make Python system packages (such as Xapian) accessible. This has to be the same
+# as the Python version that can be installed via the Alpine package manager. At
+# the time of writing, this is 3.12 on Alpine 3.21.
 ENV PYTHONPATH=/usr/lib/python3.12/site-packages
 
 CMD gunicorn -b [::]:5000 --workers=5 --forwarded-allow-ips=* howtheyvote.wsgi:app
