@@ -17,7 +17,7 @@ RUN apk --update add \
     xapian-core \
     xapian-bindings-python3
 
-RUN pip install "poetry<2.0"
+RUN pip install poetry
 
 WORKDIR /howtheyvote/backend
 
