@@ -73,3 +73,6 @@ markers = [
 addopts = [
     "--import-mode=importlib",
 ]
+pythonpath = [
+    "."
+]
