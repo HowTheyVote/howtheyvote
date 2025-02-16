@@ -1,3 +1,4 @@
+from .committee import Committee, CommitteeType
 from .common import Base, BaseWithId, DataIssue, Fragment, PipelineRun, PipelineStatus
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
@@ -31,6 +32,8 @@ __all__ = [
     "Group",
     "EurovocConcept",
     "EurovocConceptType",
+    "Committee",
+    "CommitteeType",
     "PlenarySession",
     "PlenarySessionLocation",
     "PlenarySessionStatus",
