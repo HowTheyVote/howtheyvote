@@ -1,0 +1,429 @@
+[
+  {
+    "code": "AFCO",
+    "label": "Committee on Constitutional Affairs",
+    "abbreviation": "AFCO",
+    "start_date": "1982-01-21",
+    "end_date": null
+  },
+  {
+    "code": "AFET",
+    "label": "Committee on Foreign Affairs",
+    "abbreviation": "AFET",
+    "start_date": "1992-01-15",
+    "end_date": null
+  },
+  {
+    "code": "AGRI",
+    "label": "Committee on Agriculture and Rural Development",
+    "abbreviation": "AGRI",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "AIDA",
+    "label": "Special Committee on Artificial Intelligence in a Digital Age",
+    "abbreviation": "AIDA",
+    "start_date": "2020-09-14",
+    "end_date": null
+  },
+  {
+    "code": "ANIT",
+    "label": "Committee of Inquiry on the Protection of Animals during Transport",
+    "abbreviation": "ANIT",
+    "start_date": "2020-06-19",
+    "end_date": null
+  },
+  {
+    "code": "ASSOC",
+    "label": "Committee on Associations",
+    "abbreviation": "ASSOC",
+    "start_date": "1975-01-01",
+    "end_date": "1976-12-31"
+  },
+  {
+    "code": "BECA",
+    "label": "Special Committee on Beating Cancer",
+    "abbreviation": "BECA",
+    "start_date": "2020-09-14",
+    "end_date": null
+  },
+  {
+    "code": "BUDE",
+    "label": "European Parliament delegation to the Budgetary Conciliation Committee",
+    "abbreviation": "BUDE",
+    "start_date": "2019-07-14",
+    "end_date": null
+  },
+  {
+    "code": "BUDG",
+    "label": "Committee on Budgets",
+    "abbreviation": "BUDG",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "CODE",
+    "label": "Parliament\u2019s delegation to the Conciliation Committee",
+    "abbreviation": "CODE",
+    "start_date": "2004-01-19",
+    "end_date": "2018-07-14"
+  },
+  {
+    "code": "CONT",
+    "label": "Committee on Budgetary Control",
+    "abbreviation": "CONT",
+    "start_date": "1979-07-19",
+    "end_date": null
+  },
+  {
+    "code": "CRIM",
+    "label": "Special Committee on Organised Crime, Corruption and Money Laundering",
+    "abbreviation": "CRIM",
+    "start_date": "2012-03-28",
+    "end_date": "2013-10-23"
+  },
+  {
+    "code": "CRIS",
+    "label": "Special Committee on the Financial, Economic and Social Crisis",
+    "abbreviation": "CRIS",
+    "start_date": "2009-10-07",
+    "end_date": "2011-07-31"
+  },
+  {
+    "code": "CULT",
+    "label": "Committee on Culture and Education",
+    "abbreviation": "CULT",
+    "start_date": "1979-07-19",
+    "end_date": null
+  },
+  {
+    "code": "DELCON",
+    "label": "Delegation to the Conciliation Committee",
+    "abbreviation": "DELCON",
+    "start_date": "1994-07-01",
+    "end_date": null
+  },
+  {
+    "code": "DEVE",
+    "label": "Committee on Development",
+    "abbreviation": "DEVE",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "DROI",
+    "label": "Subcommittee on Human Rights",
+    "abbreviation": "DROI",
+    "start_date": "1992-01-15",
+    "end_date": null
+  },
+  {
+    "code": "ECON",
+    "label": "Committee on Economic and Monetary Affairs",
+    "abbreviation": "ECON",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "EMIS",
+    "label": "Committee of Inquiry into Emission Measurements in the Automotive Sector",
+    "abbreviation": "EMIS",
+    "start_date": "2016-01-20",
+    "end_date": "2017-04-04"
+  },
+  {
+    "code": "EMPL",
+    "label": "Committee on Employment and Social Affairs",
+    "abbreviation": "EMPL",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "ENVI",
+    "label": "Committee on the Environment, Public Health and Food Safety",
+    "abbreviation": "ENVI",
+    "start_date": "1962-03-30",
+    "end_date": null
+  },
+  {
+    "code": "EQUI",
+    "label": "Committee of Inquiry into the crisis of the Equitable Life Assurance Society",
+    "abbreviation": "EQUI",
+    "start_date": "2006-01-18",
+    "end_date": "2007-06-19"
+  },
+  {
+    "code": "FEMM",
+    "label": "Committee on Women\u2019s Rights and Gender Equality",
+    "abbreviation": "FEMM",
+    "start_date": "1984-07-26",
+    "end_date": null
+  },
+  {
+    "code": "FISC",
+    "label": "Subcommittee on Tax Matters",
+    "abbreviation": "FISC",
+    "start_date": "2020-09-14",
+    "end_date": null
+  },
+  {
+    "code": "GER_UNIFIC",
+    "label": "Temporary Committee on the Impact of German unification on the EC",
+    "abbreviation": "GER_UNIFIC",
+    "start_date": "1990-01-01",
+    "end_date": "1990-12-31"
+  },
+  {
+    "code": "IMCO",
+    "label": "Committee on the Internal Market and Consumer Protection",
+    "abbreviation": "IMCO",
+    "start_date": "2004-07-20",
+    "end_date": null
+  },
+  {
+    "code": "IMMU",
+    "label": "Committee on the Rules of Procedure, the Verification of Credentials and Immunities",
+    "abbreviation": "IMMU",
+    "start_date": "1982-01-21",
+    "end_date": "1999-07-19"
+  },
+  {
+    "code": "INGE",
+    "label": "Special Committee on Foreign Interference in all Democratic Processes in the European Union, including Disinformation",
+    "abbreviation": "INGE",
+    "start_date": "2020-09-14",
+    "end_date": null
+  },
+  {
+    "code": "INQWOM",
+    "label": "Committee of inquiry into the situation of women in Europe",
+    "abbreviation": "INQWOM",
+    "start_date": "1982-01-21",
+    "end_date": "1984-07-23"
+  },
+  {
+    "code": "INTA",
+    "label": "Committee on International Trade",
+    "abbreviation": "INTA",
+    "start_date": "2004-07-20",
+    "end_date": null
+  },
+  {
+    "code": "ITRE",
+    "label": "Committee on Industry, Research and Energy",
+    "abbreviation": "ITRE",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "JURI",
+    "label": "Committee on Legal Affairs",
+    "abbreviation": "JURI",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "LIBE",
+    "label": "Committee on Civil Liberties, Justice and Home Affairs",
+    "abbreviation": "LIBE",
+    "start_date": "1992-01-15",
+    "end_date": null
+  },
+  {
+    "code": "PANA",
+    "label": "Committee of Inquiry into Money Laundering, Tax Avoidance and Tax Evasion",
+    "abbreviation": "PANA",
+    "start_date": "2016-06-23",
+    "end_date": "2019-07-01"
+  },
+  {
+    "code": "PECH",
+    "label": "Committee on Fisheries",
+    "abbreviation": "PECH",
+    "start_date": "1994-07-21",
+    "end_date": null
+  },
+  {
+    "code": "PEST",
+    "label": "Special Committee on the Union\u2019s authorisation procedure for pesticides",
+    "abbreviation": "PEST",
+    "start_date": "2018-02-08",
+    "end_date": "2018-12-12"
+  },
+  {
+    "code": "PETI",
+    "label": "Committee on Petitions",
+    "abbreviation": "PETI",
+    "start_date": "1962-03-30",
+    "end_date": null
+  },
+  {
+    "code": "POLI",
+    "label": "Political Affairs Committee",
+    "abbreviation": "POLI",
+    "start_date": "1978-03-14",
+    "end_date": "1992-01-14"
+  },
+  {
+    "code": "REGI",
+    "label": "Committee on Regional Development",
+    "abbreviation": "REGI",
+    "start_date": "1978-03-14",
+    "end_date": null
+  },
+  {
+    "code": "RELA",
+    "label": "Committee on External Economic Relations",
+    "abbreviation": "RELA",
+    "start_date": "1978-03-14",
+    "end_date": "1999-07-19"
+  },
+  {
+    "code": "SC_MONAFF",
+    "label": "Subcommittee on Monetary Affairs",
+    "abbreviation": "SC_MONAFF",
+    "start_date": "1992-04-27",
+    "end_date": "1999-07-19"
+  },
+  {
+    "code": "SC_PECH",
+    "label": "Subcommittee on Fisheries",
+    "abbreviation": "SC_PECH",
+    "start_date": "1992-01-15",
+    "end_date": "1994-07-18"
+  },
+  {
+    "code": "SC_SEDIS",
+    "label": "Subcommittee on Security and Disarmament",
+    "abbreviation": "SC_SEDIS",
+    "start_date": "1992-01-15",
+    "end_date": "1999-07-19"
+  },
+  {
+    "code": "SEDE",
+    "label": "Subcommittee on Security and Defence",
+    "abbreviation": "SEDE",
+    "start_date": "2004-07-20",
+    "end_date": null
+  },
+  {
+    "code": "STOA",
+    "label": "Panel for the Future of Science and Technology",
+    "abbreviation": "STOA",
+    "start_date": "1992-05-26",
+    "end_date": null
+  },
+  {
+    "code": "SURE",
+    "label": "Special committee on the policy challenges and budgetary resources for a sustainable European Union after 2013",
+    "abbreviation": "SURE",
+    "start_date": "2010-06-16",
+    "end_date": "2011-06-30"
+  },
+  {
+    "code": "TAX2",
+    "label": "Special Committee on Tax Rulings and Other Measures Similar in Nature or Effect (TAXE 2)",
+    "abbreviation": "TAXE 2",
+    "start_date": "2015-12-02",
+    "end_date": "2016-08-02"
+  },
+  {
+    "code": "TAX3",
+    "label": "Special committee on financial crimes, tax evasion and tax avoidance",
+    "abbreviation": "TAX3",
+    "start_date": "2018-03-01",
+    "end_date": "2019-03-28"
+  },
+  {
+    "code": "TAXE",
+    "label": "Special Committee on Tax Rulings and Other Measures Similar in Nature or Effect",
+    "abbreviation": "TAXE",
+    "start_date": "2015-02-12",
+    "end_date": "2015-12-01"
+  },
+  {
+    "code": "TC_BSE",
+    "label": "Temporary committee instructed to monitor the action taken on the recommendations made concerning BSE (bovine spongiform encephalopathy)",
+    "abbreviation": "TC_BSE",
+    "start_date": "1996-07-18",
+    "end_date": "1997-11-19"
+  },
+  {
+    "code": "TC_CLIM",
+    "label": "Temporary Committee on Climate Change",
+    "abbreviation": "TC_CLIM",
+    "start_date": "2007-04-25",
+    "end_date": "2009-02-04"
+  },
+  {
+    "code": "TC_CTS",
+    "label": "Temporary committee of Inquiry into the Community Transit System",
+    "abbreviation": "TC_CTS",
+    "start_date": "1995-12-14",
+    "end_date": "1997-03-13"
+  },
+  {
+    "code": "TC_ECHE",
+    "label": "Temporary committee on the Echelon interception system",
+    "abbreviation": "TC_ECHE",
+    "start_date": "2000-07-05",
+    "end_date": "2001-09-05"
+  },
+  {
+    "code": "TC_EMPL",
+    "label": "Temporary committee on employment",
+    "abbreviation": "TC_EMPL",
+    "start_date": "1994-07-21",
+    "end_date": "1995-07-19"
+  },
+  {
+    "code": "TC_FIAP",
+    "label": "Temporary committee on foot and mouth disease",
+    "abbreviation": "TC_FIAP",
+    "start_date": "2002-01-15",
+    "end_date": "2002-12-17"
+  },
+  {
+    "code": "TC_FINP",
+    "label": "Temporary committee on policy challenges and budgetary means of the enlarged Union 2007-2013",
+    "abbreviation": "TC_FINP",
+    "start_date": "2004-10-13",
+    "end_date": "2005-06-08"
+  },
+  {
+    "code": "TC_GENE",
+    "label": "Temporary committee on human genetics and other new technologies in modern medicine",
+    "abbreviation": "TC_GENE",
+    "start_date": "2000-12-13",
+    "end_date": "2001-11-29"
+  },
+  {
+    "code": "TC_MARE",
+    "label": "Temporary committee on improving safety at sea",
+    "abbreviation": "TC_MARE",
+    "start_date": "2003-11-06",
+    "end_date": "2004-04-21"
+  },
+  {
+    "code": "TC_TDIP",
+    "label": "Temporary Committee on the alleged use of European countries by the CIA for the transport and illegal detention of prisoners",
+    "abbreviation": "TC_TDIP",
+    "start_date": "2006-01-18",
+    "end_date": "2007-02-14"
+  },
+  {
+    "code": "TERR",
+    "label": "Special Committee on Terrorism",
+    "abbreviation": "TERR",
+    "start_date": "2017-09-12",
+    "end_date": "2018-11-14"
+  },
+  {
+    "code": "TRAN",
+    "label": "Committee on Transport and Tourism",
+    "abbreviation": "TRAN",
+    "start_date": "1979-07-19",
+    "end_date": null
+  }
+]
