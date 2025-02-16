@@ -38,10 +38,7 @@ def test_member_info_scraper(responses):
         fragment.data.get("facebook")
         == "https://www.facebook.com/MikaAaltola2024/?locale=fi_FI"
     )
-    assert (
-        fragment.data.get("twitter")
-        == "https://x.com/MikaAaltola?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor"
-    )
+    assert fragment.data.get("twitter") == "https://x.com/MikaAaltola"
     assert fragment.data.get("email") == "mika.aaltola@europarl.europa.eu"
 
 
