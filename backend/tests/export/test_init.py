@@ -138,8 +138,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,is_featured,procedure_reference,procedure_title\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,False,,\n"
+        "id,timestamp,display_title,reference,description,is_main,is_featured,procedure_reference,procedure_title,responsible_committee_code\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,False,,,\n"
     )
 
     assert votes_csv.read_text() == expected

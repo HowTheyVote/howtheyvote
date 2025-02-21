@@ -27,7 +27,6 @@ from .serializers import (
     VoteStatsDict,
     serialize_base_vote,
     serialize_country,
-    serialize_eurovoc_concept,
     serialize_group,
     serialize_member,
 )
@@ -236,19 +235,7 @@ def show(vote_id: int) -> Response:
     if not vote:
         return abort(404)
 
-    base_vote: BaseVoteDict = {
-        "id": vote.id,
-        "display_title": vote.display_title,
-        "timestamp": vote.timestamp,
-        "reference": vote.reference,
-        "description": vote.description,
-        "is_featured": vote.is_featured,
-        "geo_areas": [serialize_country(country) for country in vote.geo_areas],
-        "eurovoc_concepts": [
-            serialize_eurovoc_concept(concept) for concept in vote.eurovoc_concepts
-        ],
-    }
-
+    base_vote = serialize_base_vote(vote)
     procedure: ProcedureDict | None = None
 
     if vote.procedure_reference:

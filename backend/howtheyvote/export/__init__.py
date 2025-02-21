@@ -143,6 +143,9 @@ class VoteRow(TypedDict):
     procedure_title: str | None
     """Title of the legislative procedure as listed in the Legislative Observatory"""
 
+    responsible_committee_code: str | None
+    """Committee responsible for the legislative procedure"""
+
 
 class MemberVoteRow(TypedDict):
     """Each row represents how an MEP voted in a roll-call vote."""
@@ -335,6 +338,10 @@ class Export:
                 if idx % 1000 == 0:
                     log.info("Writing vote", index=idx)
 
+                responsible_committee_code = (
+                    vote.responsible_committee.code if vote.responsible_committee else None
+                )
+
                 votes.write_row(
                     {
                         "id": vote.id,
@@ -346,6 +353,7 @@ class Export:
                         "is_featured": vote.is_featured,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
+                        "responsible_committee_code": responsible_committee_code,
                     }
                 )
 

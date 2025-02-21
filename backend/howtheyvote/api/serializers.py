@@ -2,6 +2,7 @@ import datetime
 from typing import Annotated, TypedDict
 
 from ..models import (
+    Committee,
     Country,
     EurovocConcept,
     Group,
@@ -67,6 +68,27 @@ def serialize_country(country: Country) -> CountryDict:
         "code": country.code,
         "iso_alpha_2": country.iso_alpha_2,
         "label": country.label,
+    }
+
+
+class CommitteeDict(TypedDict):
+    """Committee of the European Parliament"""
+
+    code: Annotated[str, "LIBE"]
+    """Unique identifier for the committee"""
+
+    label: Annotated[str, "Committee on Civil Liberties, Justice and Home Affairs"]
+    """Name of the committee"""
+
+    abbreviation: Annotated[str | None, "LIBE"]
+    """Abbreviation"""
+
+
+def serialize_committee(committee: Committee) -> CommitteeDict:
+    return {
+        "code": committee.code,
+        "label": committee.label,
+        "abbreviation": committee.abbreviation,
     }
 
 
@@ -236,10 +258,16 @@ class BaseVoteDict(TypedDict):
     """Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus
     that are related to this vote"""
 
+    responsible_committee: CommitteeDict | None
+    """Committee responsible for the legislative procedure"""
+
 
 def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     geo_areas = [serialize_country(geo_area) for geo_area in vote.geo_areas]
     eurovoc_concepts = [serialize_eurovoc_concept(ec) for ec in vote.eurovoc_concepts]
+    responsible_committee = (
+        serialize_committee(vote.responsible_committee) if vote.responsible_committee else None
+    )
 
     return {
         "id": vote.id,
@@ -250,6 +278,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "is_featured": vote.is_featured,
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
+        "responsible_committee": responsible_committee,
     }
 
 
