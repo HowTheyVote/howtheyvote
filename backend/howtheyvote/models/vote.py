@@ -9,6 +9,7 @@ from sqlalchemy.engine import Dialect
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
 
+from .committee import Committee, CommitteeType
 from .common import BaseWithId, DataIssue
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
@@ -89,6 +90,7 @@ class Vote(BaseWithId):
     eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
         ListType(EurovocConceptType())
     )
+    responsible_committee: Mapped[Committee] = mapped_column(CommitteeType())
     issues: Mapped[list[DataIssue]] = mapped_column(ListType(sa.Enum(DataIssue)))
 
     @property
