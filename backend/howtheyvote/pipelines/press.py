@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from sqlalchemy import func, select
 from structlog import get_logger
 
-from ..analysis import FeaturedVotesAnalyzer
+from ..analysis import FeaturedVotesAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
 from ..models import PlenarySession, PressRelease, Vote
 from ..query import session_is_current_at
@@ -43,6 +43,7 @@ class PressPipeline(BasePipeline):
 
         self._scrape_press_releases_index()
         self._scrape_press_releases()
+        self._analyze_vote_position_counts()
         self._analyze_featured_votes()
         self._index_press_releases()
         self._index_votes()
@@ -116,6 +117,23 @@ class PressPipeline(BasePipeline):
                     release_id=release_id,
                     date=self.date,
                 )
+
+        writer.flush()
+
+    def _analyze_vote_position_counts(self) -> None:
+        writer = BulkWriter()
+
+        for press_release in self._press_releases():
+            log.info(
+                "Extracting vote position counts",
+                release_id=press_release.id,
+                date=self.date,
+            )
+            analyzer = VotePositionCountsAnalyzer(
+                release_id=press_release.id,
+                text=press_release.text,
+            )
+            writer.add(analyzer.run())
 
         writer.flush()
 

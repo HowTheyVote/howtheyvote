@@ -111,4 +111,6 @@ def map_press_release(record: CompositeRecord) -> PressRelease:
         references=record.chain("reference"),
         procedure_references=record.chain("procedure_reference"),
         facts=record.first("facts"),
+        text=record.first("text"),
+        position_counts=record.first("position_counts"),
     )

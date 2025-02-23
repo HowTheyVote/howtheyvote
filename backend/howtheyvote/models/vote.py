@@ -69,6 +69,13 @@ class MemberVoteType(TypeDecorator[MemberVote]):
         return deserialize_member_vote(value)
 
 
+class VotePositionCounts(TypedDict):
+    FOR: int
+    AGAINST: int
+    ABSTENTION: int
+    DID_NOT_VOTE: int
+
+
 class Vote(BaseWithId):
     __tablename__ = "votes"
 

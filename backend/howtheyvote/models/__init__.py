@@ -16,6 +16,7 @@ from .vote import (
     Vote,
     VoteGroup,
     VotePosition,
+    VotePositionCounts,
     deserialize_member_vote,
     serialize_member_vote,
 )
@@ -40,6 +41,7 @@ __all__ = [
     "GroupMembership",
     "Member",
     "VotePosition",
+    "VotePositionCounts",
     "MemberVote",
     "Vote",
     "VoteGroup",
