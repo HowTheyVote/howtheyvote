@@ -51,8 +51,11 @@ class DataclassContainer(Generic[DataclassType]):
 
         self.index[key.lower()] = record
 
-    def get(self, key: str) -> DataclassType | None:
+    def get(self, key: str | None) -> DataclassType | None:
         """Get a record by key."""
+        if not key:
+            return None
+
         return self.index.get(key.lower())
 
     def __iter__(self) -> Iterator[DataclassType]:

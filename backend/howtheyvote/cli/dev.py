@@ -6,7 +6,7 @@ import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Country, EurovocConcept, Group
+from ..models import Committee, Country, EurovocConcept, Group
 
 log = get_logger(__name__)
 
@@ -227,6 +227,80 @@ def load_countries() -> None:
         )
 
     container.save()
+
+
+@dev.command()
+def load_committees() -> None:
+    query = """
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
+    PREFIX org: <http://www.w3.org/ns/org#>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
+
+    SELECT ?code ?label ?abbr ?short ?start_date ?end_date
+    FROM <http://publications.europa.eu/resource/authority/corporate-body>
+    WHERE {
+        ?group org:classification <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_CMT>.
+
+        ?group dc:identifier ?code.
+
+        ?group skos:prefLabel ?label.
+        FILTER(lang(?label) = "en")
+
+        # The end date is set if the committee isn't active anymore.
+        ?group euvoc:startDate ?start_date.
+        OPTIONAL { ?group euvoc:endDate ?end_date }
+
+        # Get the current acronym
+        OPTIONAL {
+            ?group skosxl:altLabel ?abbr_node.
+            ?abbr_node skosxl:literalForm ?abbr.
+            ?abbr_node dct:type ?abbr_type.
+            ?abbr_node euvoc:status ?abbr_status.
+            FILTER(
+                lang(?abbr) = "en" &&
+                ?abbr_type = <http://publications.europa.eu/resource/authority/label-type/ACRONYM> &&
+                ?abbr_status = <http://publications.europa.eu/resource/authority/concept-status/CURRENT>
+            )
+        }
+    }
+    """  # noqa: E501
+
+    log.info("Retrieving committees")
+    results = exec_sparql_query(PUBLICATIONS_ENDPOINT, query)
+    committees = DataclassContainer(
+        dataclass=Committee,
+        file_path=DATA_DIR.joinpath("committees.json"),
+        key_attr="code",
+    )
+
+    for result in results:
+        code = result["code"]["value"]
+        code = code.removeprefix("EP_")
+
+        label = result["label"]["value"]
+        abbreviation = result["abbr"]["value"] if result.get("abbr") else code
+
+        start_date = datetime.date.fromisoformat(result["start_date"]["value"])
+        end_date = (
+            datetime.date.fromisoformat(result["end_date"]["value"])
+            if result.get("end_date")
+            else None
+        )
+
+        committees.add(
+            Committee(
+                code=code,
+                label=label,
+                abbreviation=abbreviation,
+                start_date=start_date,
+                end_date=end_date,
+            )
+        )
+
+    committees.save()
 
 
 @dev.command()

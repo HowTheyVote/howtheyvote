@@ -5,6 +5,7 @@ from .. import config
 from .openapi_helpers import get_schema, normalize_schema_name
 from .serializers import (
     BaseVoteDict,
+    CommitteeDict,
     CountryDict,
     EurovocConceptDict,
     GroupDict,
@@ -48,6 +49,7 @@ schema_classes = [
     MemberDict,
     GroupDict,
     CountryDict,
+    CommitteeDict,
     EurovocConceptDict,
     PlenarySessionDict,
     PlenarySessionsQueryResponseDict,

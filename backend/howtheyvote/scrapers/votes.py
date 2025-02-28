@@ -7,7 +7,15 @@ from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
 from ..helpers import parse_procedure_reference, parse_reference
-from ..models import Country, EurovocConcept, Fragment, MemberVote, Vote, VotePosition
+from ..models import (
+    Committee,
+    Country,
+    EurovocConcept,
+    Fragment,
+    MemberVote,
+    Vote,
+    VotePosition,
+)
 from .common import BeautifulSoupScraper, RequestCache, ScrapingError
 from .helpers import (
     fill_missing_by_reference,
@@ -404,6 +412,7 @@ class ProcedureScraper(BeautifulSoupScraper):
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         title = self._title(doc)
         geo_areas = self._geo_areas(doc)
+        responsible_committee = self._responsible_committee(doc)
         self._log.info(
             "Extracted procedure information",
             title=title,
@@ -417,6 +426,7 @@ class ProcedureScraper(BeautifulSoupScraper):
             data={
                 "procedure_title": title,
                 "geo_areas": geo_areas,
+                "responsible_committee": responsible_committee,
             },
         )
 
@@ -460,6 +470,31 @@ class ProcedureScraper(BeautifulSoupScraper):
             geo_areas.append(country.code)
 
         return geo_areas
+
+    def _responsible_committee(self, doc: BeautifulSoup) -> str | None:
+        table = doc.select_one(
+            '#erpl_accordion-committee table:has(th:-soup-contains("Committee responsible"))'
+        )
+
+        if not table:
+            return None
+
+        if len(table.select("tbody tr")) > 1:
+            # We assume that there is at most one responsible committee
+            log.warning("More than one responsible committee found")
+
+        badge = table.select_one("tbody tr .erpl_badge-committee")
+
+        if not badge:
+            return None
+
+        text = badge.text.strip()
+        committee = Committee.get(text)
+
+        if not committee:
+            raise ScrapingError(f"Could not find committee {text}")
+
+        return committee.code
 
 
 class EurlexProcedureScraper(BeautifulSoupScraper):

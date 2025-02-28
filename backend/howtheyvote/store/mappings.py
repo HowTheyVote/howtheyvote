@@ -1,6 +1,7 @@
 import datetime
 
 from ..models import (
+    Committee,
     Country,
     Member,
     PlenarySession,
@@ -59,6 +60,7 @@ def map_vote(record: CompositeRecord) -> Vote:
     member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes")]
     geo_areas = {Country[code] for code in record.chain("geo_areas")}
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
+    responsible_committee = Committee.get(record.first("responsible_committee"))
 
     return Vote(
         id=record.group_key,
@@ -77,6 +79,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         member_votes=member_votes,
         geo_areas=geo_areas,
         eurovoc_concepts=eurovoc_concepts,
+        responsible_committee=responsible_committee,
         issues=record.chain("issues"),
     )
 
