@@ -21,10 +21,9 @@ RUN pip install poetry
 
 WORKDIR /howtheyvote/backend
 
-# Copy dependencies required to install dependencies
-COPY pyproject.toml pyproject.toml
-COPY poetry.toml poetry.toml
-COPY poetry.lock poetry.lock
+# Copy files required to install dependencies
+COPY pyproject.toml poetry.toml poetry.lock .
+
 RUN poetry env use python3.12
 
 # Install only dependencies, but not the package itself (because that

@@ -2,13 +2,9 @@ FROM node:22-alpine3.19 as dev
 
 WORKDIR /howtheyvote/frontend
 
-RUN apk add make bash
+RUN apk add make bash entr
 
-# File watcher for development
-RUN apk add entr
-
-COPY package.json package.json
-COPY package-lock.json package-lock.json
+COPY package.json package-lock.json .
 RUN npm ci
 
 COPY . .
