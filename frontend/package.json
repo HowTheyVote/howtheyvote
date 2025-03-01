@@ -20,10 +20,10 @@
     "@testing-library/preact": "^3.2.4",
     "@testing-library/user-event": "^14.6.1",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.13.0",
+    "@types/node": "^22.13.8",
     "esbuild": "^0.25.0",
     "jsdom": "^26.0.0",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }
