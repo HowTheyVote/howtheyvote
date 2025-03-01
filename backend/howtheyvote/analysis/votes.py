@@ -6,6 +6,7 @@ from unidecode import unidecode
 
 from ..helpers import make_key
 from ..models import DataIssue, Fragment, PressRelease, Vote
+from ..vote_stats import count_vote_positions
 
 
 class VoteGroupsAnalyzer:
@@ -142,26 +143,26 @@ class MainVoteAnalyzer:
         return False
 
 
+PositionCounts = tuple[int, int, int]
+ReleasesByDatePositionCounts = dict[tuple[datetime.date, PositionCounts], set[str]]
+ReleasesByReference = dict[str, set[str]]
+ReleasesByProcedureReference = dict[str, set[str]]
+VotesByDatePositionCounts = dict[tuple[datetime.date, PositionCounts], int]
+DatePositionCountsByVote = dict[int, tuple[datetime.date, PositionCounts]]
+
+
 class PressReleaseAnalyzer:
     """This analyzer takes a set of press releases and a set of votes (typically from the
     same session) and finds matches between the two sets. If we find a match, we store a
     reference to the press release in the vote record. This can later be used to display
     press release excerpts for a vote, for search results ranking, etc."""
 
-    def __init__(self, votes: Iterable[Vote], press_releases: Iterable[PressRelease]):
+    def __init__(self, votes: list[Vote], press_releases: Iterable[PressRelease]):
         self.votes = votes
+        self.press_releases = press_releases
 
-        self.by_procedure_reference: dict[str, set[str]] = defaultdict(set)
-        self.by_reference: dict[str, set[str]] = defaultdict(set)
-
-        for press_release in press_releases:
-            if press_release.references:
-                for reference in press_release.references:
-                    self.by_reference[reference].add(press_release.id)
-
-            if press_release.procedure_references:
-                for procedure_reference in press_release.procedure_references:
-                    self.by_procedure_reference[procedure_reference].add(press_release.id)
+        self._build_votes_lookups()
+        self._build_press_releases_lookups()
 
     def run(self) -> Iterator[Fragment]:
         for vote in self.votes:
@@ -169,15 +170,9 @@ class PressReleaseAnalyzer:
                 continue
 
             release_ids = set()
-
-            if vote.reference and vote.reference in self.by_reference:
-                release_ids |= self.by_reference[vote.reference]
-
-            if (
-                vote.procedure_reference
-                and vote.procedure_reference in self.by_procedure_reference
-            ):
-                release_ids |= self.by_procedure_reference[vote.procedure_reference]
+            release_ids |= self._match_by_reference(vote)
+            release_ids |= self._match_by_procedure_reference(vote)
+            release_ids |= self._match_by_position_counts(vote)
 
             for release_id in release_ids:
                 yield Fragment(
@@ -188,17 +183,65 @@ class PressReleaseAnalyzer:
                     data={"press_release": release_id},
                 )
 
-    def _by_reference(self, vote: Vote) -> set[str]:
+    def _build_votes_lookups(self) -> None:
+        self._votes_by_date_position_counts: VotesByDatePositionCounts = defaultdict(int)
+        self._date_position_counts_by_vote: DatePositionCountsByVote = {}
+
+        for vote in self.votes:
+            counts = count_vote_positions(vote.member_votes)
+            key = (
+                vote.timestamp.date(),
+                (counts["FOR"], counts["AGAINST"], counts["ABSTENTION"]),
+            )
+            self._votes_by_date_position_counts[key] += 1
+            self._date_position_counts_by_vote[vote.id] = key
+
+    def _build_press_releases_lookups(self) -> None:
+        self._releases_by_procedure_reference: ReleasesByProcedureReference = defaultdict(set)
+        self._releases_by_reference: ReleasesByReference = defaultdict(set)
+        self._releases_by_date_position_counts: ReleasesByDatePositionCounts = defaultdict(set)
+
+        for release in self.press_releases:
+            if release.references:
+                for ref in release.references:
+                    self._releases_by_reference[ref].add(release.id)
+
+            if release.procedure_references:
+                for ref in release.procedure_references:
+                    self._releases_by_procedure_reference[ref].add(release.id)
+
+            # We are conservative when a press release contains results of more than one vote.
+            # While it could be a press release about multiple related votes, the Parliament
+            # often publishes press releases with short summaries of multiple non-legislative
+            # resolutions (e.g. on the human rights situation in different countries).
+            if release.position_counts and len(release.position_counts) == 1:
+                # Convert to tuple because dicts cannot be used as keys of another dict
+                counts = release.position_counts[0]
+                key = (
+                    release.published_at.date(),
+                    (counts["FOR"], counts["AGAINST"], counts["ABSTENTION"]),
+                )
+                self._releases_by_date_position_counts[key].add(release.id)
+
+    def _match_by_reference(self, vote: Vote) -> set[str]:
         if not vote.reference:
             return set()
 
-        return self.by_reference[vote.reference]
+        return self._releases_by_reference[vote.reference]
 
-    def _by_procedure_reference(self, vote: Vote) -> set[str]:
+    def _match_by_procedure_reference(self, vote: Vote) -> set[str]:
         if not vote.procedure_reference:
             return set()
 
-        return self.by_procedure_reference[vote.procedure_reference]
+        return self._releases_by_procedure_reference[vote.procedure_reference]
+
+    def _match_by_position_counts(self, vote: Vote) -> set[str]:
+        key = self._date_position_counts_by_vote[vote.id]
+
+        if self._votes_by_date_position_counts[key] > 1:
+            return set()
+
+        return self._releases_by_date_position_counts[key]
 
 
 class VoteDataIssuesAnalyzer:
