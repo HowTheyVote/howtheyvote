@@ -10,7 +10,7 @@ from structlog import get_logger
 from ..db import Session
 from ..helpers import PROCEDURE_REFERENCE_REGEX, REFERENCE_REGEX, flatten_dict, subset_dict
 from ..models import Fragment, Member, PressRelease, Vote
-from ..query import fragments_for_records, press_release_references_vote
+from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 from .query import DatabaseQuery, Order, Query, SearchQuery
 from .serializers import (
@@ -369,7 +369,10 @@ def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[
 
 
 def _load_press_release(vote: Vote) -> PressRelease | None:
-    stmt = select(PressRelease).where(press_release_references_vote(vote))
+    if not vote.press_release:
+        return None
+
+    stmt = select(PressRelease).where(PressRelease.id == vote.press_release)
     return Session.execute(stmt).scalar()
 
 

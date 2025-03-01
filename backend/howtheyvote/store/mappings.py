@@ -62,6 +62,9 @@ def map_vote(record: CompositeRecord) -> Vote:
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
     responsible_committee = Committee.get(record.first("responsible_committee"))
 
+    press_release = record.first("press_release")
+    is_featured = record.first("is_featured") or press_release is not None
+
     return Vote(
         id=record.group_key,
         timestamp=datetime.datetime.fromisoformat(record.first("timestamp")),
@@ -74,12 +77,13 @@ def map_vote(record: CompositeRecord) -> Vote:
         procedure_title=record.first("procedure_title"),
         procedure_reference=record.first("procedure_reference"),
         is_main=record.first("is_main") or False,
-        is_featured=record.first("is_featured") or False,
+        is_featured=is_featured,
         group_key=record.first("group_key"),
         member_votes=member_votes,
         geo_areas=geo_areas,
         eurovoc_concepts=eurovoc_concepts,
         responsible_committee=responsible_committee,
+        press_release=press_release,
         issues=record.chain("issues"),
     )
 

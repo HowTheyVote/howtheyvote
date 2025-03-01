@@ -98,6 +98,7 @@ class Vote(BaseWithId):
         ListType(EurovocConceptType())
     )
     responsible_committee: Mapped[Committee] = mapped_column(CommitteeType())
+    press_release: Mapped[str | None] = mapped_column(sa.Unicode)
     issues: Mapped[list[DataIssue]] = mapped_column(ListType(sa.Enum(DataIssue)))
 
     @property

@@ -142,11 +142,11 @@ class MainVoteAnalyzer:
         return False
 
 
-class FeaturedVotesAnalyzer:
-    """This analyzer takes a set of press releases and a set of votes (typically from
-    # the same session) and finds matches between the two sets based on document or
-    # procedure references. If a press release exists for a vote, we consider it to be
-    # particularly relevant and assign a flag that can be used for filtering."""
+class PressReleaseAnalyzer:
+    """This analyzer takes a set of press releases and a set of votes (typically from the
+    same session) and finds matches between the two sets. If we find a match, we store a
+    reference to the press release in the vote record. This can later be used to display
+    press release excerpts for a vote, for search results ranking, etc."""
 
     def __init__(self, votes: Iterable[Vote], press_releases: Iterable[PressRelease]):
         self.votes = votes
@@ -185,8 +185,20 @@ class FeaturedVotesAnalyzer:
                     source_id=f"{vote.id}:{release_id}",
                     source_name=type(self).__name__,
                     group_key=vote.id,
-                    data={"is_featured": True},
+                    data={"press_release": release_id},
                 )
+
+    def _by_reference(self, vote: Vote) -> set[str]:
+        if not vote.reference:
+            return set()
+
+        return self.by_reference[vote.reference]
+
+    def _by_procedure_reference(self, vote: Vote) -> set[str]:
+        if not vote.procedure_reference:
+            return set()
+
+        return self.by_procedure_reference[vote.procedure_reference]
 
 
 class VoteDataIssuesAnalyzer:
