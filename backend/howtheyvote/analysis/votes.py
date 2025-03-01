@@ -65,6 +65,7 @@ class MainVoteAnalyzer:
             "draft council decision",
             "projet de decision du conseil",
             "projet de reglement du conseil",
+            "projet du conseil",
             "projet de recommendation",
             "motion for resolution",
             "motion for resolution (as a whole)",
