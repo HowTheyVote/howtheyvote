@@ -4,6 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .common import BaseWithId
+from .vote import VotePositionCounts
 
 
 class PressRelease(BaseWithId):
@@ -16,3 +17,7 @@ class PressRelease(BaseWithId):
     references: Mapped[list[str]] = mapped_column(sa.JSON)
     procedure_references: Mapped[list[str]] = mapped_column(sa.JSON)
     facts: Mapped[str] = mapped_column(sa.Unicode)
+    text: Mapped[str] = mapped_column(sa.Unicode)
+    position_counts: Mapped[list[VotePositionCounts]] = mapped_column(
+        sa.JSON(none_as_null=True)
+    )

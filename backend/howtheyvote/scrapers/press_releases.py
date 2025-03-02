@@ -164,6 +164,7 @@ class PressReleaseScraper(BeautifulSoupScraper):
                 "reference": self._references(doc),
                 "procedure_reference": self._procedure_references(doc),
                 "facts": self._facts(doc),
+                "text": self._text(doc),
             },
         )
 
@@ -188,6 +189,15 @@ class PressReleaseScraper(BeautifulSoupScraper):
         items = [item.text.strip() for item in list_.select("li")]
         items = [f"<li>{item}</li>" for item in items]
         return "<ul>" + "".join(items) + "</ul>"
+
+    def _text(self, doc: BeautifulSoup) -> str | None:
+        paragraphs = doc.select(
+            'article[role="main"] :where(.ep-wysiwig_paragraph, .ep-a_text p)'
+        )
+        text = "\n\n".join(
+            [p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True)]
+        )
+        return text if text else None
 
     def _published_at(self, doc: BeautifulSoup) -> datetime.datetime | None:
         element = doc.select_one('.ep_subtitle time[itemprop="datePublished"]')

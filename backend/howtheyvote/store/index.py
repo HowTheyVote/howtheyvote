@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable
 from typing import TypeVar, cast
 
 from sqlalchemy.dialects.sqlite import insert
@@ -24,7 +24,7 @@ RecordType = TypeVar("RecordType", bound=BaseWithId)
 
 def index_records(
     model_cls: type[RecordType],
-    records: Iterator[RecordType],
+    records: Iterable[RecordType],
     chunk_size: int | None = None,
 ) -> None:
     """Writes aggregated records to the database and search backend."""
@@ -57,7 +57,11 @@ def index_db(model_cls: type[RecordType], records: Iterable[RecordType]) -> None
         log.warning("Skipping indexing to database as list of records is empty")
         return
 
-    log.info("Writing aggregated records to database.", count=len(values))
+    log.info(
+        "Writing aggregated records to database.",
+        model=model_cls.__name__,
+        count=len(values),
+    )
 
     stmt = insert(model_cls).values(values)
     stmt = stmt.on_conflict_do_update(

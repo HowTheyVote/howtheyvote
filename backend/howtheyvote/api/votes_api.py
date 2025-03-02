@@ -1,6 +1,5 @@
 import csv
-from collections import defaultdict
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from io import StringIO
 from typing import TypeVar
 
@@ -10,8 +9,9 @@ from structlog import get_logger
 
 from ..db import Session
 from ..helpers import PROCEDURE_REFERENCE_REGEX, REFERENCE_REGEX, flatten_dict, subset_dict
-from ..models import Fragment, Member, PressRelease, Vote, VotePosition
-from ..query import fragments_for_records, press_release_references_vote
+from ..models import Fragment, Member, PressRelease, Vote
+from ..query import fragments_for_records
+from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 from .query import DatabaseQuery, Order, Query, SearchQuery
 from .serializers import (
     BaseVoteDict,
@@ -248,7 +248,7 @@ def show(vote_id: int) -> Response:
     members_by_id: MembersById = {m.id: m for m in members}
 
     stats: VoteStatsDict = {
-        "total": _format_total_stats(vote, members_by_id),
+        "total": _format_total_stats(vote),
         "by_group": _format_group_stats(vote, members_by_id),
         "by_country": _format_country_stats(vote, members_by_id),
     }
@@ -369,7 +369,10 @@ def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[
 
 
 def _load_press_release(vote: Vote) -> PressRelease | None:
-    stmt = select(PressRelease).where(press_release_references_vote(vote))
+    if not vote.press_release:
+        return None
+
+    stmt = select(PressRelease).where(PressRelease.id == vote.press_release)
     return Session.execute(stmt).scalar()
 
 
@@ -444,12 +447,15 @@ def _format_member_votes(vote: Vote, members_by_id: MembersById) -> list[MemberV
     return sorted(member_votes, key=lambda x: x["member"]["last_name"])
 
 
-def _format_total_stats(vote: Vote, members_by_id: MembersById) -> VotePositionCountsDict:
-    return _calc_vote_stats(vote, members_by_id)[None]
+def _format_total_stats(vote: Vote) -> VotePositionCountsDict:
+    return count_vote_positions(vote.member_votes)
 
 
 def _format_group_stats(vote: Vote, members_by_id: MembersById) -> list[VoteStatsByGroupDict]:
-    group_stats = _calc_vote_stats(vote, members_by_id, lambda m: m.group_at(vote.timestamp))
+    group_stats = count_vote_positions_by_group(
+        member_votes=vote.member_votes,
+        group_by=lambda mv: members_by_id[mv.web_id].group_at(vote.timestamp),
+    )
 
     return [
         {
@@ -464,7 +470,10 @@ def _format_group_stats(vote: Vote, members_by_id: MembersById) -> list[VoteStat
 def _format_country_stats(
     vote: Vote, members_by_id: MembersById
 ) -> list[VoteStatsByCountryDict]:
-    country_stats = _calc_vote_stats(vote, members_by_id, lambda m: m.country)
+    country_stats = count_vote_positions_by_group(
+        member_votes=vote.member_votes,
+        group_by=lambda mv: members_by_id[mv.web_id].country,
+    )
 
     return [
         {
@@ -474,48 +483,3 @@ def _format_country_stats(
         for country, stats in country_stats.items()
         if country is not None
     ]
-
-
-GroupBy = TypeVar("GroupBy")
-
-
-def _calc_vote_stats(
-    vote: Vote,
-    members_by_id: MembersById,
-    group_by: Callable[[Member], GroupBy] | None = None,
-) -> dict[GroupBy | None, VotePositionCountsDict]:
-    def default_factory() -> VotePositionCountsDict:
-        return {
-            VotePosition.FOR.value: 0,
-            VotePosition.AGAINST.value: 0,
-            VotePosition.ABSTENTION.value: 0,
-            VotePosition.DID_NOT_VOTE.value: 0,
-        }
-
-    groups: dict[GroupBy | None, VotePositionCountsDict] = defaultdict(default_factory)
-
-    def total_count(stats: VotePositionCountsDict) -> int:
-        return sum(v for v in stats.values() if isinstance(v, int))
-
-    for member_vote in vote.member_votes:
-        member = members_by_id.get(member_vote.web_id)
-
-        if not member:
-            continue
-
-        if group_by:
-            group = group_by(member)
-        else:
-            group = None
-
-        groups[group][member_vote.position.value] += 1
-
-    # Sort stats by group size
-    sorted_items = sorted(
-        groups.items(),
-        key=lambda item: total_count(item[1]),
-        reverse=True,
-    )
-    groups = dict(sorted_items)
-
-    return groups

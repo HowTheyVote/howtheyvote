@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from sqlalchemy import func, select
 from structlog import get_logger
 
-from ..analysis import FeaturedVotesAnalyzer
+from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
 from ..models import PlenarySession, PressRelease, Vote
 from ..query import session_is_current_at
@@ -43,7 +43,8 @@ class PressPipeline(BasePipeline):
 
         self._scrape_press_releases_index()
         self._scrape_press_releases()
-        self._analyze_featured_votes()
+        self._analyze_vote_position_counts()
+        self._match_press_releases()
         self._index_press_releases()
         self._index_votes()
 
@@ -119,28 +120,45 @@ class PressPipeline(BasePipeline):
 
         writer.flush()
 
-    def _analyze_featured_votes(self) -> None:
+    def _analyze_vote_position_counts(self) -> None:
+        writer = BulkWriter()
+
+        for press_release in self._press_releases():
+            log.info(
+                "Extracting vote position counts",
+                release_id=press_release.id,
+                date=self.date,
+            )
+            analyzer = VotePositionCountsAnalyzer(
+                release_id=press_release.id,
+                text=press_release.text,
+            )
+            writer.add(analyzer.run())
+
+        writer.flush()
+
+    def _match_press_releases(self) -> None:
         dates = set(pr.published_at.date() for pr in self._press_releases() if pr.published_at)
-        log.info("Analyzing featured votes for dates", count=len(dates))
+        log.info("Matching press releases and votes for dates", count=len(dates))
 
         for date in dates:
-            self._analyze_featured_votes_by_date(date)
+            self._match_press_releases_by_date(date)
 
-    def _analyze_featured_votes_by_date(self, date: datetime.date) -> None:
+    def _match_press_releases_by_date(self, date: datetime.date) -> None:
         log.info("Fetching votes", date=date)
         query = select(Vote).where(func.date(Vote.timestamp) == date)
-        votes = Session.execute(query).scalars()
+        votes = list(Session.execute(query).scalars())
 
         if not votes:
             log.error(
-                "No votes found for given date, skipping featured votes analysis",
+                "No votes found for given date, skipping press release matching",
                 dates=date,
             )
             return
 
-        log.info("Running featured votes analysis", date=date)
+        log.info("Matching press releases and votes", date=date)
         writer = BulkWriter()
-        analyzer = FeaturedVotesAnalyzer(votes=votes, press_releases=self._press_releases())
+        analyzer = PressReleaseAnalyzer(votes=votes, press_releases=self._press_releases())
         writer.add(analyzer.run())
         writer.flush()
 

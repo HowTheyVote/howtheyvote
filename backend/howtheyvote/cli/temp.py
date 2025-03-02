@@ -2,24 +2,26 @@ import datetime
 
 import click
 from cachetools import LRUCache
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from structlog import get_logger
 
+from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
 from ..files import vote_sharepic_path
-from ..models import Fragment, Member, PlenarySession, Vote
+from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
 from ..query import member_active_at
 from ..scrapers import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     NoWorkingUrlError,
+    PressReleaseScraper,
     ProcedureScraper,
     RCVListScraper,
     RequestCache,
     ScrapingError,
 )
 from ..sharepics import generate_vote_sharepic
-from ..store import BulkWriter
+from ..store import Aggregator, BulkWriter, index_records, map_press_release
 
 log = get_logger(__name__)
 
@@ -183,4 +185,56 @@ def fill_term_column() -> None:
                 data={"term": 9},
             )
             writer.add(fragment)
+        writer.flush()
+
+
+@temp.command()
+def press_releases() -> None:
+    dates = Session.execute(
+        select(func.distinct(func.date(PressRelease.published_at)))
+    ).scalars()
+
+    for date in dates:
+        # Scrape press releases
+        writer = BulkWriter()
+        release_ids = list(
+            Session.execute(
+                select(PressRelease.id).where(func.date(PressRelease.published_at) == date)
+            ).scalars()
+        )
+
+        for release_id in release_ids:
+            scraper = PressReleaseScraper(release_id)
+            writer.add(scraper.run())
+
+        writer.flush()
+
+        # Extract position counts
+        writer = BulkWriter()
+        aggregator = Aggregator(PressRelease)
+        releases = list(
+            aggregator.mapped_records(
+                map_func=map_press_release,
+                group_keys=release_ids,
+            )
+        )
+        for release in releases:
+            writer.add(VotePositionCountsAnalyzer(release.id, release.text).run())
+        writer.flush()
+
+        # Index press releases
+        releases = list(
+            aggregator.mapped_records(
+                map_func=map_press_release,
+                group_keys=release_ids,
+            )
+        )
+        index_records(PressRelease, releases)
+
+        # Match press releases and votes
+        writer = BulkWriter()
+        votes = list(
+            Session.execute(select(Vote).where(func.date(Vote.timestamp) == date)).scalars()
+        )
+        writer.add(PressReleaseAnalyzer(votes, releases).run())
         writer.flush()

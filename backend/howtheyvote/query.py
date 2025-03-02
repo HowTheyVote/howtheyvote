@@ -4,7 +4,7 @@ from collections.abc import Iterable
 import sqlalchemy as sa
 from sqlalchemy import ColumnElement, Exists, exists, func
 
-from .models import BaseWithId, Fragment, Member, PlenarySession, PressRelease, Vote
+from .models import BaseWithId, Fragment, Member, PlenarySession
 
 
 def member_has_term(term: int) -> Exists:
@@ -38,24 +38,6 @@ def session_is_current_at(date: datetime.date) -> ColumnElement[bool]:
     return sa.and_(
         func.date(PlenarySession.start_date) <= func.date(date),
         func.date(PlenarySession.end_date) >= func.date(date),
-    )
-
-
-def press_release_references_vote(vote: Vote) -> ColumnElement[bool]:
-    """Returns an expression that can be used to select press releases for a given vote,
-    i.e. press releases published on the same date that reference the same procedure or
-    report/resolution."""
-    ref_exp = func.json_each(PressRelease.references).table_valued("value")
-    proc_ref_exp = func.json_each(PressRelease.procedure_references).table_valued("value")
-
-    return sa.and_(
-        func.date(PressRelease.published_at) == vote.timestamp.date(),
-        sa.or_(
-            exists().select_from(ref_exp).where(ref_exp.c.value == vote.reference),
-            exists()
-            .select_from(proc_ref_exp)
-            .where(proc_ref_exp.c.value == vote.procedure_reference),
-        ),
     )
 
 
