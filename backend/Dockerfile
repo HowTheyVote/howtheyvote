@@ -21,17 +21,20 @@ RUN pip install poetry
 
 WORKDIR /howtheyvote/backend
 
-# Copy dependencies required to install dependencies
-COPY pyproject.toml pyproject.toml
-COPY poetry.toml poetry.toml
-COPY poetry.lock poetry.lock
+# Copy files required to install dependencies
+COPY pyproject.toml poetry.toml poetry.lock .
+
 RUN poetry env use python3.12
-RUN poetry install
+
+# Install only dependencies, but not the package itself (because that
+# would fail because we haven't yet copied the code at this point)
+RUN poetry install --no-root
 
 COPY . .
 
-# Install again in order to make the `htv` CLI script available
-RUN poetry install
+# Install again in order to make the `htv` CLI script available, this
+# time without the dependencies (which have been installed before)
+RUN poetry install --only-root
 
 ENV TZ=UTC
 ENV ALEMBIC_CONFIG=./howtheyvote/alembic/alembic.ini
