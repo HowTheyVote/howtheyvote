@@ -24,8 +24,10 @@ const SORT_PARAMS = {
   oldest: { sort_by: "timestamp", sort_order: "asc" },
 } as const;
 
+type VotesSearchSortOptions = "relevance" | "newest" | "oldest";
+
 type SearchPageData = VotesQueryResponse & {
-  sort: "relevance" | "newest" | "oldest";
+  sort: VotesSearchSortOptions;
 };
 
 export const loader: Loader<SearchPageData> = async (request: Request) => {
@@ -68,12 +70,18 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
   return { ...data, sort };
 };
 
-function pageUrl(query: string, page: number): string {
+function pageUrl(
+  query: string,
+  sort: VotesSearchSortOptions,
+  page: number,
+): string {
   const params = new URLSearchParams();
 
   if (query !== "") {
     params.set("q", query);
   }
+
+  params.set("sort", sort);
 
   if (page > 1) {
     params.set("page", page.toString());
@@ -113,8 +121,12 @@ export const SearchPage: Page<SearchPageData> = ({ data, request }) => {
                 />
 
                 <Pagination
-                  next={data.has_next && pageUrl(query, data.page + 1)}
-                  prev={data.has_prev && pageUrl(query, data.page - 1)}
+                  next={
+                    data.has_next && pageUrl(query, data.sort, data.page + 1)
+                  }
+                  prev={
+                    data.has_prev && pageUrl(query, data.sort, data.page - 1)
+                  }
                 />
               </Stack>
             </Wrapper>
