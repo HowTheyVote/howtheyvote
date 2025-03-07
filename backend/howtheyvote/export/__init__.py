@@ -9,6 +9,7 @@ from structlog import get_logger
 
 from ..db import Session
 from ..models import Member, Vote
+from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
 log = get_logger(__name__)
@@ -145,6 +146,18 @@ class VoteRow(TypedDict):
 
     responsible_committee_code: str | None
     """Committee responsible for the legislative procedure"""
+
+    count_for: int
+    """Number of MEPs who voted in favor"""
+
+    count_against: int
+    """Number of MEPs who voted against"""
+
+    count_abstention: int
+    """Number of MEPs who abstained"""
+
+    count_did_not_vote: int
+    """Number of MEPs who didn’t participate in the vote"""
 
 
 class MemberVoteRow(TypedDict):
@@ -342,6 +355,8 @@ class Export:
                     vote.responsible_committee.code if vote.responsible_committee else None
                 )
 
+                position_counts = count_vote_positions(vote.member_votes)
+
                 votes.write_row(
                     {
                         "id": vote.id,
@@ -354,6 +369,10 @@ class Export:
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
                         "responsible_committee_code": responsible_committee_code,
+                        "count_for": position_counts["FOR"],
+                        "count_against": position_counts["AGAINST"],
+                        "count_abstention": position_counts["ABSTENTION"],
+                        "count_did_not_vote": position_counts["DID_NOT_VOTE"],
                     }
                 )
 
