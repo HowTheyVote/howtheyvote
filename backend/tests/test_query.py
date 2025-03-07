@@ -8,14 +8,12 @@ from howtheyvote.models import (
     GroupMembership,
     Member,
     PlenarySession,
-    PressRelease,
     Vote,
 )
 from howtheyvote.query import (
     fragments_for_records,
     member_active_at,
     member_has_term,
-    press_release_references_vote,
     session_is_current_at,
 )
 
@@ -122,90 +120,6 @@ def test_session_is_current_at(db_session):
     query = select(PlenarySession.id).where(session_is_current_at(datetime.date(2023, 1, 5)))
     ids = set(db_session.execute(query).scalars())
     assert ids == set()
-
-
-def test_press_release_references_vote(db_session):
-    timestamp = datetime.datetime(2023, 1, 1, 0, 0, 0)
-
-    vote = Vote(
-        id=12345,
-        reference="A9-1234/2023",
-        timestamp=timestamp,
-    )
-
-    press_release_1 = PressRelease(
-        id="1",
-        references=["A9-5678/2023"],
-        published_at=timestamp,
-    )
-
-    press_release_2 = PressRelease(
-        id="2",
-        references=["A9-1234/2023"],
-        published_at=timestamp,
-    )
-
-    press_release_3 = PressRelease(
-        id="3",
-        references=["A9-1234/2023", "A9-5678/2023"],
-        published_at=timestamp,
-    )
-
-    press_release_4 = PressRelease(
-        id="4",
-        references=["A9-1234/2023"],
-        published_at=timestamp + datetime.timedelta(days=1),
-    )
-
-    db_session.add(vote)
-    db_session.add_all([press_release_1, press_release_2, press_release_3, press_release_4])
-    db_session.commit()
-
-    query = select(PressRelease.id).where(press_release_references_vote(vote))
-    ids = set(db_session.execute(query).scalars())
-    assert ids == {"2", "3"}
-
-
-def test_press_release_references_vote_procedure(db_session):
-    timestamp = datetime.datetime(2023, 1, 1, 0, 0, 0)
-
-    vote = Vote(
-        id=12345,
-        procedure_reference="2023/1234(COD)",
-        timestamp=timestamp,
-    )
-
-    press_release_1 = PressRelease(
-        id="1",
-        procedure_references=["2023/5678(COD)"],
-        published_at=timestamp,
-    )
-
-    press_release_2 = PressRelease(
-        id="2",
-        procedure_references=["2023/1234(COD)"],
-        published_at=timestamp,
-    )
-
-    press_release_3 = PressRelease(
-        id="3",
-        procedure_references=["2023/1234(COD)", "2023/5678(COD)"],
-        published_at=timestamp,
-    )
-
-    press_release_4 = PressRelease(
-        id="4",
-        procedure_references=["2023/1234(COD)"],
-        published_at=timestamp + datetime.timedelta(days=1),
-    )
-
-    db_session.add(vote)
-    db_session.add_all([press_release_1, press_release_2, press_release_3, press_release_4])
-    db_session.commit()
-
-    query = select(PressRelease.id).where(press_release_references_vote(vote))
-    ids = set(db_session.execute(query).scalars())
-    assert ids == {"2", "3"}
 
 
 def test_fragments_for_record(db_session):

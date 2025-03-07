@@ -69,6 +69,13 @@ class MemberVoteType(TypeDecorator[MemberVote]):
         return deserialize_member_vote(value)
 
 
+class VotePositionCounts(TypedDict):
+    FOR: int
+    AGAINST: int
+    ABSTENTION: int
+    DID_NOT_VOTE: int
+
+
 class Vote(BaseWithId):
     __tablename__ = "votes"
 
@@ -91,6 +98,7 @@ class Vote(BaseWithId):
         ListType(EurovocConceptType())
     )
     responsible_committee: Mapped[Committee] = mapped_column(CommitteeType())
+    press_release: Mapped[str | None] = mapped_column(sa.Unicode)
     issues: Mapped[list[DataIssue]] = mapped_column(ListType(sa.Enum(DataIssue)))
 
     @property

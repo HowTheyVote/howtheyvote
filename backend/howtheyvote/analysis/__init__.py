@@ -1,15 +1,17 @@
+from .press_releases import VotePositionCountsAnalyzer
 from .votes import (
-    FeaturedVotesAnalyzer,
     MainVoteAnalyzer,
+    PressReleaseAnalyzer,
     VoteDataIssuesAnalyzer,
     VoteGroupsAnalyzer,
     VoteGroupsDataIssuesAnalyzer,
 )
 
 __all__ = [
-    "FeaturedVotesAnalyzer",
+    "PressReleaseAnalyzer",
     "MainVoteAnalyzer",
     "VoteDataIssuesAnalyzer",
     "VoteGroupsAnalyzer",
     "VoteGroupsDataIssuesAnalyzer",
+    "VotePositionCountsAnalyzer",
 ]
