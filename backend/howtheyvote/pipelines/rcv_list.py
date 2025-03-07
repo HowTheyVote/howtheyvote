@@ -2,6 +2,7 @@ import datetime
 from collections.abc import Iterator
 
 from cachetools import LRUCache
+from prometheus_client import Counter
 from sqlalchemy import select
 from structlog import get_logger
 
@@ -35,6 +36,12 @@ from .common import (
 )
 
 log = get_logger(__name__)
+
+SHAREPICS_GENERATED = Counter(
+    "htv_sharepics_generated_total",
+    "Total number of generated sharepics",
+    ["status"],
+)
 
 
 class RCVListPipeline(BasePipeline):
@@ -265,8 +272,10 @@ class RCVListPipeline(BasePipeline):
                 path = vote_sharepic_path(vote.id)
                 ensure_parent(path)
                 path.write_bytes(image)
+                SHAREPICS_GENERATED.labels(status="success").inc()
             except Exception:
                 log.exception("Failed generating vote sharepic.", vote_id=vote.id)
+                SHAREPICS_GENERATED.labels(status="error").inc()
                 continue
 
     def _analyze_vote_data_issues(self) -> None:
