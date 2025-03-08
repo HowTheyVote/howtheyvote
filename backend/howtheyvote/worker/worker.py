@@ -41,6 +41,12 @@ PIPELINE_NEXT_RUN = Gauge(
     ["pipeline"],
 )
 
+PIPELINE_LAST_RUN = Gauge(
+    "htv_worker_pipeline_last_run_timestamp_seconds",
+    "Timestamp of the last run of the pipeline",
+    ["pipeline", "status"],
+)
+
 
 class SkipPipeline(Exception):  # noqa: N818
     pass
@@ -192,6 +198,7 @@ class Worker:
 
             labels = {"pipeline": name, "status": status.value}
             PIPELINE_RUNS.labels(**labels).inc()
+            PIPELINE_LAST_RUN.labels(**labels).set(finished_at.timestamp())
             PIPELINE_RUN_DURATION.labels(**labels).observe(duration)
 
             run = PipelineRun(

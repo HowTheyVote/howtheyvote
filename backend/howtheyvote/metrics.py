@@ -7,7 +7,7 @@ from prometheus_client.registry import Collector
 from sqlalchemy import case, func, select
 
 from .db import Session
-from .models import Fragment, Member, Vote, VoteGroup
+from .models import Fragment, Member, PlenarySession, Vote, VoteGroup
 from .query import member_active_at
 
 
@@ -16,6 +16,7 @@ class DataCollector(Collector):
         yield self.fragments()
         yield self.votes()
         yield self.members()
+        yield self.next_session()
         yield self.data_issues()
 
     def fragments(self) -> GaugeMetricFamily:
@@ -68,9 +69,32 @@ class DataCollector(Collector):
 
         return gauge
 
+    def next_session(self) -> GaugeMetricFamily:
+        today = datetime.date.today()
+        gauge = GaugeMetricFamily(
+            "htv_next_session_seconds",
+            "Seconds until the next plenary session day",
+        )
+        query = (
+            select(PlenarySession)
+            .where(func.date(PlenarySession.end_date) >= func.date(today))
+            .order_by(PlenarySession.start_date.asc())
+            .limit(1)
+        )
+        next_session = Session.execute(query).scalar()
+
+        if not next_session:
+            gauge.add_metric(value=-1, labels=[])
+            return gauge
+
+        diff = max(0, (next_session.start_date - today).total_seconds())
+        gauge.add_metric(value=diff, labels=[])
+
+        return gauge
+
     def data_issues(self) -> GaugeMetricFamily:
         gauge = GaugeMetricFamily(
-            "htv_data_issues", "Number of  data issues", labels=["type", "month"]
+            "htv_data_issues", "Number of data issues", labels=["type", "month"]
         )
 
         vote_month = func.strftime("%Y-%m", Vote.timestamp)
