@@ -37,15 +37,13 @@ class DataCollector(Collector):
         gauge = GaugeMetricFamily(
             "htv_votes",
             "Total number of votes",
-            labels=["year", "is_main", "is_featured"],
+            labels=["year", "is_main"],
         )
         year = func.strftime("%Y", Vote.timestamp)
-        query = select(Vote.is_main, Vote.is_featured, year, func.count()).group_by(
-            Vote.is_main, Vote.is_featured, year
-        )
+        query = select(Vote.is_main, year, func.count()).group_by(Vote.is_main, year)
 
-        for is_main, is_featured, year, count in Session.execute(query):
-            gauge.add_metric(value=count, labels=[str(year), str(is_main), str(is_featured)])
+        for is_main, year, count in Session.execute(query):
+            gauge.add_metric(value=count, labels=[str(year), str(is_main)])
 
         return gauge
 
