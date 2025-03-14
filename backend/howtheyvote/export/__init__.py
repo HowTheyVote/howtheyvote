@@ -133,11 +133,6 @@ class VoteRow(TypedDict):
     votes. This is not an official classification by the European Parliament and there may
     be false negatives."""
 
-    is_featured: bool
-    """Whether this vote is featured. Currently, a vote is featured when we have found an
-    official press release about the vote published by the European Parliament Newsroom.
-    However, this is subject to change."""
-
     procedure_reference: str | None
     """Procedure reference as listed in the Legislative Observatory"""
 
@@ -365,7 +360,6 @@ class Export:
                         "reference": vote.reference,
                         "description": vote.description,
                         "is_main": vote.is_main,
-                        "is_featured": vote.is_featured,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
                         "responsible_committee_code": responsible_committee_code,

@@ -246,11 +246,6 @@ class BaseVoteDict(TypedDict):
     description: Annotated[str | None, "Commission proposal"]
     """Description of the vote as published in the roll-call vote results"""
 
-    is_featured: bool
-    """Whether this vote is featured. Currently, a vote is featured when we have found an
-    official press release about the vote published by the European Parliament Newsroom.
-    However, this is subject to change."""
-
     geo_areas: list[CountryDict]
     """Countries or territories related to this vote"""
 
@@ -275,7 +270,6 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "display_title": vote.display_title,
         "description": vote.description,
         "reference": vote.reference,
-        "is_featured": vote.is_featured,
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
         "responsible_committee": responsible_committee,
