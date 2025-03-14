@@ -90,7 +90,6 @@ class Vote(BaseWithId):
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     description: Mapped[str | None] = mapped_column(sa.Unicode)
     is_main: Mapped[bool] = mapped_column(sa.Boolean, default=False)
-    is_featured: Mapped[bool] = mapped_column(sa.Boolean, default=False)
     group_key: Mapped[str | None] = mapped_column(sa.Unicode)
     member_votes: Mapped[list[MemberVote]] = mapped_column(ListType(MemberVoteType()))
     geo_areas: Mapped[list[Country]] = mapped_column(ListType(CountryType()))
