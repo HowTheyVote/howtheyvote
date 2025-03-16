@@ -5,6 +5,7 @@ import time_machine
 
 from howtheyvote.export import Export
 from howtheyvote.models import (
+    Committee,
     Country,
     Group,
     GroupMembership,
@@ -126,6 +127,7 @@ def test_export_votes(db_session, tmp_path):
                 position=VotePosition.FOR,
             ),
         ],
+        responsible_committees=[Committee["AFET"]],
     )
 
     db_session.add_all([member, vote])
@@ -138,8 +140,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,is_featured,procedure_reference,procedure_title,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,False,,,,1,0,0,0\n"
+        "id,timestamp,display_title,reference,description,is_main,is_featured,procedure_reference,procedure_title,count_for,count_against,count_abstention,count_did_not_vote\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,False,,,1,0,0,0\n"
     )
 
     assert votes_csv.read_text() == expected
@@ -152,6 +154,14 @@ def test_export_votes(db_session, tmp_path):
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
+
+    committees_csv = tmp_path.joinpath("committees.csv")
+    committees_meta = tmp_path.joinpath("committees.csv-metadata.json")
+
+    expected = "code,label,abbreviation\nAFET,Committee on Foreign Affairs,AFET\n"
+
+    assert committees_csv.read_text() == expected
+    assert committees_meta.is_file()
 
 
 def test_export_votes_country_group(db_session, tmp_path):

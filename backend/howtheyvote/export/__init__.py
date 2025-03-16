@@ -4,11 +4,11 @@ import shutil
 import tempfile
 from typing import Any, TypedDict
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..db import Session
-from ..models import Member, Vote
+from ..models import Committee, Member, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -144,9 +144,6 @@ class VoteRow(TypedDict):
     procedure_title: str | None
     """Title of the legislative procedure as listed in the Legislative Observatory"""
 
-    responsible_committee_code: str | None
-    """Committee responsible for the legislative procedure"""
-
     count_for: int
     """Number of MEPs who voted in favor"""
 
@@ -180,6 +177,29 @@ class MemberVoteRow(TypedDict):
     group_code: str | None
     """Group code. This references the political group that the MEP was part of on the day
     of the vote. This is not necessarily the MEP’s current political group."""
+
+
+class CommitteeRow(TypedDict):
+    """Each row represents a committee of the European Parliament."""
+
+    code: str
+    """Unique identifier of the committee"""
+
+    label: str
+    """Label"""
+
+    abbreviation: str
+    """Abbreviation"""
+
+
+class ResponsibleCommitteeVotes(TypedDict):
+    """Committee responsible for the legislative procedure a vote is part of."""
+
+    vote_id: int
+    """Vote ID"""
+
+    committee_code: str
+    """Committee code"""
 
 
 class Export:
@@ -228,6 +248,20 @@ class Export:
             primary_key=["member_id", "vote_id"],
         )
 
+        self.committees = Table(
+            row_type=CommitteeRow,
+            outdir=self.outdir,
+            name="committees",
+            primary_key=["code"],
+        )
+
+        self.responsible_committee_votes = Table(
+            row_type=ResponsibleCommitteeVotes,
+            outdir=self.outdir,
+            name="responsible_committee_votes",
+            primary_key=["vote_id", "committee_code"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -239,10 +273,13 @@ class Export:
                 self.group_memberships,
                 self.votes,
                 self.member_votes,
+                self.committees,
+                self.responsible_committee_votes,
             ]
         )
         self.export_members()
         self.export_votes()
+        self.export_committees()
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -351,10 +388,6 @@ class Export:
                 if idx % 1000 == 0:
                     log.info("Writing vote", index=idx)
 
-                responsible_committee_code = (
-                    vote.responsible_committee.code if vote.responsible_committee else None
-                )
-
                 position_counts = count_vote_positions(vote.member_votes)
 
                 votes.write_row(
@@ -368,7 +401,6 @@ class Export:
                         "is_featured": vote.is_featured,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
-                        "responsible_committee_code": responsible_committee_code,
                         "count_for": position_counts["FOR"],
                         "count_against": position_counts["AGAINST"],
                         "count_abstention": position_counts["ABSTENTION"],
@@ -391,6 +423,30 @@ class Export:
                             "group_code": group.code if group else None,
                         }
                     )
+
+    def export_committees(self) -> None:
+        log.info("Exporting committees")
+
+        with self.committees.open() as committees:
+            exp = func.json_each(Vote.responsible_committees).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            committee_codes = Session.execute(query).scalars()
+
+            for committee_code in committee_codes:
+                # `if True else None` is a hack to make mypy treat this as a normal value
+                # expression and not as a type expression. If this keeps causing type checking
+                # issues we might want to reconsider the use of metaclasses for this purpose.
+                # See: https://github.com/python/mypy/issues/15107
+                committee = Committee[committee_code] if True else None
+                committees.write_row(
+                    {
+                        "code": committee.code,
+                        "label": committee.label,
+                        "abbreviation": committee.abbreviation,
+                    }
+                )
 
 
 def generate_export(path: pathlib.Path) -> None:
