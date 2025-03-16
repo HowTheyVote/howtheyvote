@@ -4,11 +4,11 @@ import shutil
 import tempfile
 from typing import Any, TypedDict
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..db import Session
-from ..models import Member, Vote
+from ..models import EurovocConcept, Member, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -177,6 +177,29 @@ class MemberVoteRow(TypedDict):
     of the vote. This is not necessarily the MEP’s current political group."""
 
 
+class EurovocConceptRow(TypedDict):
+    """Each row represents a concept from the [EuroVoc thesaurus](https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/eurovoc)
+    that is referenced by at least one vote."""
+
+    id: str
+    """EuroVoc concept ID"""
+
+    label: str
+    """Label"""
+
+
+class EurovocConceptVoteRow(TypedDict):
+    """Each row represents an EuroVoc concept related to a vote. This information is sourced
+    from [EUR-Lex](https://eur-lex.europa.eu/homepage.html) isn’t available for all votes. For
+    example, EUR-Lex doesn’t contain information about motions for resolutions."""
+
+    vote_id: int
+    """Vote ID"""
+
+    eurovoc_concept_id: str
+    """EuroVoc concept ID"""
+
+
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
@@ -223,6 +246,20 @@ class Export:
             primary_key=["member_id", "vote_id"],
         )
 
+        self.eurovoc_concept_votes = Table(
+            row_type=EurovocConceptVoteRow,
+            outdir=self.outdir,
+            name="eurovoc_concept_votes",
+            primary_key=["vote_id", "eurovoc_concept_id"],
+        )
+
+        self.eurovoc_concepts = Table(
+            row_type=EurovocConceptRow,
+            outdir=self.outdir,
+            name="eurovoc_concepts",
+            primary_key=["id"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -234,10 +271,13 @@ class Export:
                 self.group_memberships,
                 self.votes,
                 self.member_votes,
+                self.eurovoc_concepts,
+                self.eurovoc_concept_votes,
             ]
         )
         self.export_members()
         self.export_votes()
+        self.export_eurovoc_concepts()
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -338,6 +378,7 @@ class Export:
         with (
             self.votes.open() as votes,
             self.member_votes.open() as member_votes,
+            self.eurovoc_concept_votes.open() as eurovoc_concept_votes,
         ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
@@ -370,6 +411,14 @@ class Export:
                     }
                 )
 
+                for eurovoc_concept in vote.eurovoc_concepts:
+                    eurovoc_concept_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "eurovoc_concept_id": eurovoc_concept.id,
+                        }
+                    )
+
                 for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]
                     group = member.group_at(vote.timestamp)
@@ -385,6 +434,20 @@ class Export:
                             "group_code": group.code if group else None,
                         }
                     )
+
+    def export_eurovoc_concepts(self) -> None:
+        log.info("Exporting EuroVoc concepts")
+
+        with self.eurovoc_concepts.open() as eurovoc_concepts:
+            exp = func.json_each(Vote.eurovoc_concepts).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            concept_ids = Session.execute(query).scalars()
+
+            for concept_id in concept_ids:
+                concept = EurovocConcept[concept_id]
+                eurovoc_concepts.write_row({"id": concept.id, "label": concept.label})
 
 
 def generate_export(path: pathlib.Path) -> None:

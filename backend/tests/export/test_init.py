@@ -6,6 +6,7 @@ import time_machine
 from howtheyvote.export import Export
 from howtheyvote.models import (
     Country,
+    EurovocConcept,
     Group,
     GroupMembership,
     Member,
@@ -126,6 +127,10 @@ def test_export_votes(db_session, tmp_path):
                 position=VotePosition.FOR,
             ),
         ],
+        eurovoc_concepts=[
+            EurovocConcept["4057"],
+            EurovocConcept["1460"],
+        ],
     )
 
     db_session.add_all([member, vote])
@@ -152,6 +157,22 @@ def test_export_votes(db_session, tmp_path):
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
+
+    eurovoc_concept_votes_csv = tmp_path.joinpath("eurovoc_concept_votes.csv")
+    eurovoc_concept_votes_meta = tmp_path.joinpath("eurovoc_concept_votes.csv-metadata.json")
+
+    expected = "vote_id,eurovoc_concept_id\n123456,4057\n123456,1460\n"
+
+    assert eurovoc_concept_votes_csv.read_text() == expected
+    assert eurovoc_concept_votes_meta.is_file()
+
+    eurovoc_concepts_csv = tmp_path.joinpath("eurovoc_concepts.csv")
+    eurovoc_concepts_meta = tmp_path.joinpath("eurovoc_concepts.csv-metadata.json")
+
+    expected = "id,label\n1460,EU financial instrument\n4057,enlargement of the Union\n"
+
+    assert eurovoc_concepts_csv.read_text() == expected
+    assert eurovoc_concepts_meta.is_file()
 
 
 def test_export_votes_country_group(db_session, tmp_path):
