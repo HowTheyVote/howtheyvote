@@ -1,4 +1,5 @@
 import re
+from collections.abc import Iterator
 from datetime import date, datetime
 from typing import cast
 from urllib.parse import parse_qs, urlparse
@@ -276,8 +277,22 @@ class RCVListScraper(BeautifulSoupScraper):
 
 
 class RCVListEnglishScraper(BeautifulSoupScraper):
+    """Since ~2024 the Parliament has stopped including multilingual (French/English/German)
+    titles in the RCV lists. Now, the French version includes only the French title. This
+    scraper is used only to extract English titles for votes. We still use the French version
+    for all other data, as it is the primary language and often available before other
+    translations are published."""
+
     BS_PARSER = "lxml-xml"
     BASE_URL = "https://www.europarl.europa.eu/doceo/document"
+
+    PROCEDURE_SUFFIXES = [
+        "***I",  # Ordinarly Legislative Procedure, 1st reading
+        "***II",  # Ordinarly Legislative Procedure, 2nd reading
+        "***III",  # Ordinarly Legislative Procedure, 3rd reading
+        "***",  # Consent Procedure
+        "*",  # Consultation Procedure
+    ]
 
     def __init__(self, date: date, term: int, request_cache: RequestCache | None = None):
         super().__init__(date=date, term=term, request_cache=request_cache)
@@ -290,48 +305,28 @@ class RCVListEnglishScraper(BeautifulSoupScraper):
 
         return url
 
-    def _extract_data(self, doc: BeautifulSoup) -> list[Fragment]:
-        tags = doc.find_all("RollCallVote.Result")
-        fragments = []
+    def _extract_data(self, doc: BeautifulSoup) -> Iterator[Fragment]:
+        title_by_dlv_id: dict[int, str] = {}
 
-        for tag in tags:
+        for tag in doc.find_all("VoteTitle"):
+            dlv_id = int(tag["DlvId"])
+            title = tag.text.strip()
+            title_by_dlv_id[dlv_id] = title
+
+        for tag in doc.find_all("RollCallVote.Result"):
             doceo_vote_id = int(tag["Identifier"])
+            dlv_id = int(tag["DlvId"])
+            title = title_by_dlv_id[dlv_id]
 
-            text = tag.find("RollCallVote.Description.Text")
-            text = text.text.strip().removeprefix("- ")
-            # timestamp_regex = self._timestamp_regex()
-            # text = re.sub(timestamp_regex, "", text).strip()
-            text = normalize_whitespace(text)
+            for suffix in self.PROCEDURE_SUFFIXES:
+                title = title.removesuffix(suffix).strip()
 
-            title, _, reference, description = parse_rcv_text(
-                text,
-                # The english XML files contain English titles only
-                extract_english=False,
-            )
-
-            fragment = self._fragment(
+            yield self._fragment(
                 model=Vote,
                 source_id=doceo_vote_id,
                 group_key=doceo_vote_id,
-                data={
-                    "title_en": title,
-                    "reference": reference,
-                    "description_en": description,
-                },
+                data={"dlv_title": title},
             )
-
-            fragments.append(fragment)
-
-        fragments = fill_missing_by_reference(fragments, key="title_en")
-
-        for fragment in fragments:
-            # Reference is only needed temporarily to fill missing titles by reference,
-            # but storing it would be redundant as it is the same in the French lists.
-            fragment.data.pop("reference")
-
-        self._log.info("Extracted English RCV votes", count=len(fragments))
-
-        return fragments
 
 
 class DocumentScraper(BeautifulSoupScraper):

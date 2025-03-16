@@ -541,7 +541,7 @@ def test_votes_api_show(records, db_session, api):
         "sources": [
             {
                 "accessed_at": "2023-01-01T12:00:00",
-                "name": "Results of roll-call votes (XML)",
+                "name": "Results of roll-call votes (French, XML)",
                 "url": "https://europarl.europa.eu/vote-results.xml",
             },
         ],

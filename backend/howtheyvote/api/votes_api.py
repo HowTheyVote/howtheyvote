@@ -40,10 +40,10 @@ MembersById = dict[int, Member]
 
 SOURCE_INFO = {
     "RCVListScraper": {
-        "name": "Results of roll-call votes (XML)",
+        "name": "Results of roll-call votes (French, XML)",
     },
     "RCVListEnglishScraper": {
-        "name": "Results of roll-call votes (XML)",
+        "name": "Results of roll-call votes (English, XML)",
     },
     "ProcedureScraper": {
         "name": "Procedure file (Legislative Observatory)",
