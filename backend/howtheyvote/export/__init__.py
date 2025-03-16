@@ -8,7 +8,7 @@ from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..db import Session
-from ..models import EurovocConcept, Member, Vote
+from ..models import Country, EurovocConcept, Member, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -200,6 +200,31 @@ class EurovocConceptVoteRow(TypedDict):
     """EuroVoc concept ID"""
 
 
+class GeoAreaRow(TypedDict):
+    """Each row represents a country, territory, or other geopolitical entity that is
+    referenced by at least one vote. The information is based on the [reference dataset](https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/country)
+    published by the EU Publications Office."""
+
+    code: str
+    """ISO 3166-1 alpha-3 code if available, otherwise a custom 3-letter code"""
+
+    label: str
+    """Label"""
+
+    iso_alpha_2: str | None
+    """ISO 3166-1 alpha-2 code if available"""
+
+
+class GeoAreaVoteRow(TypedDict):
+    """Country, territory, or other geopolitical entity related to a vote."""
+
+    vote_id: int
+    """Vote ID"""
+
+    geo_area_code: str
+    """Geographic area code"""
+
+
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
@@ -260,6 +285,20 @@ class Export:
             primary_key=["id"],
         )
 
+        self.geo_areas = Table(
+            row_type=GeoAreaRow,
+            outdir=self.outdir,
+            name="geo_areas",
+            primary_key=["code"],
+        )
+
+        self.geo_area_votes = Table(
+            row_type=GeoAreaVoteRow,
+            outdir=self.outdir,
+            name="geo_area_votes",
+            primary_key=["vote_id", "geo_area_code"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -273,11 +312,14 @@ class Export:
                 self.member_votes,
                 self.eurovoc_concepts,
                 self.eurovoc_concept_votes,
+                self.geo_areas,
+                self.geo_area_votes,
             ]
         )
         self.export_members()
         self.export_votes()
         self.export_eurovoc_concepts()
+        self.export_geo_areas()
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -379,6 +421,7 @@ class Export:
             self.votes.open() as votes,
             self.member_votes.open() as member_votes,
             self.eurovoc_concept_votes.open() as eurovoc_concept_votes,
+            self.geo_area_votes.open() as geo_area_votes,
         ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
@@ -419,6 +462,14 @@ class Export:
                         }
                     )
 
+                for geo_area in vote.geo_areas:
+                    geo_area_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "geo_area_code": geo_area.code,
+                        }
+                    )
+
                 for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]
                     group = member.group_at(vote.timestamp)
@@ -448,6 +499,26 @@ class Export:
             for concept_id in concept_ids:
                 concept = EurovocConcept[concept_id]
                 eurovoc_concepts.write_row({"id": concept.id, "label": concept.label})
+
+    def export_geo_areas(self) -> None:
+        log.info("Exporting geographic areas")
+
+        with self.geo_areas.open() as geo_areas:
+            exp = func.json_each(Vote.geo_areas).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            geo_area_codes = Session.execute(query).scalars()
+
+            for geo_area_code in geo_area_codes:
+                geo_area = Country[geo_area_code]
+                geo_areas.write_row(
+                    {
+                        "code": geo_area.code,
+                        "label": geo_area.label,
+                        "iso_alpha_2": geo_area.iso_alpha_2,
+                    }
+                )
 
 
 def generate_export(path: pathlib.Path) -> None:

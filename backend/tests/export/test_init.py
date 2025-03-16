@@ -131,6 +131,10 @@ def test_export_votes(db_session, tmp_path):
             EurovocConcept["4057"],
             EurovocConcept["1460"],
         ],
+        geo_areas=[
+            Country["MDA"],
+            Country["RUS"],
+        ],
     )
 
     db_session.add_all([member, vote])
@@ -173,6 +177,22 @@ def test_export_votes(db_session, tmp_path):
 
     assert eurovoc_concepts_csv.read_text() == expected
     assert eurovoc_concepts_meta.is_file()
+
+    geo_area_votes_csv = tmp_path.joinpath("geo_area_votes.csv")
+    geo_area_votes_meta = tmp_path.joinpath("geo_area_votes.csv-metadata.json")
+
+    expected = "vote_id,geo_area_code\n123456,MDA\n123456,RUS\n"
+
+    assert geo_area_votes_csv.read_text() == expected
+    assert geo_area_votes_meta.is_file()
+
+    geo_areas_csv = tmp_path.joinpath("geo_areas.csv")
+    geo_areas_meta = tmp_path.joinpath("geo_areas.csv-metadata.json")
+
+    expected = "code,label,iso_alpha_2\nMDA,Moldova,MD\nRUS,Russia,RU\n"
+
+    assert geo_areas_csv.read_text() == expected
+    assert geo_areas_meta.is_file()
 
 
 def test_export_votes_country_group(db_session, tmp_path):
