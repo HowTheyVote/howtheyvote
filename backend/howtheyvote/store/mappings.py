@@ -60,7 +60,9 @@ def map_vote(record: CompositeRecord) -> Vote:
     member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes")]
     geo_areas = {Country[code] for code in record.chain("geo_areas")}
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
-    responsible_committee = Committee.get(record.first("responsible_committee"))
+    responsible_committees = {
+        Committee[code] for code in record.chain("responsible_committees")
+    }
 
     press_release = record.first("press_release")
     is_featured = record.first("is_featured") or press_release is not None
@@ -82,7 +84,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         member_votes=member_votes,
         geo_areas=geo_areas,
         eurovoc_concepts=eurovoc_concepts,
-        responsible_committee=responsible_committee,
+        responsible_committees=responsible_committees,
         press_release=press_release,
         issues=record.chain("issues"),
     )

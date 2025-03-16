@@ -258,16 +258,16 @@ class BaseVoteDict(TypedDict):
     """Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus
     that are related to this vote"""
 
-    responsible_committee: CommitteeDict | None
-    """Committee responsible for the legislative procedure"""
+    responsible_committees: list[CommitteeDict] | None
+    """Committees responsible for the legislative procedure"""
 
 
 def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     geo_areas = [serialize_country(geo_area) for geo_area in vote.geo_areas]
     eurovoc_concepts = [serialize_eurovoc_concept(ec) for ec in vote.eurovoc_concepts]
-    responsible_committee = (
-        serialize_committee(vote.responsible_committee) if vote.responsible_committee else None
-    )
+    responsible_committees = [
+        serialize_committee(committee) for committee in vote.responsible_committees
+    ]
 
     return {
         "id": vote.id,
@@ -278,7 +278,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "is_featured": vote.is_featured,
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
-        "responsible_committee": responsible_committee,
+        "responsible_committees": responsible_committees,
     }
 
 

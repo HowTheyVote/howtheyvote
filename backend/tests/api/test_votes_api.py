@@ -536,7 +536,7 @@ def test_votes_api_show(records, db_session, api):
         ],
         "geo_areas": [],
         "eurovoc_concepts": [],
-        "responsible_committee": None,
+        "responsible_committees": [],
         "related": [],
         "sources": [
             {
