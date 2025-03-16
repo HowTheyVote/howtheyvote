@@ -98,6 +98,7 @@ class MainVoteAnalyzer:
             "final vote",
             "decision d'engager des negociations interinstitutionnelles",
             "projet de decision du conseil europeen",
+            "projet de decision",
         ]
     )
 
