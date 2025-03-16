@@ -497,7 +497,11 @@ class Export:
             concept_ids = Session.execute(query).scalars()
 
             for concept_id in concept_ids:
-                concept = EurovocConcept[concept_id]
+                # `if True else None` is a hack to make mypy treat this as a normal value
+                # expression and not as a type expression. If this keeps causing type checking
+                # issues we might want to reconsider the use of metaclasses for this purpose.
+                # See: https://github.com/python/mypy/issues/15107
+                concept = EurovocConcept[concept_id] if True else None
                 eurovoc_concepts.write_row({"id": concept.id, "label": concept.label})
 
     def export_geo_areas(self) -> None:
@@ -511,7 +515,11 @@ class Export:
             geo_area_codes = Session.execute(query).scalars()
 
             for geo_area_code in geo_area_codes:
-                geo_area = Country[geo_area_code]
+                # `if True else None` is a hack to make mypy treat this as a normal value
+                # expression and not as a type expression. If this keeps causing type checking
+                # issues we might want to reconsider the use of metaclasses for this purpose.
+                # See: https://github.com/python/mypy/issues/15107
+                geo_area = Country[geo_area_code] if True else None
                 geo_areas.write_row(
                     {
                         "code": geo_area.code,
