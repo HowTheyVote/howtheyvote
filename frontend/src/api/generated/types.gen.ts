@@ -24,12 +24,6 @@ export type BaseVote = {
      */
     description?: string;
     /**
-     * Whether this vote is featured. Currently, a vote is featured when we have found an
-     * official press release about the vote published by the European Parliament Newsroom.
-     * However, this is subject to change.
-     */
-    is_featured: boolean;
-    /**
      * Countries or territories related to this vote
      */
     geo_areas: Array<Country>;
@@ -38,6 +32,28 @@ export type BaseVote = {
      * that are related to this vote
      */
     eurovoc_concepts: Array<EurovocConcept>;
+    /**
+     * Committee responsible for the legislative procedure
+     */
+    responsible_committee?: Committee;
+};
+
+/**
+ * Committee of the European Parliament
+ */
+export type Committee = {
+    /**
+     * Unique identifier for the committee
+     */
+    code: string;
+    /**
+     * Name of the committee
+     */
+    label: string;
+    /**
+     * Abbreviation
+     */
+    abbreviation?: string;
 };
 
 /**
