@@ -4,11 +4,11 @@ import shutil
 import tempfile
 from typing import Any, TypedDict
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..db import Session
-from ..models import Member, Vote
+from ..models import Country, EurovocConcept, Member, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -133,11 +133,6 @@ class VoteRow(TypedDict):
     votes. This is not an official classification by the European Parliament and there may
     be false negatives."""
 
-    is_featured: bool
-    """Whether this vote is featured. Currently, a vote is featured when we have found an
-    official press release about the vote published by the European Parliament Newsroom.
-    However, this is subject to change."""
-
     procedure_reference: str | None
     """Procedure reference as listed in the Legislative Observatory"""
 
@@ -180,6 +175,54 @@ class MemberVoteRow(TypedDict):
     group_code: str | None
     """Group code. This references the political group that the MEP was part of on the day
     of the vote. This is not necessarily the MEP’s current political group."""
+
+
+class EurovocConceptRow(TypedDict):
+    """Each row represents a concept from the [EuroVoc thesaurus](https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/eurovoc)
+    that is referenced by at least one vote."""
+
+    id: str
+    """EuroVoc concept ID"""
+
+    label: str
+    """Label"""
+
+
+class EurovocConceptVoteRow(TypedDict):
+    """Each row represents an EuroVoc concept related to a vote. This information is sourced
+    from [EUR-Lex](https://eur-lex.europa.eu/homepage.html) isn’t available for all votes. For
+    example, EUR-Lex doesn’t contain information about motions for resolutions."""
+
+    vote_id: int
+    """Vote ID"""
+
+    eurovoc_concept_id: str
+    """EuroVoc concept ID"""
+
+
+class GeoAreaRow(TypedDict):
+    """Each row represents a country, territory, or other geopolitical entity that is
+    referenced by at least one vote. The information is based on the [reference dataset](https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/country)
+    published by the EU Publications Office."""
+
+    code: str
+    """ISO 3166-1 alpha-3 code if available, otherwise a custom 3-letter code"""
+
+    label: str
+    """Label"""
+
+    iso_alpha_2: str | None
+    """ISO 3166-1 alpha-2 code if available"""
+
+
+class GeoAreaVoteRow(TypedDict):
+    """Country, territory, or other geopolitical entity related to a vote."""
+
+    vote_id: int
+    """Vote ID"""
+
+    geo_area_code: str
+    """Geographic area code"""
 
 
 class Export:
@@ -228,6 +271,34 @@ class Export:
             primary_key=["member_id", "vote_id"],
         )
 
+        self.eurovoc_concept_votes = Table(
+            row_type=EurovocConceptVoteRow,
+            outdir=self.outdir,
+            name="eurovoc_concept_votes",
+            primary_key=["vote_id", "eurovoc_concept_id"],
+        )
+
+        self.eurovoc_concepts = Table(
+            row_type=EurovocConceptRow,
+            outdir=self.outdir,
+            name="eurovoc_concepts",
+            primary_key=["id"],
+        )
+
+        self.geo_areas = Table(
+            row_type=GeoAreaRow,
+            outdir=self.outdir,
+            name="geo_areas",
+            primary_key=["code"],
+        )
+
+        self.geo_area_votes = Table(
+            row_type=GeoAreaVoteRow,
+            outdir=self.outdir,
+            name="geo_area_votes",
+            primary_key=["vote_id", "geo_area_code"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -239,10 +310,16 @@ class Export:
                 self.group_memberships,
                 self.votes,
                 self.member_votes,
+                self.eurovoc_concepts,
+                self.eurovoc_concept_votes,
+                self.geo_areas,
+                self.geo_area_votes,
             ]
         )
         self.export_members()
         self.export_votes()
+        self.export_eurovoc_concepts()
+        self.export_geo_areas()
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -343,6 +420,8 @@ class Export:
         with (
             self.votes.open() as votes,
             self.member_votes.open() as member_votes,
+            self.eurovoc_concept_votes.open() as eurovoc_concept_votes,
+            self.geo_area_votes.open() as geo_area_votes,
         ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
@@ -365,7 +444,6 @@ class Export:
                         "reference": vote.reference,
                         "description": vote.description,
                         "is_main": vote.is_main,
-                        "is_featured": vote.is_featured,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
                         "responsible_committee_code": responsible_committee_code,
@@ -375,6 +453,22 @@ class Export:
                         "count_did_not_vote": position_counts["DID_NOT_VOTE"],
                     }
                 )
+
+                for eurovoc_concept in vote.eurovoc_concepts:
+                    eurovoc_concept_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "eurovoc_concept_id": eurovoc_concept.id,
+                        }
+                    )
+
+                for geo_area in vote.geo_areas:
+                    geo_area_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "geo_area_code": geo_area.code,
+                        }
+                    )
 
                 for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]
@@ -391,6 +485,48 @@ class Export:
                             "group_code": group.code if group else None,
                         }
                     )
+
+    def export_eurovoc_concepts(self) -> None:
+        log.info("Exporting EuroVoc concepts")
+
+        with self.eurovoc_concepts.open() as eurovoc_concepts:
+            exp = func.json_each(Vote.eurovoc_concepts).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            concept_ids = Session.execute(query).scalars()
+
+            for concept_id in concept_ids:
+                # `if True else None` is a hack to make mypy treat this as a normal value
+                # expression and not as a type expression. If this keeps causing type checking
+                # issues we might want to reconsider the use of metaclasses for this purpose.
+                # See: https://github.com/python/mypy/issues/15107
+                concept = EurovocConcept[concept_id] if True else None
+                eurovoc_concepts.write_row({"id": concept.id, "label": concept.label})
+
+    def export_geo_areas(self) -> None:
+        log.info("Exporting geographic areas")
+
+        with self.geo_areas.open() as geo_areas:
+            exp = func.json_each(Vote.geo_areas).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            geo_area_codes = Session.execute(query).scalars()
+
+            for geo_area_code in geo_area_codes:
+                # `if True else None` is a hack to make mypy treat this as a normal value
+                # expression and not as a type expression. If this keeps causing type checking
+                # issues we might want to reconsider the use of metaclasses for this purpose.
+                # See: https://github.com/python/mypy/issues/15107
+                geo_area = Country[geo_area_code] if True else None
+                geo_areas.write_row(
+                    {
+                        "code": geo_area.code,
+                        "label": geo_area.label,
+                        "iso_alpha_2": geo_area.iso_alpha_2,
+                    }
+                )
 
 
 def generate_export(path: pathlib.Path) -> None:

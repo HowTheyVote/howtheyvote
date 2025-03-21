@@ -134,16 +134,12 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     if vote.rapporteur:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
-    # Store timestamp and is_featured as sortable values for ranking
+    # Store timestamp and press release as sortable values for ranking
     timestamp = sortable_serialise(vote.timestamp.timestamp())
     doc.add_value(field_to_slot("timestamp"), timestamp)
 
-    is_featured = sortable_serialise(int(vote.is_featured))
-    doc.add_value(field_to_slot("is_featured"), is_featured)
-
-    # Also store is_featured as boolean term for filtering
-    term = boolean_term("is_featured", vote.is_featured)
-    doc.add_boolean_term(term)
+    has_press_release = sortable_serialise(int(vote.press_release is not None))
+    doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
     # Store document and procedure references as boolean terms. Boolean terms
     # aren’t searchable, but can be used for filtering.

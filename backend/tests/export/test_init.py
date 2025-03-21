@@ -6,6 +6,7 @@ import time_machine
 from howtheyvote.export import Export
 from howtheyvote.models import (
     Country,
+    EurovocConcept,
     Group,
     GroupMembership,
     Member,
@@ -126,6 +127,14 @@ def test_export_votes(db_session, tmp_path):
                 position=VotePosition.FOR,
             ),
         ],
+        eurovoc_concepts=[
+            EurovocConcept["4057"],
+            EurovocConcept["1460"],
+        ],
+        geo_areas=[
+            Country["MDA"],
+            Country["RUS"],
+        ],
     )
 
     db_session.add_all([member, vote])
@@ -138,8 +147,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,is_featured,procedure_reference,procedure_title,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,False,,,,1,0,0,0\n"
+        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,,,,1,0,0,0\n"
     )
 
     assert votes_csv.read_text() == expected
@@ -152,6 +161,38 @@ def test_export_votes(db_session, tmp_path):
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
+
+    eurovoc_concept_votes_csv = tmp_path.joinpath("eurovoc_concept_votes.csv")
+    eurovoc_concept_votes_meta = tmp_path.joinpath("eurovoc_concept_votes.csv-metadata.json")
+
+    expected = "vote_id,eurovoc_concept_id\n123456,4057\n123456,1460\n"
+
+    assert eurovoc_concept_votes_csv.read_text() == expected
+    assert eurovoc_concept_votes_meta.is_file()
+
+    eurovoc_concepts_csv = tmp_path.joinpath("eurovoc_concepts.csv")
+    eurovoc_concepts_meta = tmp_path.joinpath("eurovoc_concepts.csv-metadata.json")
+
+    expected = "id,label\n1460,EU financial instrument\n4057,enlargement of the Union\n"
+
+    assert eurovoc_concepts_csv.read_text() == expected
+    assert eurovoc_concepts_meta.is_file()
+
+    geo_area_votes_csv = tmp_path.joinpath("geo_area_votes.csv")
+    geo_area_votes_meta = tmp_path.joinpath("geo_area_votes.csv-metadata.json")
+
+    expected = "vote_id,geo_area_code\n123456,MDA\n123456,RUS\n"
+
+    assert geo_area_votes_csv.read_text() == expected
+    assert geo_area_votes_meta.is_file()
+
+    geo_areas_csv = tmp_path.joinpath("geo_areas.csv")
+    geo_areas_meta = tmp_path.joinpath("geo_areas.csv-metadata.json")
+
+    expected = "code,label,iso_alpha_2\nMDA,Moldova,MD\nRUS,Russia,RU\n"
+
+    assert geo_areas_csv.read_text() == expected
+    assert geo_areas_meta.is_file()
 
 
 def test_export_votes_country_group(db_session, tmp_path):

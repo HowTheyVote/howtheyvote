@@ -318,7 +318,7 @@ class SearchQuery(Query[T]):
             query = XapianQuery(
                 XapianQuery.OP_AND_MAYBE,
                 query,
-                self._xapian_featured_subquery(),
+                self._xapian_press_release_subquery(),
             )
 
             query = XapianQuery(
@@ -384,11 +384,12 @@ class SearchQuery(Query[T]):
             self.BOOST_PHRASE,
         )
 
-    def _xapian_featured_subquery(self) -> XapianQuery:
-        # This subquery assigns a constant weight to featured votes and 0 otherwise.
+    def _xapian_press_release_subquery(self) -> XapianQuery:
+        # This subquery assigns a constant weight to votes with a press release and
+        # 0 otherwise.
         return XapianQuery(
             XapianQuery.OP_SCALE_WEIGHT,
-            XapianQuery(ValueWeightPostingSource(field_to_slot("is_featured"))),
+            XapianQuery(ValueWeightPostingSource(field_to_slot("has_press_release"))),
             self.BOOST_FEATURED,
         )
 

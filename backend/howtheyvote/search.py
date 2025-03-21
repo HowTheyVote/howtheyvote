@@ -37,7 +37,6 @@ FIELD_TO_PREFIX_MAPPING = {
     "rapporteur": "XRA",
     "reference": "XR",
     "procedure_reference": "XPR",
-    "is_featured": "XF",
 }
 
 # Each document can have a set of values associated with it. Values are similar to DocValues
@@ -48,7 +47,7 @@ FIELD_TO_PREFIX_MAPPING = {
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/indexing/values.html
 FIELD_TO_SLOT_MAPPING = {
     "timestamp": 0,
-    "is_featured": 1,
+    "has_press_release": 1,
 }
 
 # Some document fields are more important than others. The following factors are applied

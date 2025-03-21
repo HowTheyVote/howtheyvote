@@ -414,7 +414,6 @@ def test_votes_api_show(records, db_session, api):
         "timestamp": "2023-01-01T00:00:00",
         "reference": None,
         "description": "Am 123",
-        "is_featured": False,
         "procedure": None,
         "facts": None,
         "sharepic_url": None,
