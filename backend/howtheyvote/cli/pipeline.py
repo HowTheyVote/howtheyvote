@@ -9,6 +9,7 @@ from ..models import PlenarySession
 from ..pipelines import (
     MembersPipeline,
     PressPipeline,
+    RCVListEnglishPipeline,
     RCVListPipeline,
     SessionsPipeline,
 )
@@ -70,6 +71,16 @@ def rcv_list(term: int, date: datetime.datetime) -> None:
     for the given day as well as additional sources for related legislative procedures or
     plenary documents."""
     pipeline = RCVListPipeline(term=term, date=date.date())
+    pipeline.run()
+
+
+@pipeline.command()
+@click.option("--term", type=int, required=True)
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
+def rcv_list_en(term: int, date: datetime.datetime) -> None:
+    """Run the English RCV lists pipeline for a given day. This scrapes only vote titles,
+    but not the actualy vote results or any other data."""
+    pipeline = RCVListEnglishPipeline(term, date)
     pipeline.run()
 
 
