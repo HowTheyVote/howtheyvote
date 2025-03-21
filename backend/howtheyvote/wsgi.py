@@ -1,8 +1,10 @@
 from typing import Any
 
-from flask import Flask, Response, jsonify
+from flask import Flask, Response, jsonify, request, request_started
 from flask.typing import ResponseReturnValue
 from prometheus_client import PLATFORM_COLLECTOR, CollectorRegistry, make_wsgi_app
+from structlog import get_logger
+from structlog.contextvars import bind_contextvars, clear_contextvars
 from werkzeug.exceptions import HTTPException
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -12,18 +14,35 @@ from .db import Session
 from .json import JSONProvider
 from .metrics import DataCollector
 
+log = get_logger(__name__)
+
 app = Flask(__name__, static_folder=None)
 app.register_blueprint(api_bp, url_prefix="/api")
 app.json = JSONProvider(app)
+app.logger = log
 
 
-# Erro handling
+# Error handling
 def json_error_handler(error: HTTPException) -> ResponseReturnValue:
     code = error.code or 500
     return jsonify(error=str(error)), code
 
 
 app.register_error_handler(HTTPException, json_error_handler)
+
+
+# Add request info to logs
+def bind_request_details(_: Flask) -> None:
+    clear_contextvars()
+    bind_contextvars(
+        path=request.path,
+        query_string=request.query_string.decode("utf-8"),
+        endpoint=request.url_rule.endpoint if request.url_rule else None,
+    )
+
+
+request_started.connect(bind_request_details, app)
+
 
 # Prometheus metrics
 prometheus_registry = CollectorRegistry()

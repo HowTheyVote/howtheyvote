@@ -11,6 +11,7 @@ logging.basicConfig(
 
 structlog.configure(
     processors=[
+        structlog.contextvars.merge_contextvars,
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.processors.add_log_level,
