@@ -8,6 +8,7 @@ from howtheyvote.scrapers.votes import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     ProcedureScraper,
+    RCVListEnglishScraper,
     RCVListScraper,
 )
 
@@ -228,6 +229,66 @@ def test_rcv_list_scraper_timestamp_from_text(responses):
     assert data.get("timestamp") == datetime.datetime(2019, 7, 15, 17, 9, 37)
     assert data.get("title") == "Mardi - demande du groupe GUE/NGL"
     assert data.get("description") is None
+
+
+def test_rcv_list_english_scraper(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-09-18-RCV_EN.xml",
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-10-2024-09-18-rcv-en.xml"),
+    )
+
+    scraper = RCVListEnglishScraper(term=10, date=datetime.date(2024, 9, 18))
+    data = list(scraper.run())
+
+    expected = [
+        Fragment(
+            model="Vote",
+            source_name="RCVListEnglishScraper",
+            source_id=169418,
+            group_key=169418,
+            source_url="https://www.europarl.europa.eu/doceo/document/PV-10-2024-09-18-RCV_EN.xml",
+            data={
+                "dlv_title": "Objection pursuant to Rule 115(2) and (3), and Rule 115(4)(c): Maximum residue levels for carbendazim and thiophanate-methyl",
+            },
+        ),
+        Fragment(
+            model="Vote",
+            source_name="RCVListEnglishScraper",
+            source_id=169419,
+            group_key=169419,
+            source_url="https://www.europarl.europa.eu/doceo/document/PV-10-2024-09-18-RCV_EN.xml",
+            data={
+                "dlv_title": "Objection pursuant to Rule 115(2) and (3), and Rule 115(4)(c): Maximum residue levels for cyproconazole",
+            },
+        ),
+    ]
+
+    assert len(data) == 2
+    assert record_to_dict(data[0]) == record_to_dict(expected[0])
+    assert record_to_dict(data[1]) == record_to_dict(expected[1])
+
+
+def test_rcv_list_english_scraper_suffixes(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2025-03-11-RCV_EN.xml",
+        body=load_fixture("scrapers/data/votes/rcv_list_pv-10-2025-03-11-rcv-en.xml"),
+    )
+
+    scraper = RCVListEnglishScraper(term=10, date=datetime.date(2025, 3, 11))
+    data = list(scraper.run())
+
+    expected = Fragment(
+        model="Vote",
+        source_name="RCVListEnglishScraper",
+        source_id=172102,
+        group_key=172102,
+        source_url="https://www.europarl.europa.eu/doceo/document/PV-10-2025-03-11-RCV_EN.xml",
+        data={
+            "dlv_title": "Establishing the Reform and Growth Facility for the Republic of Moldova",
+        },
+    )
+
+    assert record_to_dict(data[0]) == record_to_dict(expected)
 
 
 def test_procedure_scraper(responses):
