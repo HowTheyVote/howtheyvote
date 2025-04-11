@@ -140,9 +140,9 @@ class VoteRow(TypedDict):
     """Title of the legislative procedure as listed in the Legislative Observatory"""
 
     procedure_stage: str | None
-    """Stage of the procedure at the time of the vote. One of `OLP_FIRST_READING`,
-    `OLP_SECOND_READING`, `OLP_THIRD_READING`. This field is only available for votes
-    starting in 2024 and if the vote is part of an Ordinary Legislative Procedure (OLP)."""
+    """Stage of the procedure in which the vote took place. One of `OLP_FIRST_READING`,
+    `OLP_SECOND_READING`, `OLP_THIRD_READING`.This field is only available for votes starting
+    in 2024 and if the vote is part of an Ordinary Legislative Procedure."""
 
     responsible_committee_code: str | None
     """Committee responsible for the legislative procedure"""
