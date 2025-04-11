@@ -12,6 +12,7 @@ from ..models import (
     PlenarySessionStatus,
     Vote,
     VotePosition,
+    VoteResult,
 )
 
 
@@ -256,6 +257,9 @@ class BaseVoteDict(TypedDict):
     responsible_committee: CommitteeDict | None
     """Committee responsible for the legislative procedure"""
 
+    result: VoteResult | None
+    """Vote result. This field is only available for votes starting in 2024."""
+
 
 def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     geo_areas = [serialize_country(geo_area) for geo_area in vote.geo_areas]
@@ -273,6 +277,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
         "responsible_committee": responsible_committee,
+        "result": vote.result,
     }
 
 

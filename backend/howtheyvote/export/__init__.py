@@ -154,6 +154,10 @@ class VoteRow(TypedDict):
     count_did_not_vote: int
     """Number of MEPs who didn’t participate in the vote"""
 
+    result: str | None
+    """Vote result. One of `ADOPTED`, `REJECTED`, `LAPSED`. This field is only available for
+    votes starting in 2024."""
+
 
 class MemberVoteRow(TypedDict):
     """Each row represents how an MEP voted in a roll-call vote."""
@@ -451,6 +455,7 @@ class Export:
                         "count_against": position_counts["AGAINST"],
                         "count_abstention": position_counts["ABSTENTION"],
                         "count_did_not_vote": position_counts["DID_NOT_VOTE"],
+                        "result": vote.result.value if vote.result else None,
                     }
                 )
 

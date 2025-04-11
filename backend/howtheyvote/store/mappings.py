@@ -8,6 +8,7 @@ from ..models import (
     PressRelease,
     Vote,
     VoteGroup,
+    VoteResult,
     deserialize_group_membership,
     deserialize_member_vote,
 )
@@ -61,6 +62,7 @@ def map_vote(record: CompositeRecord) -> Vote:
     geo_areas = {Country[code] for code in record.chain("geo_areas")}
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
     responsible_committee = Committee.get(record.first("responsible_committee"))
+    result = VoteResult[record.first("result")] if record.first("result") else None
 
     press_release = record.first("press_release")
 
@@ -70,6 +72,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         term=record.first("term"),
         order=record.first("order"),
         title=record.first("title_en") or record.first("title"),
+        dlv_title=record.first("dlv_title"),
         description=record.first("description_en") or record.first("description"),
         reference=record.first("reference"),
         rapporteur=record.first("rapporteur"),
@@ -77,6 +80,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         procedure_reference=record.first("procedure_reference"),
         is_main=record.first("is_main") or False,
         group_key=record.first("group_key"),
+        result=result,
         member_votes=member_votes,
         geo_areas=geo_areas,
         eurovoc_concepts=eurovoc_concepts,

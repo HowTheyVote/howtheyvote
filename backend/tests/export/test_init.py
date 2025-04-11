@@ -13,6 +13,7 @@ from howtheyvote.models import (
     MemberVote,
     Vote,
     VotePosition,
+    VoteResult,
 )
 
 
@@ -135,6 +136,7 @@ def test_export_votes(db_session, tmp_path):
             Country["MDA"],
             Country["RUS"],
         ],
+        result=VoteResult.ADOPTED,
     )
 
     db_session.add_all([member, vote])
@@ -147,8 +149,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,,,,1,0,0,0\n"
+        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote,result\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,,,,1,0,0,0,ADOPTED\n"
     )
 
     assert votes_csv.read_text() == expected

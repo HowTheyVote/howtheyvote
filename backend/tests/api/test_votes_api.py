@@ -11,6 +11,7 @@ from howtheyvote.models import (
     MemberVote,
     Vote,
     VotePosition,
+    VoteResult,
 )
 from howtheyvote.store import index_search
 
@@ -71,6 +72,7 @@ def records(db_session):
                 position=VotePosition.AGAINST,
             ),
         ],
+        result=VoteResult.ADOPTED,
     )
 
     db_session.add_all([john, jane, vote])
@@ -83,6 +85,7 @@ def test_votes_api_index(db_session, api):
         timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
         title="Vote One",
         is_main=True,
+        result=VoteResult.ADOPTED,
     )
 
     two = Vote(
@@ -90,6 +93,7 @@ def test_votes_api_index(db_session, api):
         timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
         title="Vote Two",
         is_main=True,
+        result=VoteResult.REJECTED,
     )
 
     amendment = Vote(
@@ -113,8 +117,10 @@ def test_votes_api_index(db_session, api):
     assert len(res.json["results"]) == 2
     assert res.json["results"][0]["id"] == 2
     assert res.json["results"][0]["display_title"] == "Vote Two"
+    assert res.json["results"][0]["result"] == "REJECTED"
     assert res.json["results"][1]["id"] == 1
     assert res.json["results"][1]["display_title"] == "Vote One"
+    assert res.json["results"][1]["result"] == "ADOPTED"
 
     res = api.get("/api/votes", query_string={"page": 1, "page_size": 1})
     assert res.json["total"] == 2
@@ -533,6 +539,7 @@ def test_votes_api_show(records, db_session, api):
                 },
             },
         ],
+        "result": "ADOPTED",
         "geo_areas": [],
         "eurovoc_concepts": [],
         "responsible_committee": None,
