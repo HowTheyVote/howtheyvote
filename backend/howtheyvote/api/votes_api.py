@@ -242,6 +242,7 @@ def show(vote_id: int) -> Response:
         procedure = {
             "title": vote.procedure_title,
             "reference": vote.procedure_reference,
+            "stage": vote.procedure_stage,
         }
 
     members = _load_members(vote)

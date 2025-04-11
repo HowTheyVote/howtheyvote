@@ -13,6 +13,7 @@ from .votes import (
     ProcedureScraper,
     RCVListEnglishScraper,
     RCVListScraper,
+    VOTListScraper,
 )
 
 __all__ = [
@@ -27,6 +28,7 @@ __all__ = [
     "ProcedureScraper",
     "RCVListScraper",
     "RCVListEnglishScraper",
+    "VOTListScraper",
     "DocumentScraper",
     "EurlexDocumentScraper",
     "EurlexProcedureScraper",

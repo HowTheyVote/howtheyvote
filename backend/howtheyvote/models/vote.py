@@ -16,11 +16,24 @@ from .eurovoc import EurovocConcept, EurovocConceptType
 from .types import ListType
 
 
+class VoteResult(Enum):
+    ADOPTED = "ADOPTED"
+    REJECTED = "REJECTED"
+    LAPSED = "LAPSED"
+    WITHDRAWN = "WITHDRAWN"
+
+
 class VotePosition(Enum):
     FOR = "FOR"
     AGAINST = "AGAINST"
     ABSTENTION = "ABSTENTION"
     DID_NOT_VOTE = "DID_NOT_VOTE"
+
+
+class ProcedureStage(Enum):
+    OLP_FIRST_READING = "OLP_FIRST_READING"
+    OLP_SECOND_READING = "OLP_SECOND_READING"
+    OLP_THIRD_READING = "OLP_THIRD_READING"
 
 
 @dataclasses.dataclass
@@ -84,13 +97,16 @@ class Vote(BaseWithId):
     term: Mapped[int] = mapped_column(sa.Integer)
     order: Mapped[int] = mapped_column(sa.Integer)
     title: Mapped[str | None] = mapped_column(sa.Unicode)
+    dlv_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
+    procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     description: Mapped[str | None] = mapped_column(sa.Unicode)
     is_main: Mapped[bool] = mapped_column(sa.Boolean, default=False)
     group_key: Mapped[str | None] = mapped_column(sa.Unicode)
+    result: Mapped[VoteResult | None] = mapped_column(sa.Enum(VoteResult))
     member_votes: Mapped[list[MemberVote]] = mapped_column(ListType(MemberVoteType()))
     geo_areas: Mapped[list[Country]] = mapped_column(ListType(CountryType()))
     eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
@@ -102,6 +118,9 @@ class Vote(BaseWithId):
 
     @property
     def display_title(self) -> str | None:
+        if self.dlv_title:
+            return self.dlv_title
+
         if (
             self.title
             and self.procedure_title

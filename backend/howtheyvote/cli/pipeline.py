@@ -11,6 +11,7 @@ from ..pipelines import (
     PressPipeline,
     RCVListPipeline,
     SessionsPipeline,
+    VOTListPipeline,
 )
 
 log = get_logger(__name__)
@@ -33,6 +34,7 @@ def all(
     skip_members: bool = False,
     skip_sessions: bool = False,
     skip_rcv_lists: bool = False,
+    skip_vot_lists: bool = False,
     skip_press: bool = False,
 ) -> None:
     """Run all data pipelines for a given term. This can be useful to scrape data
@@ -54,8 +56,26 @@ def all(
 
             for i in range(delta.days + 1):
                 date = session.start_date + datetime.timedelta(days=i)
-                rcv_pipe = RCVListPipeline(term=term, date=date)
-                rcv_pipe.run()
+                rcv_pipeline = RCVListPipeline(term=term, date=date)
+                rcv_pipeline.run()
+
+    if not skip_vot_lists:
+        query = select(PlenarySession).where(PlenarySession.term == term)
+        results = Session.execute(query, {"yield_per": 500}).scalars()
+
+        for session in results:
+            delta = session.end_date - session.start_date
+
+            for i in range(delta.days + 1):
+                date = session.start_date + datetime.timedelta(days=i)
+
+                # VOT lists are only available in a processable XML format since
+                # the beginning of 2024
+                if date < datetime.date(2024, 1, 1):
+                    continue
+
+                vot_pipeline = VOTListPipeline(term=term, date=date)
+                vot_pipeline.run()
 
     if not skip_press:
         press_pipe = PressPipeline()
@@ -70,6 +90,16 @@ def rcv_list(term: int, date: datetime.datetime) -> None:
     for the given day as well as additional sources for related legislative procedures or
     plenary documents."""
     pipeline = RCVListPipeline(term=term, date=date.date())
+    pipeline.run()
+
+
+@pipeline.command()
+@click.option("--term", type=int, required=True)
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
+def vot_list(term: int, date: datetime.datetime) -> None:
+    """Run the VOT list pipeline for a given day. This scrapes the list of vote results
+    for the given day."""
+    pipeline = VOTListPipeline(term=term, date=date.date())
     pipeline.run()
 
 

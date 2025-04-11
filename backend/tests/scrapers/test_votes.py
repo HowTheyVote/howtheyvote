@@ -2,13 +2,14 @@ import datetime
 
 import pytest
 
-from howtheyvote.models import Fragment, MemberVote, VotePosition
+from howtheyvote.models import Fragment, MemberVote, ProcedureStage, VotePosition, VoteResult
 from howtheyvote.scrapers.common import ScrapingError
 from howtheyvote.scrapers.votes import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     ProcedureScraper,
     RCVListScraper,
+    VOTListScraper,
 )
 
 from ..helpers import load_fixture, record_to_dict
@@ -228,6 +229,72 @@ def test_rcv_list_scraper_timestamp_from_text(responses):
     assert data.get("timestamp") == datetime.datetime(2019, 7, 15, 17, 9, 37)
     assert data.get("title") == "Mardi - demande du groupe GUE/NGL"
     assert data.get("description") is None
+
+
+def test_vot_list_scraper(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-28-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-28-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 11, 28), term=10)
+    votes = list(scraper.run())
+
+    assert len(votes) == 57
+    assert votes[0].source_id == "170875"
+    assert votes[0].group_key == "170875"
+    assert votes[0].data == {
+        "dlv_title": "Hong Kong, notably the cases of Jimmy Lai and the 45 activists recently convicted under the national security law",
+        "result": VoteResult.ADOPTED,
+        "procedure_stage": None,
+    }
+
+
+def test_vot_list_skip_non_rcv(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-28-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-28-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 11, 28), term=10)
+    votes = list(scraper.run())
+    assert len(votes) == 57
+
+
+def test_vot_list_skip_lapsed(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-04-24-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 4, 24), term=9)
+    votes = list(scraper.run())
+    assert len(votes) == 116
+
+
+def test_vot_list_scraper_skip_withdrawn(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-14-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-14-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 11, 14), term=10)
+    votes = list(scraper.run())
+    assert len(votes) == 36
+
+
+def test_vot_list_procedure_stage(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-27-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-27-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 11, 27), term=10)
+    votes = list(scraper.run())
+    assert votes[5].group_key == "170611"
+    assert votes[5].data["procedure_stage"] is None
+    assert votes[6].group_key == "170671"
+    assert votes[6].data["procedure_stage"] == ProcedureStage.OLP_FIRST_READING
 
 
 def test_procedure_scraper(responses):

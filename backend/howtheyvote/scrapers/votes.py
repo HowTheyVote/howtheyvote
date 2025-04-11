@@ -1,4 +1,5 @@
 import re
+from collections.abc import Iterator
 from datetime import date, datetime
 from typing import cast
 from urllib.parse import parse_qs, urlparse
@@ -13,14 +14,17 @@ from ..models import (
     EurovocConcept,
     Fragment,
     MemberVote,
+    ProcedureStage,
     Vote,
     VotePosition,
+    VoteResult,
 )
 from .common import BeautifulSoupScraper, RequestCache, ScrapingError
 from .helpers import (
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
+    parse_dlv_title,
     parse_rcv_text,
 )
 
@@ -332,6 +336,93 @@ class RCVListEnglishScraper(BeautifulSoupScraper):
         self._log.info("Extracted English RCV votes", count=len(fragments))
 
         return fragments
+
+
+class VOTListScraper(BeautifulSoupScraper):
+    BASE_URL = "https://www.europarl.europa.eu/doceo/document"
+    BS_PARSER = "lxml-xml"
+
+    def __init__(
+        self,
+        date: date,
+        term: int,
+        request_cache: RequestCache | None = None,
+    ):
+        super().__init__(
+            date=date,
+            term=term,
+            request_cache=request_cache,
+        )
+
+        self.date = date
+        self.term = term
+
+    def _url(self) -> str:
+        date = self.date.strftime("%Y-%m-%d")
+        return f"{self.BASE_URL}/PV-{self.term}-{date}-VOT_EN.xml"
+
+    def _extract_data(self, doc: BeautifulSoup) -> Iterator[Fragment | None]:
+        for vote_tag in doc.select("votes vote"):
+            title, procedure_stage = parse_dlv_title(self._title(vote_tag))
+
+            for voting_tag in vote_tag.select("votings voting"):
+                fragment = self._vote(voting_tag, title, procedure_stage)
+
+                if fragment:
+                    yield fragment
+
+    def _vote(
+        self, tag: Tag, title: str, procedure_stage: ProcedureStage | None
+    ) -> Fragment | None:
+        # https://github.com/python/typeshed/issues/8755
+        vote_id = cast(str | None, tag.get("votingId"))
+        result_text = cast(str | None, tag.get("result"))
+
+        if not vote_id or not result_text:
+            # The XML files sometimes contain `voting` tags that represent section headers
+            # (i.e. these aren't actual votes). These tags are missing the `votingId` and
+            # `result` attributes
+            return None
+
+        try:
+            result = VoteResult[result_text]
+        except KeyError:
+            raise ScrapingError(f"Unknown vote result: {result_text}") from None
+
+        result_type = cast(str, tag["resultType"])
+
+        if result == VoteResult.LAPSED or result == VoteResult.WITHDRAWN:
+            return None
+
+        # The XML files contain information about all votes, including votes by show of hand,
+        # secret votes, etc. Currently, we only care about roll-call votes, but this may
+        # change in the future.
+        if result_type != "ROLL_CALL":
+            return None
+
+        return self._fragment(
+            model=Vote,
+            source_id=vote_id,
+            group_key=vote_id,
+            data={
+                "dlv_title": title,
+                "result": result,
+                "procedure_stage": procedure_stage,
+            },
+        )
+
+    def _title(self, tag: Tag) -> str:
+        title_tag = tag.select_one("title")
+
+        if not title_tag:
+            raise ScrapingError("Missing title tag")
+
+        title = title_tag.get_text(strip=True)
+
+        if not title:
+            raise ScrapingError("Missing title")
+
+        return title
 
 
 class DocumentScraper(BeautifulSoupScraper):

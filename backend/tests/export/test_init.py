@@ -11,8 +11,10 @@ from howtheyvote.models import (
     GroupMembership,
     Member,
     MemberVote,
+    ProcedureStage,
     Vote,
     VotePosition,
+    VoteResult,
 )
 
 
@@ -121,6 +123,9 @@ def test_export_votes(db_session, tmp_path):
         id=123456,
         title="Lorem Ipsum",
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        procedure_title="Lorem Ipsum",
+        procedure_reference="2025/1234(COD)",
+        procedure_stage=ProcedureStage.OLP_FIRST_READING,
         member_votes=[
             MemberVote(
                 web_id=123,
@@ -135,6 +140,7 @@ def test_export_votes(db_session, tmp_path):
             Country["MDA"],
             Country["RUS"],
         ],
+        result=VoteResult.ADOPTED,
     )
 
     db_session.add_all([member, vote])
@@ -147,8 +153,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,,,,1,0,0,0\n"
+        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,procedure_stage,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote,result\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,2025/1234(COD),Lorem Ipsum,OLP_FIRST_READING,,1,0,0,0,ADOPTED\n"
     )
 
     assert votes_csv.read_text() == expected

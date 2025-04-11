@@ -10,8 +10,10 @@ from ..models import (
     PlenarySession,
     PlenarySessionLocation,
     PlenarySessionStatus,
+    ProcedureStage,
     Vote,
     VotePosition,
+    VoteResult,
 )
 
 
@@ -23,6 +25,10 @@ class ProcedureDict(TypedDict):
 
     reference: Annotated[str, "2022/0195(COD)"]
     """Procedure reference as listed in the Legislative Observatory"""
+
+    stage: ProcedureStage | None
+    """Stage of the procedure in which the vote took place. This field is only available for
+    votes starting in 2024 and if the vote is part of an Ordinary Legislative Procedure."""
 
 
 class GroupDict(TypedDict):
@@ -256,6 +262,9 @@ class BaseVoteDict(TypedDict):
     responsible_committee: CommitteeDict | None
     """Committee responsible for the legislative procedure"""
 
+    result: VoteResult | None
+    """Vote result. This field is only available for votes starting in 2024."""
+
 
 def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     geo_areas = [serialize_country(geo_area) for geo_area in vote.geo_areas]
@@ -273,6 +282,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
         "responsible_committee": responsible_committee,
+        "result": vote.result,
     }
 
 
