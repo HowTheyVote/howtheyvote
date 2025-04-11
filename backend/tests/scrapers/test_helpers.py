@@ -1,8 +1,9 @@
-from howtheyvote.models import Fragment
+from howtheyvote.models import Fragment, ProcedureStage
 from howtheyvote.scrapers.helpers import (
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
+    parse_dlv_title,
     parse_full_name,
     parse_rcv_text,
 )
@@ -147,6 +148,29 @@ def test_parse_rcv_text_extract_english():
         "John Doe",
         "A9-1234/2023",
         "Am 123",
+    )
+
+
+def test_parse_dlv_title():
+    title = "Election of the Commission"
+    assert parse_dlv_title(title) == ("Election of the Commission", None)
+
+    title = "Amending Regulation (EU) 2018/1806 as regards Vanuatu ***I"
+    assert parse_dlv_title(title) == (
+        "Amending Regulation (EU) 2018/1806 as regards Vanuatu",
+        ProcedureStage.OLP_FIRST_READING,
+    )
+
+    title = "Amending Regulation (EU) 2018/1806 as regards Vanuatu *** I"
+    assert parse_dlv_title(title) == (
+        "Amending Regulation (EU) 2018/1806 as regards Vanuatu",
+        ProcedureStage.OLP_FIRST_READING,
+    )
+
+    title = "Multiannual financial framework for the years 2021 to 2027 ***"
+    assert parse_dlv_title(title) == (
+        "Multiannual financial framework for the years 2021 to 2027",
+        None,
     )
 
 

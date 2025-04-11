@@ -14,6 +14,7 @@ from ..models import (
     EurovocConcept,
     Fragment,
     MemberVote,
+    ProcedureStage,
     Vote,
     VotePosition,
     VoteResult,
@@ -23,6 +24,7 @@ from .helpers import (
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
+    parse_dlv_title,
     parse_rcv_text,
 )
 
@@ -361,15 +363,17 @@ class VOTListScraper(BeautifulSoupScraper):
 
     def _extract_data(self, doc: BeautifulSoup) -> Iterator[Fragment | None]:
         for vote_tag in doc.select("votes vote"):
-            title = self._title(vote_tag)
+            title, procedure_stage = parse_dlv_title(self._title(vote_tag))
 
             for voting_tag in vote_tag.select("votings voting"):
-                fragment = self._vote(voting_tag, title)
+                fragment = self._vote(voting_tag, title, procedure_stage)
 
                 if fragment:
                     yield fragment
 
-    def _vote(self, tag: Tag, title: str) -> Fragment | None:
+    def _vote(
+        self, tag: Tag, title: str, procedure_stage: ProcedureStage | None
+    ) -> Fragment | None:
         # https://github.com/python/typeshed/issues/8755
         vote_id = cast(str | None, tag.get("votingId"))
         result_text = cast(str | None, tag.get("result"))
@@ -403,6 +407,7 @@ class VOTListScraper(BeautifulSoupScraper):
             data={
                 "dlv_title": title,
                 "result": result,
+                "procedure_stage": procedure_stage,
             },
         )
 

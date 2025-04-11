@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from howtheyvote.models import Fragment, MemberVote, VotePosition, VoteResult
+from howtheyvote.models import Fragment, MemberVote, ProcedureStage, VotePosition, VoteResult
 from howtheyvote.scrapers.common import ScrapingError
 from howtheyvote.scrapers.votes import (
     EurlexDocumentScraper,
@@ -246,6 +246,7 @@ def test_vot_list_scraper(responses):
     assert votes[0].data == {
         "dlv_title": "Hong Kong, notably the cases of Jimmy Lai and the 45 activists recently convicted under the national security law",
         "result": VoteResult.ADOPTED,
+        "procedure_stage": None,
     }
 
 
@@ -280,6 +281,20 @@ def test_vot_list_scraper_skip_withdrawn(responses):
     scraper = VOTListScraper(date=datetime.date(2024, 11, 14), term=10)
     votes = list(scraper.run())
     assert len(votes) == 36
+
+
+def test_vot_list_procedure_stage(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-27-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-27-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 11, 27), term=10)
+    votes = list(scraper.run())
+    assert votes[5].group_key == "170611"
+    assert votes[5].data["procedure_stage"] is None
+    assert votes[6].group_key == "170671"
+    assert votes[6].data["procedure_stage"] == ProcedureStage.OLP_FIRST_READING
 
 
 def test_procedure_scraper(responses):

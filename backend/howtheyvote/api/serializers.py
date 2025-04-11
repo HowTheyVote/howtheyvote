@@ -10,6 +10,7 @@ from ..models import (
     PlenarySession,
     PlenarySessionLocation,
     PlenarySessionStatus,
+    ProcedureStage,
     Vote,
     VotePosition,
     VoteResult,
@@ -24,6 +25,10 @@ class ProcedureDict(TypedDict):
 
     reference: Annotated[str, "2022/0195(COD)"]
     """Procedure reference as listed in the Legislative Observatory"""
+
+    stage: ProcedureStage | None
+    """Stage of the procedure at the time of the vote. This field is only available for votes
+    starting in 2024 and if the vote is part of an Ordinary Legislative Procedure (OLP)."""
 
 
 class GroupDict(TypedDict):

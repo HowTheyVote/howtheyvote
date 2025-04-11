@@ -4,7 +4,7 @@ from structlog import get_logger
 from unidecode import unidecode
 
 from ..helpers import REFERENCE_REGEX
-from ..models import Fragment
+from ..models import Fragment, ProcedureStage
 
 log = get_logger(__name__)
 
@@ -122,6 +122,33 @@ def parse_rcv_text(
         description = None
 
     return (title, rapporteur, reference, description)
+
+
+# See explanation as listed for example in session agendas:
+# https://www.europarl.europa.eu/doceo/document/OJQ-10-2025-02-13_EN.pdf#page=2
+PROCEDURE_STAGE_MAPPING = {
+    r"\*\*\*\s?I": ProcedureStage.OLP_FIRST_READING,
+    r"\*\*\*\s?II": ProcedureStage.OLP_SECOND_READING,
+    r"\*\*\*\s?III": ProcedureStage.OLP_THIRD_READING,
+    # These also occur in titles. However, we only strip the symbol from the title
+    # and do not store the stage because these procedures don’t have multiple stages
+    # in Parliament.
+    r"\*\*\*": None,
+    r"\*": None,
+}
+
+
+def parse_dlv_title(title: str) -> tuple[str, ProcedureStage | None]:
+    title = title.strip()
+
+    for stage_pattern, stage in PROCEDURE_STAGE_MAPPING.items():
+        pattern = r"(?P<title>.*)\s+" + stage_pattern
+        match = re.fullmatch(pattern, title)
+
+        if match:
+            return (match.group("title"), stage)
+
+    return (title, None)
 
 
 def fill_missing_by_reference(fragments: list[Fragment], key: str) -> list[Fragment]:

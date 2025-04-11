@@ -139,6 +139,11 @@ class VoteRow(TypedDict):
     procedure_title: str | None
     """Title of the legislative procedure as listed in the Legislative Observatory"""
 
+    procedure_stage: str | None
+    """Stage of the procedure at the time of the vote. One of `OLP_FIRST_READING`,
+    `OLP_SECOND_READING`, `OLP_THIRD_READING`. This field is only available for votes
+    starting in 2024 and if the vote is part of an Ordinary Legislative Procedure (OLP)."""
+
     responsible_committee_code: str | None
     """Committee responsible for the legislative procedure"""
 
@@ -450,6 +455,9 @@ class Export:
                         "is_main": vote.is_main,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
+                        "procedure_stage": (
+                            vote.procedure_stage.value if vote.procedure_stage else None
+                        ),
                         "responsible_committee_code": responsible_committee_code,
                         "count_for": position_counts["FOR"],
                         "count_against": position_counts["AGAINST"],

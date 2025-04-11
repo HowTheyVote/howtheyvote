@@ -13,6 +13,7 @@ from .press_release import PressRelease
 from .session import PlenarySession, PlenarySessionLocation, PlenarySessionStatus
 from .vote import (
     MemberVote,
+    ProcedureStage,
     Vote,
     VoteGroup,
     VotePosition,
@@ -45,6 +46,7 @@ __all__ = [
     "VotePositionCounts",
     "VoteResult",
     "MemberVote",
+    "ProcedureStage",
     "Vote",
     "VoteGroup",
     "PressRelease",

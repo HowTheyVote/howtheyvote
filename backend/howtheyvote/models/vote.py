@@ -30,6 +30,12 @@ class VotePosition(Enum):
     DID_NOT_VOTE = "DID_NOT_VOTE"
 
 
+class ProcedureStage(Enum):
+    OLP_FIRST_READING = "OLP_FIRST_READING"
+    OLP_SECOND_READING = "OLP_SECOND_READING"
+    OLP_THIRD_READING = "OLP_THIRD_READING"
+
+
 @dataclasses.dataclass
 class MemberVote:
     web_id: int
@@ -94,6 +100,7 @@ class Vote(BaseWithId):
     dlv_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
+    procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     description: Mapped[str | None] = mapped_column(sa.Unicode)
