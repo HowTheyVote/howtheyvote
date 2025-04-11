@@ -32,7 +32,7 @@ def parse_int(text: str) -> int:
 
 VOTE_RESULT_REGEX = re.compile(
     NUMBER_REGEX
-    + r"\s(?:votes?|MEPs? voted)\sin\sfavou?r,\s"
+    + r"\s(?:votes?|MEPs? voted)\s(?:in\sfavou?r|for),\s"
     + NUMBER_REGEX
     + r"\sagainst,?\s(?:and|with)\s"
     + NUMBER_REGEX

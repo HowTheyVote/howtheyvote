@@ -43,3 +43,9 @@ def test_extract_vote_results():
     expected = [{"FOR": 455, "AGAINST": 85, "ABSTENTION": 105, "DID_NOT_VOTE": 0}]
     actual = extract_vote_results("adopted with 455 votes to 85 and 105 abstentions")
     assert actual == expected
+
+    expected = [{"FOR": 531, "AGAINST": 69, "ABSTENTION": 17, "DID_NOT_VOTE": 0}]
+    actual = extract_vote_results(
+        "With 531 votes for, 69 against and 17 abstentions, MEPs supported the Commission proposal"
+    )
+    assert actual == expected
