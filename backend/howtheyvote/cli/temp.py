@@ -19,6 +19,7 @@ from ..scrapers import (
     RCVListScraper,
     RequestCache,
     ScrapingError,
+    VOTListScraper,
 )
 from ..sharepics import generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_press_release
@@ -158,6 +159,34 @@ def rcv_lists() -> None:
                 date=date,
                 active_members=active_members,
             )
+
+            try:
+                writer.add(scraper.run())
+            except NoWorkingUrlError:
+                pass
+
+            writer.flush()
+
+
+@temp.command()
+def vot_lists() -> None:
+    """Scrape all VOT lists."""
+    writer = BulkWriter()
+
+    query = select(PlenarySession)
+    query = query.where(
+        PlenarySession.start_date <= datetime.datetime.now(),
+        PlenarySession.start_date >= datetime.datetime(2024, 1, 1),
+    )
+    results = Session.execute(query).scalars()
+
+    for session in results:
+        delta = session.end_date - session.start_date
+
+        for i in range(delta.days + 1):
+            date = session.start_date + datetime.timedelta(days=i)
+
+            scraper = VOTListScraper(term=session.term, date=date)
 
             try:
                 writer.add(scraper.run())
