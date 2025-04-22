@@ -14,6 +14,7 @@ from .session import PlenarySession, PlenarySessionLocation, PlenarySessionStatu
 from .vote import (
     MemberVote,
     ProcedureStage,
+    ProcedureType,
     Vote,
     VoteGroup,
     VotePosition,
@@ -47,6 +48,7 @@ __all__ = [
     "VoteResult",
     "MemberVote",
     "ProcedureStage",
+    "ProcedureType",
     "Vote",
     "VoteGroup",
     "PressRelease",

@@ -11,6 +11,7 @@ from ..models import (
     PlenarySessionLocation,
     PlenarySessionStatus,
     ProcedureStage,
+    ProcedureType,
     Vote,
     VotePosition,
     VoteResult,
@@ -21,10 +22,13 @@ class ProcedureDict(TypedDict):
     """European Union legislative procedure"""
 
     title: Annotated[str | None, "Nature restoration"]
-    """Title of the legislative proceudre as listed in the Legislative Observatory"""
+    """Title of the legislative proceudre as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+
+    type: ProcedureType
+    """Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
 
     reference: Annotated[str, "2022/0195(COD)"]
-    """Procedure reference as listed in the Legislative Observatory"""
+    """Procedure reference as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
 
     stage: ProcedureStage | None
     """Stage of the procedure in which the vote took place. This field is only available for

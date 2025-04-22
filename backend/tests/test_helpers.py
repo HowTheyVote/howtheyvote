@@ -9,6 +9,7 @@ from howtheyvote.helpers import (
     parse_reference,
     subset_dict,
 )
+from howtheyvote.models import ProcedureType
 
 
 def test_parse_reference():
@@ -42,15 +43,15 @@ def test_parse_reference():
 
 def test_parse_procedure_reference():
     ref = parse_procedure_reference("2021/0106(COD)")
-    assert ref == ProcedureReference(type="COD", year=2021, number="0106")
+    assert ref == ProcedureReference(type=ProcedureType.COD, year=2021, number="0106")
 
     # In most cases the sequential number consists only of digits, but in some cases
     # it can also contain a letter at the end.
     ref = parse_procedure_reference("2023/0038M(NLE)")
-    assert ref == ProcedureReference(type="NLE", year=2023, number="0038M")
+    assert ref == ProcedureReference(type=ProcedureType.NLE, year=2023, number="0038M")
 
     ref = parse_procedure_reference("2023/0201R(APP)")
-    assert ref == ProcedureReference(type="APP", year=2023, number="0201R")
+    assert ref == ProcedureReference(type=ProcedureType.APP, year=2023, number="0201R")
 
     with pytest.raises(ValueError, match="Invalid procedure reference:"):
         parse_procedure_reference("2021/106(COD)")

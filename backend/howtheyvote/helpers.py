@@ -9,6 +9,7 @@ from typing import Any, TypedDict, TypeVar, cast
 from urllib.parse import urljoin
 
 from . import config
+from .models import ProcedureType
 
 REFERENCE_REGEX = re.compile(
     r"(?P<type>A|B|C|RC-B)"
@@ -33,7 +34,7 @@ class Reference(TypedDict):
 
 
 class ProcedureReference(TypedDict):
-    type: str
+    type: ProcedureType
     number: str
     year: int
 
@@ -62,7 +63,12 @@ def parse_procedure_reference(procedure_reference: str) -> ProcedureReference:
     if not match:
         raise ValueError(f"Invalid procedure reference: {procedure_reference}")
 
-    type_ = cast(str, match.group("type"))
+    try:
+        type_code = cast(str, match.group("type"))
+        type_ = ProcedureType[type_code]
+    except KeyError:
+        raise ValueError(f"Invalid procedure type {type_code}") from None
+
     number = cast(str, match.group("number"))
     year = int(match.group("year"))
 
