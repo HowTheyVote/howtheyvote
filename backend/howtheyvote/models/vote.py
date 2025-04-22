@@ -30,6 +30,13 @@ class VotePosition(Enum):
     DID_NOT_VOTE = "DID_NOT_VOTE"
 
 
+class DocumentType(Enum):
+    A = "A"  # Report
+    B = "B"  # Resolution
+    C = "C"  # Commission proposal
+    RC = "RC"  # Joint resolution
+
+
 class ProcedureType(Enum):
     # Based on the codes used by the Parliament in the Legislative Observatory
     COD = "COD"  # Ordinary legislative procedure
