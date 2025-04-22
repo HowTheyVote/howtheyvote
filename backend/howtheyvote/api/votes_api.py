@@ -42,6 +42,9 @@ SOURCE_INFO = {
     "RCVListScraper": {
         "name": "Results of roll-call votes (XML)",
     },
+    "VOTListScraper": {
+        "name": "Results of votes (XML)",
+    },
     "RCVListEnglishScraper": {
         "name": "Results of roll-call votes (XML)",
     },
