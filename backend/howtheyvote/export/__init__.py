@@ -9,7 +9,7 @@ from structlog import get_logger
 
 from ..db import Session
 from ..helpers import parse_procedure_reference
-from ..models import Country, EurovocConcept, Member, Vote
+from ..models import Committee, Country, EurovocConcept, Member, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -149,9 +149,6 @@ class VoteRow(TypedDict):
     `OLP_SECOND_READING`, `OLP_THIRD_READING`.This field is only available for votes starting
     in 2024 and if the vote is part of an Ordinary Legislative Procedure."""
 
-    responsible_committee_code: str | None
-    """Committee responsible for the legislative procedure"""
-
     count_for: int
     """Number of MEPs who voted in favor"""
 
@@ -239,6 +236,29 @@ class GeoAreaVoteRow(TypedDict):
     """Geographic area code"""
 
 
+class CommitteeRow(TypedDict):
+    """Each row represents a committee of the European Parliament."""
+
+    code: str
+    """Unique identifier of the committee"""
+
+    label: str
+    """Label"""
+
+    abbreviation: str
+    """Abbreviation"""
+
+
+class ResponsibleCommitteeVoteRow(TypedDict):
+    """Committee responsible for the legislative procedure a vote is part of."""
+
+    vote_id: int
+    """Vote ID"""
+
+    committee_code: str
+    """Committee code"""
+
+
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
@@ -313,6 +333,20 @@ class Export:
             primary_key=["vote_id", "geo_area_code"],
         )
 
+        self.committees = Table(
+            row_type=CommitteeRow,
+            outdir=self.outdir,
+            name="committees",
+            primary_key=["code"],
+        )
+
+        self.responsible_committee_votes = Table(
+            row_type=ResponsibleCommitteeVoteRow,
+            outdir=self.outdir,
+            name="responsible_committee_votes",
+            primary_key=["vote_id", "committee_code"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -328,12 +362,15 @@ class Export:
                 self.eurovoc_concept_votes,
                 self.geo_areas,
                 self.geo_area_votes,
+                self.committees,
+                self.responsible_committee_votes,
             ]
         )
         self.export_members()
         self.export_votes()
         self.export_eurovoc_concepts()
         self.export_geo_areas()
+        self.export_committees()
 
     def fetch_members(self) -> None:
         self.members_by_id: dict[int, Member] = {}
@@ -436,6 +473,7 @@ class Export:
             self.member_votes.open() as member_votes,
             self.eurovoc_concept_votes.open() as eurovoc_concept_votes,
             self.geo_area_votes.open() as geo_area_votes,
+            self.responsible_committee_votes.open() as responsible_committee_votes,
         ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
@@ -443,10 +481,6 @@ class Export:
             for idx, vote in enumerate(result):
                 if idx % 1000 == 0:
                     log.info("Writing vote", index=idx)
-
-                responsible_committee_code = (
-                    vote.responsible_committee.code if vote.responsible_committee else None
-                )
 
                 position_counts = count_vote_positions(vote.member_votes)
                 procedure_reference = (
@@ -471,7 +505,6 @@ class Export:
                         "procedure_stage": (
                             vote.procedure_stage.value if vote.procedure_stage else None
                         ),
-                        "responsible_committee_code": responsible_committee_code,
                         "count_for": position_counts["FOR"],
                         "count_against": position_counts["AGAINST"],
                         "count_abstention": position_counts["ABSTENTION"],
@@ -493,6 +526,14 @@ class Export:
                         {
                             "vote_id": vote.id,
                             "geo_area_code": geo_area.code,
+                        }
+                    )
+
+                for responsible_committee in vote.responsible_committees:
+                    responsible_committee_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "committee_code": responsible_committee.code,
                         }
                     )
 
@@ -551,6 +592,26 @@ class Export:
                         "code": geo_area.code,
                         "label": geo_area.label,
                         "iso_alpha_2": geo_area.iso_alpha_2,
+                    }
+                )
+
+    def export_committees(self) -> None:
+        log.info("Exporting committees")
+
+        with self.committees.open() as committees:
+            exp = func.json_each(Vote.responsible_committees).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            committee_codes = Session.execute(query).scalars()
+
+            for committee_code in committee_codes:
+                committee = Committee[committee_code] if True else None
+                committees.write_row(
+                    {
+                        "code": committee.code,
+                        "label": committee.label,
+                        "abbreviation": committee.abbreviation,
                     }
                 )
 
