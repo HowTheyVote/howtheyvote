@@ -225,10 +225,6 @@ class SearchQuery(Query[T]):
     BOOST_FEATURED = 0.075
     """Constant weight added for featured votes."""
 
-    BOOST_PHRASE = 0.1
-    """Scaling factor for the phrase subquery. Every user-provided search query is also
-    converted to a phrase query to slightly boost votes matching the search query exactly."""
-
     BOOST_AGE = 0.25
     """Maximum weight added for recent votes. If a vote’s timestamp equals the current time
     this weight is added. The weight decreases linearly with a vote’s age up to
@@ -327,12 +323,6 @@ class SearchQuery(Query[T]):
                 self._xapian_age_subquery(),
             )
 
-            query = XapianQuery(
-                XapianQuery.OP_AND_MAYBE,
-                query,
-                self._xapian_phrase_subquery(index),
-            )
-
         for field, value in self.get_filters().items():
             # Fields have to be indexed as boolean terms to be used as filters
             term = boolean_term(field, value)
@@ -356,7 +346,7 @@ class SearchQuery(Query[T]):
                 XapianQuery.OP_SCALE_WEIGHT,
                 parser.parse_query(
                     self.get_query(),
-                    QueryParser.FLAG_DEFAULT,
+                    QueryParser.FLAG_BOOLEAN | QueryParser.FLAG_PHRASE,
                     field_to_prefix(field),
                 ),
                 field_to_boost(field),
@@ -369,20 +359,6 @@ class SearchQuery(Query[T]):
             )
 
         return query
-
-    def _xapian_phrase_subquery(self, index: Database) -> XapianQuery:
-        # This is a phrase subquery, i.e. it matches documents that contain the terms of the
-        # search query in the original order. It's used to boost phrase matches even if
-        # a user hasn't explicitly specified a phrase query.
-        parser = self._xapian_query_parser(index)
-        parser.set_default_op(XapianQuery.OP_PHRASE)
-        query = parser.parse_query(self.get_query())
-
-        return XapianQuery(
-            XapianQuery.OP_SCALE_WEIGHT,
-            query,
-            self.BOOST_PHRASE,
-        )
 
     def _xapian_press_release_subquery(self) -> XapianQuery:
         # This subquery assigns a constant weight to votes with a press release and
