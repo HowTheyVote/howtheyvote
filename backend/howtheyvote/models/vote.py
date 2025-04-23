@@ -30,6 +30,40 @@ class VotePosition(Enum):
     DID_NOT_VOTE = "DID_NOT_VOTE"
 
 
+class DocumentType(Enum):
+    A = "A"  # Report
+    B = "B"  # Resolution
+    C = "C"  # Commission proposal
+    RC = "RC"  # Joint resolution
+
+
+class ProcedureType(Enum):
+    # Based on the codes used by the Parliament in the Legislative Observatory
+    COD = "COD"  # Ordinary legislative procedure
+    CNS = "CNS"  # Consultation procedure
+    APP = "APP"  # Consent procedure
+    BUD = "BUD"  # Budgetary procedure
+    DEC = "DEC"  # Discharge procedure
+    BUI = "BUI"  # Budgetary initiative
+    NLE = "NLE"  # Non-legislative enactments
+    INL = "INL"  # Legislative initiative procedure
+    INI = "INI"  # Own-initiative procedure
+    RSP = "RSP"  # Resolutions on topical subjects
+    REG = "REG"  # Parliament's Rules of Procedure
+    IMM = "IMM"  # Member's immunity
+    RSO = "RSO"  # Internal organisation decisions
+    INS = "INS"  # Institutional procedure
+    ACI = "ACI"  # Interinstitutional agreement procedure
+    DEA = "DEA"  # Delegated acts procedure
+    RPS = "RPS"  # Implementing acts
+
+    # Historic procedures
+    AVC = "AVC"  # Assent procedure
+    SYN = "SYN"  # Cooperation procedure
+    DCE = "DCE"  # Written declaration
+    COS = "COS"  # Procedure on a strategy paper
+
+
 class ProcedureStage(Enum):
     OLP_FIRST_READING = "OLP_FIRST_READING"
     OLP_SECOND_READING = "OLP_SECOND_READING"

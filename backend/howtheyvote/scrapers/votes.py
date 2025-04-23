@@ -445,7 +445,7 @@ class DocumentScraper(BeautifulSoupScraper):
     def _url(self) -> str:
         ref = parse_reference(self.reference)
         number = str(ref["number"]).rjust(4, "0")
-        formatted_ref = f"{ref['type']}-{ref['term']}-{ref['year']}-{number}"
+        formatted_ref = f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
         return f"{self.BASE_URL}/{formatted_ref}_EN.html"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
@@ -693,7 +693,7 @@ class EurlexDocumentScraper(BeautifulSoupScraper):
 
         # EUR-Lex URLs have the format `https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2021)0270`
         # whereas the reference is usually formatted like this: `A9-0270/2021`.
-        return f"{self.BASE_URL}P{ref['term']}_{ref['type']}({ref['year']}){number}"
+        return f"{self.BASE_URL}P{ref['term']}_{ref['type'].value}({ref['year']}){number}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
         container = doc.select_one("#PPClass_Contents")

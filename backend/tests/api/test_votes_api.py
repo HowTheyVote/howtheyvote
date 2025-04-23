@@ -62,6 +62,7 @@ def records(db_session):
         order=1,
         title="Should we have pizza for lunch?",
         description="Am 123",
+        procedure_reference="1234/2025(COD)",
         member_votes=[
             MemberVote(
                 web_id=1,
@@ -420,7 +421,12 @@ def test_votes_api_show(records, db_session, api):
         "timestamp": "2023-01-01T00:00:00",
         "reference": None,
         "description": "Am 123",
-        "procedure": None,
+        "procedure": {
+            "title": None,
+            "type": "COD",
+            "reference": "1234/2025(COD)",
+            "stage": None,
+        },
         "facts": None,
         "sharepic_url": None,
         "stats": {

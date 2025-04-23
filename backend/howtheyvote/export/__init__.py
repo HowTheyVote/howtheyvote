@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..db import Session
+from ..helpers import parse_procedure_reference
 from ..models import Country, EurovocConcept, Member, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
@@ -138,6 +139,10 @@ class VoteRow(TypedDict):
 
     procedure_title: str | None
     """Title of the legislative procedure as listed in the Legislative Observatory"""
+
+    procedure_type: str | None
+    """Procedure type as listed in the Legislative Observatory. This is a 3-letter code
+    such as COD, RSP, or BUD."""
 
     procedure_stage: str | None
     """Stage of the procedure in which the vote took place. One of `OLP_FIRST_READING`,
@@ -444,6 +449,11 @@ class Export:
                 )
 
                 position_counts = count_vote_positions(vote.member_votes)
+                procedure_reference = (
+                    parse_procedure_reference(vote.procedure_reference)
+                    if vote.procedure_reference
+                    else None
+                )
 
                 votes.write_row(
                     {
@@ -455,6 +465,9 @@ class Export:
                         "is_main": vote.is_main,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
+                        "procedure_type": (
+                            procedure_reference["type"].value if procedure_reference else None
+                        ),
                         "procedure_stage": (
                             vote.procedure_stage.value if vote.procedure_stage else None
                         ),

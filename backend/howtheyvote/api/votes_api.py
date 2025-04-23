@@ -8,7 +8,13 @@ from sqlalchemy import or_, select
 from structlog import get_logger
 
 from ..db import Session
-from ..helpers import PROCEDURE_REFERENCE_REGEX, REFERENCE_REGEX, flatten_dict, subset_dict
+from ..helpers import (
+    PROCEDURE_REFERENCE_REGEX,
+    REFERENCE_REGEX,
+    flatten_dict,
+    parse_procedure_reference,
+    subset_dict,
+)
 from ..models import Fragment, Member, PressRelease, Vote
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
@@ -242,8 +248,11 @@ def show(vote_id: int) -> Response:
     procedure: ProcedureDict | None = None
 
     if vote.procedure_reference:
+        procedure_reference = parse_procedure_reference(vote.procedure_reference)
+
         procedure = {
             "title": vote.procedure_title,
+            "type": procedure_reference["type"],
             "reference": vote.procedure_reference,
             "stage": vote.procedure_stage,
         }
