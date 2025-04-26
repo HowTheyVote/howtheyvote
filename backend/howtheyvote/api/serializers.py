@@ -22,7 +22,7 @@ class ProcedureDict(TypedDict):
     """European Union legislative procedure"""
 
     title: Annotated[str | None, "Nature restoration"]
-    """Title of the legislative proceudre as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+    """Title of the legislative procedure as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
 
     type: ProcedureType
     """Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
