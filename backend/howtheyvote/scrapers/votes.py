@@ -503,7 +503,7 @@ class ProcedureScraper(BeautifulSoupScraper):
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         title = self._title(doc)
         geo_areas = self._geo_areas(doc)
-        responsible_committee = self._responsible_committee(doc)
+        responsible_committees = self._responsible_committees(doc)
         self._log.info(
             "Extracted procedure information",
             title=title,
@@ -517,7 +517,7 @@ class ProcedureScraper(BeautifulSoupScraper):
             data={
                 "procedure_title": title,
                 "geo_areas": geo_areas,
-                "responsible_committee": responsible_committee,
+                "responsible_committees": responsible_committees,
             },
         )
 
@@ -562,30 +562,31 @@ class ProcedureScraper(BeautifulSoupScraper):
 
         return geo_areas
 
-    def _responsible_committee(self, doc: BeautifulSoup) -> str | None:
+    def _responsible_committees(self, doc: BeautifulSoup) -> set[str]:
+        committees: set[str] = set()
+
         table = doc.select_one(
-            '#erpl_accordion-committee table:has(th:-soup-contains("Committee responsible"))'
+            "#erpl_accordion-committee :where("
+            + 'table:has(th:-soup-contains("Committee responsible")),'
+            + 'table:has(th:-soup-contains("Joint committee responsible"))'
+            + ")"
         )
 
         if not table:
-            return None
+            return committees
 
-        if len(table.select("tbody tr")) > 1:
-            # We assume that there is at most one responsible committee
-            log.warning("More than one responsible committee found")
+        badges = table.select("tbody tr .erpl_badge-committee")
 
-        badge = table.select_one("tbody tr .erpl_badge-committee")
+        for badge in badges:
+            text = badge.text.strip()
+            committee = Committee.get(text)
 
-        if not badge:
-            return None
+            if not committee:
+                raise ScrapingError(f"Could not find committee {text}")
 
-        text = badge.text.strip()
-        committee = Committee.get(text)
+            committees.add(committee.code)
 
-        if not committee:
-            raise ScrapingError(f"Could not find committee {text}")
-
-        return committee.code
+        return committees
 
 
 class EurlexProcedureScraper(BeautifulSoupScraper):

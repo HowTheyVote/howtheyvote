@@ -315,7 +315,7 @@ def test_procedure_scraper(responses):
         data={
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
             "geo_areas": [],
-            "responsible_committee": "IMCO",
+            "responsible_committees": {"IMCO"},
         },
     )
 
@@ -342,6 +342,17 @@ def test_procedure_scraper_geo_areas_fuzzy(responses):
     scraper = ProcedureScraper(vote_id=155056, procedure_reference="2022/2201(INI)")
     fragment = scraper.run()
     assert fragment.data["geo_areas"] == ["XKX"]
+
+
+def test_procedure_scraper_multiple_responsible_committees(responses):
+    responses.get(
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2024/0258(COD)",
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2024-0258-cod.html"),
+    )
+
+    scraper = ProcedureScraper(vote_id=172102, procedure_reference="2024/0258(COD)")
+    fragment = scraper.run()
+    assert fragment.data["responsible_committees"] == {"AFET", "BUDG"}
 
 
 def test_eurlex_procedure_scraper_eurovoc_concepts(responses):

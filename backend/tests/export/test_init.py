@@ -5,6 +5,7 @@ import time_machine
 
 from howtheyvote.export import Export
 from howtheyvote.models import (
+    Committee,
     Country,
     EurovocConcept,
     Group,
@@ -140,6 +141,7 @@ def test_export_votes(db_session, tmp_path):
             Country["MDA"],
             Country["RUS"],
         ],
+        responsible_committees=[Committee["AFET"]],
         result=VoteResult.ADOPTED,
     )
 
@@ -153,8 +155,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,responsible_committee_code,count_for,count_against,count_abstention,count_did_not_vote,result\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,,1,0,0,0,ADOPTED\n"
+        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,count_for,count_against,count_abstention,count_did_not_vote,result\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,1,0,0,0,ADOPTED\n"
     )
 
     assert votes_csv.read_text() == expected
@@ -199,6 +201,24 @@ def test_export_votes(db_session, tmp_path):
 
     assert geo_areas_csv.read_text() == expected
     assert geo_areas_meta.is_file()
+
+    responsible_committee_votes_csv = tmp_path.joinpath("responsible_committee_votes.csv")
+    responsible_committee_votes_meta = tmp_path.joinpath(
+        "responsible_committee_votes.csv-metadata.json"
+    )
+
+    expected = "vote_id,committee_code\n123456,AFET\n"
+
+    assert responsible_committee_votes_csv.read_text() == expected
+    assert responsible_committee_votes_meta.is_file()
+
+    committees_csv = tmp_path.joinpath("committees.csv")
+    committees_meta = tmp_path.joinpath("committees.csv-metadata.json")
+
+    expected = "code,label,abbreviation\nAFET,Committee on Foreign Affairs,AFET\n"
+
+    assert committees_csv.read_text() == expected
+    assert committees_meta.is_file()
 
 
 def test_export_votes_country_group(db_session, tmp_path):
