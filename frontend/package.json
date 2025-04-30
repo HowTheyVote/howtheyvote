@@ -8,11 +8,11 @@
   "dependencies": {
     "@hey-api/client-fetch": "^0.6.0",
     "@tinyhttp/app": "^2.4.0",
-    "isbot": "^5.1.21",
+    "isbot": "^5.1.27",
     "pino": "^9.6.0",
-    "preact": "^10.25.4",
-    "preact-render-to-string": "^6.5.12",
-    "sirv": "^3.0.0"
+    "preact": "^10.26.5",
+    "preact-render-to-string": "^6.5.13",
+    "sirv": "^3.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
