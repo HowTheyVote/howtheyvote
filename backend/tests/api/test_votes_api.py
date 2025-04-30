@@ -399,6 +399,29 @@ def test_votes_api_search_sort(db_session, search_index, api):
     assert res.json["results"][1]["id"] == 1
 
 
+def test_votes_api_search_special_chars(db_session, search_index, api):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Union Secure Connectivity Programme 2023-2027",
+        is_main=True,
+    )
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={
+            "q": "Union Secure Connectivity Programme 2023-2027",
+        },
+    )
+
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+
+
 def test_votes_api_show(records, db_session, api):
     fragment = Fragment(
         model="Vote",

@@ -102,7 +102,19 @@ class SimpleStopper(Stopper):
 
 class QueryParser:
     def __init__(self) -> None: ...
+    FLAG_BOOLEAN: int
+    FLAG_BOOLEAN_ANY_CASE: int
+    FLAG_CJK_NGRAM: int
     FLAG_DEFAULT: int
+    FLAG_LOVEHATE: int
+    FLAG_NGRAMS: int
+    FLAG_NO_POSITIONS: int
+    FLAG_PARTIAL: int
+    FLAG_PHRASE: int
+    FLAG_PURE_NOTE: int
+    FLAG_SPELLING_CORRECTION: int
+    FLAG_SYNONYM: int
+    FLAG_WILDCARD: int
     def parse_query(self, query_string: str, flags: int = ..., prefix: str = ...) -> Query: ...
     def set_stopper(self, stopper: Stopper) -> None: ...
     def set_database(self, db: Database) -> None: ...
