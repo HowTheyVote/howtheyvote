@@ -28,6 +28,7 @@ class VoteResultType(Enum):
     ROLL_CALL = "ROLL_CALL"
     ELECTRONICAL = "ELECTRONICAL"
     RAISE_HAND = "RAISE_HAND"
+    SECRET = "SECRET"
 
 
 class VotePosition(Enum):
@@ -142,6 +143,9 @@ class Vote(BaseWithId):
     procedure_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
+    amendment_subject: Mapped[str | None] = mapped_column(sa.Unicode)
+    amendment_number: Mapped[str | None] = mapped_column(sa.Unicode)
+    amendment_authors: Mapped[list[str] | None] = mapped_column(sa.JSON)
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     texts_adopted_reference: Mapped[str | None] = mapped_column(sa.Unicode)

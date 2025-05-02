@@ -428,6 +428,9 @@ class VOTListScraper(BeautifulSoupScraper):
                 "dlv_title": title,
                 "result": result,
                 "procedure_stage": procedure_stage,
+                "amendment_subject": self._amendment_subject(tag),
+                "amendment_number": self._amendment_number(tag),
+                "amendment_authors": self._amendment_authors(tag),
             },
         )
 
@@ -469,6 +472,57 @@ class VOTListScraper(BeautifulSoupScraper):
             raise ScrapingError("Missing title")
 
         return title
+
+    def _amendment_subject(self, tag: Tag) -> str | None:
+        subject_tag = tag.select_one("amendmentSubject")
+
+        if not subject_tag:
+            raise ScrapingError("Missing `amendmentSubject` tag")
+
+        subject = subject_tag.get_text(strip=True)
+
+        if not subject:
+            return None
+
+        return subject
+
+    def _amendment_number(self, tag: Tag) -> str | None:
+        number_tag = tag.select_one("amendmentNumber")
+
+        if not number_tag:
+            raise ScrapingError("Missing `amendmentNumber` tag")
+
+        number = number_tag.get_text(strip=True)
+
+        if not number:
+            return None
+
+        return number
+
+    def _amendment_authors(self, tag: Tag) -> list[str] | None:
+        author_tag = tag.select_one("amendmentAuthor")
+
+        if not author_tag:
+            raise ScrapingError("Missing `amendmentAuthor` tag")
+
+        authors = author_tag.get_text(strip=True)
+
+        if not authors:
+            return None
+
+        # Amendments can have multiple authors. The delimiters used in case of multiple
+        # authors aren't consistent and include spaces, newlines, and commata. In some
+        # cases it’s not trivial to unambiguously detect whether a character is used as
+        # a delimiter or as part of an author’s label, e.g. in "Renew The Left Members".
+        # We currently do not handle these cases correctly.
+        if "\n" in authors:
+            delimiter = "\n"
+        elif "," in authors:
+            delimiter = ","
+        else:
+            delimiter = " "
+
+        return [author.strip() for author in re.split(delimiter, authors)]
 
 
 class DocumentScraper(BeautifulSoupScraper):
