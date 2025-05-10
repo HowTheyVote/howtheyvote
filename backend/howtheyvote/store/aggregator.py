@@ -36,9 +36,12 @@ class CompositeRecord:
         """Get a list of all values for the given key."""
         return self.data.get(key, [])
 
-    def first(self, key: str) -> Any:
+    def first(self, key: str, default: Any = None) -> Any:
         """Get the first value for the given key."""
-        return next(iter(self.all(key)), None)
+        try:
+            return self.all(key)[0]
+        except IndexError:
+            return default
 
     def chain(self, key: str) -> list[Any]:
         """Chain the values for the given key and return a single list."""

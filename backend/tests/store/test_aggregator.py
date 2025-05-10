@@ -151,6 +151,18 @@ def test_composite_record_first():
     assert record.first("first_name") == "John"
 
 
+def test_composite_record_first_default():
+    record = CompositeRecord(
+        group_key="1",
+        data={
+            "first_name": [],
+        },
+    )
+
+    assert record.first("first_name") is None
+    assert record.first("first_name", "unknown") == "unknown"
+
+
 def test_composite_record_all():
     record = CompositeRecord(
         group_key="1",
