@@ -1,0 +1,2277 @@
+[
+  {
+    "code": "1",
+    "label": "European citizenship",
+    "parent_code": ""
+  },
+  {
+    "code": "1.10",
+    "label": "Fundamental rights in the EU, Charter",
+    "parent_code": "1"
+  },
+  {
+    "code": "1.20",
+    "label": "Citizen's rights",
+    "parent_code": "1"
+  },
+  {
+    "code": "1.20.01",
+    "label": "Political rights, right to vote and to stand in elections",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "1.20.02",
+    "label": "Social and economic rights",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "1.20.03",
+    "label": "Right of petition",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "1.20.04",
+    "label": "European Ombudsman",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "1.20.05",
+    "label": "Public access to information and documents, administrative practice",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "1.20.09",
+    "label": "Protection of privacy and data protection",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "1.20.20",
+    "label": "Diplomatic and consular protection",
+    "parent_code": "1.20"
+  },
+  {
+    "code": "2",
+    "label": "Internal market, single market",
+    "parent_code": ""
+  },
+  {
+    "code": "2.10",
+    "label": "Free movement of goods",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.10.01",
+    "label": "Customs union, tax and duty-free, Community transit",
+    "parent_code": "2.10"
+  },
+  {
+    "code": "2.10.02",
+    "label": "Public procurement",
+    "parent_code": "2.10"
+  },
+  {
+    "code": "2.10.03",
+    "label": "Standardisation, EC/EU standards and trade mark, certification, compliance",
+    "parent_code": "2.10"
+  },
+  {
+    "code": "2.20",
+    "label": "Free movement of persons",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.20.01",
+    "label": "Freedom of movement, right of residence, identity checks",
+    "parent_code": "2.20"
+  },
+  {
+    "code": "2.30",
+    "label": "Free movement of workers",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.40",
+    "label": "Free movement of services, freedom to provide",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.40.01",
+    "label": "Right of establishment",
+    "parent_code": "2.40"
+  },
+  {
+    "code": "2.40.02",
+    "label": "Public services, of general interest, universal service",
+    "parent_code": "2.40"
+  },
+  {
+    "code": "2.50",
+    "label": "Free movement of capital",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.50.02",
+    "label": "Savings",
+    "parent_code": "2.50"
+  },
+  {
+    "code": "2.50.03",
+    "label": "Securities and financial markets, stock exchange, CIUTS, investments",
+    "parent_code": "2.50"
+  },
+  {
+    "code": "2.50.04",
+    "label": "Banks and credit",
+    "parent_code": "2.50"
+  },
+  {
+    "code": "2.50.04.02",
+    "label": "Electronic money and payments, cross-border credit transfers",
+    "parent_code": "2.50.04"
+  },
+  {
+    "code": "2.50.05",
+    "label": "Insurance, pension funds",
+    "parent_code": "2.50"
+  },
+  {
+    "code": "2.50.08",
+    "label": "Financial services, financial reporting and auditing",
+    "parent_code": "2.50"
+  },
+  {
+    "code": "2.50.10",
+    "label": "Financial supervision",
+    "parent_code": "2.50"
+  },
+  {
+    "code": "2.60",
+    "label": "Competition",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.60.01",
+    "label": "Trade restrictions, concerted practices, dominant positions",
+    "parent_code": "2.60"
+  },
+  {
+    "code": "2.60.02",
+    "label": "Dumping, monopolies",
+    "parent_code": "2.60"
+  },
+  {
+    "code": "2.60.03",
+    "label": "State aids and interventions",
+    "parent_code": "2.60"
+  },
+  {
+    "code": "2.60.04",
+    "label": "Economic concentration, mergers, takeover bids, holding companies",
+    "parent_code": "2.60"
+  },
+  {
+    "code": "2.70",
+    "label": "Taxation",
+    "parent_code": "2"
+  },
+  {
+    "code": "2.70.01",
+    "label": "Direct taxation",
+    "parent_code": "2.70"
+  },
+  {
+    "code": "2.70.02",
+    "label": "Indirect taxation, VAT, excise duties",
+    "parent_code": "2.70"
+  },
+  {
+    "code": "2.80",
+    "label": "Cooperation between administrations",
+    "parent_code": "2"
+  },
+  {
+    "code": "3",
+    "label": "Community policies",
+    "parent_code": ""
+  },
+  {
+    "code": "3.10",
+    "label": "Agricultural policy and economies ",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.10.01",
+    "label": "Agricultural structures and holdings, farmers ",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.01.02",
+    "label": "Rural development, European Agricultural Fund for Rural Development (EAFRD)",
+    "parent_code": "3.10.01"
+  },
+  {
+    "code": "3.10.01.06",
+    "label": "Less-favoured agricultural areas",
+    "parent_code": "3.10.01"
+  },
+  {
+    "code": "3.10.02",
+    "label": "Processed products, agri-foodstuffs",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.03",
+    "label": "Marketing and trade of agricultural products and livestock",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.04",
+    "label": "Livestock farming ",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.04.02",
+    "label": "Animal protection",
+    "parent_code": "3.10.04"
+  },
+  {
+    "code": "3.10.05",
+    "label": "Livestock products, in general",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.05.01",
+    "label": "Meat",
+    "parent_code": "3.10.05"
+  },
+  {
+    "code": "3.10.05.02",
+    "label": "Milk and dairy products",
+    "parent_code": "3.10.05"
+  },
+  {
+    "code": "3.10.05.03",
+    "label": "Eggs and poultry",
+    "parent_code": "3.10.05"
+  },
+  {
+    "code": "3.10.06",
+    "label": "Crop products in general, floriculture",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.06.01",
+    "label": "Fruit, citrus fruits",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.02",
+    "label": "Vegetables",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.03",
+    "label": "Cereals, rice",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.04",
+    "label": "Fodder plants",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.05",
+    "label": "Textile plants, cotton",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.06",
+    "label": "Oleaginous plants",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.07",
+    "label": "Sugar",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.08",
+    "label": "Wine, alcoholic and non-alcoholic beverages",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.09",
+    "label": "Industrial plants, tobacco, hops",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.06.10",
+    "label": "Tropical plants",
+    "parent_code": "3.10.06"
+  },
+  {
+    "code": "3.10.07",
+    "label": "Animal and vegetable fats, oils",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.08",
+    "label": "Animal health requirements, veterinary legislation and pharmacy",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.08.01",
+    "label": "Feedingstuffs, animal nutrition",
+    "parent_code": "3.10.08"
+  },
+  {
+    "code": "3.10.08.05",
+    "label": "Animal diseases",
+    "parent_code": "3.10.08"
+  },
+  {
+    "code": "3.10.09",
+    "label": "Plant health legislation, organic farming, agro-genetics in general",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.09.02",
+    "label": "Plant health legislation ",
+    "parent_code": "3.10.09"
+  },
+  {
+    "code": "3.10.09.04",
+    "label": "Organic farming ",
+    "parent_code": "3.10.09"
+  },
+  {
+    "code": "3.10.09.06",
+    "label": "Agro-genetics, GMOs",
+    "parent_code": "3.10.09"
+  },
+  {
+    "code": "3.10.10",
+    "label": "Foodstuffs, foodstuffs legislation",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.11",
+    "label": "Forestry policy",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.12",
+    "label": "Agrimonetary policy, compensatory amounts",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.13",
+    "label": "European Agricultural Guidance and Guarantee Fund, EAGGF and  EAGF",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.14",
+    "label": "Support for producers and premiums",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.14.04",
+    "label": "Set-aside and conversion of land",
+    "parent_code": "3.10.14"
+  },
+  {
+    "code": "3.10.15",
+    "label": "Agricultural production, farm surpluses, shortages and quotas, non-marketing premiums",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.10.30",
+    "label": "Agricultural statistics",
+    "parent_code": "3.10"
+  },
+  {
+    "code": "3.15",
+    "label": "Fisheries policy",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.15.01",
+    "label": "Fish stocks, conservation of fishery resources",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.02",
+    "label": "Aquaculture",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.03",
+    "label": "Fishing fleets, safety of fishing vessels",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.04",
+    "label": "Management of fisheries, fisheries, fishing grounds",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.05",
+    "label": "Fish catches, import tariff quotas",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.06",
+    "label": "Fishing industry and statistics, fishery products",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.07",
+    "label": "Fisheries inspectorate, surveillance of fishing vessels and areas",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.08",
+    "label": "Fishing enterprises, fishermen, working conditions on board",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.15",
+    "label": "Fisheries agreements and cooperation",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.15.02",
+    "label": "Fisheries agreements with African countries",
+    "parent_code": "3.15.15"
+  },
+  {
+    "code": "3.15.15.03",
+    "label": "Fisheries agreements with Indian Ocean countries",
+    "parent_code": "3.15.15"
+  },
+  {
+    "code": "3.15.15.04",
+    "label": "Fisheries agreements with Maghreb and Mediterranean countries",
+    "parent_code": "3.15.15"
+  },
+  {
+    "code": "3.15.15.06",
+    "label": "Fisheries agreements with Pacific countries",
+    "parent_code": "3.15.15"
+  },
+  {
+    "code": "3.15.15.08",
+    "label": "Fisheries agreements with Northern and Baltic countries",
+    "parent_code": "3.15.15"
+  },
+  {
+    "code": "3.15.16",
+    "label": "Financial Instrument for Fisheries Guidance (FIFG), European Fisheries Fund (EFF)",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.15.17",
+    "label": "European Maritime and Fisheries Fund (EMFF)",
+    "parent_code": "3.15"
+  },
+  {
+    "code": "3.20",
+    "label": "Transport policy in general",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.20.01",
+    "label": "Air transport and air freight",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.01.01",
+    "label": "Air safety",
+    "parent_code": "3.20.01"
+  },
+  {
+    "code": "3.20.02",
+    "label": "Rail transport: passengers and freight",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.02.01",
+    "label": "Railway safety",
+    "parent_code": "3.20.02"
+  },
+  {
+    "code": "3.20.03",
+    "label": "Maritime transport: passengers and freight",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.03.01",
+    "label": "Maritime safety",
+    "parent_code": "3.20.03"
+  },
+  {
+    "code": "3.20.04",
+    "label": "Inland waterway transport",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.05",
+    "label": "Road transport: passengers and freight",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.06",
+    "label": "Transport regulations, road safety, roadworthiness tests, driving licence",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.07",
+    "label": "Combined transport, multimodal transport",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.08",
+    "label": "Urban transport",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.09",
+    "label": "Ports policy",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.10",
+    "label": "Transport undertakings, transport industry employees",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.11",
+    "label": "Trans-European transport networks",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.15",
+    "label": "Transport agreements and cooperation",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.20.15.02",
+    "label": "Air transport agreements and cooperation",
+    "parent_code": "3.20.15"
+  },
+  {
+    "code": "3.20.15.04",
+    "label": "Road transport agreements and cooperation",
+    "parent_code": "3.20.15"
+  },
+  {
+    "code": "3.20.15.06",
+    "label": "Maritime or inland transport agreements and cooperation",
+    "parent_code": "3.20.15"
+  },
+  {
+    "code": "3.20.15.08",
+    "label": "Rail transport agreements and cooperation",
+    "parent_code": "3.20.15"
+  },
+  {
+    "code": "3.20.20",
+    "label": "Transport statistics",
+    "parent_code": "3.20"
+  },
+  {
+    "code": "3.30",
+    "label": "Information and communications in general",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.30.01",
+    "label": "Audiovisual industry and services",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.01.02",
+    "label": "Programmes and actions in audiovisual sector",
+    "parent_code": "3.30.01"
+  },
+  {
+    "code": "3.30.02",
+    "label": "Television, cable, digital, mobile",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.03",
+    "label": "Telecommunications, data transmission, telephone",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.03.04",
+    "label": "Telecommunication networks",
+    "parent_code": "3.30.03"
+  },
+  {
+    "code": "3.30.03.06",
+    "label": "Communications by satellite",
+    "parent_code": "3.30.03"
+  },
+  {
+    "code": "3.30.04",
+    "label": "Radiocommunications, broadcasting",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.05",
+    "label": "Electronic and mobile communications, personal communications ",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.06",
+    "label": "Information and communication technologies, digital technologies",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.07",
+    "label": "Cybersecurity, cyberspace policy",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.08",
+    "label": "Press, media freedom and pluralism",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.09",
+    "label": "Postal services, parcel delivery services",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.15",
+    "label": "Telematics",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.16",
+    "label": "Ethical information policy",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.20",
+    "label": "Trans-European communications networks",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.25",
+    "label": "International information networks and society, internet",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.30.25.02",
+    "label": "Information programmes and action plans",
+    "parent_code": "3.30.25"
+  },
+  {
+    "code": "3.30.30",
+    "label": "Information and audiovisual statistics",
+    "parent_code": "3.30"
+  },
+  {
+    "code": "3.40",
+    "label": "Industrial policy",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.40.01",
+    "label": "Chemical industry, fertilizers, plastics",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.02",
+    "label": "Iron and steel industry, metallurgical industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.03",
+    "label": "Motor industry, cycle and motorcycle, commercial and agricultural vehicles",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.04",
+    "label": "Shipbuilding, nautical industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.05",
+    "label": "Aeronautical industry, aerospace industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.06",
+    "label": "Electronics, electrotechnical industries, ICT, robotics",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.07",
+    "label": "Building industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.08",
+    "label": "Mechanical engineering, machine-tool industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.09",
+    "label": "Defence and arms industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.10",
+    "label": "Textile and clothing industry, leathers",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.11",
+    "label": "Precision engineering, optics, photography, medical",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.12",
+    "label": "Luxury products industry, cosmetics",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.13",
+    "label": "Food industry",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.14",
+    "label": "Industrial competitiveness",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.16",
+    "label": "Raw materials",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.17",
+    "label": "Manufactured goods",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.40.18",
+    "label": "Services sector",
+    "parent_code": "3.40"
+  },
+  {
+    "code": "3.45",
+    "label": "Enterprise policy, inter-company cooperation",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.45.01",
+    "label": "Company law",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.02",
+    "label": "Small and medium-sized enterprises (SME), craft industries",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.03",
+    "label": "Financial management of undertakings, business loans, accounting",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.04",
+    "label": "Company taxation",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.05",
+    "label": "Business policy, e-commerce, after-sales service, commercial distribution",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.06",
+    "label": "Entrepreneurship, liberal professions",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.07",
+    "label": "Social economy, mutual societies, cooperatives, associations",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.08",
+    "label": "Business environment, reduction of the administrative burdens",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.45.20",
+    "label": "Business statistics",
+    "parent_code": "3.45"
+  },
+  {
+    "code": "3.50",
+    "label": "Research and technological development and space",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.50.01",
+    "label": "European research area and policy",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.01.05",
+    "label": "Research specific areas",
+    "parent_code": "3.50.01"
+  },
+  {
+    "code": "3.50.02",
+    "label": "Framework programme and research programmes",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.02.01",
+    "label": "EC, EU framework programme ",
+    "parent_code": "3.50.02"
+  },
+  {
+    "code": "3.50.02.02",
+    "label": "Euratom framework programme, research and training programmes",
+    "parent_code": "3.50.02"
+  },
+  {
+    "code": "3.50.02.03",
+    "label": "Framework programme and research programme for Coal and Steel ",
+    "parent_code": "3.50.02"
+  },
+  {
+    "code": "3.50.03",
+    "label": "European space policy",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.04",
+    "label": "Innovation",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.06",
+    "label": "Research staff, researchers",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.08",
+    "label": "New technologies; biotechnology",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.15",
+    "label": "Intellectual property, copyright ",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.16",
+    "label": "Industrial property, European patent, Community patent, design and pattern",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.50.20",
+    "label": "Scientific and technological cooperation and agreements",
+    "parent_code": "3.50"
+  },
+  {
+    "code": "3.60",
+    "label": "Energy policy",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.60.01",
+    "label": "Solid fuels, coal mining, mining industry",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.02",
+    "label": "Oil industry, motor fuels",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.03",
+    "label": "Gas, electricity, natural gas, biogas",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.04",
+    "label": "Nuclear energy, industry and safety",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.05",
+    "label": "Alternative and renewable energies",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.06",
+    "label": "Trans-European energy networks",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.08",
+    "label": "Energy efficiency",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.10",
+    "label": "Security of energy supply",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.12",
+    "label": "Energy statistics",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.60.15",
+    "label": "Cooperation and agreements for energy",
+    "parent_code": "3.60"
+  },
+  {
+    "code": "3.70",
+    "label": "Environmental policy",
+    "parent_code": "3"
+  },
+  {
+    "code": "3.70.01",
+    "label": "Protection of natural resources: fauna, flora, nature, wildlife, countryside; biodiversity",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.02",
+    "label": "Atmospheric pollution, motor vehicle pollution",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.03",
+    "label": "Climate policy, climate change, ozone layer",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.04",
+    "label": "Water control and management, pollution of waterways, water pollution",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.05",
+    "label": "Marine and coastal pollution, pollution from ships, oil pollution",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.06",
+    "label": "Soil pollution, deterioration",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.07",
+    "label": "Noise pollution",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.08",
+    "label": "Radioactive pollution",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.09",
+    "label": "Transfrontier pollution",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.10",
+    "label": "Man-made disasters, industrial pollution and accidents",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.11",
+    "label": "Natural disasters, Solidarity Fund",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.12",
+    "label": "Waste management, domestic waste, packaging, light industrial waste",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.13",
+    "label": "Dangerous substances, toxic and radioactive wastes (storage, transport)",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.15",
+    "label": "Environmental taxation",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.16",
+    "label": "Law and environment, liability",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.17",
+    "label": "European ecolabel and ecolabelling, ecodesign",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.18",
+    "label": "International and regional environment protection measures and agreements",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "3.70.20",
+    "label": "Sustainable development",
+    "parent_code": "3.70"
+  },
+  {
+    "code": "4",
+    "label": "Economic, social and territorial cohesion",
+    "parent_code": ""
+  },
+  {
+    "code": "4.10",
+    "label": "Social policy, social charter and protocol",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.10.02",
+    "label": "Family policy, family law, parental leave",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.03",
+    "label": "Child protection, children's rights",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.04",
+    "label": "Gender equality",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.04.01",
+    "label": "Programmes and actions for gender equality",
+    "parent_code": "4.10.04"
+  },
+  {
+    "code": "4.10.05",
+    "label": "Social inclusion, poverty, minimum income",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.06",
+    "label": "People with disabilities",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.07",
+    "label": "The elderly",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.08",
+    "label": "Equal treatment of persons, non-discrimination",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.09",
+    "label": "Women condition and rights",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.10",
+    "label": "Social protection, social security",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.11",
+    "label": "Retirement, pensions",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.12",
+    "label": "Housing policy",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.13",
+    "label": "Sport",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.14",
+    "label": "Demography",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.15",
+    "label": "European Social Fund (ESF), Fund for European Aid to the Most Deprived (FEAD)",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.16",
+    "label": "Social and community life, associations, foundations",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.10.25",
+    "label": "Social problems: delinquency, violence, crime",
+    "parent_code": "4.10"
+  },
+  {
+    "code": "4.15",
+    "label": "Employment policy, action to combat unemployment",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.15.02",
+    "label": "Employment: guidelines, actions, Funds",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.03",
+    "label": "Arrangement of working time, work schedules ",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.04",
+    "label": "Workforce, occupational mobility, job conversion, working conditions",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.05",
+    "label": "Industrial restructuring, job losses, redundancies, relocations, Globalisation Adjustment Fund (EGF)",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.06",
+    "label": "Professional qualifications, recognition of qualifications",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.08",
+    "label": "Work, employment, wages and salaries: equal opportunities women and men, and for all",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.10",
+    "label": "Worker information, participation, trade unions, works councils",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.12",
+    "label": "Workers protection and rights, labour law",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.14",
+    "label": "Social dialogue, social partners",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.15.15",
+    "label": "Health and safety at work, occupational medicine",
+    "parent_code": "4.15"
+  },
+  {
+    "code": "4.20",
+    "label": "Public health",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.20.01",
+    "label": "Medicine, diseases",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.20.02",
+    "label": "Medical research",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.20.02.04",
+    "label": "Genetics and bioethics",
+    "parent_code": "4.20.02"
+  },
+  {
+    "code": "4.20.02.06",
+    "label": "Clinical practice and experiments",
+    "parent_code": "4.20.02"
+  },
+  {
+    "code": "4.20.03",
+    "label": "Drug addiction, alcoholism, smoking",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.20.04",
+    "label": "Pharmaceutical products and industry",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.20.04.02",
+    "label": "Safety of blood and  transfusion",
+    "parent_code": "4.20.04"
+  },
+  {
+    "code": "4.20.05",
+    "label": "Health legislation and policy",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.20.06",
+    "label": "Health services, medical institutions",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.20.07",
+    "label": "Medical and para-medical professions",
+    "parent_code": "4.20"
+  },
+  {
+    "code": "4.30",
+    "label": "Civil protection",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.40",
+    "label": "Education, vocational training and youth",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.40.01",
+    "label": "European area for education, training and lifelong learning ",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.03",
+    "label": "Primary and secondary school, European Schools, early childhood ",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.04",
+    "label": "Universities, higher education ",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.06",
+    "label": "Teachers, trainers, pupils, students",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.07",
+    "label": "Recognition of diplomas, equivalence of studies and training",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.08",
+    "label": "Language learning, regional and local languages",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.10",
+    "label": "Youth",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.15",
+    "label": "Vocational education and training",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.40.20",
+    "label": "Cooperation and agreements in the fields of education, training and youth",
+    "parent_code": "4.40"
+  },
+  {
+    "code": "4.45",
+    "label": "Common cultural area, cultural diversity",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.45.02",
+    "label": "Cultural programmes and actions, assistance",
+    "parent_code": "4.45"
+  },
+  {
+    "code": "4.45.06",
+    "label": "Heritage and culture protection, movement of works of art",
+    "parent_code": "4.45"
+  },
+  {
+    "code": "4.45.08",
+    "label": "Cultural and artistic activities, books and reading, arts ",
+    "parent_code": "4.45"
+  },
+  {
+    "code": "4.45.10",
+    "label": "Literary and artistic property",
+    "parent_code": "4.45"
+  },
+  {
+    "code": "4.50",
+    "label": "Tourism",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.60",
+    "label": "Consumers' protection in general",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.60.02",
+    "label": "Consumer information, advertising, labelling",
+    "parent_code": "4.60"
+  },
+  {
+    "code": "4.60.04",
+    "label": "Consumer health",
+    "parent_code": "4.60"
+  },
+  {
+    "code": "4.60.04.02",
+    "label": "Consumer security ",
+    "parent_code": "4.60.04"
+  },
+  {
+    "code": "4.60.04.04",
+    "label": "Food safety ",
+    "parent_code": "4.60.04"
+  },
+  {
+    "code": "4.60.06",
+    "label": "Consumers' economic and legal interests",
+    "parent_code": "4.60"
+  },
+  {
+    "code": "4.60.08",
+    "label": "Safety of products and services, product liability",
+    "parent_code": "4.60"
+  },
+  {
+    "code": "4.70",
+    "label": "Regional policy",
+    "parent_code": "4"
+  },
+  {
+    "code": "4.70.01",
+    "label": "Structural funds, investment funds in general, programmes",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "4.70.02",
+    "label": "Cohesion policy, Cohesion Fund (CF)",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "4.70.03",
+    "label": "Community initiatives, Community support frameworks",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "4.70.04",
+    "label": "Urban policy, cities, town and country planning",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "4.70.05",
+    "label": "Regional cooperation, cross-border cooperation",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "4.70.06",
+    "label": "Outlying and outermost regions, overseas countries and territories",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "4.70.07",
+    "label": "European Regional Development Fund (ERDF)",
+    "parent_code": "4.70"
+  },
+  {
+    "code": "5",
+    "label": "Economic and monetary system",
+    "parent_code": ""
+  },
+  {
+    "code": "5.03",
+    "label": "Global economy and globalisation",
+    "parent_code": "5"
+  },
+  {
+    "code": "5.05",
+    "label": "Economic growth",
+    "parent_code": "5"
+  },
+  {
+    "code": "5.10",
+    "label": "Economic union",
+    "parent_code": "5"
+  },
+  {
+    "code": "5.10.01",
+    "label": "Convergence of economic policies,  public deficit, interest rates",
+    "parent_code": "5.10"
+  },
+  {
+    "code": "5.10.02",
+    "label": "Price policy, price stabilisation",
+    "parent_code": "5.10"
+  },
+  {
+    "code": "5.20",
+    "label": "Monetary union",
+    "parent_code": "5"
+  },
+  {
+    "code": "5.20.01",
+    "label": "Coordination of monetary policies, European Monetary Institute (EMI), Economic and Monetary Union (EMU)",
+    "parent_code": "5.20"
+  },
+  {
+    "code": "5.20.02",
+    "label": "Single currency, euro, euro area",
+    "parent_code": "5.20"
+  },
+  {
+    "code": "5.20.03",
+    "label": "European Central Bank (ECB), ESCB",
+    "parent_code": "5.20"
+  },
+  {
+    "code": "6",
+    "label": "External relations of the Union",
+    "parent_code": ""
+  },
+  {
+    "code": "6.10",
+    "label": "Common foreign and security policy (CFSP)",
+    "parent_code": "6"
+  },
+  {
+    "code": "6.10.01",
+    "label": "Foreign and common diplomatic policy",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.10.02",
+    "label": "Common security and defence policy (CSDP); WEU, NATO",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.10.03",
+    "label": "Armaments control, non-proliferation nuclear weapons",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.10.04",
+    "label": "Third-country political situation, local and regional conflicts",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.10.05",
+    "label": "Peace preservation, humanitarian and rescue tasks, crisis management",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.10.08",
+    "label": "Fundamental freedoms, human rights, democracy in general",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.10.09",
+    "label": "Human rights situation in the world",
+    "parent_code": "6.10"
+  },
+  {
+    "code": "6.20",
+    "label": "Common commercial policy in general",
+    "parent_code": "6"
+  },
+  {
+    "code": "6.20.01",
+    "label": "Agreements and relations in the context of the World Trade Organization (WTO)",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.20.02",
+    "label": "Export/import control, trade defence, trade barriers",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.20.03",
+    "label": "Bilateral economic and trade agreements and relations",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.20.04",
+    "label": "Union Customs Code, tariffs, preferential arrangements, rules of origin",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.20.05",
+    "label": "Multilateral and plurilateral economic and trade agreements and relations",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.20.06",
+    "label": "Foreign direct investment (FDI)",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.20.07",
+    "label": "Macro-financial assistance to third countries",
+    "parent_code": "6.20"
+  },
+  {
+    "code": "6.30",
+    "label": "Development cooperation",
+    "parent_code": "6"
+  },
+  {
+    "code": "6.30.01",
+    "label": "Generalised scheme of tariff preferences (GSP), rules of origin",
+    "parent_code": "6.30"
+  },
+  {
+    "code": "6.30.02",
+    "label": "Financial and technical cooperation and assistance",
+    "parent_code": "6.30"
+  },
+  {
+    "code": "6.30.03",
+    "label": "European Development Fund (EDF)",
+    "parent_code": "6.30"
+  },
+  {
+    "code": "6.30.04",
+    "label": "Loans to third-countries, Guarantee Fund",
+    "parent_code": "6.30"
+  },
+  {
+    "code": "6.40",
+    "label": "Relations with third countries",
+    "parent_code": "6"
+  },
+  {
+    "code": "6.40.01",
+    "label": "Relations with EEA/EFTA countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.02",
+    "label": "Relations with central and eastern Europe",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.02.02",
+    "label": "Relations with northern Europe and the Baltic States",
+    "parent_code": "6.40.02"
+  },
+  {
+    "code": "6.40.03",
+    "label": "Relations with South-East Europe and the Balkans",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.04",
+    "label": "Relations with the Commonwealth of Independent States (CIS)",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.04.02",
+    "label": "Relations with Russian Federation",
+    "parent_code": "6.40.04"
+  },
+  {
+    "code": "6.40.04.04",
+    "label": "Relations with Caucasus countries",
+    "parent_code": "6.40.04"
+  },
+  {
+    "code": "6.40.04.06",
+    "label": "Relations with central Asian countries",
+    "parent_code": "6.40.04"
+  },
+  {
+    "code": "6.40.05",
+    "label": "Relations with the Mediterranean and southern European countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.05.01",
+    "label": "Relations with Southern European countries",
+    "parent_code": "6.40.05"
+  },
+  {
+    "code": "6.40.05.02",
+    "label": "Relations with the countries of the Great Maghreb and Maghreb",
+    "parent_code": "6.40.05"
+  },
+  {
+    "code": "6.40.05.04",
+    "label": "Relations with the countries of the Mashreq",
+    "parent_code": "6.40.05"
+  },
+  {
+    "code": "6.40.05.06",
+    "label": "Relations with the countries of the Middle East",
+    "parent_code": "6.40.05"
+  },
+  {
+    "code": "6.40.05.08",
+    "label": "Relations with Turkey",
+    "parent_code": "6.40.05"
+  },
+  {
+    "code": "6.40.06",
+    "label": "Relations with ACP countries, conventions and generalities",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.07",
+    "label": "Relations with African countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.08",
+    "label": "Relations with Asian countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.09",
+    "label": "Relations with Oceanian countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.10",
+    "label": "Relations with Latin America, Central America, Caribbean islands",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.11",
+    "label": "Relations with industrialised countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.12",
+    "label": "Relations with developing countries in general",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.13",
+    "label": "Relations with/in the context of international organisations: UN, OSCE, OECD, Council of Europe, EBRD",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.14",
+    "label": "Relations with non-governmental organisations, NGOs",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.15",
+    "label": "European neighbourhood policy",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.16",
+    "label": "Relations with/in the context of international financial organisations: World Bank, IBRD, IMF",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.40.17",
+    "label": "Relations with BRIC countries",
+    "parent_code": "6.40"
+  },
+  {
+    "code": "6.50",
+    "label": "Emergency, food, humanitarian aid, aid to refugees, Emergency Aid Reserve",
+    "parent_code": "6"
+  },
+  {
+    "code": "7",
+    "label": "Area of freedom, security and justice",
+    "parent_code": ""
+  },
+  {
+    "code": "7.10",
+    "label": "Free movement and integration of third-country nationals",
+    "parent_code": "7"
+  },
+  {
+    "code": "7.10.02",
+    "label": "Schengen area, Schengen acquis",
+    "parent_code": "7.10"
+  },
+  {
+    "code": "7.10.04",
+    "label": "External borders crossing and controls, visas",
+    "parent_code": "7.10"
+  },
+  {
+    "code": "7.10.06",
+    "label": "Asylum, refugees, displaced persons; Asylum, Migration and Integration Fund (AMIF)",
+    "parent_code": "7.10"
+  },
+  {
+    "code": "7.10.08",
+    "label": "Migration policy",
+    "parent_code": "7.10"
+  },
+  {
+    "code": "7.30",
+    "label": "Police, judicial and customs cooperation in general",
+    "parent_code": "7"
+  },
+  {
+    "code": "7.30.02",
+    "label": "Customs cooperation",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.05",
+    "label": "Police cooperation",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.05.01",
+    "label": "Europol, CEPOL",
+    "parent_code": "7.30.05"
+  },
+  {
+    "code": "7.30.08",
+    "label": "Action to combat racism and xenophobia",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.09",
+    "label": "Public security",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.12",
+    "label": "Control of personal weapons and ammunitions",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.20",
+    "label": "Action to combat terrorism ",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.30",
+    "label": "Action to combat crime",
+    "parent_code": "7.30"
+  },
+  {
+    "code": "7.30.30.02",
+    "label": "Action to combat violence, trafficking in human beings and migrant smuggling",
+    "parent_code": "7.30.30"
+  },
+  {
+    "code": "7.30.30.04",
+    "label": "Action to combat drugs and drug-trafficking ",
+    "parent_code": "7.30.30"
+  },
+  {
+    "code": "7.30.30.06",
+    "label": "Action to combat economic fraud and corruption",
+    "parent_code": "7.30.30"
+  },
+  {
+    "code": "7.30.30.08",
+    "label": "Capital outflow, money laundering ",
+    "parent_code": "7.30.30"
+  },
+  {
+    "code": "7.30.30.10",
+    "label": "Action against counterfeiting ",
+    "parent_code": "7.30.30"
+  },
+  {
+    "code": "7.40",
+    "label": "Judicial cooperation",
+    "parent_code": "7"
+  },
+  {
+    "code": "7.40.02",
+    "label": "Judicial cooperation in civil and commercial matters",
+    "parent_code": "7.40"
+  },
+  {
+    "code": "7.40.04",
+    "label": "Judicial cooperation in criminal matters",
+    "parent_code": "7.40"
+  },
+  {
+    "code": "7.90",
+    "label": "Justice and home affairs",
+    "parent_code": "7"
+  },
+  {
+    "code": "8",
+    "label": "State and evolution of the Union",
+    "parent_code": ""
+  },
+  {
+    "code": "8.10",
+    "label": "Revision of the Treaties, intergovernmental conferences",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.20",
+    "label": "Enlargement of the Union",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.20.01",
+    "label": "Candidate countries",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.02",
+    "label": "Enlargement 2004: new Member States",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.03",
+    "label": "Enlargement 2007: Bulgaria and Romania",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.04",
+    "label": "Pre-accession and partnership",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.06",
+    "label": "Institutional reform and enlargement",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.08",
+    "label": "Enlargement's economic and monetary point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.12",
+    "label": "Enlargement's agricultural point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.13",
+    "label": "Enlargement's fisheries point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.16",
+    "label": "Enlargement's transport point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.17",
+    "label": "Industry, research, energy and enlargement",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.18",
+    "label": "Enlargement's environment point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.19",
+    "label": "Enlargement's consumer point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.20",
+    "label": "Enlargement's employment and social point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.24",
+    "label": "Tourism, culture and enlargement",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.26",
+    "label": "Enlargement's regional point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.28",
+    "label": "Structural funds and instruments",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.32",
+    "label": "Justice JHA and enlargement",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.20.40",
+    "label": "Enlargement's financial point of view",
+    "parent_code": "8.20"
+  },
+  {
+    "code": "8.30",
+    "label": "Treaties in general",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.30.10",
+    "label": "Principles common to the Member States, EU values",
+    "parent_code": "8.30"
+  },
+  {
+    "code": "8.40",
+    "label": "Institutions of the Union",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.40.01",
+    "label": "European Parliament",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.01.01",
+    "label": "Elections, direct universal suffrage",
+    "parent_code": "8.40.01"
+  },
+  {
+    "code": "8.40.01.02",
+    "label": "President, members, mandates, political groups",
+    "parent_code": "8.40.01"
+  },
+  {
+    "code": "8.40.01.03",
+    "label": "Members' immunity ",
+    "parent_code": "8.40.01"
+  },
+  {
+    "code": "8.40.01.06",
+    "label": "Committees, interparliamentary delegations",
+    "parent_code": "8.40.01"
+  },
+  {
+    "code": "8.40.01.08",
+    "label": "Business of Parliament, procedure, sittings, rules of procedure",
+    "parent_code": "8.40.01"
+  },
+  {
+    "code": "8.40.02",
+    "label": "Council of the Union",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.03",
+    "label": "European Commission",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.04",
+    "label": "Court of Justice, Court of First Instance",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.05",
+    "label": "Court of Auditors",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.06",
+    "label": "Economic and Social Committee, Committee of the Regions",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.07",
+    "label": "European Investment Bank (EIB)",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.08",
+    "label": "Agencies and bodies of the EU",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.09",
+    "label": "European officials, EU servants, staff regulations",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.10",
+    "label": "Interinstitutional relations, subsidiarity, proportionality, comitology",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.11",
+    "label": "Relations with Member State governments and national parliaments",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.13",
+    "label": "ACP-EU bodies",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.14",
+    "label": "European Council",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.40.16",
+    "label": "Relations with interest representatives",
+    "parent_code": "8.40"
+  },
+  {
+    "code": "8.50",
+    "label": "EU law",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.50.01",
+    "label": "Implementation of EU law",
+    "parent_code": "8.50"
+  },
+  {
+    "code": "8.50.02",
+    "label": "Legislative simplification, coordination, codification",
+    "parent_code": "8.50"
+  },
+  {
+    "code": "8.60",
+    "label": "European statistical legislation",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.70",
+    "label": "Budget of the Union",
+    "parent_code": "8"
+  },
+  {
+    "code": "8.70.01",
+    "label": "Financing of the budget, own resources",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.02",
+    "label": "Financial regulations",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.03",
+    "label": "Budgetary control and discharge, implementation of the budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.03.01",
+    "label": "Basic texts on discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.02",
+    "label": "2017 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.03",
+    "label": "2013 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.04",
+    "label": "2014 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.05",
+    "label": "2015 discharge ",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.06",
+    "label": "2016 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.07",
+    "label": "Previous discharges",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.08",
+    "label": "2018 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.09",
+    "label": "2019 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.10",
+    "label": "2020 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.11",
+    "label": "2021 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.12",
+    "label": "2022 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.13",
+    "label": "2023 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.14",
+    "label": "2024 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.15",
+    "label": "2025 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.16",
+    "label": "2026 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.17",
+    "label": "2027 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.18",
+    "label": "2028 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.03.19",
+    "label": "2029 discharge",
+    "parent_code": "8.70.03"
+  },
+  {
+    "code": "8.70.04",
+    "label": "Protecting financial interests of the EU against fraud",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.40",
+    "label": "Basic budgetary texts",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.44",
+    "label": "2030 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.45",
+    "label": "2029 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.46",
+    "label": "2028 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.47",
+    "label": "2027 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.48",
+    "label": "2026 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.49",
+    "label": "2025 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.50",
+    "label": "2020 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.51",
+    "label": "2021 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.52",
+    "label": "2022 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.53",
+    "label": "2023 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.54",
+    "label": "2024 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.55",
+    "label": "2015 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.56",
+    "label": "2016 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.57",
+    "label": "2017 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.58",
+    "label": "2018 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.59",
+    "label": "2019 budget",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.60",
+    "label": "Previous annual budgets",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "8.70.70",
+    "label": "Flexibility instrument",
+    "parent_code": "8.70"
+  },
+  {
+    "code": "Total",
+    "label": "",
+    "parent_code": ""
+  }
+]
