@@ -59,7 +59,7 @@ def map_plenary_session(record: CompositeRecord) -> PlenarySession:
 
 def map_vote(record: CompositeRecord) -> Vote:
     """Maps a `howtheyvote.store.CompositeRecord` to a `howtheyvote.models.Vote` object."""
-    member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes")]
+    member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes", [])]
     geo_areas = {Country[code] for code in record.chain("geo_areas")}
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
     oeil_subjects = {OEILSubject[code] for code in record.chain("oeil_subjects")}
