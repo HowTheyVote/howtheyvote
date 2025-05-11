@@ -9,7 +9,7 @@ from structlog import get_logger
 
 from ..db import Session
 from ..helpers import parse_procedure_reference
-from ..models import Committee, Country, EurovocConcept, Member, Vote
+from ..models import Committee, Country, EurovocConcept, Member, OEILSubject, Vote
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -211,6 +211,27 @@ class EurovocConceptVoteRow(TypedDict):
     """EuroVoc concept ID"""
 
 
+class OEILSubjectRow(TypedDict):
+    """Each row represents a subject as used by the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+    that is referenced by at least one row."""
+
+    code: str
+    """Code"""
+
+    label: str
+    """Label"""
+
+
+class OEILSubjectVoteRow(TypedDict):
+    """Each row represents a subject related to a vote."""
+
+    vote_id: int
+    """Vote ID"""
+
+    oeil_subject_code: str
+    """Subject code"""
+
+
 class GeoAreaRow(TypedDict):
     """Each row represents a country, territory, or other geopolitical entity that is
     referenced by at least one vote. The information is based on the [reference dataset](https://op.europa.eu/en/web/eu-vocabularies/dataset/-/resource?uri=http://publications.europa.eu/resource/dataset/country)
@@ -319,6 +340,20 @@ class Export:
             primary_key=["id"],
         )
 
+        self.oeil_subjects = Table(
+            row_type=OEILSubjectRow,
+            outdir=self.outdir,
+            name="oeil_subjects",
+            primary_key=["code"],
+        )
+
+        self.oeil_subject_votes = Table(
+            row_type=OEILSubjectVoteRow,
+            outdir=self.outdir,
+            name="oeil_subject_votes",
+            primary_key=["vote_id", "oeil_subject_code"],
+        )
+
         self.geo_areas = Table(
             row_type=GeoAreaRow,
             outdir=self.outdir,
@@ -360,6 +395,8 @@ class Export:
                 self.member_votes,
                 self.eurovoc_concepts,
                 self.eurovoc_concept_votes,
+                self.oeil_subjects,
+                self.oeil_subject_votes,
                 self.geo_areas,
                 self.geo_area_votes,
                 self.committees,
@@ -369,6 +406,7 @@ class Export:
         self.export_members()
         self.export_votes()
         self.export_eurovoc_concepts()
+        self.export_oeil_subjects()
         self.export_geo_areas()
         self.export_committees()
 
@@ -472,6 +510,7 @@ class Export:
             self.votes.open() as votes,
             self.member_votes.open() as member_votes,
             self.eurovoc_concept_votes.open() as eurovoc_concept_votes,
+            self.oeil_subject_votes.open() as oeil_subject_votes,
             self.geo_area_votes.open() as geo_area_votes,
             self.responsible_committee_votes.open() as responsible_committee_votes,
         ):
@@ -518,6 +557,14 @@ class Export:
                         {
                             "vote_id": vote.id,
                             "eurovoc_concept_id": eurovoc_concept.id,
+                        }
+                    )
+
+                for oeil_subject in vote.oeil_subjects:
+                    oeil_subject_votes.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "oeil_subject_code": oeil_subject.code,
                         }
                     )
 
@@ -570,6 +617,24 @@ class Export:
                 # See: https://github.com/python/mypy/issues/15107
                 concept = EurovocConcept[concept_id] if True else None
                 eurovoc_concepts.write_row({"id": concept.id, "label": concept.label})
+
+    def export_oeil_subjects(self) -> None:
+        log.info("Exporting OEIL subjects")
+
+        with self.oeil_subjects.open() as oeil_subjects:
+            exp = func.json_each(Vote.oeil_subjects).table_valued("value")
+            query = (
+                select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
+            )
+            subject_codes = Session.execute(query).scalars()
+
+            for subject_code in subject_codes:
+                # `if True else None` is a hack to make mypy treat this as a normal value
+                # expression and not as a type expression. If this keeps causing type checking
+                # issues we might want to reconsider the use of metaclasses for this purpose.
+                # See: https://github.com/python/mypy/issues/15107
+                subject = OEILSubject[subject_code] if True else None
+                oeil_subjects.write_row({"code": subject.code, "label": subject.label})
 
     def export_geo_areas(self) -> None:
         log.info("Exporting geographic areas")
