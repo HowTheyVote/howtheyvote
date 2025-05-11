@@ -14,6 +14,7 @@ from ..models import (
     deserialize_member_vote,
 )
 from ..models.eurovoc import EurovocConcept
+from ..models.oeil import OEILSubject
 from .aggregator import CompositeRecord
 
 
@@ -62,6 +63,7 @@ def map_vote(record: CompositeRecord) -> Vote:
     member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes")]
     geo_areas = {Country[code] for code in record.chain("geo_areas")}
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
+    oeil_subjects = {OEILSubject[code] for code in record.chain("oeil_subjects")}
     responsible_committees = {
         Committee[code] for code in record.chain("responsible_committees")
     }
@@ -93,6 +95,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         member_votes=member_votes,
         geo_areas=geo_areas,
         eurovoc_concepts=eurovoc_concepts,
+        oeil_subjects=oeil_subjects,
         responsible_committees=responsible_committees,
         press_release=press_release,
         issues=record.chain("issues"),

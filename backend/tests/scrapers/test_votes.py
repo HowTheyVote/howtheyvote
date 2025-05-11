@@ -315,6 +315,7 @@ def test_procedure_scraper(responses):
         data={
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
             "geo_areas": [],
+            "oeil_subjects": ["2", "3.30.25", "3.45.05", "3.50.15", "4.60.06"],
             "responsible_committees": {"IMCO"},
         },
     )
