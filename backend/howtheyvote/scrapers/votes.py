@@ -363,6 +363,12 @@ class VOTListScraper(BeautifulSoupScraper):
 
     def _extract_data(self, doc: BeautifulSoup) -> Iterator[Fragment | None]:
         for vote_tag in doc.select("votes vote"):
+            # The source data often contains sections with additional information (such as
+            # corrections). These are also modeled as "votes" (even though there was no
+            # vote), so we need to skip them here.
+            if vote_tag["type"] == "INFO":
+                continue
+
             title, procedure_stage = parse_dlv_title(self._title(vote_tag))
 
             for voting_tag in vote_tag.select("votings voting"):
