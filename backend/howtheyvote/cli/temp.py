@@ -101,7 +101,7 @@ def eurovoc() -> None:
 
 
 @temp.command()
-def procedure_titles() -> None:
+def procedures() -> None:
     """Scrape all procedure files."""
     query = select(Vote)
     query = query.where(Vote.procedure_reference != None)  # noqa: E711

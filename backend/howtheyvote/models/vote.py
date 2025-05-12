@@ -13,6 +13,7 @@ from .committee import Committee, CommitteeType
 from .common import BaseWithId, DataIssue
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
+from .oeil import OEILSubject, OEILSubjectType
 from .types import ListType
 
 
@@ -146,6 +147,7 @@ class Vote(BaseWithId):
     eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
         ListType(EurovocConceptType())
     )
+    oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(ListType(OEILSubjectType()))
     responsible_committees: Mapped[list[Committee]] = mapped_column(ListType(CommitteeType()))
     press_release: Mapped[str | None] = mapped_column(sa.Unicode)
     issues: Mapped[list[DataIssue]] = mapped_column(ListType(sa.Enum(DataIssue)))
