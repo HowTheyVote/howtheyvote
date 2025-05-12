@@ -297,6 +297,17 @@ def test_vot_list_procedure_stage(responses):
     assert votes[6].data["procedure_stage"] == ProcedureStage.OLP_FIRST_READING
 
 
+def test_vot_list_skip_info(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2025-05-08-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2025-05-08-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2025, 5, 8), term=10)
+    votes = list(scraper.run())
+    assert len(votes) == 103
+
+
 def test_procedure_scraper(responses):
     responses.get(
         "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
