@@ -341,6 +341,7 @@ class RCVListEnglishScraper(BeautifulSoupScraper):
 class VOTListScraper(BeautifulSoupScraper):
     BASE_URL = "https://www.europarl.europa.eu/doceo/document"
     BS_PARSER = "lxml-xml"
+    RESPONSE_ENCODING = "utf-8"
 
     def __init__(
         self,
