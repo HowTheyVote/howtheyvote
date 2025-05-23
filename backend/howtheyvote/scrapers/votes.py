@@ -510,11 +510,14 @@ class ProcedureScraper(BeautifulSoupScraper):
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         title = self._title(doc)
         geo_areas = self._geo_areas(doc)
+        oeil_subjects = self._oeil_subjects(doc)
         responsible_committees = self._responsible_committees(doc)
         self._log.info(
             "Extracted procedure information",
             title=title,
             geo_areas=geo_areas,
+            oeil_subjects=oeil_subjects,
+            responsible_committees=responsible_committees,
         )
 
         return self._fragment(
@@ -524,6 +527,7 @@ class ProcedureScraper(BeautifulSoupScraper):
             data={
                 "procedure_title": title,
                 "geo_areas": geo_areas,
+                "oeil_subjects": oeil_subjects,
                 "responsible_committees": responsible_committees,
             },
         )
@@ -568,6 +572,26 @@ class ProcedureScraper(BeautifulSoupScraper):
             geo_areas.append(country.code)
 
         return geo_areas
+
+    def _oeil_subjects(self, doc: BeautifulSoup) -> list[str]:
+        wrapper = doc.select_one('#section1 p.font-weight-bold:-soup-contains("Subject") + p')
+
+        if not wrapper:
+            return []
+
+        subjects = []
+
+        for node in wrapper.children:
+            text = node.get_text(strip=True)
+            match = re.search(r"(?P<code>\d+(?:\.\d+)*)\s(?P<label>.*)", text)
+
+            if not match:
+                self._log.warning("Could not parse subject: {text}")
+                continue
+
+            subjects.append(match.group("code"))
+
+        return subjects
 
     def _responsible_committees(self, doc: BeautifulSoup) -> set[str]:
         committees: set[str] = set()

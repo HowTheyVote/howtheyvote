@@ -12,6 +12,7 @@ from howtheyvote.models import (
     GroupMembership,
     Member,
     MemberVote,
+    OEILSubject,
     ProcedureStage,
     Vote,
     VotePosition,
@@ -137,6 +138,9 @@ def test_export_votes(db_session, tmp_path):
             EurovocConcept["4057"],
             EurovocConcept["1460"],
         ],
+        oeil_subjects=[
+            OEILSubject["2.50.04"],
+        ],
         geo_areas=[
             Country["MDA"],
             Country["RUS"],
@@ -185,6 +189,22 @@ def test_export_votes(db_session, tmp_path):
 
     assert eurovoc_concepts_csv.read_text() == expected
     assert eurovoc_concepts_meta.is_file()
+
+    oeil_subject_votes_csv = tmp_path.joinpath("oeil_subject_votes.csv")
+    oeil_subject_votes_meta = tmp_path.joinpath("oeil_subject_votes.csv-metadata.json")
+
+    expected = "vote_id,oeil_subject_code\n123456,2.50.04\n"
+
+    assert oeil_subject_votes_csv.read_text() == expected
+    assert oeil_subject_votes_meta.is_file()
+
+    oeil_subjects_csv = tmp_path.joinpath("oeil_subjects.csv")
+    oeil_subjects_meta = tmp_path.joinpath("oeil_subjects.csv-metadata.json")
+
+    expected = "code,label\n2.50.04,Banks and credit\n"
+
+    assert oeil_subjects_csv.read_text() == expected
+    assert oeil_subjects_meta.is_file()
 
     geo_area_votes_csv = tmp_path.joinpath("geo_area_votes.csv")
     geo_area_votes_meta = tmp_path.joinpath("geo_area_votes.csv-metadata.json")
