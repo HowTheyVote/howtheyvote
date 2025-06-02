@@ -213,7 +213,7 @@ class EurovocConceptVoteRow(TypedDict):
 
 class OEILSubjectRow(TypedDict):
     """Each row represents a subject as used by the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
-    that is referenced by at least one row."""
+    that is referenced by at least one vote."""
 
     code: str
     """Code"""
