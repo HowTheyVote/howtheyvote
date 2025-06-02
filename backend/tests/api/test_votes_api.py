@@ -571,6 +571,7 @@ def test_votes_api_show(records, db_session, api):
         "result": "ADOPTED",
         "geo_areas": [],
         "eurovoc_concepts": [],
+        "oeil_subjects": [],
         "responsible_committees": [],
         "related": [],
         "sources": [

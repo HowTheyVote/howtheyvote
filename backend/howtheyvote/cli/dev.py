@@ -1,12 +1,13 @@
+import csv
 import datetime
-from typing import Any
+from typing import Any, TextIO
 
 import click
 import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Committee, Country, EurovocConcept, Group
+from ..models import Committee, Country, EurovocConcept, Group, OEILSubject
 
 log = get_logger(__name__)
 
@@ -438,6 +439,39 @@ def _load_alt_labels(group_code: str) -> set[str]:
     query = query.replace("{{group_code}}", group_code)
     results = exec_sparql_query(PUBLICATIONS_ENDPOINT, query)
     return set(r["label"]["value"] for r in results)
+
+
+@dev.command()
+@click.argument("file", type=click.File("r"))
+def load_oeil_subjects(file: TextIO) -> None:
+    """Loads a list of procedure subjects as used by the Legislative Observatory. A
+    list of all subjects is provided as a PDF file on the OEIL website[^1]. Alternatively,
+    an Excel version can be requested by contacting the OEIL webmaster. Convert the list
+    to a CSV file with the columns "Code", "Parent", "Description", then run this command
+    to load it into HowTheyVote.
+
+    [^1]: https://oeil.secure.europarl.europa.eu/oeil/en/find-out-more#widget5
+    """
+    subjects = DataclassContainer(
+        dataclass=OEILSubject,
+        file_path=DATA_DIR.joinpath("oeil_subjects.json"),
+        key_attr="code",
+    )
+
+    dialect = csv.Sniffer().sniff(file.read(), delimiters=",;")
+    file.seek(0)
+    reader = csv.DictReader(file, dialect=dialect)
+
+    for row in reader:
+        subjects.add(
+            OEILSubject(
+                code=row["Code"],
+                label=row["Description"],
+                parent_code=row["Parent"],
+            )
+        )
+
+    subjects.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:

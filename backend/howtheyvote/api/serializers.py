@@ -7,6 +7,7 @@ from ..models import (
     EurovocConcept,
     Group,
     Member,
+    OEILSubject,
     PlenarySession,
     PlenarySessionLocation,
     PlenarySessionStatus,
@@ -116,6 +117,23 @@ def serialize_eurovoc_concept(eurovoc_concept: EurovocConcept) -> EurovocConcept
     return {
         "id": eurovoc_concept.id,
         "label": eurovoc_concept.label,
+    }
+
+
+class OEILSubjectDict(TypedDict):
+    """A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+
+    code: Annotated[str, "2.50.04"]
+    """Code"""
+
+    label: Annotated[str, "Banks and credit"]
+    """Label"""
+
+
+def serialize_oeil_subject(oeil_subject: OEILSubject) -> OEILSubjectDict:
+    return {
+        "code": oeil_subject.code,
+        "label": oeil_subject.label,
     }
 
 
@@ -263,6 +281,9 @@ class BaseVoteDict(TypedDict):
     """Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus
     that are related to this vote"""
 
+    oeil_subjects: list[OEILSubjectDict]
+    """Subjects as listed for the vote’s procedure in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)."""
+
     responsible_committees: list[CommitteeDict] | None
     """Committees responsible for the legislative procedure"""
 
@@ -273,6 +294,7 @@ class BaseVoteDict(TypedDict):
 def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     geo_areas = [serialize_country(geo_area) for geo_area in vote.geo_areas]
     eurovoc_concepts = [serialize_eurovoc_concept(ec) for ec in vote.eurovoc_concepts]
+    oeil_subjects = [serialize_oeil_subject(os) for os in vote.oeil_subjects]
     responsible_committees = [
         serialize_committee(committee) for committee in vote.responsible_committees
     ]
@@ -285,6 +307,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "reference": vote.reference,
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
+        "oeil_subjects": oeil_subjects,
         "responsible_committees": responsible_committees,
         "result": vote.result,
     }
