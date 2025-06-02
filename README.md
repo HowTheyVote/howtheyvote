@@ -65,6 +65,6 @@ htv pipeline all --term=10
 
 ---
 
-Parts of this work were sponsored by the Federal Ministry of Education and Research in the 9th round of the Prototype Fund in 2021 (Reference: 01IS21818). Throughout 2025, this project is supported by the MIZ Babelsberg.
+Parts of this work were sponsored by the Federal Ministry of Education and Research in the 9th round of the [Prototype Fund](https://prototypefund.de) in 2021 (Reference: 01IS21818). Throughout 2025, this project is supported by the [MIZ Babelsberg](https://miz-babelsberg.de). [Tuta](https://tuta.com) supports HowTheyVote.eu with a secure and ad-free email account.
 
 <img src="./docs/funders.png" alt="Logo of the Federal Ministry of Education and Research of Germany, the Prototype Fund and the MIZ Babelsberg." height="auto" />
