@@ -30,6 +30,15 @@ export default function Footer({ style, copyright }: FooterProps) {
           </a>
         </li>
         <li>
+          <a
+            href="https://bsky.app/profile/howtheyvote.eu"
+            target="_blank"
+            rel="noopener noreferrer me"
+          >
+            Bluesky
+          </a>
+        </li>
+        <li>
           <a href="/about#license">License</a>
         </li>
         <li>
