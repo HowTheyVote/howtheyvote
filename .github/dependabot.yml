@@ -51,3 +51,7 @@ updates:
     directory: "/backend"
     schedule:
       interval: "monthly"
+
+  - package-ecosystem: "docker-compose"
+    schedule:
+      interval: "monthly"
