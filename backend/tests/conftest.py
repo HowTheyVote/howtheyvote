@@ -9,6 +9,7 @@ import os
 
 import pytest
 from responses import FirstMatchRegistry, RequestsMock
+from structlog.testing import capture_logs
 
 from howtheyvote import config
 from howtheyvote.db import Session, engine, migrate, session_factory
@@ -90,3 +91,9 @@ def responses(request):
     with RequestsMock(registry=DummyRegistry) as r:
         r.add_passthru("http")
         yield r
+
+
+@pytest.fixture
+def logs():
+    with capture_logs() as captured_logs:
+        yield captured_logs

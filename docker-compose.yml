@@ -44,6 +44,8 @@ services:
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
       HTV_FRONTEND_PRIVATE_URL: "http://frontend:8000"
+      PUSHOVER_API_TOKEN: "${PUSHOVER_API_TOKEN}"
+      PUSHOVER_USER_KEY: "${PUSHOVER_USER_KEY}"
 
   worker:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
@@ -61,6 +63,8 @@ services:
     environment:
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
+      PUSHOVER_API_TOKEN: "${PUSHOVER_API_TOKEN}"
+      PUSHOVER_USER_KEY: "${PUSHOVER_USER_KEY}"
 
   caddy:
     image: "caddy:2.7.6-alpine"

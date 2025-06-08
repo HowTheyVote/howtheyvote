@@ -16,6 +16,7 @@ from .. import config
 from ..db import Session
 from ..models import PipelineRun, PipelineStatus
 from ..pipelines import PipelineResult
+from ..pushover import send_notification
 
 log = get_logger(__name__)
 
@@ -188,10 +189,14 @@ class Worker:
             except SkipPipeline:
                 # Do not log skipped pipeline runs
                 return
-            except Exception:
+            except Exception as exc:
                 status = PipelineStatus.FAILURE
                 checksum = None
                 log.exception("Unhandled exception during pipeline run", pipeline=name)
+                send_notification(
+                    title=f"Pipeline failure: {name}",
+                    message=f"Check logs for details. Error message: {exc}",
+                )
 
             duration = time.time() - start_time
             finished_at = datetime.datetime.now(datetime.UTC)

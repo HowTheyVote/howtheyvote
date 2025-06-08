@@ -14,7 +14,9 @@ from ..analysis import (
 )
 from ..db import Session
 from ..files import ensure_parent, vote_sharepic_path
+from ..helpers import frontend_url
 from ..models import Member, Vote, VoteGroup
+from ..pushover import send_notification
 from ..query import member_active_at
 from ..scrapers import (
     DocumentScraper,
@@ -82,6 +84,13 @@ class RCVListPipeline(BasePipeline):
 
         self._analyze_vote_groups_data_issues()
         self._index_vote_groups()
+
+        # Send Pushover notification
+        send_notification(
+            title=f"Scraped RCV list for {self.date.strftime('%a, %b %-d')}",
+            message=f"{len(self._vote_ids)} votes, {len(self._vote_group_ids)} vote groups",
+            url=frontend_url("votes"),
+        )
 
     def _scrape_rcv_list(self) -> None:
         log.info("Fetching active members", date=self.date)
@@ -258,6 +267,9 @@ class RCVListPipeline(BasePipeline):
         writer.flush()
 
     def _generate_vote_sharepics(self) -> None:
+        failure_count = 0
+        success_count = 0
+
         for vote in self._votes():
             if not vote.is_main:
                 log.info(
@@ -273,10 +285,17 @@ class RCVListPipeline(BasePipeline):
                 ensure_parent(path)
                 path.write_bytes(image)
                 SHAREPICS_GENERATED.labels(status="success").inc()
+                success_count += 1
             except Exception:
                 log.exception("Failed generating vote sharepic.", vote_id=vote.id)
                 SHAREPICS_GENERATED.labels(status="error").inc()
-                continue
+                failure_count += 1
+
+        if failure_count > 0:
+            send_notification(
+                title="Failed generating sharepics",
+                message=f"{failure_count} failures (out of {success_count})",
+            )
 
     def _analyze_vote_data_issues(self) -> None:
         log.info(
