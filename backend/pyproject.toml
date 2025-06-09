@@ -48,6 +48,7 @@ pytest-env = "^1.1.5"
 responses = "^0.25.7"
 time-machine = "^2.16.0"
 types-tabulate = "^0.9.0.20241207"
+pytest-mock = "^3.14.1"
 
 [tool.ruff]
 line-length = 95
@@ -68,6 +69,10 @@ env = [
     "D:HTV_BACKEND_DATABASE_URI=sqlite:////howtheyvote/database/database.test.sqlite3",
     "HTV_BACKEND_PUBLIC_URL=https://example.org/api",
     "HTV_SEARCH_INDEX_PREFIX=test",
+    # Disable pushover notifications in test env even when an API token and user key
+    # is configured in development environment
+    "PUSHOVER_API_TOKEN=",
+    "PUSHOVER_USER_KEY=",
 ]
 markers = [
     "always_mock_requests: Always mock HTTP requests, even when request mocks are disabled globally"

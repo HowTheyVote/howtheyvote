@@ -17,6 +17,7 @@ from ..pipelines import (
     RCVListPipeline,
     SessionsPipeline,
 )
+from ..pushover import send_notification
 from ..query import session_is_current_at
 from .worker import (
     SkipPipeline,
@@ -106,6 +107,21 @@ def op_generate_export() -> None:
     EXPORT_LAST_RUN.set(time.time())
 
 
+def op_notify_last_run_unsuccessful() -> None:
+    today = datetime.date.today()
+    # Do not check for last run on days without Plenary
+    if not _is_session_day(today) and not pipeline_ran_successfully(RCVListPipeline, today):
+        return None
+    send_notification(
+        title="No RCV List found at end of day",
+        message=(
+            "The last scheduled run of the day did not find an RCV list."
+            "Either there were not roll-call votes today, or there was an issue."
+        ),
+    )
+    return None
+
+
 def _is_session_day(date: datetime.date) -> bool:
     """Check if there is a session on the given day."""
     query = select(PlenarySession.id).where(session_is_current_at(date))
@@ -150,6 +166,13 @@ worker.schedule_pipeline(
     weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
     hours=range(17, 20),
     minutes=range(0, 60, 10),
+    tz=config.TIMEZONE,
+)
+
+worker.schedule(
+    op_notify_last_run_unsuccessful,
+    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+    hours={20},
     tz=config.TIMEZONE,
 )
 
