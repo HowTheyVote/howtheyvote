@@ -67,7 +67,7 @@ services:
       PUSHOVER_USER_KEY: "${PUSHOVER_USER_KEY}"
 
   caddy:
-    image: "caddy:2.7.6-alpine"
+    image: "caddy:2.10.0-alpine"
     volumes:
       - "caddy_data:/data"
       - "caddy_config:/config"
