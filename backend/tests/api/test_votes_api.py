@@ -3,12 +3,14 @@ import datetime
 import pytest
 
 from howtheyvote.models import (
+    Committee,
     Country,
     Fragment,
     Group,
     GroupMembership,
     Member,
     MemberVote,
+    OEILSubject,
     Vote,
     VotePosition,
     VoteResult,
@@ -74,6 +76,8 @@ def records(db_session):
             ),
         ],
         result=VoteResult.ADOPTED,
+        oeil_subjects=[OEILSubject["2.10.01"]],
+        responsible_committees=[Committee["IMCO"]],
     )
 
     db_session.add_all([john, jane, vote])
@@ -571,8 +575,19 @@ def test_votes_api_show(records, db_session, api):
         "result": "ADOPTED",
         "geo_areas": [],
         "eurovoc_concepts": [],
-        "oeil_subjects": [],
-        "responsible_committees": [],
+        "oeil_subjects": [
+            {
+                "code": "2.10.01",
+                "label": "Customs union, tax and duty-free, Community transit",
+            },
+        ],
+        "responsible_committees": [
+            {
+                "code": "IMCO",
+                "abbreviation": "IMCO",
+                "label": "Committee on the Internal Market and Consumer Protection",
+            },
+        ],
         "related": [],
         "sources": [
             {
