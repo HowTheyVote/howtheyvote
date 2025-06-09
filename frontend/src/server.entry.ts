@@ -7,6 +7,7 @@ import { HomePage, loader as homeLoader } from "./pages/HomePage";
 import { ImprintPage } from "./pages/ImprintPage";
 import { SearchPage, loader as searchLoader } from "./pages/SearchPage";
 import { ShowVotePage, loader as showVoteLoader } from "./pages/ShowVotePage";
+import { ShowAmendmentVotesPage, loader as showAmendmentVotesLoader } from "./pages/ShowAmendmentVotesPage";
 import {
   VoteSharepicPage,
   loader as voteSharepicLoader,
@@ -24,9 +25,11 @@ app.use(logRequests);
 app.registerPage("/", HomePage, homeLoader);
 app.registerPage("/votes", SearchPage, searchLoader);
 app.registerPage("/votes/:id", ShowVotePage, showVoteLoader);
+app.registerPage("/votes/:id/amendments", ShowAmendmentVotesPage, showAmendmentVotesLoader);
 app.registerPage("/votes/:id/sharepic", VoteSharepicPage, voteSharepicLoader);
 app.registerPage(["/developers", "/developers/*"], DevelopersPage);
 app.registerPage("/imprint", ImprintPage);
+app.registerPage("/hue", ImprintPage);
 app.registerPage("/about", AboutPage, aboutLoader);
 
 // Redirect vote shortlinks (e.g. howtheyvote.eu/162190)

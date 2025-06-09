@@ -289,6 +289,16 @@ def show(vote_id: int) -> Response:
 
     return jsonify(data)
 
+@bp.route("votes/<int:vote_id>/amendments")
+def show_amendment_votes(vote_id: int) -> Response:
+    vote = Session.get(Vote, vote_id)
+
+    if not vote:
+        return abort(404)
+
+    related_votes =_load_related(vote)
+
+    return jsonify(related_votes)
 
 @bp.route("/votes/<int:vote_id>.csv")
 def show_csv(vote_id: int) -> Response:

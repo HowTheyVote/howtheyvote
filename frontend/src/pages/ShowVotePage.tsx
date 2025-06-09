@@ -33,6 +33,7 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
   const errorReportFormUrl = getErrorReportFormUrl("INCORRECT_RESULT", {
     voteId: data.id,
   });
+  console.log(data)
   const csvUrl = getDownloadUrl(data.id, "csv");
   const jsonUrl = getDownloadUrl(data.id, "json");
 
