@@ -19,7 +19,7 @@ from ..models import (
     VotePosition,
     VoteResult,
 )
-from .common import BeautifulSoupScraper, RequestCache, ScrapingError
+from .common import BeautifulSoupScraper, NoWorkingUrlError, RequestCache, ScrapingError
 from .helpers import (
     fill_missing_by_reference,
     normalize_name,
@@ -363,6 +363,23 @@ class VOTListScraper(BeautifulSoupScraper):
         return f"{self.BASE_URL}/PV-{self.term}-{date}-VOT_EN.xml"
 
     def _extract_data(self, doc: BeautifulSoup) -> Iterator[Fragment | None]:
+        root = doc.select_one("file")
+
+        if not root:
+            raise ScrapingError("Missing root element `file` in VOT list")
+
+        # https://github.com/python/typeshed/issues/8755
+        language = cast(str, root["language"]).lower()
+
+        if language != "en":
+            # If an English translation isn’t yet available, requesting the English translation
+            # will return the French original. In case a French document is returned, we raise
+            # `NoWorkingUrlError`. Pipelines catching this exception will usually be re-run
+            # later (rather than being marked as permanently failed).
+            raise NoWorkingUrlError(
+                "Request English version of document, but received language {language}."
+            )
+
         for vote_tag in doc.select("votes vote"):
             # The source data often contains sections with additional information (such as
             # corrections). These are also modeled as "votes" (even though there was no
