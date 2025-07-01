@@ -10,7 +10,7 @@
     "@tinyhttp/app": "^2.4.0",
     "isbot": "^5.1.28",
     "pino": "^9.7.0",
-    "preact": "^10.26.8",
+    "preact": "^10.26.9",
     "preact-render-to-string": "^6.5.13",
     "sirv": "^3.0.1"
   },
