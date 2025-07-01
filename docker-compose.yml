@@ -84,7 +84,7 @@ services:
       CADDY_SITE_ADDRESS: "${CADDY_SITE_ADDRESS}"
 
   chromium:
-    image: "chromedp/headless-shell:137.0.7151.69"
+    image: "chromedp/headless-shell:138.0.7204.50"
     command:
       - "--disable-gpu"
       - "--remote-allow-origins=*"
