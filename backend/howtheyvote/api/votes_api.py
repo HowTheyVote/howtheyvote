@@ -1,7 +1,6 @@
 import csv
 from collections.abc import Iterable
 from io import StringIO
-from typing import TypeVar
 
 from flask import Blueprint, Request, Response, abort, jsonify, request
 from sqlalchemy import or_, select
@@ -344,10 +343,7 @@ def show_csv(vote_id: int) -> Response:
     )
 
 
-QueryType = TypeVar("QueryType", bound=Query[Vote])
-
-
-def _query_from_request(cls: type[QueryType], request: Request) -> QueryType:
+def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
     query = cls(Vote)
 
     # Pagination

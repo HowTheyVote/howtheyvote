@@ -1,10 +1,7 @@
 from collections import defaultdict
 from collections.abc import Callable
-from typing import TypeVar
 
 from .models import MemberVote, VotePositionCounts
-
-GroupBy = TypeVar("GroupBy")
 
 
 def count_vote_positions(member_votes: list[MemberVote]) -> VotePositionCounts:
@@ -23,14 +20,14 @@ def count_vote_positions(member_votes: list[MemberVote]) -> VotePositionCounts:
     return counts
 
 
-def count_vote_positions_by_group(
+def count_vote_positions_by_group[T](
     member_votes: list[MemberVote],
-    group_by: Callable[[MemberVote], GroupBy],
-) -> dict[GroupBy, VotePositionCounts]:
+    group_by: Callable[[MemberVote], T],
+) -> dict[T, VotePositionCounts]:
     """Calculates the number of MEPs that voted for/against/abstention for the given
     list of member votes for each group. The second argument is a function that returns
     the group for each member vote."""
-    grouped_member_votes: dict[GroupBy, list[MemberVote]] = defaultdict(list)
+    grouped_member_votes: dict[T, list[MemberVote]] = defaultdict(list)
 
     for member_vote in member_votes:
         group = group_by(member_vote)
@@ -45,7 +42,7 @@ def count_vote_positions_by_group(
         )
     )
 
-    grouped_counts: dict[GroupBy, VotePositionCounts] = {}
+    grouped_counts: dict[T, VotePositionCounts] = {}
 
     for group, member_votes in grouped_member_votes.items():
         grouped_counts[group] = count_vote_positions(member_votes)

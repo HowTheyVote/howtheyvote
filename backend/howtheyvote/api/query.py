@@ -2,7 +2,7 @@ import copy
 import datetime
 import enum
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Self, TypedDict, TypeVar
+from typing import Any, Self, TypedDict
 
 from sqlalchemy import desc, func, select
 from sqlalchemy.sql import ColumnElement
@@ -32,15 +32,13 @@ from ..search import (
     get_stopper,
 )
 
-T = TypeVar("T", bound=BaseWithId)
-
 
 class Order(enum.Enum):
     ASC = "asc"
     DESC = "desc"
 
 
-class QueryResponse(TypedDict, Generic[T]):
+class QueryResponse[T: BaseWithId](TypedDict):
     total: int
     results: list[T]
     page: int
@@ -49,7 +47,7 @@ class QueryResponse(TypedDict, Generic[T]):
     has_prev: bool
 
 
-class Query(ABC, Generic[T]):
+class Query[T: BaseWithId](ABC):
     MAX_PAGE_SIZE = 200
     DEFAULT_PAGE_SIZE = 20
     DEFAULT_SORT_FIELD = "timestamp"
@@ -133,7 +131,7 @@ class Query(ABC, Generic[T]):
         return self._filters
 
 
-class DatabaseQuery(Query[T]):
+class DatabaseQuery[T: BaseWithId](Query[T]):
     def __init__(self, model: type[T]):
         super().__init__(model)
         self._where: list[ColumnElement[Any]] = []
@@ -221,7 +219,7 @@ class ValueDecayWeightPostingSource(ValuePostingSource):
         return weight
 
 
-class SearchQuery(Query[T]):
+class SearchQuery[T: BaseWithId](Query[T]):
     BOOST_FEATURED = 0.075
     """Constant weight added for featured votes."""
 

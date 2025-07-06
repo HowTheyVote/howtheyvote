@@ -1,7 +1,7 @@
 import dataclasses
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Generic, Self, TypeVar
+from typing import Any, Self
 
 from .json import json_dumps, json_loads
 
@@ -14,18 +14,15 @@ class DeserializableDataclass:
         return cls(**data)
 
 
-DataclassType = TypeVar("DataclassType", bound=DeserializableDataclass)
-
-
-class DataclassContainer(Generic[DataclassType]):
+class DataclassContainer[T: DeserializableDataclass]:
     """A convenience class to write and load dataclasses from a JSON file and retrieve
     individual dataclass instances by key."""
 
-    def __init__(self, dataclass: type[DataclassType], file_path: Path | str, key_attr: str):
+    def __init__(self, dataclass: type[T], file_path: Path | str, key_attr: str):
         self.dataclass = dataclass
         self.file_path = Path(file_path)
         self.key_attr = key_attr
-        self.index: dict[str, DataclassType] = {}
+        self.index: dict[str, T] = {}
 
     def load(self) -> None:
         """Load data from file."""
@@ -42,7 +39,7 @@ class DataclassContainer(Generic[DataclassType]):
         text = json_dumps(records, indent=2)
         self.file_path.write_text(text)
 
-    def add(self, record: DataclassType) -> None:
+    def add(self, record: T) -> None:
         """Add an individual record."""
         key = getattr(record, self.key_attr)
 
@@ -51,12 +48,12 @@ class DataclassContainer(Generic[DataclassType]):
 
         self.index[key.lower()] = record
 
-    def get(self, key: str | None) -> DataclassType | None:
+    def get(self, key: str | None) -> T | None:
         """Get a record by key."""
         if not key:
             return None
 
         return self.index.get(key.lower())
 
-    def __iter__(self) -> Iterator[DataclassType]:
+    def __iter__(self) -> Iterator[T]:
         return iter(self.index.values())

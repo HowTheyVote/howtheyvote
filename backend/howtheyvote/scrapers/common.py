@@ -2,7 +2,7 @@ import html
 import random
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Generic, TypeVar
+from typing import Any
 
 import requests
 from bs4 import BeautifulSoup
@@ -89,10 +89,7 @@ def get_url(
     return response
 
 
-ResourceType = TypeVar("ResourceType")
-
-
-class BaseScraper(ABC, Generic[ResourceType]):
+class BaseScraper[T](ABC):
     REQUEST_MAX_RETRIES: int = 0
 
     def __init__(self, request_cache: RequestCache | None = None, **kwargs: Any) -> None:
@@ -106,7 +103,7 @@ class BaseScraper(ABC, Generic[ResourceType]):
         return self._extract_data(doc)
 
     @abstractmethod
-    def _extract_data(self, doc: ResourceType) -> Any:
+    def _extract_data(self, doc: T) -> Any:
         raise NotImplementedError
 
     @abstractmethod
@@ -114,7 +111,7 @@ class BaseScraper(ABC, Generic[ResourceType]):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse(self, response: Response) -> ResourceType:
+    def _parse(self, response: Response) -> T:
         raise NotImplementedError
 
     def _fragment(

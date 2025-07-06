@@ -5,7 +5,7 @@ import re
 from collections.abc import Generator
 from contextlib import contextmanager
 from types import NoneType, UnionType
-from typing import Any, Generic, NotRequired, Self, TypedDict, TypeVar, cast, get_args
+from typing import Any, NotRequired, Self, TypedDict, cast, get_args
 
 from tabulate import tabulate
 
@@ -30,10 +30,7 @@ class TableSchema(TypedDict):
     columns: list[NamedColumn]
 
 
-T = TypeVar("T")
-
-
-class Table(Generic[T]):
+class Table[T]:
     def __init__(
         self,
         row_type: type[T],
