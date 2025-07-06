@@ -5,7 +5,7 @@ import itertools
 import re
 from collections.abc import Iterable, Iterator, Mapping
 from textwrap import dedent
-from typing import Any, TypedDict, TypeVar, cast
+from typing import Any, TypedDict, cast
 from urllib.parse import urljoin
 
 from . import config
@@ -85,10 +85,7 @@ def make_key(*parts: str) -> str:
     return digest.hexdigest()
 
 
-T = TypeVar("T")
-
-
-def chunks(iterable: Iterable[T], size: int) -> Iterator[Iterator[T]]:
+def chunks[T](iterable: Iterable[T], size: int) -> Iterator[Iterator[T]]:
     iterator = iter(iterable)
 
     for first in iterator:
