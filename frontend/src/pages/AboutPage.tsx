@@ -1,4 +1,4 @@
-import { type Statistics, getStats } from "../api";
+import { getStats, type Statistics } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Disclosure from "../components/Disclosure";

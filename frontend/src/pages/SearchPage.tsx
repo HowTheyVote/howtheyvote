@@ -1,4 +1,4 @@
-import { type VotesQueryResponse, searchVotes } from "../api";
+import { searchVotes, type VotesQueryResponse } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
