@@ -1,11 +1,10 @@
 import type { Vote } from "../api";
 import { PUBLIC_URL } from "../config";
+import { formatDate } from "../lib/dates";
+import { Island } from "../lib/islands";
 import ShareButton from "./ShareButton";
 import Stack from "./Stack";
 import Wrapper from "./Wrapper";
-
-import { formatDate } from "../lib/dates";
-import { Island } from "../lib/islands";
 import "./VoteHeader.css";
 
 type VoteHeaderProps = {

@@ -2,9 +2,9 @@ import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 import { getByRole } from "@testing-library/preact";
 import userEvent from "@testing-library/user-event";
-import renderToString from "preact-render-to-string";
 import { useState } from "preact/hooks";
-import { Island, hydrateIslands } from "./islands";
+import renderToString from "preact-render-to-string";
+import { hydrateIslands, Island } from "./islands";
 
 function TestComponent({ initialValue = 0 }: { initialValue?: number }) {
   const [count, setCount] = useState(initialValue);

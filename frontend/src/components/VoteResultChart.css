@@ -16,6 +16,10 @@
   font-size: var(--text-sm);
 }
 
+.vote-result-chart__text {
+  padding: 2px;
+}
+
 .vote-result-chart--slim .vote-result-chart__bars {
   min-height: 10px;
 }
@@ -26,10 +30,6 @@
 
 .vote-result-chart--slim .vote-result-chart__text {
   display: none;
-}
-
-.vote-result-chart__text {
-  padding: 2px;
 }
 
 .vote-result-chart__bar--for .vote-result-chart__text {

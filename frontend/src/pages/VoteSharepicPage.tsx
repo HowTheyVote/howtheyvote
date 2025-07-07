@@ -1,5 +1,5 @@
 import type { Request } from "@tinyhttp/app";
-import { type Vote, getVote } from "../api";
+import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import VoteSharepic from "../components/VoteSharepic";
 import type { Loader, Page } from "../lib/server";

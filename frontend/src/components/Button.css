@@ -11,7 +11,9 @@
   text-decoration: none;
   text-align: center;
 
-  transition: 0.1s background-color ease-out, 0.1s color ease-out;
+  transition:
+    0.1s background-color ease-out,
+    0.1s color ease-out;
 }
 
 .button:hover,

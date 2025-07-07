@@ -1,35 +1,42 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.4.1-nightly.570d680/schema.json",
-    "files": {
-        "ignore": [
-            "src/api/generated/**",
-            "static/**"
-        ]
-    },
-	"organizeImports": {
-		"enabled": true
-	},
-    "formatter": {
-        "indentStyle": "space"
-    },
-    "linter": {
-        "enabled": true,
-        "rules": {
-            "recommended": true,
-            "a11y": {
-                "noLabelWithoutControl": {
-                    "options": {
-                        "inputComponents": [
-                            "Input",
-                            "Select",
-                            "GroupsFilterSelect",
-                            "CountriesFilterSelect",
-                            "PositionFilterSelect",
-                            "SortSelect"
-                        ]
-                    }
-                }
-            }
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "files": {
+    "includes": ["**", "!**/src/api/generated/**", "!**/static/**"]
+  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "formatter": {
+    "indentStyle": "space"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "noLabelWithoutControl": {
+          "options": {
+            "inputComponents": [
+              "Input",
+              "Select",
+              "GroupsFilterSelect",
+              "CountriesFilterSelect",
+              "PositionFilterSelect",
+              "SortSelect"
+            ]
+          }
         }
+      },
+      "style": {
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
+      }
     }
+  }
 }
