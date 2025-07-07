@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from howtheyvote.models import Fragment, MemberVote, ProcedureStage, VotePosition, VoteResult
-from howtheyvote.scrapers.common import ScrapingError
+from howtheyvote.scrapers.common import NoWorkingUrlError, ScrapingError
 from howtheyvote.scrapers.votes import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
@@ -248,6 +248,18 @@ def test_vot_list_scraper(responses):
         "result": VoteResult.ADOPTED,
         "procedure_stage": None,
     }
+
+
+def test_vot_list_scraper_french(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2025-05-22-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2025-05-22-vot-fr.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2025, 5, 22), term=10)
+
+    with pytest.raises(NoWorkingUrlError):
+        list(scraper.run())
 
 
 def test_vot_list_skip_non_rcv(responses):
