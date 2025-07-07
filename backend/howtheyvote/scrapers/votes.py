@@ -603,7 +603,7 @@ class ProcedureScraper(BeautifulSoupScraper):
             match = re.search(r"(?P<code>\d+(?:\.\d+)*)\s(?P<label>.*)", text)
 
             if not match:
-                self._log.warning("Could not parse subject: {text}")
+                self._log.warning(f"Could not parse subject: {text}")
                 continue
 
             subjects.append(match.group("code"))
