@@ -110,15 +110,16 @@ def op_generate_export() -> None:
 def op_notify_last_run_unsuccessful() -> None:
     today = datetime.date.today()
     # Do not check for last run on days without Plenary
-    if not _is_session_day(today) and not pipeline_ran_successfully(RCVListPipeline, today):
+    if not _is_session_day(today):
         return None
-    send_notification(
-        title="No RCV List found at end of day",
-        message=(
-            "The last scheduled run of the day did not find an RCV list."
-            "Either there were not roll-call votes today, or there was an issue."
-        ),
-    )
+    if not pipeline_ran_successfully(RCVListPipeline, today):
+        send_notification(
+            title="No RCV List found at end of day",
+            message=(
+                "The last scheduled run of the day did not find an RCV list."
+                "Either there were not roll-call votes today, or there was an issue."
+            ),
+        )
     return None
 
 
