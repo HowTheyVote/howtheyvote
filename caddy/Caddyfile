@@ -82,6 +82,10 @@
 
     # Nicer URL for the general feedback form
     redir /feedback https://tally.so/r/w740y2
+    # Redirect link for tutorials
+    # This is not a long-term solution, but only until
+    # we have a nicer way of linking on the site directly.
+    redir /tutorials https://github.com/HowTheyVote/tutorials
 }
 
 # Allow loading extra configuration by placing additional files in the `caddy` directory.
