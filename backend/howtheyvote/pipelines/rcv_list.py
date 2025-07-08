@@ -294,7 +294,7 @@ class RCVListPipeline(BasePipeline):
         if failure_count > 0:
             send_notification(
                 title="Failed generating sharepics",
-                message=f"{failure_count} failures (out of {success_count})",
+                message=f"{failure_count} failures (out of {success_count + failure_count})",
             )
 
     def _analyze_vote_data_issues(self) -> None:
