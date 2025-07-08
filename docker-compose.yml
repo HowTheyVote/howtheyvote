@@ -52,6 +52,9 @@ services:
     command: "htv worker"
     depends_on:
       - chromium
+    networks:
+      - "default"
+      - "chromium"
     ports:
       # Make Prometheus metrics available on host machine
       - "3000:3000"
@@ -63,6 +66,7 @@ services:
     environment:
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
+      HTV_FRONTEND_PRIVATE_URL: "http://frontend:8000"
       PUSHOVER_API_TOKEN: "${PUSHOVER_API_TOKEN}"
       PUSHOVER_USER_KEY: "${PUSHOVER_USER_KEY}"
 
