@@ -99,6 +99,8 @@ class MainVoteAnalyzer:
             "decision d'engager des negociations interinstitutionnelles",
             "projet de decision du conseil europeen",
             "projet de decision",
+            "demande de decision d'urgence",
+            "request for an urgent decision",
         ]
     )
 
