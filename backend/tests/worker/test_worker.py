@@ -223,6 +223,117 @@ def test_worker_schedule_pipeline_unhandled_exception_notification(db_session, m
         )
 
 
+def test_worker_schedule_pipeline_idempotency_key_success(db_session):
+    worker = Worker()
+
+    def pipeline_handler():
+        return PipelineResult(
+            status=PipelineStatus.SUCCESS,
+            checksum="123abc",
+        )
+
+    # Schedule pipeline to be run at 9 am and 10 am, but only until it has run
+    # successfully for the first time on that day (using the current date as
+    # the idempotency key).
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0, 0)):
+        worker.schedule_pipeline(
+            handler=pipeline_handler,
+            name="test",
+            hours={9, 10},
+            idempotency_key=lambda: datetime.date.today().isoformat(),
+        )
+
+    # At 9 am, the pipeline is executed for the first time.
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 9, 0, 0)):
+        worker.run_pending()
+
+        runs = list(db_session.execute(select(PipelineRun)).scalars())
+        assert len(runs) == 1
+        assert runs[0].pipeline == "test"
+        assert runs[0].status == PipelineStatus.SUCCESS
+        assert runs[0].started_at.date() == datetime.date(2024, 1, 1)
+
+    # At 10 am, the pipeline isn’t executed again, because there’s a previous
+    # successful run with the same idempotency key.
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 10, 0, 0)):
+        worker.run_pending()
+
+        runs = list(db_session.execute(select(PipelineRun)).scalars())
+        assert len(runs) == 1
+        assert runs[0].pipeline == "test"
+        assert runs[0].status == PipelineStatus.SUCCESS
+        assert runs[0].started_at.date() == datetime.date(2024, 1, 1)
+
+    # The next day, the pipeline is executed as the idempotency key is now different
+    with time_machine.travel(datetime.datetime(2024, 1, 2, 9, 0, 0)):
+        worker.run_pending()
+
+        runs = list(db_session.execute(select(PipelineRun)).scalars())
+        assert len(runs) == 2
+
+        assert runs[0].pipeline == "test"
+        assert runs[0].status == PipelineStatus.SUCCESS
+        assert runs[0].started_at.date() == datetime.date(2024, 1, 1)
+
+        assert runs[1].pipeline == "test"
+        assert runs[1].status == PipelineStatus.SUCCESS
+        assert runs[1].started_at.date() == datetime.date(2024, 1, 2)
+
+
+def test_worker_schedule_pipeline_idempotency_key_error(db_session):
+    worker = Worker()
+
+    # Handler that fails on the first run, then succeeds
+    def pipeline_handler():
+        pipeline_handler.calls += 1
+
+        if pipeline_handler.calls == 1:
+            raise Exception("Woops")
+
+        return PipelineResult(
+            status=PipelineStatus.SUCCESS,
+            checksum=None,
+        )
+
+    pipeline_handler.calls = 0
+
+    # Schedule pipeline to be run at 9 am and 10 am, but only until it has run
+    # successfully for the first time
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0, 0)):
+        worker.schedule_pipeline(
+            handler=pipeline_handler,
+            name="test",
+            hours={9, 10},
+            idempotency_key=lambda: datetime.date.today().isoformat(),
+        )
+
+    # At 9 am, the pipeline is executed for the first time and it fails
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 9, 0, 0)):
+        worker.run_pending()
+
+        runs = list(db_session.execute(select(PipelineRun)).scalars())
+        assert len(runs) == 1
+        assert runs[0].pipeline == "test"
+        assert runs[0].status == PipelineStatus.FAILURE
+        assert runs[0].started_at.date() == datetime.date(2024, 1, 1)
+
+    # At 10 am, the pipeline is executed again. While there is a previous run
+    # with the same idempotency key, it wasn’t successful.
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 10, 0, 0)):
+        worker.run_pending()
+
+        runs = list(db_session.execute(select(PipelineRun)).scalars())
+        assert len(runs) == 2
+
+        assert runs[0].pipeline == "test"
+        assert runs[0].status == PipelineStatus.FAILURE
+        assert runs[0].started_at.date() == datetime.date(2024, 1, 1)
+
+        assert runs[1].pipeline == "test"
+        assert runs[1].status == PipelineStatus.SUCCESS
+        assert runs[1].started_at.date() == datetime.date(2024, 1, 1)
+
+
 def test_pipeline_ran_successfully(db_session):
     class TestPipeline:
         pass
