@@ -52,3 +52,4 @@ class PipelineRun(Base):
     pipeline: Mapped[str] = mapped_column(sa.Unicode)
     status: Mapped[PipelineStatus] = mapped_column(sa.Enum(PipelineStatus))
     checksum: Mapped[str] = mapped_column(sa.Unicode)
+    idempotency_key: Mapped[str] = mapped_column(sa.Unicode)
