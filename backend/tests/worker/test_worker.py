@@ -9,7 +9,6 @@ from howtheyvote.worker.worker import (
     Weekday,
     Worker,
     last_pipeline_run_checksum,
-    pipeline_ran_successfully,
 )
 
 
@@ -332,48 +331,6 @@ def test_worker_schedule_pipeline_idempotency_key_error(db_session):
         assert runs[1].pipeline == "test"
         assert runs[1].status == PipelineStatus.SUCCESS
         assert runs[1].started_at.date() == datetime.date(2024, 1, 1)
-
-
-def test_pipeline_ran_successfully(db_session):
-    class TestPipeline:
-        pass
-
-    now = datetime.datetime.now()
-    today = now.date()
-
-    run = PipelineRun(
-        started_at=now,
-        finished_at=now,
-        pipeline=TestPipeline.__name__,
-        status=PipelineStatus.FAILURE,
-    )
-    db_session.add(run)
-    db_session.commit()
-
-    assert pipeline_ran_successfully(TestPipeline, today) is False
-
-    run = PipelineRun(
-        started_at=now,
-        finished_at=now,
-        pipeline=TestPipeline.__name__,
-        status=PipelineStatus.SUCCESS,
-    )
-    db_session.add(run)
-    db_session.commit()
-
-    assert pipeline_ran_successfully(TestPipeline, today) is True
-    assert pipeline_ran_successfully(TestPipeline, today, count=2) is False
-
-    run = PipelineRun(
-        started_at=now,
-        finished_at=now,
-        pipeline=TestPipeline.__name__,
-        status=PipelineStatus.SUCCESS,
-    )
-    db_session.add(run)
-    db_session.commit()
-
-    assert pipeline_ran_successfully(TestPipeline, today, count=2) is True
 
 
 def test_last_pipeline_run_checksum(db_session):

@@ -66,24 +66,6 @@ class Weekday(enum.Enum):
 Handler = Callable[..., Any]
 
 
-def pipeline_ran_successfully(
-    pipeline: type[object],
-    date: datetime.date,
-    count: int = 1,
-) -> bool:
-    """Check if a given pipeline has been run successfully on a given day."""
-    query = (
-        select(func.count())
-        .select_from(PipelineRun)
-        .where(PipelineRun.pipeline == pipeline.__name__)
-        .where(func.date(PipelineRun.started_at) == func.date(date))
-        .where(PipelineRun.status == PipelineStatus.SUCCESS)
-    )
-    result = Session.execute(query).scalar() or 0
-
-    return result >= count
-
-
 def last_pipeline_run_checksum(pipeline: type[object], date: datetime.date) -> str | None:
     """Returns the checksum of the most recent pipeline run on a given day."""
     query = (

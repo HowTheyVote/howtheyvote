@@ -2,14 +2,14 @@ import datetime
 import time
 
 from prometheus_client import Gauge
-from sqlalchemy import select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from .. import config
 from ..db import Session
 from ..export import generate_export
 from ..files import file_path
-from ..models import PipelineRun, PlenarySession
+from ..models import PipelineRun, PipelineStatus, PlenarySession
 from ..pipelines import (
     MembersPipeline,
     PipelineResult,
@@ -24,39 +24,17 @@ from .worker import (
     Weekday,
     Worker,
     last_pipeline_run_checksum,
-    pipeline_ran_successfully,
 )
 
 log = get_logger(__name__)
 
 
-def op_rcv_midday() -> PipelineResult:
+def op_rcv() -> PipelineResult:
     """Checks if there is a current plenary session and, if yes, fetches the latest roll-call
     vote results."""
     today = datetime.date.today()
 
     if not _is_session_day(today):
-        raise SkipPipeline()
-
-    if pipeline_ran_successfully(RCVListPipeline, today):
-        raise SkipPipeline()
-
-    pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
-    return pipeline.run()
-
-
-def op_rcv_evening() -> PipelineResult:
-    """While on most plenary days, there’s only one voting session around midday, on some days
-    there is another sesssion in the evening, usually around 17:00. The vote results of the
-    evening sessions are appended to the same source document that also contains the results
-    of the midday votes. This method fetches the latest roll-call vote results, even if they
-    have been fetched successfully earlier on the same day."""
-    today = datetime.date.today()
-
-    if not _is_session_day(today):
-        raise SkipPipeline()
-
-    if pipeline_ran_successfully(RCVListPipeline, today, count=2):
         raise SkipPipeline()
 
     last_run_checksum = last_pipeline_run_checksum(
@@ -68,6 +46,8 @@ def op_rcv_evening() -> PipelineResult:
         date=today,
         last_run_checksum=last_run_checksum,
     )
+
+    pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
     return pipeline.run()
 
 
@@ -109,18 +89,30 @@ def op_generate_export() -> None:
 
 def op_notify_last_run_unsuccessful() -> None:
     today = datetime.date.today()
+
     # Do not check for last run on days without Plenary
     if not _is_session_day(today):
         return None
-    if not pipeline_ran_successfully(RCVListPipeline, today):
-        send_notification(
-            title="No RCV List found at end of day",
-            message=(
-                "The last scheduled run of the day did not find an RCV list."
-                "Either there were not roll-call votes today, or there was an issue."
-            ),
-        )
-    return None
+
+    query = (
+        select(PipelineRun)
+        .where(PipelineRun.pipeline == RCVListPipeline.__name__)
+        .where(func.date(PipelineRun.started_at) == func.date(today))
+        .where(PipelineRun.status == PipelineStatus.SUCCESS)
+    )
+    run = Session.execute(query).scalar()
+
+    if run:
+        # RCV pipeline ran successfully, do nothing
+        return None
+
+    send_notification(
+        title="No RCV List found at end of day",
+        message=(
+            "The last scheduled run of the day did not find an RCV list."
+            "Either there were not roll-call votes today, or there was an issue."
+        ),
+    )
 
 
 def _is_session_day(date: datetime.date) -> bool:
@@ -151,26 +143,29 @@ def get_worker() -> Worker:
         tz=config.TIMEZONE,
     )
 
-    # Mon-Thu between 12:00 and 15:00, every 10 mins
+    # Mon-Thu between 12:00 and 15:00, every 10 mins until it succeeds
     worker.schedule_pipeline(
-        op_rcv_midday,
+        op_rcv,
         name=RCVListPipeline.__name__,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
         hours=range(12, 15),
         minutes=range(0, 60, 10),
         tz=config.TIMEZONE,
+        idempotency_key=lambda: f"{datetime.date.today().isoformat()}-midday",
     )
 
-    # Mon-Thu between 17:00 and 20:00, every 10 mins
+    # Mon-Thu between 17:00 and 20:00, every 10 mins until it succeeds
     worker.schedule_pipeline(
-        op_rcv_evening,
+        op_rcv,
         name=RCVListPipeline.__name__,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
         hours=range(17, 20),
         minutes=range(0, 60, 10),
         tz=config.TIMEZONE,
+        idempotency_key=lambda: f"{datetime.date.today().isoformat()}-evening",
     )
 
+    # Mon-Thu at 20:00
     worker.schedule(
         op_notify_last_run_unsuccessful,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
