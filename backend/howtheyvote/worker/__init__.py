@@ -1,5 +1,6 @@
 import datetime
 import time
+from collections.abc import Callable
 
 from prometheus_client import Gauge
 from sqlalchemy import func, select
@@ -16,6 +17,7 @@ from ..pipelines import (
     PressPipeline,
     RCVListPipeline,
     SessionsPipeline,
+    VOTListPipeline,
 )
 from ..pushover import send_notification
 from ..query import session_is_current_at
@@ -79,6 +81,24 @@ def rcv_list_notification_handler() -> None:
             "Either there were not roll-call votes today, or there was an issue."
         ),
     )
+
+
+def make_vot_list_handler(days_ago: int) -> Callable[[], PipelineResult]:
+    """Returns a worker handler to scrape the VOT list for a previous session day.
+    In contrast to RCV lists, VOT lists are usually published with at least one day
+    of delay. That means trying to scrape the VOT list the same day would fail in
+    most cases."""
+
+    def vot_list_handler() -> PipelineResult:
+        date = datetime.date.today() - datetime.timedelta(days=days_ago)
+
+        if not _is_session_day(date):
+            raise SkipPipeline()
+
+        pipeline = VOTListPipeline(term=config.CURRENT_TERM, date=date)
+        return pipeline.run()
+
+    return vot_list_handler
 
 
 def press_handler() -> PipelineResult:
@@ -175,6 +195,19 @@ def get_worker() -> Worker:
         hours={20},
         tz=config.TIMEZONE,
     )
+
+    # Mon-Sun at 21:00
+    # Schedule separate jobs running the VOT list pipeline for 1d ago, 2d ago, ..., 7d ago
+    for i in range(1, 8):
+        worker.schedule_pipeline(
+            make_vot_list_handler(i),
+            name=VOTListPipeline.__name__,
+            hours={21},
+            tz=config.TIMEZONE,
+            idempotency_key=(
+                lambda i=i: (datetime.date.today() - datetime.timedelta(days=i)).isoformat()
+            ),
+        )
 
     # Mon-Thu, between 13:00 and 20:00, every 30 mins
     worker.schedule_pipeline(
