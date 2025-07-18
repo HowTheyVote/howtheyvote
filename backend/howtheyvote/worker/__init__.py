@@ -29,7 +29,7 @@ from .worker import (
 log = get_logger(__name__)
 
 
-def op_rcv() -> PipelineResult:
+def rcv_list_handler() -> PipelineResult:
     """Checks if there is a current plenary session and, if yes, fetches the latest roll-call
     vote results."""
     today = datetime.date.today()
@@ -51,43 +51,9 @@ def op_rcv() -> PipelineResult:
     return pipeline.run()
 
 
-def op_press() -> PipelineResult:
-    """Checks if there is a current plenary session and, if yes, fetches the latest press
-    releases from the Parliament’s news hub."""
-    today = datetime.date.today()
-
-    if not _is_session_day(today):
-        raise SkipPipeline()
-
-    pipeline = PressPipeline(date=today, with_rss=True)
-    return pipeline.run()
-
-
-def op_sessions() -> PipelineResult:
-    """Fetches plenary session dates."""
-    pipeline = SessionsPipeline(term=config.CURRENT_TERM)
-    return pipeline.run()
-
-
-def op_members() -> PipelineResult:
-    """Fetches information about all members of the current term."""
-    pipeline = MembersPipeline(term=config.CURRENT_TERM)
-    return pipeline.run()
-
-
-EXPORT_LAST_RUN = Gauge(
-    "htv_export_last_run_timestamp_seconds",
-    "Timestamp when the CSV export was generated the last time",
-)
-
-
-def op_generate_export() -> None:
-    archive_path = file_path("export/export")
-    generate_export(archive_path)
-    EXPORT_LAST_RUN.set(time.time())
-
-
-def op_notify_last_run_unsuccessful() -> None:
+def rcv_list_notification_handler() -> None:
+    """Checks whether the RCV list pipeline has been executed successfuly, and sends a
+    Pushover notification if not."""
     today = datetime.date.today()
 
     # Do not check for last run on days without Plenary
@@ -115,6 +81,43 @@ def op_notify_last_run_unsuccessful() -> None:
     )
 
 
+def press_handler() -> PipelineResult:
+    """Checks if there is a current plenary session and, if yes, fetches the latest press
+    releases from the Parliament’s news hub."""
+    today = datetime.date.today()
+
+    if not _is_session_day(today):
+        raise SkipPipeline()
+
+    pipeline = PressPipeline(date=today, with_rss=True)
+    return pipeline.run()
+
+
+def sessions_handler() -> PipelineResult:
+    """Fetches plenary session dates."""
+    pipeline = SessionsPipeline(term=config.CURRENT_TERM)
+    return pipeline.run()
+
+
+def members_handler() -> PipelineResult:
+    """Fetches information about all members of the current term."""
+    pipeline = MembersPipeline(term=config.CURRENT_TERM)
+    return pipeline.run()
+
+
+EXPORT_LAST_RUN = Gauge(
+    "htv_export_last_run_timestamp_seconds",
+    "Timestamp when the CSV export was generated the last time",
+)
+
+
+def export_handler() -> None:
+    """Generate the CSV export."""
+    archive_path = file_path("export/export")
+    generate_export(archive_path)
+    EXPORT_LAST_RUN.set(time.time())
+
+
 def _is_session_day(date: datetime.date) -> bool:
     """Check if there is a session on the given day."""
     query = select(PlenarySession.id).where(session_is_current_at(date))
@@ -127,7 +130,7 @@ def get_worker() -> Worker:
 
     # Mon at 04:00
     worker.schedule_pipeline(
-        op_sessions,
+        sessions_handler,
         name=SessionsPipeline.__name__,
         weekdays={Weekday.MON},
         hours={4},
@@ -136,7 +139,7 @@ def get_worker() -> Worker:
 
     # Mon at 05:00
     worker.schedule_pipeline(
-        op_members,
+        members_handler,
         name=MembersPipeline.__name__,
         weekdays={Weekday.MON},
         hours={5},
@@ -145,7 +148,7 @@ def get_worker() -> Worker:
 
     # Mon-Thu between 12:00 and 15:00, every 10 mins until it succeeds
     worker.schedule_pipeline(
-        op_rcv,
+        rcv_list_handler,
         name=RCVListPipeline.__name__,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
         hours=range(12, 15),
@@ -156,7 +159,7 @@ def get_worker() -> Worker:
 
     # Mon-Thu between 17:00 and 20:00, every 10 mins until it succeeds
     worker.schedule_pipeline(
-        op_rcv,
+        rcv_list_handler,
         name=RCVListPipeline.__name__,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
         hours=range(17, 20),
@@ -167,7 +170,7 @@ def get_worker() -> Worker:
 
     # Mon-Thu at 20:00
     worker.schedule(
-        op_notify_last_run_unsuccessful,
+        rcv_list_notification_handler,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
         hours={20},
         tz=config.TIMEZONE,
@@ -175,7 +178,7 @@ def get_worker() -> Worker:
 
     # Mon-Thu, between 13:00 and 20:00, every 30 mins
     worker.schedule_pipeline(
-        op_press,
+        press_handler,
         name=PressPipeline.__name__,
         weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
         hours=range(13, 20),
@@ -185,7 +188,7 @@ def get_worker() -> Worker:
 
     # Sun at 04:00
     worker.schedule(
-        op_generate_export,
+        export_handler,
         weekdays={Weekday.SUN},
         hours={4},
         # While the schedules for other pipelines follow real-life events in Brussels/
