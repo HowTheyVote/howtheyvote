@@ -130,69 +130,76 @@ def _is_session_day(date: datetime.date) -> bool:
     return session is not None
 
 
-worker = Worker()
+def get_worker() -> Worker:
+    worker = Worker()
 
-# Mon at 04:00
-worker.schedule_pipeline(
-    op_sessions,
-    name=SessionsPipeline.__name__,
-    weekdays={Weekday.MON},
-    hours={4},
-    tz=config.TIMEZONE,
-)
+    # Mon at 04:00
+    worker.schedule_pipeline(
+        op_sessions,
+        name=SessionsPipeline.__name__,
+        weekdays={Weekday.MON},
+        hours={4},
+        tz=config.TIMEZONE,
+    )
 
-# Mon at 05:00
-worker.schedule_pipeline(
-    op_members,
-    name=MembersPipeline.__name__,
-    weekdays={Weekday.MON},
-    hours={5},
-    tz=config.TIMEZONE,
-)
+    # Mon at 05:00
+    worker.schedule_pipeline(
+        op_members,
+        name=MembersPipeline.__name__,
+        weekdays={Weekday.MON},
+        hours={5},
+        tz=config.TIMEZONE,
+    )
 
-# Mon-Thu between 12:00 and 15:00, every 10 mins
-worker.schedule_pipeline(
-    op_rcv_midday,
-    name=RCVListPipeline.__name__,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours=range(12, 15),
-    minutes=range(0, 60, 10),
-    tz=config.TIMEZONE,
-)
+    # Mon-Thu between 12:00 and 15:00, every 10 mins
+    worker.schedule_pipeline(
+        op_rcv_midday,
+        name=RCVListPipeline.__name__,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours=range(12, 15),
+        minutes=range(0, 60, 10),
+        tz=config.TIMEZONE,
+    )
 
-# Mon-Thu between 17:00 and 20:00, every 10 mins
-worker.schedule_pipeline(
-    op_rcv_evening,
-    name=RCVListPipeline.__name__,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours=range(17, 20),
-    minutes=range(0, 60, 10),
-    tz=config.TIMEZONE,
-)
+    # Mon-Thu between 17:00 and 20:00, every 10 mins
+    worker.schedule_pipeline(
+        op_rcv_evening,
+        name=RCVListPipeline.__name__,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours=range(17, 20),
+        minutes=range(0, 60, 10),
+        tz=config.TIMEZONE,
+    )
 
-worker.schedule(
-    op_notify_last_run_unsuccessful,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours={20},
-    tz=config.TIMEZONE,
-)
+    worker.schedule(
+        op_notify_last_run_unsuccessful,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours={20},
+        tz=config.TIMEZONE,
+    )
 
-# Mon-Thu, between 13:00 and 20:00, every 30 mins
-worker.schedule_pipeline(
-    op_press,
-    name=PressPipeline.__name__,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours=range(13, 20),
-    minutes={0, 30},
-    tz=config.TIMEZONE,
-)
+    # Mon-Thu, between 13:00 and 20:00, every 30 mins
+    worker.schedule_pipeline(
+        op_press,
+        name=PressPipeline.__name__,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours=range(13, 20),
+        minutes={0, 30},
+        tz=config.TIMEZONE,
+    )
 
-# Sun at 04:00
-worker.schedule(
-    op_generate_export,
-    weekdays={Weekday.SUN},
-    hours={4},
-    # While the schedules for other pipelines follow real-life events in Brussels/Strasbourg
-    # time, this isn’t the case for the export so we can just use UTC for simplicity.
-    tz="UTC",
-)
+    # Sun at 04:00
+    worker.schedule(
+        op_generate_export,
+        weekdays={Weekday.SUN},
+        hours={4},
+        # While the schedules for other pipelines follow real-life events in Brussels/
+        # Strasbourg time, this isn’t the case for the export so we can just use UTC
+        # for simplicity.
+        tz="UTC",
+    )
+
+    return worker
+
+
+worker = get_worker()
