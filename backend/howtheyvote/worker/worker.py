@@ -139,6 +139,7 @@ class Worker:
         hours: Iterable[int] = {0},
         minutes: Iterable[int] = {0},
         tz: str | None = None,
+        tag: str | None = None,
     ) -> None:
         """Schedule a job to be executed at the given weekdays, hours, minutes. Optionally
         passing a timezone string via the `tz` parameter indicates that the job should be
@@ -166,6 +167,9 @@ class Worker:
                     job = getattr(job, weekday.value)
                     job = job.at(formatted_time, tz)
                     job = job.do(handler)
+
+                    if tag:
+                        job = job.tag(tag)
 
     def schedule_pipeline(
         self,
@@ -256,6 +260,7 @@ class Worker:
             hours=hours,
             minutes=minutes,
             tz=tz,
+            tag=name,
         )
 
     def _update_next_run_metrics(self) -> None:
