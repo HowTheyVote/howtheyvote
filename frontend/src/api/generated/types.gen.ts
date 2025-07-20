@@ -33,10 +33,23 @@ export type BaseVote = {
      */
     eurovoc_concepts: Array<EurovocConcept>;
     /**
-     * Committee responsible for the legislative procedure
+     * Subjects as listed for the vote’s procedure in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en).
      */
-    responsible_committee?: Committee;
+    oeil_subjects: Array<OEILSubject>;
+    /**
+     * Committees responsible for the legislative procedure
+     */
+    responsible_committees?: Array<Committee>;
+    /**
+     * Vote result. This field is only available for votes starting in 2024.
+     */
+    result?: 'ADOPTED' | 'REJECTED' | 'LAPSED' | 'WITHDRAWN';
 };
+
+/**
+ * Vote result. This field is only available for votes starting in 2024.
+ */
+export type result = 'ADOPTED' | 'REJECTED' | 'LAPSED' | 'WITHDRAWN';
 
 /**
  * Committee of the European Parliament
@@ -168,6 +181,20 @@ export type MemberVote = {
 
 export type position = 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
 
+/**
+ * A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+ */
+export type OEILSubject = {
+    /**
+     * Code
+     */
+    code: string;
+    /**
+     * Label
+     */
+    label: string;
+};
+
 export type PlenarySession = {
     id: string;
     /**
@@ -210,14 +237,34 @@ export type PlenarySessionsQueryResponse = QueryResponse & {
  */
 export type Procedure = {
     /**
-     * Title of the legislative proceudre as listed in the Legislative Observatory
+     * Title of the legislative procedure as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
      */
     title?: string;
     /**
-     * Procedure reference as listed in the Legislative Observatory
+     * Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+     */
+    type: 'COD' | 'CNS' | 'APP' | 'BUD' | 'DEC' | 'BUI' | 'NLE' | 'INL' | 'INI' | 'RSP' | 'REG' | 'IMM' | 'RSO' | 'INS' | 'ACI' | 'DEA' | 'RPS' | 'AVC' | 'SYN' | 'DCE' | 'COS';
+    /**
+     * Procedure reference as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
      */
     reference: string;
+    /**
+     * Stage of the procedure in which the vote took place. This field is only available for
+     * votes starting in 2024 and if the vote is part of an Ordinary Legislative Procedure.
+     */
+    stage?: 'OLP_FIRST_READING' | 'OLP_SECOND_READING' | 'OLP_THIRD_READING';
 };
+
+/**
+ * Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+ */
+export type type = 'COD' | 'CNS' | 'APP' | 'BUD' | 'DEC' | 'BUI' | 'NLE' | 'INL' | 'INI' | 'RSP' | 'REG' | 'IMM' | 'RSO' | 'INS' | 'ACI' | 'DEA' | 'RPS' | 'AVC' | 'SYN' | 'DCE' | 'COS';
+
+/**
+ * Stage of the procedure in which the vote took place. This field is only available for
+ * votes starting in 2024 and if the vote is part of an Ordinary Legislative Procedure.
+ */
+export type stage = 'OLP_FIRST_READING' | 'OLP_SECOND_READING' | 'OLP_THIRD_READING';
 
 export type QueryResponse = {
     /**
