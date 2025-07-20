@@ -14,12 +14,14 @@ from ..helpers import (
     parse_procedure_reference,
     subset_dict,
 )
+from ..links import doceo_document_url, oeil_procedure_url, press_release_url
 from ..models import Fragment, Member, PressRelease, Vote
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 from .query import DatabaseQuery, Order, Query, SearchQuery
 from .serializers import (
     BaseVoteDict,
+    LinkDict,
     MemberVoteDict,
     ProcedureDict,
     RelatedVoteDict,
@@ -275,6 +277,8 @@ def show(vote_id: int) -> Response:
     fragments = _load_fragments(vote, press_release)
     sources = _format_sources(fragments)
 
+    links = _format_links(vote)
+
     data: VoteDict = {
         **base_vote,
         "procedure": procedure,
@@ -283,6 +287,7 @@ def show(vote_id: int) -> Response:
         "stats": stats,
         "member_votes": member_votes,
         "sources": sources,
+        "links": links,
         "related": related_votes,
     }
 
@@ -434,6 +439,39 @@ def _format_sources(fragments: Iterable[Fragment]) -> list[SourceDict]:
         )
 
     return sorted(sources, key=lambda s: s["accessed_at"])
+
+
+def _format_links(vote: Vote) -> list[LinkDict]:
+    links: list[LinkDict] = []
+
+    if vote.press_release:
+        links.append(
+            {
+                "title": "Press release",
+                "description": "Press release published by the European Parliament’s Press Service. Press releases often contain more information about the subject of the vote and next steps.",  #  noqa: E501
+                "url": press_release_url(vote.press_release),
+            }
+        )
+
+    if vote.reference:
+        links.append(
+            {
+                "title": "Report or resolution",
+                "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",  #  noqa: E501
+                "url": doceo_document_url(vote.reference),
+            }
+        )
+
+    if vote.procedure_reference:
+        links.append(
+            {
+                "title": "Legislative Observatory",
+                "description": "Find out more about the procedure this vote is part of. This includes information about the current state of the procedure, past and upcoming steps, as well as key players.",  #  noqa: E501
+                "url": oeil_procedure_url(vote.procedure_reference),
+            }
+        )
+
+    return links
 
 
 def _format_member_votes(vote: Vote, members_by_id: MembersById) -> list[MemberVoteDict]:

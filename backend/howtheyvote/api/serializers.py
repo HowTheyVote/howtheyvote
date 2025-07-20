@@ -245,6 +245,17 @@ class SourceDict(TypedDict):
     """Date and time when the source was last accessed"""
 
 
+class LinkDict(TypedDict):
+    title: str
+    """Link title"""
+
+    description: str
+    """Description"""
+
+    url: str
+    """URL"""
+
+
 class RelatedVoteDict(TypedDict):
     id: Annotated[int, 157420]
     """ID as published in the official roll-call vote results"""
@@ -331,7 +342,10 @@ class VoteDict(BaseVoteDict):
     """List of MEPs and their vote positions"""
 
     sources: list[SourceDict]
-    """List of official sources for this data record"""
+    """List of official sources for this vote"""
+
+    links: list[LinkDict]
+    """List of external links with additional information about this vote"""
 
     related: list[RelatedVoteDict]
 
