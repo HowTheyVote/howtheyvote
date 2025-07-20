@@ -122,6 +122,21 @@ export type Group = {
     short_label?: string;
 };
 
+export type Link = {
+    /**
+     * Link title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * URL
+     */
+    url: string;
+};
+
 /**
  * Member of the European Parliament (MEP)
  */
@@ -362,9 +377,13 @@ export type Vote = BaseVote & {
      */
     member_votes: Array<MemberVote>;
     /**
-     * List of official sources for this data record
+     * List of official sources for this vote
      */
     sources: Array<Source>;
+    /**
+     * List of external links with additional information about this vote
+     */
+    links: Array<Link>;
     related: Array<RelatedVote>;
 };
 
