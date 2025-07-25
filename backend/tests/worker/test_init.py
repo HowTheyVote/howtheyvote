@@ -208,7 +208,7 @@ def test_rcv_list_notification_no_votes(db_session, mocker):
 
         # A notification has been sent because the pipeline hasn’t been executed successfully
         assert pushover_mock.call_count == 1
-        assert pushover_mock.call_args.kwargs["title"] == "No RCV List found at end of day"
+        assert pushover_mock.call_args.kwargs["title"] == "No RCV list found at end of day"
 
 
 def test_vot_list_pipeline(db_session, mocker):

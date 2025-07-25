@@ -75,10 +75,10 @@ def rcv_list_notification_handler() -> None:
         return None
 
     send_notification(
-        title="No RCV List found at end of day",
+        title="No RCV list found at end of day",
         message=(
             "The last scheduled run of the day did not find an RCV list."
-            "Either there were not roll-call votes today, or there was an issue."
+            "Either there were no roll-call votes today, or there was an issue."
         ),
     )
 
