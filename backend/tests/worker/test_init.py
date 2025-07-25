@@ -134,7 +134,7 @@ def test_rcv_list_pipeline(db_session, mocker):
         assert runs[4].status == PipelineStatus.SUCCESS
 
 
-def test_rcv_list_notification(db_session, mocker):
+def test_rcv_list_notification_no_votes(db_session, mocker):
     plenary_session = PlenarySession(
         id="2025-07-07",
         start_date=datetime.date(2025, 7, 7),
