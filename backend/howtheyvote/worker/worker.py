@@ -161,7 +161,7 @@ class Worker:
         hours: Iterable[int] = {0},
         minutes: Iterable[int] = {0},
         tz: str | None = None,
-        idempotency_key: Callable[..., str] | None = None,
+        idempotency_key_func: Callable[..., str] | None = None,
     ) -> None:
         """Same as `schedule`, but handles exceptions and logs pipeline runs."""
 
@@ -169,16 +169,16 @@ class Worker:
             start_time = time.time()
             started_at = datetime.datetime.now(datetime.UTC)
 
-            idempotency_key_value = None
+            idempotency_key = None
 
             # Check if an idempotency key function is given, and skip this run if there was a
             # previous successful run of the pipeline with the same key.
-            if idempotency_key:
-                idempotency_key_value = idempotency_key()
+            if idempotency_key_func:
+                idempotency_key = idempotency_key_func()
                 count = (
                     select(func.count())
                     .select_from(PipelineRun)
-                    .where(PipelineRun.idempotency_key == idempotency_key_value)
+                    .where(PipelineRun.idempotency_key == idempotency_key)
                     .where(PipelineRun.pipeline == name)
                     .where(PipelineRun.status == PipelineStatus.SUCCESS)
                 )
@@ -216,7 +216,7 @@ class Worker:
                 finished_at=finished_at,
                 status=status,
                 checksum=checksum,
-                idempotency_key=idempotency_key_value,
+                idempotency_key=idempotency_key,
             )
 
             Session.add(run)

@@ -239,7 +239,7 @@ def test_worker_schedule_pipeline_idempotency_key_success(db_session):
             handler=pipeline_handler,
             name="test",
             hours={9, 10},
-            idempotency_key=lambda: datetime.date.today().isoformat(),
+            idempotency_key_func=lambda: datetime.date.today().isoformat(),
         )
 
     # At 9 am, the pipeline is executed for the first time.
@@ -303,7 +303,7 @@ def test_worker_schedule_pipeline_idempotency_key_error(db_session):
             handler=pipeline_handler,
             name="test",
             hours={9, 10},
-            idempotency_key=lambda: datetime.date.today().isoformat(),
+            idempotency_key_func=lambda: datetime.date.today().isoformat(),
         )
 
     # At 9 am, the pipeline is executed for the first time and it fails

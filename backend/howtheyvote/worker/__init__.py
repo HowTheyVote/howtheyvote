@@ -174,7 +174,7 @@ def get_worker() -> Worker:
         hours=range(12, 15),
         minutes=range(0, 60, 10),
         tz=config.TIMEZONE,
-        idempotency_key=lambda: f"{datetime.date.today().isoformat()}-midday",
+        idempotency_key_func=lambda: f"{datetime.date.today().isoformat()}-midday",
     )
 
     # Mon-Thu between 17:00 and 20:00, every 10 mins until it succeeds
@@ -185,7 +185,7 @@ def get_worker() -> Worker:
         hours=range(17, 20),
         minutes=range(0, 60, 10),
         tz=config.TIMEZONE,
-        idempotency_key=lambda: f"{datetime.date.today().isoformat()}-evening",
+        idempotency_key_func=lambda: f"{datetime.date.today().isoformat()}-evening",
     )
 
     # Mon-Thu at 20:00
@@ -204,7 +204,7 @@ def get_worker() -> Worker:
             name=VOTListPipeline.__name__,
             hours={21},
             tz=config.TIMEZONE,
-            idempotency_key=(
+            idempotency_key_func=(
                 lambda i=i: (datetime.date.today() - datetime.timedelta(days=i)).isoformat()
             ),
         )
