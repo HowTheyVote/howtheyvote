@@ -1,21 +1,23 @@
 import datetime
 import time
+from collections.abc import Callable
 
 from prometheus_client import Gauge
-from sqlalchemy import select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from .. import config
 from ..db import Session
 from ..export import generate_export
 from ..files import file_path
-from ..models import PipelineRun, PlenarySession
+from ..models import PipelineRun, PipelineStatus, PlenarySession
 from ..pipelines import (
     MembersPipeline,
     PipelineResult,
     PressPipeline,
     RCVListPipeline,
     SessionsPipeline,
+    VOTListPipeline,
 )
 from ..pushover import send_notification
 from ..query import session_is_current_at
@@ -24,39 +26,17 @@ from .worker import (
     Weekday,
     Worker,
     last_pipeline_run_checksum,
-    pipeline_ran_successfully,
 )
 
 log = get_logger(__name__)
 
 
-def op_rcv_midday() -> PipelineResult:
+def rcv_list_handler() -> PipelineResult:
     """Checks if there is a current plenary session and, if yes, fetches the latest roll-call
     vote results."""
     today = datetime.date.today()
 
     if not _is_session_day(today):
-        raise SkipPipeline()
-
-    if pipeline_ran_successfully(RCVListPipeline, today):
-        raise SkipPipeline()
-
-    pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
-    return pipeline.run()
-
-
-def op_rcv_evening() -> PipelineResult:
-    """While on most plenary days, there’s only one voting session around midday, on some days
-    there is another sesssion in the evening, usually around 17:00. The vote results of the
-    evening sessions are appended to the same source document that also contains the results
-    of the midday votes. This method fetches the latest roll-call vote results, even if they
-    have been fetched successfully earlier on the same day."""
-    today = datetime.date.today()
-
-    if not _is_session_day(today):
-        raise SkipPipeline()
-
-    if pipeline_ran_successfully(RCVListPipeline, today, count=2):
         raise SkipPipeline()
 
     last_run_checksum = last_pipeline_run_checksum(
@@ -68,10 +48,60 @@ def op_rcv_evening() -> PipelineResult:
         date=today,
         last_run_checksum=last_run_checksum,
     )
+
+    pipeline = RCVListPipeline(term=config.CURRENT_TERM, date=today)
     return pipeline.run()
 
 
-def op_press() -> PipelineResult:
+def rcv_list_notification_handler() -> None:
+    """Checks whether the RCV list pipeline has been executed successfuly, and sends a
+    Pushover notification if not."""
+    today = datetime.date.today()
+
+    # Do not check for last run on days without Plenary
+    if not _is_session_day(today):
+        return None
+
+    query = (
+        select(PipelineRun)
+        .where(PipelineRun.pipeline == RCVListPipeline.__name__)
+        .where(func.date(PipelineRun.started_at) == func.date(today))
+        .where(PipelineRun.status == PipelineStatus.SUCCESS)
+    )
+    run = Session.execute(query).scalar()
+
+    if run:
+        # RCV pipeline ran successfully, do nothing
+        return None
+
+    send_notification(
+        title="No RCV list found at end of day",
+        message=(
+            "The last scheduled run of the day did not find an RCV list."
+            "Either there were no roll-call votes today, or there was an issue."
+        ),
+    )
+
+
+def make_vot_list_handler(days_ago: int) -> Callable[[], PipelineResult]:
+    """Returns a worker handler to scrape the VOT list for a previous session day.
+    In contrast to RCV lists, VOT lists are usually published with at least one day
+    of delay. That means trying to scrape the VOT list the same day would fail in
+    most cases."""
+
+    def vot_list_handler() -> PipelineResult:
+        date = datetime.date.today() - datetime.timedelta(days=days_ago)
+
+        if not _is_session_day(date):
+            raise SkipPipeline()
+
+        pipeline = VOTListPipeline(term=config.CURRENT_TERM, date=date)
+        return pipeline.run()
+
+    return vot_list_handler
+
+
+def press_handler() -> PipelineResult:
     """Checks if there is a current plenary session and, if yes, fetches the latest press
     releases from the Parliament’s news hub."""
     today = datetime.date.today()
@@ -83,13 +113,13 @@ def op_press() -> PipelineResult:
     return pipeline.run()
 
 
-def op_sessions() -> PipelineResult:
+def sessions_handler() -> PipelineResult:
     """Fetches plenary session dates."""
     pipeline = SessionsPipeline(term=config.CURRENT_TERM)
     return pipeline.run()
 
 
-def op_members() -> PipelineResult:
+def members_handler() -> PipelineResult:
     """Fetches information about all members of the current term."""
     pipeline = MembersPipeline(term=config.CURRENT_TERM)
     return pipeline.run()
@@ -101,26 +131,11 @@ EXPORT_LAST_RUN = Gauge(
 )
 
 
-def op_generate_export() -> None:
+def export_handler() -> None:
+    """Generate the CSV export."""
     archive_path = file_path("export/export")
     generate_export(archive_path)
     EXPORT_LAST_RUN.set(time.time())
-
-
-def op_notify_last_run_unsuccessful() -> None:
-    today = datetime.date.today()
-    # Do not check for last run on days without Plenary
-    if not _is_session_day(today):
-        return None
-    if not pipeline_ran_successfully(RCVListPipeline, today):
-        send_notification(
-            title="No RCV List found at end of day",
-            message=(
-                "The last scheduled run of the day did not find an RCV list."
-                "Either there were not roll-call votes today, or there was an issue."
-            ),
-        )
-    return None
 
 
 def _is_session_day(date: datetime.date) -> bool:
@@ -130,69 +145,92 @@ def _is_session_day(date: datetime.date) -> bool:
     return session is not None
 
 
-worker = Worker()
+def get_worker() -> Worker:
+    worker = Worker()
 
-# Mon at 04:00
-worker.schedule_pipeline(
-    op_sessions,
-    name=SessionsPipeline.__name__,
-    weekdays={Weekday.MON},
-    hours={4},
-    tz=config.TIMEZONE,
-)
+    # Mon at 04:00
+    worker.schedule_pipeline(
+        sessions_handler,
+        name=SessionsPipeline.__name__,
+        weekdays={Weekday.MON},
+        hours={4},
+        tz=config.TIMEZONE,
+    )
 
-# Mon at 05:00
-worker.schedule_pipeline(
-    op_members,
-    name=MembersPipeline.__name__,
-    weekdays={Weekday.MON},
-    hours={5},
-    tz=config.TIMEZONE,
-)
+    # Mon at 05:00
+    worker.schedule_pipeline(
+        members_handler,
+        name=MembersPipeline.__name__,
+        weekdays={Weekday.MON},
+        hours={5},
+        tz=config.TIMEZONE,
+    )
 
-# Mon-Thu between 12:00 and 15:00, every 10 mins
-worker.schedule_pipeline(
-    op_rcv_midday,
-    name=RCVListPipeline.__name__,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours=range(12, 15),
-    minutes=range(0, 60, 10),
-    tz=config.TIMEZONE,
-)
+    # Mon-Thu between 12:00 and 15:00, every 10 mins until it succeeds
+    worker.schedule_pipeline(
+        rcv_list_handler,
+        name=RCVListPipeline.__name__,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours=range(12, 15),
+        minutes=range(0, 60, 10),
+        tz=config.TIMEZONE,
+        idempotency_key_func=lambda: f"{datetime.date.today().isoformat()}-midday",
+    )
 
-# Mon-Thu between 17:00 and 20:00, every 10 mins
-worker.schedule_pipeline(
-    op_rcv_evening,
-    name=RCVListPipeline.__name__,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours=range(17, 20),
-    minutes=range(0, 60, 10),
-    tz=config.TIMEZONE,
-)
+    # Mon-Thu between 17:00 and 20:00, every 10 mins until it succeeds
+    worker.schedule_pipeline(
+        rcv_list_handler,
+        name=RCVListPipeline.__name__,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours=range(17, 20),
+        minutes=range(0, 60, 10),
+        tz=config.TIMEZONE,
+        idempotency_key_func=lambda: f"{datetime.date.today().isoformat()}-evening",
+    )
 
-worker.schedule(
-    op_notify_last_run_unsuccessful,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours={20},
-    tz=config.TIMEZONE,
-)
+    # Mon-Thu at 20:00
+    worker.schedule(
+        rcv_list_notification_handler,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours={20},
+        tz=config.TIMEZONE,
+    )
 
-# Mon-Thu, between 13:00 and 20:00, every 30 mins
-worker.schedule_pipeline(
-    op_press,
-    name=PressPipeline.__name__,
-    weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
-    hours=range(13, 20),
-    minutes={0, 30},
-    tz=config.TIMEZONE,
-)
+    # Mon-Sun at 21:00
+    # Schedule separate jobs running the VOT list pipeline for 1d ago, 2d ago, ..., 7d ago
+    for i in range(1, 8):
+        worker.schedule_pipeline(
+            make_vot_list_handler(i),
+            name=VOTListPipeline.__name__,
+            hours={21},
+            tz=config.TIMEZONE,
+            idempotency_key_func=(
+                lambda i=i: (datetime.date.today() - datetime.timedelta(days=i)).isoformat()
+            ),
+        )
 
-# Sun at 04:00
-worker.schedule(
-    op_generate_export,
-    weekdays={Weekday.SUN},
-    hours={4},
-    # While the schedules for other pipelines follow real-life events in Brussels/Strasbourg
-    # time, this isn’t the case for the export so we can just use UTC for simplicity.
-    tz="UTC",
-)
+    # Mon-Thu, between 13:00 and 20:00, every 30 mins
+    worker.schedule_pipeline(
+        press_handler,
+        name=PressPipeline.__name__,
+        weekdays={Weekday.MON, Weekday.TUE, Weekday.WED, Weekday.THU},
+        hours=range(13, 20),
+        minutes={0, 30},
+        tz=config.TIMEZONE,
+    )
+
+    # Sun at 04:00
+    worker.schedule(
+        export_handler,
+        weekdays={Weekday.SUN},
+        hours={4},
+        # While the schedules for other pipelines follow real-life events in Brussels/
+        # Strasbourg time, this isn’t the case for the export so we can just use UTC
+        # for simplicity.
+        tz="UTC",
+    )
+
+    return worker
+
+
+worker = get_worker()
