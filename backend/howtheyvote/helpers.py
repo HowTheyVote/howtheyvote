@@ -25,6 +25,11 @@ PROCEDURE_REFERENCE_REGEX = re.compile(
     flags=re.IGNORECASE,
 )
 
+TEXTS_ADOPTED_REFERENCE_REGEX = re.compile(
+    r"P(?P<term>\d+)" + r"_TA\((?P<year>\d{4})\)" + r"(?P<number>\d{4})",
+    flags=re.IGNORECASE,
+)
+
 
 class Reference(TypedDict):
     type: DocumentType
@@ -36,6 +41,12 @@ class Reference(TypedDict):
 class ProcedureReference(TypedDict):
     type: ProcedureType
     number: str
+    year: int
+
+
+class TextsAdoptedReference(TypedDict):
+    term: int
+    number: int
     year: int
 
 
@@ -74,6 +85,19 @@ def parse_procedure_reference(procedure_reference: str) -> ProcedureReference:
     year = int(match.group("year"))
 
     return ProcedureReference(type=type_, number=number, year=year)
+
+
+def parse_texts_adopted_reference(texts_adopted_reference: str) -> TextsAdoptedReference:
+    match = re.fullmatch(TEXTS_ADOPTED_REFERENCE_REGEX, texts_adopted_reference.upper())
+
+    if not match:
+        raise ValueError(f"Invalid texts adopted reference: {texts_adopted_reference}")
+
+    term = int(match.group("term"))
+    number = int(match.group("number"))
+    year = int(match.group("year"))
+
+    return TextsAdoptedReference(term=term, number=number, year=year)
 
 
 def make_key(*parts: str) -> str:

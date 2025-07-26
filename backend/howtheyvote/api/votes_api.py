@@ -14,7 +14,12 @@ from ..helpers import (
     parse_procedure_reference,
     subset_dict,
 )
-from ..links import doceo_document_url, oeil_procedure_url, press_release_url
+from ..links import (
+    doceo_document_url,
+    doceo_texts_adopted_url,
+    oeil_procedure_url,
+    press_release_url,
+)
 from ..models import Fragment, Member, PressRelease, Vote
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
@@ -459,6 +464,15 @@ def _format_links(vote: Vote) -> list[LinkDict]:
                 "title": "Report or resolution",
                 "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",  #  noqa: E501
                 "url": doceo_document_url(vote.reference),
+            }
+        )
+
+    if vote.texts_adopted_reference:
+        links.append(
+            {
+                "title": "Texts adopted",
+                "description": "Texts adopted during the plenary session, including changes from amendments.",  #  noqa: E501
+                "url": doceo_texts_adopted_url(vote.texts_adopted_reference),
             }
         )
 

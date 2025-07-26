@@ -138,6 +138,7 @@ class Vote(BaseWithId):
     procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
+    texts_adopted_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     description: Mapped[str | None] = mapped_column(sa.Unicode)
     is_main: Mapped[bool] = mapped_column(sa.Boolean, default=False)
     group_key: Mapped[str | None] = mapped_column(sa.Unicode)

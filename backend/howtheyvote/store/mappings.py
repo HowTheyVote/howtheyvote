@@ -85,6 +85,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         dlv_title=record.first("dlv_title"),
         description=record.first("description_en") or record.first("description"),
         reference=record.first("reference"),
+        texts_adopted_reference=record.first("texts_adopted_reference"),
         rapporteur=record.first("rapporteur"),
         procedure_title=record.first("procedure_title"),
         procedure_reference=record.first("procedure_reference"),
