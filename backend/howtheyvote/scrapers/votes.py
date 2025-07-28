@@ -455,6 +455,7 @@ class DocumentScraper(BeautifulSoupScraper):
     PROCEDURE_URL_REGEX = re.compile(
         r"^https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do"
     )
+    TEXTS_ADOPTED_URL_REGEX = re.compile(r"^/doceo/document/TA-")
 
     def __init__(
         self,
@@ -474,17 +475,22 @@ class DocumentScraper(BeautifulSoupScraper):
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         procedure_reference = self._procedure_reference(doc)
+        texts_adopted_reference = self._texts_adopted_reference(doc)
 
         self._log.info(
             "Extracted document information",
             procedure_reference=procedure_reference,
+            texts_adopted_reference=texts_adopted_reference,
         )
 
         return self._fragment(
             model=Vote,
             source_id=self.vote_id,
             group_key=self.vote_id,
-            data={"procedure_reference": procedure_reference},
+            data={
+                "procedure_reference": procedure_reference,
+                "texts_adopted_reference": texts_adopted_reference,
+            },
         )
 
     def _procedure_reference(self, doc: BeautifulSoup) -> str | None:
@@ -499,6 +505,19 @@ class DocumentScraper(BeautifulSoupScraper):
             return None
 
         return procedure_link.get_text(strip=True)
+
+    def _texts_adopted_reference(self, doc: BeautifulSoup) -> str | None:
+        container = doc.select_one(".doceo-ring-steps")
+
+        if not container:
+            return None
+
+        texts_adopted_link = container.find("a", href=self.TEXTS_ADOPTED_URL_REGEX)
+
+        if not texts_adopted_link:
+            return None
+
+        return texts_adopted_link.get_text(strip=True)
 
 
 class ProcedureScraper(BeautifulSoupScraper):

@@ -1,7 +1,10 @@
 import { type Vote, getVote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
+import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
+import List from "../components/List";
+import ListItem from "../components/ListItem";
 import Sources from "../components/Sources";
 import Stack from "../components/Stack";
 import VoteHeader from "../components/VoteHeader";
@@ -62,6 +65,19 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
               )}
             </Wrapper>
           </div>
+          {data.links.length > 0 && (
+            <div class="px">
+              <Wrapper>
+                <h2 class="delta mb--xs">More information</h2>
+                <p class="mb--xs">
+                  The following external links provide additional information
+                  about this vote. All links point to official websites of the
+                  European Parliament.
+                </p>
+                <ExternalLinks links={data.links} />
+              </Wrapper>
+            </div>
+          )}
           <div class="px">
             <Wrapper>
               <h2 class="delta mb--xs">Open Data</h2>

@@ -5,6 +5,7 @@ import pytest
 from howtheyvote.models import Fragment, MemberVote, ProcedureStage, VotePosition, VoteResult
 from howtheyvote.scrapers.common import NoWorkingUrlError, ScrapingError
 from howtheyvote.scrapers.votes import (
+    DocumentScraper,
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     ProcedureScraper,
@@ -468,3 +469,18 @@ def test_eurlex_document_scraper_geo_areas(responses):
         "8439",
     }
     assert fragment.data["geo_areas"] == {"MNE"}
+
+
+def test_document_scraper(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/RC-10-2025-0249_EN.html",
+        body=load_fixture("scrapers/data/votes/document_rc-10-2025-0249-en.html"),
+    )
+
+    scraper = DocumentScraper(vote_id=176309, reference="RC-B10-0249/2025")
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "procedure_reference": "2025/2691(RSP)",
+        "texts_adopted_reference": "P10_TA(2025)0096",
+    }

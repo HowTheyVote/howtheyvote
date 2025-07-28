@@ -596,6 +596,13 @@ def test_votes_api_show(records, db_session, api):
                 "url": "https://europarl.europa.eu/vote-results.xml",
             },
         ],
+        "links": [
+            {
+                "title": "Legislative Observatory",
+                "description": "Find out more about the procedure this vote is part of. This includes information about the current state of the procedure, past and upcoming steps, as well as key players.",
+                "url": "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=1234/2025(COD)",
+            },
+        ],
     }
 
     assert res.json == expected
