@@ -105,6 +105,10 @@ strong {
   margin-top: var(--space);
 }
 
+.mt--lg {
+  margin-top: var(--space-lg);
+}
+
 .mt--sm {
   margin-top: var(--space-sm);
 }
@@ -119,6 +123,10 @@ strong {
 
 .mb {
   margin-bottom: var(--space);
+}
+
+.mb--lg {
+  margin-bottom: var(--space-lg);
 }
 
 .mb--sm {

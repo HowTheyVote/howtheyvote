@@ -5,6 +5,8 @@ import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
 import List from "../components/List";
 import ListItem from "../components/ListItem";
+import PageNav from "../components/PageNav";
+import PageNavItem from "../components/PageNavItem";
 import Sources from "../components/Sources";
 import Stack from "../components/Stack";
 import VoteHeader from "../components/VoteHeader";
@@ -45,9 +47,16 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
       head={<MetaTags vote={data} />}
     >
       <BaseLayout footer={footer}>
+        <VoteHeader vote={data} />
+        <PageNav>
+          <PageNavItem href="#result">Vote result</PageNavItem>
+          <PageNavItem href="#more-information">More information</PageNavItem>
+          <PageNavItem href="#open-data">Open data</PageNavItem>
+          <PageNavItem href="#sources">Sources</PageNavItem>
+          <PageNavItem href="#errors">Report an error</PageNavItem>
+        </PageNav>
         <Stack space="lg">
-          <VoteHeader vote={data} />
-          <div className="px">
+          <div id="result" className="px mt--lg">
             <Wrapper>
               {data.stats && <VoteResultChart stats={data.stats.total} />}
             </Wrapper>
@@ -68,7 +77,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
           {data.links.length > 0 && (
             <div class="px">
               <Wrapper>
-                <h2 class="delta mb--xs">More information</h2>
+                <h2 id="more-information" class="delta mb--xs">
+                  More information
+                </h2>
                 <p class="mb--xs">
                   The following external links provide additional information
                   about this vote. All links point to official websites of the
@@ -80,7 +91,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
           )}
           <div class="px">
             <Wrapper>
-              <h2 class="delta mb--xs">Open Data</h2>
+              <h2 id="open-data" class="delta mb--xs">
+                Open data
+              </h2>
               <p>
                 We provide raw voting data for this vote that you can use for
                 data analysis, visualizations, or research. Read more about{" "}
@@ -92,7 +105,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
           </div>
           <div class="px">
             <Wrapper>
-              <h2 class="delta mb--xs">Sources</h2>
+              <h2 id="sources" class="delta mb--xs">
+                Sources
+              </h2>
               <p class="mb--xs">
                 HowTheyVote.eu compiles information from multiple official
                 sources. The information on this page is based on the following
@@ -103,7 +118,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
           </div>
           <div class="px">
             <Wrapper>
-              <h2 class="delta mb--xs">Report an error</h2>
+              <h2 id="errors" class="delta mb--xs">
+                Report an error
+              </h2>
               <p>
                 If you think the data displayed on this page is incorrect you
                 can{" "}

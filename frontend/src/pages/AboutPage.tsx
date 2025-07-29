@@ -3,6 +3,8 @@ import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Disclosure from "../components/Disclosure";
 import Hero from "../components/Hero";
+import PageNav from "../components/PageNav";
+import PageNavItem from "../components/PageNavItem";
 import Stack from "../components/Stack";
 import Stats from "../components/Stats";
 import StatsCard from "../components/StatsCard";
@@ -21,12 +23,22 @@ export const AboutPage: Page<Statistics> = ({ data }) => {
     <App title={"About"}>
       <BaseLayout>
         <Stack space="lg">
-          <Hero
-            title="About"
-            text={
-              "HowTheyVote.eu makes vote results of the European Parliament transparent and accessible – for citizens, journalists, researchers, and activists."
-            }
-          />
+          <div>
+            <Hero
+              title="About"
+              text={
+                "HowTheyVote.eu makes vote results of the European Parliament transparent and accessible – for citizens, journalists, researchers, and activists."
+              }
+            />
+            <PageNav>
+              <PageNavItem href="#general">General</PageNavItem>
+              <PageNavItem href="#methodology">Methodology</PageNavItem>
+              <PageNavItem href="#data">Use the data</PageNavItem>
+              <PageNavItem href="#license">License</PageNavItem>
+              <PageNavItem href="#related-work">Related work</PageNavItem>
+              <PageNavItem href="#funding">Funding & sponsors</PageNavItem>
+            </PageNav>
+          </div>
           <div class="px">
             <Wrapper>
               <Stack space="lg">
@@ -81,7 +93,9 @@ function StatsSection({ stats }: { stats: Statistics }) {
 function GeneralSection() {
   return (
     <div>
-      <h2 class="delta">General information</h2>
+      <h2 id="general" class="delta">
+        General information
+      </h2>
       <Disclosure title="I found incorrect data or a missing vote.">
         <p>
           Please use{" "}
@@ -198,7 +212,9 @@ function GeneralSection() {
 function MethodologySection() {
   return (
     <div>
-      <h2 class="delta">Methodology</h2>
+      <h2 id="methodology" class="delta">
+        Methodology
+      </h2>
       <Disclosure title="What is the source for the data on HowTheyVote.eu?">
         <p>
           HowTheyVote.eu compiles voting data from multiple official sources,
@@ -238,7 +254,9 @@ function MethodologySection() {
 function ReuseSection() {
   return (
     <div>
-      <h2 class="delta">Reusing the data</h2>
+      <h2 id="data" class="delta">
+        Use the data
+      </h2>
       <Disclosure title="I’m a journalist, researcher, or activist. Can I use your data?">
         <p>
           Yes! We provide access to the HowTheyVote.eu data under an open
@@ -282,8 +300,10 @@ function ReuseSection() {
 
 function LicenseSection() {
   return (
-    <div class="prose" id="license">
-      <h3 class="delta">License</h3>
+    <div class="prose">
+      <h3 id="license" class="delta">
+        License
+      </h3>
       <p>
         The voting data made available via downloads and the HowTheyVote.eu API
         is made available under the{" "}
@@ -314,7 +334,9 @@ function LicenseSection() {
 function RelatedSection() {
   return (
     <div class="prose">
-      <h3 class="delta">Related work</h3>
+      <h3 id="related-work" class="delta">
+        Related work
+      </h3>
       <ul>
         <li>
           <a href="https://parltrack.eu">Parltrack</a> is an open source project
@@ -356,7 +378,9 @@ function RelatedSection() {
 function FundingSection() {
   return (
     <div class="prose">
-      <h3 class="delta">Funding and sponsors</h3>
+      <h3 id="funding" class="delta">
+        Funding & sponsors
+      </h3>
       <p>
         A first version of HowTheyVote.eu has been funded by the German Federal
         Ministry of Research and Education as part of the 9th round of the{" "}
