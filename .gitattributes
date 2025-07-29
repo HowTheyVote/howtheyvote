@@ -1,1 +1,2 @@
 backend/tests/scrapers/data/* linguist-vendored
+backend/tests/pipelines/data/* linguist-vendored
