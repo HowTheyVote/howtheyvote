@@ -1,9 +1,11 @@
+import pytest
 import requests
 from responses import matchers
 
 from howtheyvote.pushover import send_notification
 
 
+@pytest.mark.always_mock_requests
 def test_send_notification(responses, mocker):
     mocker.patch("howtheyvote.config.PUSHOVER_API_TOKEN", "api-token-123")
     mocker.patch("howtheyvote.config.PUSHOVER_USER_KEY", "user-key-123")
@@ -33,6 +35,7 @@ def test_send_notification(responses, mocker):
     assert res.call_count == 1
 
 
+@pytest.mark.always_mock_requests
 def test_send_notification_connection_error(responses, mocker, logs):
     mocker.patch("howtheyvote.config.PUSHOVER_API_TOKEN", "api-token-123")
     mocker.patch("howtheyvote.config.PUSHOVER_USER_KEY", "user-key-123")
