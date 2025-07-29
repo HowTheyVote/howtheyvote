@@ -1,0 +1,52 @@
+.page-nav {
+  font-size: var(--text-sm);
+  background-color: var(--gray-lightest);
+  border-top: 1px solid var(--gray-light);
+  white-space: nowrap;
+  max-width: 100vw;
+}
+
+.page-nav__scroll {
+  padding-block: var(--space-xs);
+  padding-inline: var(--space-sm);
+  overflow-x: auto;
+
+  /*
+   * The mask fades out the text on the right if it overflows to indicate
+   * that the navigation is horizontally scrollable. Limiting the mask to
+   * just the text (excluding vertical padding) ensures that the scrollbar
+   * isn’t affected by the mask.
+   */
+  mask-image: linear-gradient(black, black),
+    linear-gradient(to right, transparent 0, black 75%);
+  mask-size: 100% 100%, var(--space-sm) calc(100% - 2 * var(--space-xs));
+  mask-position-x: 0, right;
+  mask-position-y: 0, var(--space-xs);
+  mask-repeat: no-repeat;
+  mask-composite: exclude;
+}
+
+.page-nav__wrapper {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.page-nav__label {
+  font-weight: 500;
+}
+
+.page-nav__items {
+  display: flex;
+  padding-inline-end: var(--space-sm);
+  list-style: none;
+  gap: var(--space-xs);
+}
+
+.page-nav__items a {
+  text-decoration: none;
+}
+
+.page-nav__items a:hover,
+.page-nav__items a:focus-visible {
+  text-decoration: underline;
+}
