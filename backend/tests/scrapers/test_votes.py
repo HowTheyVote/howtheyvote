@@ -251,6 +251,7 @@ def test_vot_list_scraper(responses):
     }
 
 
+@pytest.mark.always_mock_requests
 def test_vot_list_scraper_french(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2025-05-22-VOT_EN.xml",
