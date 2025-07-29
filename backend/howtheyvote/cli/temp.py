@@ -11,6 +11,7 @@ from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
 from ..query import member_active_at
 from ..scrapers import (
+    DocumentScraper,
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     NoWorkingUrlError,
@@ -122,6 +123,34 @@ def procedures() -> None:
                     request_cache=cache,
                 )
                 writer.add(proc_scraper.run())
+            except ScrapingError:
+                pass
+
+        writer.flush()
+
+
+@temp.command()
+def documents() -> None:
+    """Scrape all referenced documents"""
+    query = select(Vote)
+    query = query.where(Vote.reference != None)  # noqa: E711
+    query = query.order_by(Vote.reference)
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    cache: RequestCache = LRUCache(maxsize=50)
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            if not vote.reference:
+                continue
+
+            try:
+                doc_scraper = DocumentScraper(
+                    vote_id=vote.id,
+                    reference=vote.reference,
+                    request_cache=cache,
+                )
+                writer.add(doc_scraper.run())
             except ScrapingError:
                 pass
 
