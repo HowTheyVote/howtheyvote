@@ -244,7 +244,9 @@
     "official_label": "Group of the European People\u2019s Party",
     "label": "European People\u2019s Party",
     "short_label": "EPP",
-    "alt_labels": [],
+    "alt_labels": [
+      "Group of the European People\u2019s Party (Christian Democrats)"
+    ],
     "start_date": "2019-07-02",
     "end_date": null
   },
