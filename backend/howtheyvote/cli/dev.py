@@ -1,6 +1,6 @@
 import csv
 import datetime
-from typing import Any, TextIO
+from typing import Any, NotRequired, TextIO, TypedDict
 
 import click
 import requests
@@ -14,7 +14,15 @@ log = get_logger(__name__)
 PUBLICATIONS_ENDPOINT = "https://publications.europa.eu/webapi/rdf/sparql"
 DATA_ENDPOINT = "https://data.europa.eu/sparql"
 
-GROUP_OVERRIDES = {
+
+class Overrides(TypedDict):
+    official_label: NotRequired[str]
+    label: NotRequired[str]
+    short_label: NotRequired[str]
+    alt_labels: NotRequired[list[str]]
+
+
+GROUP_OVERRIDES: dict[str, Overrides] = {
     "GREEN_EFA": {
         "short_label": "Greens/EFA",
     },
@@ -31,6 +39,12 @@ GROUP_OVERRIDES = {
     },
     "SD": {
         "label": "Progressive Alliance of Socialists and Democrats",
+    },
+    "EPP": {
+        "alt_labels": [
+            # Still used by EP MEPs website (as of August 2025)
+            "Group of the European People’s Party (Christian Democrats)",
+        ],
     },
 }
 
@@ -389,6 +403,7 @@ def load_groups() -> None:
             if overrides.get("short_label"):
                 alt_labels.add(short_label)
                 short_label = overrides["short_label"]
+            alt_labels.update(overrides.get("alt_labels", []))
 
         alt_labels.discard(official_label)
         alt_labels.discard(label)
