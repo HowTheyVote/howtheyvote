@@ -35,10 +35,19 @@ class Group(DeserializableDataclass, metaclass=GroupMeta):
             return None
 
     @classmethod
-    def from_label(cls, label: str) -> "Group | None":
+    def from_label(cls, label: str, date: datetime.date | None = None) -> "Group | None":
         normalized = _normalize_label(label)
 
         for group in groups:
+            # In some cases, there are multiple groups with identical names that were active
+            # during different periods of time. In these cases, providing a date can help
+            # disambiguate the groups.
+            if date and (
+                (group.start_date > date)
+                or (group.end_date is not None and group.end_date < date)
+            ):
+                continue
+
             all_labels = [
                 group.label,
                 group.official_label,
