@@ -317,7 +317,7 @@ def load_groups() -> None:
     SELECT ?code ?label ?abbr ?short ?start_date ?end_date
     FROM <http://publications.europa.eu/resource/authority/corporate-body>
     WHERE {
-        ?group org:classification <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_GROUP>.
+        ?group dct:type <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_GROUP>.
 
         ?group dc:identifier ?code.
 
