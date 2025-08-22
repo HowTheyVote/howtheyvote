@@ -35,8 +35,9 @@ def test_group_from_label_case_insensitive():
 
 def test_group_from_label_normalized():
     # Note that this doesn't use a proper apostrophe in "People's"
-    epp = Group.from_label("Group of the European People's Party (Christian Democrats)")
+    epp = Group.from_label("Group of the European People's Party")
     assert epp == Group["EPP"]
 
-    guengl = Group.from_label("Group of the European United Left - Nordic Green Left")
+    # Note that this doesn’t use a proper en dash
+    guengl = Group.from_label("The Left group in the European Parliament - GUE/NGL")
     assert guengl == Group["GUE_NGL"]

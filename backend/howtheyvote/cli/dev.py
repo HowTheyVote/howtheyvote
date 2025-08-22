@@ -21,7 +21,7 @@ GROUP_OVERRIDES = {
     "GUE_NGL": {
         "official_label": "The Left group in the European Parliament – GUE/NGL",
         "label": "The Left in the European Parliament – GUE/NGL",
-        "short_label": "GUE/NGL",
+        "short_label": "The Left",
     },
     "NI": {
         "short_label": "Non-attached",
