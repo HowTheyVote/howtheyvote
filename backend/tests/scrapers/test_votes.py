@@ -264,7 +264,7 @@ def test_vot_list_scraper_french(responses):
         list(scraper.run())
 
 
-def test_vot_list_skip_non_rcv(responses):
+def test_vot_list_scraper_skip_non_rcv(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-28-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-28-vot-en.xml"),
@@ -275,7 +275,7 @@ def test_vot_list_skip_non_rcv(responses):
     assert len(votes) == 57
 
 
-def test_vot_list_skip_lapsed(responses):
+def test_vot_list_scraper_skip_lapsed(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-04-24-vot-en.xml"),
@@ -297,7 +297,7 @@ def test_vot_list_scraper_skip_withdrawn(responses):
     assert len(votes) == 36
 
 
-def test_vot_list_procedure_stage(responses):
+def test_vot_list_scraper_procedure_stage(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-27-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-27-vot-en.xml"),
@@ -311,7 +311,7 @@ def test_vot_list_procedure_stage(responses):
     assert votes[6].data["procedure_stage"] == ProcedureStage.OLP_FIRST_READING
 
 
-def test_vot_list_skip_info(responses):
+def test_vot_list_scraper_skip_info(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2025-05-08-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-10-2025-05-08-vot-en.xml"),
