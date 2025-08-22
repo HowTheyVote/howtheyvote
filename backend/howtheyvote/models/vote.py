@@ -24,6 +24,12 @@ class VoteResult(Enum):
     WITHDRAWN = "WITHDRAWN"
 
 
+class VoteResultType(Enum):
+    ROLL_CALL = "ROLL_CALL"
+    ELECTRONICAL = "ELECTRONICAL"
+    RAISE_HAND = "RAISE_HAND"
+
+
 class VotePosition(Enum):
     FOR = "FOR"
     AGAINST = "AGAINST"
