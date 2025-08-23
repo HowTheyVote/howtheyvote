@@ -206,12 +206,7 @@ class MemberVote:
     position: VotePosition
 
 
-class SerializedMemberVote(TypedDict):
-    web_id: int
-    position: str
-
-
-def serialize_member_vote(member_vote: MemberVote | None) -> SerializedMemberVote | None:
+def serialize_member_vote(member_vote: MemberVote | None) -> dict[str, Any] | None:
     if not member_vote:
         return None
 
@@ -221,7 +216,7 @@ def serialize_member_vote(member_vote: MemberVote | None) -> SerializedMemberVot
     }
 
 
-def deserialize_member_vote(member_vote: SerializedMemberVote | None) -> MemberVote | None:
+def deserialize_member_vote(member_vote: dict[str, Any] | None) -> MemberVote | None:
     if not member_vote:
         return None
 
@@ -237,11 +232,11 @@ class SAMemberVoteType(TypeDecorator[MemberVote]):
 
     def process_bind_param(
         self, value: MemberVote | None, dialect: Dialect
-    ) -> SerializedMemberVote | None:
+    ) -> dict[str, Any] | None:
         return serialize_member_vote(value)
 
     def process_result_value(
-        self, value: SerializedMemberVote | None, dialect: Dialect
+        self, value: dict[str, Any] | None, dialect: Dialect
     ) -> MemberVote | None:
         return deserialize_member_vote(value)
 
