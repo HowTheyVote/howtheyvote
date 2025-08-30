@@ -23,9 +23,11 @@ class ListType(TypeDecorator[list[ItemType]]):
 
         self.item_type = item_type
 
-    def process_bind_param(self, value: list[Any] | None, dialect: Dialect) -> list[ItemType]:
-        if not value:
-            return []
+    def process_bind_param(
+        self, value: list[Any] | None, dialect: Dialect
+    ) -> list[ItemType] | None:
+        if value is None:
+            return None
 
         item_type = self.item_type
         processor = item_type.dialect_impl(dialect).bind_processor(dialect)
@@ -52,9 +54,9 @@ class ListType(TypeDecorator[list[ItemType]]):
 
     def process_result_value(
         self, value: list[ItemType] | None, dialect: Dialect
-    ) -> list[Any]:
-        if not value:
-            return []
+    ) -> list[Any] | None:
+        if value is None:
+            return None
 
         item_type = self.item_type
         processor = item_type.dialect_impl(dialect).result_processor(dialect, None)

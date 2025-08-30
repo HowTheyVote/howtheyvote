@@ -272,13 +272,26 @@ class Vote(BaseWithId):
     is_main: Mapped[bool] = mapped_column(sa.Boolean, default=False)
     group_key: Mapped[str | None] = mapped_column(sa.Unicode)
     result: Mapped[VoteResult | None] = mapped_column(sa.Enum(VoteResult))
-    member_votes: Mapped[list[MemberVote]] = mapped_column(ListType(SAMemberVoteType()))
-    geo_areas: Mapped[list[Country]] = mapped_column(ListType(CountryType()))
-    eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
-        ListType(EurovocConceptType())
+    member_votes: Mapped[list[MemberVote]] = mapped_column(
+        ListType(SAMemberVoteType()),
+        default=[],
     )
-    oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(ListType(OEILSubjectType()))
-    responsible_committees: Mapped[list[Committee]] = mapped_column(ListType(CommitteeType()))
+    geo_areas: Mapped[list[Country]] = mapped_column(
+        ListType(CountryType()),
+        default=[],
+    )
+    eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
+        ListType(EurovocConceptType()),
+        default=[],
+    )
+    oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(
+        ListType(OEILSubjectType()),
+        default=[],
+    )
+    responsible_committees: Mapped[list[Committee]] = mapped_column(
+        ListType(CommitteeType()),
+        default=[],
+    )
     press_release: Mapped[str | None] = mapped_column(sa.Unicode)
 
     @property
