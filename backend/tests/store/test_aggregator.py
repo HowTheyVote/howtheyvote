@@ -151,6 +151,18 @@ def test_composite_record_first():
     assert record.first("first_name") == "John"
 
 
+def test_composite_record_first_default():
+    record = CompositeRecord(
+        group_key="1",
+        data={
+            "first_name": [],
+        },
+    )
+
+    assert record.first("first_name") is None
+    assert record.first("first_name", "unknown") == "unknown"
+
+
 def test_composite_record_all():
     record = CompositeRecord(
         group_key="1",
@@ -183,3 +195,23 @@ def test_composite_record_chain():
         {"start_date": "2000-07-01", "end_date": "2000-12-31"},
         {"start_date": "2005-01-01", "end_date": "2000-12-31"},
     ]
+
+
+def test_composite_record_chain_none():
+    record = CompositeRecord(
+        group_key="1",
+        data={
+            "amendment_authors": [None],
+        },
+    )
+
+    assert record.chain("amendment_authors") == []
+
+    record = CompositeRecord(
+        group_key="1",
+        data={
+            "amendment_authors": [None, ["original text"]],
+        },
+    )
+
+    assert record.chain("amendment_authors") == ["original text"]

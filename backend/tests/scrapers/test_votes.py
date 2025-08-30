@@ -2,7 +2,17 @@ import datetime
 
 import pytest
 
-from howtheyvote.models import Fragment, MemberVote, ProcedureStage, VotePosition, VoteResult
+from howtheyvote.models import (
+    AmendmentAuthorCommittee,
+    AmendmentAuthorGroup,
+    AmendmentAuthorMembers,
+    Fragment,
+    Group,
+    MemberVote,
+    ProcedureStage,
+    VotePosition,
+    VoteResult,
+)
 from howtheyvote.scrapers.common import NoWorkingUrlError, ScrapingError
 from howtheyvote.scrapers.votes import (
     DocumentScraper,
@@ -248,6 +258,9 @@ def test_vot_list_scraper(responses):
         "dlv_title": "Hong Kong, notably the cases of Jimmy Lai and the 45 activists recently convicted under the national security law",
         "result": VoteResult.ADOPTED,
         "procedure_stage": None,
+        "amendment_subject": None,
+        "amendment_number": None,
+        "amendment_authors": None,
     }
 
 
@@ -264,7 +277,7 @@ def test_vot_list_scraper_french(responses):
         list(scraper.run())
 
 
-def test_vot_list_skip_non_rcv(responses):
+def test_vot_list_scraper_skip_non_rcv(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-28-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-28-vot-en.xml"),
@@ -275,7 +288,7 @@ def test_vot_list_skip_non_rcv(responses):
     assert len(votes) == 57
 
 
-def test_vot_list_skip_lapsed(responses):
+def test_vot_list_scraper_skip_lapsed(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-04-24-vot-en.xml"),
@@ -297,7 +310,7 @@ def test_vot_list_scraper_skip_withdrawn(responses):
     assert len(votes) == 36
 
 
-def test_vot_list_procedure_stage(responses):
+def test_vot_list_scraper_procedure_stage(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-27-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-27-vot-en.xml"),
@@ -311,7 +324,7 @@ def test_vot_list_procedure_stage(responses):
     assert votes[6].data["procedure_stage"] == ProcedureStage.OLP_FIRST_READING
 
 
-def test_vot_list_skip_info(responses):
+def test_vot_list_scraper_skip_info(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-10-2025-05-08-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-10-2025-05-08-vot-en.xml"),
@@ -320,6 +333,101 @@ def test_vot_list_skip_info(responses):
     scraper = VOTListScraper(date=datetime.date(2025, 5, 8), term=10)
     votes = list(scraper.run())
     assert len(votes) == 103
+
+
+def test_vot_list_scraper_amendment_info(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-10-2024-11-28-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-10-2024-11-28-vot-en.xml"),
+    )
+
+    scraper = VOTListScraper(date=datetime.date(2024, 11, 28), term=10)
+    votes = list(scraper.run())
+
+    assert votes[1].group_key == "170870"
+    assert votes[1].data["amendment_subject"] == "§ 1"
+    assert votes[1].data["amendment_number"] == "1"
+    assert votes[1].data["amendment_authors"] == [
+        AmendmentAuthorGroup(group=Group["PFE"]),
+    ]
+
+
+def test_vot_list_scraper_multiple_amendment_authors_newline(responses):
+    # Multiple authors separated by a newline
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-23-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-04-23-vot-en.xml"),
+    )
+    scraper = VOTListScraper(date=datetime.date(2024, 4, 23), term=9)
+    votes = list(scraper.run())
+
+    assert votes[18].group_key == "168601"
+    assert votes[18].data["amendment_authors"] == [
+        AmendmentAuthorGroup(group=Group["EPP"]),
+        AmendmentAuthorMembers(),
+    ]
+
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-04-24-vot-en.xml"),
+    )
+    scraper = VOTListScraper(date=datetime.date(2024, 4, 24), term=9)
+    votes = list(scraper.run())
+
+    assert votes[5].group_key == "168840"
+    assert votes[5].data["amendment_authors"] == [
+        AmendmentAuthorCommittee(committee=None),
+        AmendmentAuthorGroup(group=Group["EPP"]),
+    ]
+
+
+def test_vot_list_scraper_multiple_amendment_authors_comma(responses):
+    # Multiple authors separated by a comma
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2024-01-15-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-01-15-vot-en.xml"),
+    )
+    scraper = VOTListScraper(date=datetime.date(2024, 1, 15), term=9)
+    votes = list(scraper.run())
+
+    assert votes[3].group_key == "163202"
+    assert votes[3].data["amendment_authors"] == [
+        AmendmentAuthorGroup(group=Group["EPP"]),
+        AmendmentAuthorGroup(group=Group["SD"]),
+        AmendmentAuthorGroup(group=Group["RENEW"]),
+        AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
+    ]
+
+
+def test_vot_list_scraper_multiple_amendment_authors_space(responses):
+    # Multiple amendment authors separated by a space
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2024-03-12-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-03-12-vot-en.xml"),
+    )
+    scraper = VOTListScraper(date=datetime.date(2024, 3, 12), term=9)
+    votes = list(scraper.run())
+
+    assert votes[11].group_key == "166284"
+    assert votes[11].data["amendment_authors"] == [
+        AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
+        AmendmentAuthorMembers(),
+    ]
+
+    # TODO This currently fails because "The Left" contains a space
+    responses.get(
+        "https://www.europarl.europa.eu/doceo/document/PV-9-2024-03-14-VOT_EN.xml",
+        body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-03-14-vot-en.xml"),
+    )
+    scraper = VOTListScraper(date=datetime.date(2024, 3, 14), term=9)
+    votes = list(scraper.run())
+
+    assert votes[1].group_key == "166747"
+    assert votes[1].data["amendment_authors"] == [
+        AmendmentAuthorGroup(group=Group["RENEW"]),
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+        AmendmentAuthorMembers(),
+    ]
 
 
 def test_procedure_scraper(responses):
