@@ -44,7 +44,13 @@ GROUP_OVERRIDES: dict[str, Overrides] = {
         "alt_labels": [
             # Still used by EP MEPs website (as of August 2025)
             "Group of the European People’s Party (Christian Democrats)",
+            # Used in VOT lists
+            "PPE",
         ],
+    },
+    "PFE": {
+        # Used in VOT lists
+        "short_label": "PfE",
     },
 }
 
