@@ -8,12 +8,28 @@
 }
 
 .vote-result-chart__bar {
+  container-type: inline-size;
+  container-name: vote-result-chart-bar;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: calc(var(--ratio) * 100%);
   padding: var(--space-xs) 0;
+
+  background-color: var(--vote-result-chart-bar-background-color);
+  background-image: var(--vote-result-chart-bar-background-image);
   color: white;
   text-align: center;
   font-weight: 600;
   font-size: var(--text-sm);
+}
+
+.vote-result-chart__label {
+  padding: 2px;
+  border-radius: var(--border-radius-sm);
+  margin-inline: auto;
+  background-color: var(--vote-result-chart-bar-background-color);
 }
 
 .vote-result-chart--slim .vote-result-chart__bars {
@@ -24,46 +40,32 @@
   padding: 3px 0;
 }
 
-.vote-result-chart--slim .vote-result-chart__text {
+.vote-result-chart--slim .vote-result-chart__label {
   display: none;
-}
-
-.vote-result-chart__text {
-  padding: 2px;
-}
-
-.vote-result-chart__bar--for .vote-result-chart__text {
-  background: var(--green);
-}
-
-.vote-result-chart__bar--against .vote-result-chart__text {
-  background: var(--red);
 }
 
 .vote-result-chart__bar--for {
-  background-color: var(--green);
-  background-image: var(--green-pattern);
+  --vote-result-chart-bar-background-color: var(--green);
+  --vote-result-chart-bar-background-image: var(--green-pattern);
 }
 
 .vote-result-chart__bar--against {
-  background-color: var(--red);
-  background-image: var(--red-pattern);
+  --vote-result-chart-bar-background-color: var(--red);
+  --vote-result-chart-bar-background-image: var(--red-pattern);
 }
 
 .vote-result-chart__bar--abstention {
-  background-color: var(--blue);
+  --vote-result-chart-bar-background-color: var(--blue);
 }
 
-.vote-result-chart__bar--small .vote-result-chart__text {
-  display: none;
+@container vote-result-chart-bar (width < 50px) {
+  .vote-result-chart__percentage {
+    display: none;
+  }
 }
 
-.vote-result-chart__bar--medium .vote-result-chart__percentage {
-  display: none;
-}
-
-@media screen and (max-width: 720px) {
-  .vote-result-chart__bar--medium .vote-result-chart__thumb {
+@container vote-result-chart-bar (width < 30px) {
+  .vote-result-chart__thumb {
     display: none;
   }
 }
