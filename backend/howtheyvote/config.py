@@ -1,5 +1,7 @@
 from os import environ as env
 
+ENV = env.get("HTV_ENV", "prod")
+
 # URLs
 PUBLIC_URL = env.get("HTV_BACKEND_PUBLIC_URL", "")
 FRONTEND_PUBLIC_URL = env.get("HTV_FRONTEND_PUBLIC_URL", "")

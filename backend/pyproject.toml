@@ -69,6 +69,7 @@ env = [
     "D:HTV_BACKEND_DATABASE_URI=sqlite:////howtheyvote/database/database.test.sqlite3",
     "HTV_BACKEND_PUBLIC_URL=https://example.org/api",
     "HTV_SEARCH_INDEX_PREFIX=test",
+    "HTV_ENV=test",
     # Disable pushover notifications in test env even when an API token and user key
     # is configured in development environment
     "PUSHOVER_API_TOKEN=",

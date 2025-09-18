@@ -3,6 +3,8 @@ import sys
 
 import structlog
 
+from . import config
+
 logging.basicConfig(
     format="%(message)s",
     stream=sys.stdout,
@@ -17,7 +19,9 @@ structlog.configure(
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso"),
         structlog.processors.format_exc_info,
-        structlog.processors.JSONRenderer(),
+        structlog.dev.ConsoleRenderer()
+        if config.ENV == "test" or config.ENV == "local"
+        else structlog.processors.JSONRenderer(),
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
