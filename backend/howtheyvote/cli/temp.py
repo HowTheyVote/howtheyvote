@@ -120,6 +120,7 @@ def procedures() -> None:
                 proc_scraper = ProcedureScraper(
                     vote_id=vote.id,
                     procedure_reference=vote.procedure_reference,
+                    reference=vote.reference,
                     request_cache=cache,
                 )
                 writer.add(proc_scraper.run())
