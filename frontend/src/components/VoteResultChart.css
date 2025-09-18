@@ -8,6 +8,9 @@
 }
 
 .vote-result-chart__bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: calc(var(--ratio) * 100%);
   padding: var(--space-xs) 0;
   color: white;
@@ -30,6 +33,8 @@
 
 .vote-result-chart__text {
   padding: 2px;
+  border-radius: var(--border-radius-sm);
+  margin-inline: auto;
 }
 
 .vote-result-chart__bar--for .vote-result-chart__text {
