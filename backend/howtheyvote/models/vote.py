@@ -10,7 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
 
 from .committee import Committee, CommitteeType
-from .common import BaseWithId, DataIssue
+from .common import BaseWithId
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .oeil import OEILSubject, OEILSubjectType
@@ -151,7 +151,6 @@ class Vote(BaseWithId):
     oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(ListType(OEILSubjectType()))
     responsible_committees: Mapped[list[Committee]] = mapped_column(ListType(CommitteeType()))
     press_release: Mapped[str | None] = mapped_column(sa.Unicode)
-    issues: Mapped[list[DataIssue]] = mapped_column(ListType(sa.Enum(DataIssue)))
 
     @property
     def display_title(self) -> str | None:
@@ -174,11 +173,3 @@ class Vote(BaseWithId):
             return None
 
         return url_for("api.static_api.vote_sharepic", vote_id=self.id)
-
-
-class VoteGroup(BaseWithId):
-    __tablename__ = "vote_groups"
-
-    id: Mapped[str] = mapped_column(sa.Unicode, primary_key=True)
-    date: Mapped[datetime.date] = mapped_column(sa.Date)
-    issues: Mapped[list[DataIssue]] = mapped_column(ListType(sa.Enum(DataIssue)))

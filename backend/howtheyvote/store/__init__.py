@@ -5,7 +5,6 @@ from .mappings import (
     map_plenary_session,
     map_press_release,
     map_vote,
-    map_vote_group,
 )
 from .writer import BulkWriter
 
@@ -18,6 +17,5 @@ __all__ = [
     "map_member",
     "map_plenary_session",
     "map_vote",
-    "map_vote_group",
     "map_press_release",
 ]

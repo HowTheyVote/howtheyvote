@@ -8,14 +8,12 @@ from structlog import get_logger
 
 from ..analysis import (
     MainVoteAnalyzer,
-    VoteDataIssuesAnalyzer,
     VoteGroupsAnalyzer,
-    VoteGroupsDataIssuesAnalyzer,
 )
 from ..db import Session
 from ..files import ensure_parent, vote_sharepic_path
 from ..helpers import frontend_url
-from ..models import Member, Vote, VoteGroup
+from ..models import Member, Vote
 from ..pushover import send_notification
 from ..query import member_active_at
 from ..scrapers import (
@@ -29,7 +27,7 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..sharepics import generate_vote_sharepic
-from ..store import Aggregator, BulkWriter, index_records, map_vote, map_vote_group
+from ..store import Aggregator, BulkWriter, index_records, map_vote
 from .common import (
     BasePipeline,
     DataUnavailable,
@@ -63,7 +61,6 @@ class RCVListPipeline(BasePipeline):
         self.last_run_checksum = last_run_checksum
         self.checksum: str | None = None
         self._vote_ids: set[str] = set()
-        self._vote_group_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
     def _run(self) -> None:
@@ -73,8 +70,6 @@ class RCVListPipeline(BasePipeline):
         self._scrape_procedures()
         self._scrape_eurlex_procedures()
         self._analyze_main_votes()
-        self._analyze_vote_groups()
-        self._analyze_vote_data_issues()
         self._index_votes()
 
         # Share pictures have to be generated after the votes are indexed. Otherwise,
@@ -82,13 +77,10 @@ class RCVListPipeline(BasePipeline):
         # written to the database.
         self._generate_vote_sharepics()
 
-        self._analyze_vote_groups_data_issues()
-        self._index_vote_groups()
-
         # Send Pushover notification
         send_notification(
             title=f"Scraped RCV list for {self.date.strftime('%a, %b %-d')}",
-            message=f"{len(self._vote_ids)} votes, {len(self._vote_group_ids)} vote groups",
+            message=f"{len(self._vote_ids)} votes",
             url=frontend_url("votes"),
         )
 
@@ -297,47 +289,10 @@ class RCVListPipeline(BasePipeline):
                 message=f"{failure_count} failures (out of {success_count + failure_count})",
             )
 
-    def _analyze_vote_data_issues(self) -> None:
-        log.info(
-            "Running data issues analysis for individual votes",
-            date=self.date,
-            term=self.term,
-        )
-        writer = BulkWriter()
-
-        for vote in self._votes():
-            analyzer = VoteDataIssuesAnalyzer(vote)
-            writer.add(analyzer.run())
-
-        writer.flush()
-
-    def _analyze_vote_groups_data_issues(self) -> None:
-        log.info(
-            "Running data issues analysis for vote groups",
-            date=self.date,
-            term=self.term,
-        )
-        writer = BulkWriter()
-        analyzer = VoteGroupsDataIssuesAnalyzer(votes=self._votes())
-        writer.add(analyzer.run())
-        writer.flush()
-
-        self._vote_group_ids = writer.get_touched()
-
     def _index_votes(self) -> None:
         log.info("Indexing votes", date=self.date, term=self.term)
         index_records(Vote, self._votes())
 
-    def _index_vote_groups(self) -> None:
-        log.info("Indexing vote groups", date=self.date, term=self.term)
-        index_records(VoteGroup, self._vote_groups())
-
     def _votes(self) -> Iterator[Vote]:
         aggregator = Aggregator(Vote)
         return aggregator.mapped_records(map_func=map_vote, group_keys=self._vote_ids)
-
-    def _vote_groups(self) -> Iterator[VoteGroup]:
-        aggregator = Aggregator(VoteGroup)
-        return aggregator.mapped_records(
-            map_func=map_vote_group, group_keys=self._vote_group_ids
-        )

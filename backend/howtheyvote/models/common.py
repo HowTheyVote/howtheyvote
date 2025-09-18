@@ -30,12 +30,6 @@ class Fragment(Base):
     data: Mapped[dict[Any, Any]] = mapped_column(sa.JSON)
 
 
-class DataIssue(Enum):
-    MEMBER_VOTES_COUNT_MISMATCH = "MEMBER_VOTES_COUNT_MISMATCH"
-    EMPTY_TITLES = "EMPTY_TITLES"
-    VOTE_GROUP_NO_MAIN_VOTE = "VOTE_GROUP_NO_MAIN_VOTE"
-
-
 class PipelineStatus(Enum):
     SUCCESS = "SUCCESS"
     FAILURE = "FAILURE"
