@@ -7,7 +7,7 @@ from prometheus_client.registry import Collector
 from sqlalchemy import case, func, select
 
 from .db import Session
-from .models import Fragment, Member, PlenarySession, Vote, VoteGroup
+from .models import Fragment, Member, PlenarySession, Vote
 from .query import member_active_at
 
 

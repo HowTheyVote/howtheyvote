@@ -87,7 +87,7 @@ def test_run(responses, db_session, member, mocker):
     # Push notification is sent after pipeline has completed successfully
     assert mock.call_count == 1
     assert mock.call_args.kwargs["title"] == "Scraped RCV list for Wed, Apr 24"
-    assert mock.call_args.kwargs["message"] == "1 votes, 1 vote groups"
+    assert mock.call_args.kwargs["message"] == "1 votes"
 
 
 @pytest.mark.always_mock_requests

@@ -84,7 +84,7 @@ class RCVListPipeline(BasePipeline):
         # Send Pushover notification
         send_notification(
             title=f"Scraped RCV list for {self.date.strftime('%a, %b %-d')}",
-            message=f"{len(self._vote_ids)} votes, {len(self._vote_group_ids)} vote groups",
+            message=f"{len(self._vote_ids)} votes",
             url=frontend_url("votes"),
         )
 
