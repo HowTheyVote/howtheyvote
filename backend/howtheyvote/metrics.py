@@ -17,7 +17,6 @@ class DataCollector(Collector):
         yield self.votes()
         yield self.members()
         yield self.next_session()
-        yield self.data_issues()
 
     def fragments(self) -> GaugeMetricFamily:
         gauge = GaugeMetricFamily(
@@ -87,34 +86,5 @@ class DataCollector(Collector):
 
         diff = max(0, (next_session.start_date - today).total_seconds())
         gauge.add_metric(value=diff, labels=[])
-
-        return gauge
-
-    def data_issues(self) -> GaugeMetricFamily:
-        gauge = GaugeMetricFamily(
-            "htv_data_issues", "Number of data issues", labels=["type", "month"]
-        )
-
-        vote_month = func.strftime("%Y-%m", Vote.timestamp)
-        vote_exp = func.json_each(Vote.issues).table_valued("value")
-        vote_query = (
-            select(vote_exp.c.value, vote_month, func.count())
-            .select_from(Vote, vote_exp)
-            .group_by(vote_exp.c.value, vote_month)
-        )
-
-        vote_group_month = func.strftime("%Y-%m", VoteGroup.date)
-        vote_group_exp = func.json_each(VoteGroup.issues).table_valued("value")
-        vote_group_query = (
-            select(vote_group_exp.c.value, vote_group_month, func.count())
-            .select_from(VoteGroup, vote_group_exp)
-            .group_by(vote_group_exp.c.value, vote_group_month)
-        )
-
-        for type_, month, count in Session.execute(vote_query):
-            gauge.add_metric(value=count, labels=[type_, month])
-
-        for type_, month, count in Session.execute(vote_group_query):
-            gauge.add_metric(value=count, labels=[type_, month])
 
         return gauge

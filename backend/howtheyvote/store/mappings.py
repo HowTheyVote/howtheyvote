@@ -99,7 +99,6 @@ def map_vote(record: CompositeRecord) -> Vote:
         oeil_subjects=oeil_subjects,
         responsible_committees=responsible_committees,
         press_release=press_release,
-        issues=record.chain("issues"),
     )
 
 
@@ -112,7 +111,6 @@ def map_vote_group(record: CompositeRecord) -> VoteGroup:
     return VoteGroup(
         id=record.group_key,
         date=date,
-        issues=record.chain("issues"),
     )
 
 

@@ -26,8 +26,6 @@ subgraph "RCVListPipeline"
     RCVListScraper --> ProcedureScraper
     ProcedureScraper --> MainVoteAnalyzer
     MainVoteAnalyzer --> VoteGroupsAnalyzer
-    VoteGroupsAnalyzer --> VoteDataIssuesAnalyzer
-    VoteDataIssuesAnalyzer --> VoteGroupsDataIssuesAnalyzer
 end
 
 subgraph "PressPipeline"

@@ -5,7 +5,7 @@ from collections.abc import Iterable, Iterator
 from unidecode import unidecode
 
 from ..helpers import make_key
-from ..models import DataIssue, Fragment, PressRelease, Vote
+from ..models import Fragment, PressRelease, Vote
 from ..vote_stats import count_vote_positions
 
 
@@ -251,91 +251,3 @@ class PressReleaseAnalyzer:
             return set()
 
         return self._releases_by_date_position_counts[key]
-
-
-class VoteDataIssuesAnalyzer:
-    """This analyzer checks a vote for common data quality issues. Depending on
-    the issue type, we might decide not to display the vote at all or to show
-    a warning message in the frontend. The analyzer also helps discovering new
-    edge cases or short comings in other scrapers and analyzers."""
-
-    def __init__(self, vote: Vote):
-        self.vote = vote
-
-    def run(self) -> Fragment:
-        issues = [
-            self.member_votes_count(),
-            self.empty_titles(),
-        ]
-
-        issues = [issue for issue in issues if issue is not None]
-
-        return Fragment(
-            model="Vote",
-            source_id=self.vote.id,
-            source_name=type(self).__name__,
-            group_key=self.vote.id,
-            data={"issues": issues},
-        )
-
-    def empty_titles(self) -> DataIssue | None:
-        if not self.vote.title and not self.vote.procedure_title:
-            return DataIssue.EMPTY_TITLES
-
-        return None
-
-    def member_votes_count(self) -> DataIssue | None:
-        date = self.vote.timestamp.date()
-        count = len(self.vote.member_votes)
-
-        # 9th term, pre Brexit
-        if (
-            date >= datetime.date(2019, 7, 2)
-            and date < datetime.date(2020, 2, 1)
-            and count != 751
-        ):
-            return DataIssue.MEMBER_VOTES_COUNT_MISMATCH
-
-        # 9th term, post Brexit
-        if (
-            date >= datetime.date(2020, 2, 1)
-            and date < datetime.date(2024, 7, 16)
-            and count != 705
-        ):
-            return DataIssue.MEMBER_VOTES_COUNT_MISMATCH
-
-        # 10th term
-        if date >= datetime.date(2024, 7, 16) and count != 720:
-            return DataIssue.MEMBER_VOTES_COUNT_MISMATCH
-
-        return None
-
-
-class VoteGroupsDataIssuesAnalyzer:
-    """This analyzer checks that there is at least one main vote per vote group. This is useful
-    in order to identify votes that the `MainVoteAnalyzer` currently doesn’t ocrrectly classify
-    as a main vote."""
-
-    def __init__(self, votes: Iterable[Vote]):
-        self.votes = votes
-
-    def run(self) -> Iterator[Fragment]:
-        groups: dict[str, list[Vote]] = defaultdict(list)
-
-        for vote in self.votes:
-            if vote.group_key:
-                groups[vote.group_key].append(vote)
-
-        for group_key, votes in groups.items():
-            issues = []
-
-            if all(not vote.is_main for vote in votes):
-                issues = [DataIssue.VOTE_GROUP_NO_MAIN_VOTE]
-
-            yield Fragment(
-                model="VoteGroup",
-                source_id=group_key,
-                source_name=type(self).__name__,
-                group_key=group_key,
-                data={"issues": issues},
-            )

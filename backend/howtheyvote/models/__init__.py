@@ -1,5 +1,5 @@
 from .committee import Committee, CommitteeType
-from .common import Base, BaseWithId, DataIssue, Fragment, PipelineRun, PipelineStatus
+from .common import Base, BaseWithId, Fragment, PipelineRun, PipelineStatus
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
@@ -32,7 +32,6 @@ __all__ = [
     "Fragment",
     "PipelineRun",
     "PipelineStatus",
-    "DataIssue",
     "Country",
     "CountryType",
     "Group",
