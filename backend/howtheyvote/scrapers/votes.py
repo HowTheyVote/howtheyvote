@@ -522,14 +522,15 @@ class DocumentScraper(BeautifulSoupScraper):
 
 class ProcedureScraper(BeautifulSoupScraper):
     BS_PARSER = "lxml"
-    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference="
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file"
 
     TITLE_PREFIXES = ["Resolution on", "Motion"]
 
     def __init__(
         self,
         vote_id: int,
-        procedure_reference: str,
+        procedure_reference: str | None,
+        reference: str | None,
         request_cache: RequestCache | None = None,
     ):
         super().__init__(
@@ -539,17 +540,21 @@ class ProcedureScraper(BeautifulSoupScraper):
         )
         self.vote_id = vote_id
         self.procedure_reference = procedure_reference
+        self.reference = reference
 
     def _url(self) -> str:
-        return f"{self.BASE_URL}{self.procedure_reference}"
+        return f"{self.BASE_URL}?reference={self.procedure_reference or self.reference}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
+        procedure_reference = self._procedure_reference(doc)
         title = self._title(doc)
         geo_areas = self._geo_areas(doc)
         oeil_subjects = self._oeil_subjects(doc)
         responsible_committees = self._responsible_committees(doc)
+
         self._log.info(
             "Extracted procedure information",
+            procedure_reference=procedure_reference,
             title=title,
             geo_areas=geo_areas,
             oeil_subjects=oeil_subjects,
@@ -561,12 +566,21 @@ class ProcedureScraper(BeautifulSoupScraper):
             source_id=self.vote_id,
             group_key=self.vote_id,
             data={
+                "procedure_reference": procedure_reference,
                 "procedure_title": title,
                 "geo_areas": geo_areas,
                 "oeil_subjects": oeil_subjects,
                 "responsible_committees": responsible_committees,
             },
         )
+
+    def _procedure_reference(self, doc: BeautifulSoup) -> str | None:
+        heading = doc.select_one("#website-body h2.erpl_title-h1")
+
+        if not heading:
+            return None
+
+        return heading.get_text(strip=True)
 
     def _title(self, doc: BeautifulSoup) -> str | None:
         title = doc.select_one("#website-body h2.erpl_title-h2")
