@@ -468,7 +468,7 @@ def test_votes_api_show(records, db_session, api):
                     "group": {
                         "code": "GUE_NGL",
                         "label": "The Left in the European Parliament – GUE/NGL",
-                        "short_label": "GUE/NGL",
+                        "short_label": "The Left",
                     },
                     "stats": {
                         "FOR": 1,
@@ -536,7 +536,7 @@ def test_votes_api_show(records, db_session, api):
                     "group": {
                         "code": "GUE_NGL",
                         "label": "The Left in the European Parliament – GUE/NGL",
-                        "short_label": "GUE/NGL",
+                        "short_label": "The Left",
                     },
                     "photo_url": "/api/static/members/1.jpg",
                     "thumb_url": "/api/static/members/1-104.jpg",
@@ -614,7 +614,7 @@ def test_votes_api_csv(records, api):
 
     expected = (
         "position,member.id,member.first_name,member.last_name,member.country.code,member.country.label,member.country.iso_alpha_2,member.group.code,member.group.label,member.group.short_label\r\n"
-        "VotePosition.FOR,1,John,Doe,FRA,France,FR,GUE_NGL,The Left in the European Parliament – GUE/NGL,GUE/NGL\r\n"
+        "VotePosition.FOR,1,John,Doe,FRA,France,FR,GUE_NGL,The Left in the European Parliament – GUE/NGL,The Left\r\n"
         "VotePosition.AGAINST,2,Jane,Smith,DEU,Germany,DE,EPP,European People’s Party,EPP\r\n"
     )
 

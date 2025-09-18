@@ -9,6 +9,7 @@ from structlog import get_logger
 
 from ..helpers import parse_procedure_reference, parse_reference
 from ..models import (
+    AmendmentAuthor,
     Committee,
     Country,
     EurovocConcept,
@@ -18,12 +19,15 @@ from ..models import (
     Vote,
     VotePosition,
     VoteResult,
+    VoteResultType,
+    serialize_amendment_author,
 )
 from .common import BeautifulSoupScraper, NoWorkingUrlError, RequestCache, ScrapingError
 from .helpers import (
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
+    parse_amendment_authors,
     parse_dlv_title,
     parse_rcv_text,
 )
@@ -400,29 +404,32 @@ class VOTListScraper(BeautifulSoupScraper):
     ) -> Fragment | None:
         # https://github.com/python/typeshed/issues/8755
         vote_id = cast(str | None, tag.get("votingId"))
-        result_text = cast(str | None, tag.get("result"))
+        result_type = self._result_type(tag)
+        result = self._result(tag)
 
-        if not vote_id or not result_text:
+        if not vote_id or not result or not result_type:
             # The XML files sometimes contain `voting` tags that represent section headers
             # (i.e. these aren't actual votes). These tags are missing the `votingId` and
-            # `result` attributes
-            return None
-
-        try:
-            result = VoteResult[result_text]
-        except KeyError:
-            raise ScrapingError(f"Unknown vote result: {result_text}") from None
-
-        result_type = cast(str, tag["resultType"])
-
-        if result == VoteResult.LAPSED or result == VoteResult.WITHDRAWN:
+            # `result`/`resultType` attributes.
             return None
 
         # The XML files contain information about all votes, including votes by show of hand,
-        # secret votes, etc. Currently, we only care about roll-call votes, but this may
-        # change in the future.
-        if result_type != "ROLL_CALL":
+        # secret votes, etc., as well as lapsed or withdrawn votes. Currently, we only care
+        # about roll-call votes, but this may change in the future.
+        if (
+            result == VoteResult.LAPSED
+            or result == VoteResult.WITHDRAWN
+            or result_type != VoteResultType.ROLL_CALL
+        ):
             return None
+
+        amendment_authors = self._amendment_authors(tag)
+        serialized_amendment_authors = None
+
+        if amendment_authors:
+            serialized_amendment_authors = [
+                serialize_amendment_author(aa) for aa in amendment_authors
+            ]
 
         return self._fragment(
             model=Vote,
@@ -432,8 +439,37 @@ class VOTListScraper(BeautifulSoupScraper):
                 "dlv_title": title,
                 "result": result,
                 "procedure_stage": procedure_stage,
+                "amendment_subject": self._amendment_subject(tag),
+                "amendment_number": self._amendment_number(tag),
+                "amendment_authors": serialized_amendment_authors,
             },
         )
+
+    def _result(self, tag: Tag) -> VoteResult | None:
+        text = cast(str | None, tag.get("result"))
+
+        if not text:
+            return None
+
+        try:
+            result = VoteResult[text]
+        except KeyError:
+            raise ScrapingError(f"Unknown vote result: {text}") from None
+
+        return result
+
+    def _result_type(self, tag: Tag) -> VoteResultType | None:
+        text = cast(str | None, tag.get("resultType"))
+
+        if not text:
+            return None
+
+        try:
+            result_type = VoteResultType[text]
+        except KeyError:
+            raise ScrapingError(f"Unknown vote result type: {text}") from None
+
+        return result_type
 
     def _title(self, tag: Tag) -> str:
         title_tag = tag.select_one("title")
@@ -447,6 +483,45 @@ class VOTListScraper(BeautifulSoupScraper):
             raise ScrapingError("Missing title")
 
         return title
+
+    def _amendment_subject(self, tag: Tag) -> str | None:
+        subject_tag = tag.select_one("amendmentSubject")
+
+        if not subject_tag:
+            raise ScrapingError("Missing `amendmentSubject` tag")
+
+        subject = subject_tag.get_text(strip=True)
+
+        if not subject:
+            return None
+
+        return subject
+
+    def _amendment_number(self, tag: Tag) -> str | None:
+        number_tag = tag.select_one("amendmentNumber")
+
+        if not number_tag:
+            raise ScrapingError("Missing `amendmentNumber` tag")
+
+        number = number_tag.get_text(strip=True)
+
+        if not number:
+            return None
+
+        return number
+
+    def _amendment_authors(self, tag: Tag) -> list[AmendmentAuthor] | None:
+        author_tag = tag.select_one("amendmentAuthor")
+
+        if not author_tag:
+            raise ScrapingError("Missing `amendmentAuthor` tag")
+
+        authors = author_tag.get_text(strip=True)
+
+        if not authors:
+            return None
+
+        return parse_amendment_authors(authors)
 
 
 class DocumentScraper(BeautifulSoupScraper):

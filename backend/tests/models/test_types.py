@@ -180,3 +180,32 @@ def test_list_type_type_decorator_json():
 
         processed = connection.execute(select(table)).scalar()
         assert processed == member_votes
+
+
+def test_list_type_empty_none():
+    engine = create_engine(
+        "sqlite://",
+        json_serializer=json_dumps,
+        json_deserializer=json_loads,
+    )
+    metadata = MetaData()
+
+    table = Table(
+        "test",
+        metadata,
+        Column("list", ListType(sa.Unicode)),
+    )
+
+    with engine.connect() as connection:
+        metadata.create_all(connection)
+        connection.execute(table.insert().values(list=[]))
+        connection.execute(table.insert().values(list=None))
+        connection.commit()
+
+        unprocessed = connection.execute(text("SELECT list from test")).scalars().all()
+        assert unprocessed[0] == "[]"
+        assert unprocessed[1] == "null"
+
+        processed = connection.execute(select(table)).scalars().all()
+        assert processed[0] == []
+        assert processed[1] is None
