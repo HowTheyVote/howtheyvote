@@ -173,10 +173,3 @@ class Vote(BaseWithId):
             return None
 
         return url_for("api.static_api.vote_sharepic", vote_id=self.id)
-
-
-class VoteGroup(BaseWithId):
-    __tablename__ = "vote_groups"
-
-    id: Mapped[str] = mapped_column(sa.Unicode, primary_key=True)
-    date: Mapped[datetime.date] = mapped_column(sa.Date)

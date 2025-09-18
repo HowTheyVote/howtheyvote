@@ -30,14 +30,6 @@ class VoteGroupsAnalyzer:
                 groups[group_key].append(vote.id)
 
         for group_key, vote_ids in groups.items():
-            yield Fragment(
-                model="VoteGroup",
-                source_id=group_key,
-                source_name=type(self).__name__,
-                group_key=group_key,
-                data={"date": self.date.isoformat()},
-            )
-
             for vote_id in vote_ids:
                 yield Fragment(
                     model="Vote",

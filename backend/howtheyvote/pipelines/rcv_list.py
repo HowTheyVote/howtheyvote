@@ -13,7 +13,7 @@ from ..analysis import (
 from ..db import Session
 from ..files import ensure_parent, vote_sharepic_path
 from ..helpers import frontend_url
-from ..models import Member, Vote, VoteGroup
+from ..models import Member, Vote
 from ..pushover import send_notification
 from ..query import member_active_at
 from ..scrapers import (
@@ -27,7 +27,7 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..sharepics import generate_vote_sharepic
-from ..store import Aggregator, BulkWriter, index_records, map_vote, map_vote_group
+from ..store import Aggregator, BulkWriter, index_records, map_vote
 from .common import (
     BasePipeline,
     DataUnavailable,
@@ -61,7 +61,6 @@ class RCVListPipeline(BasePipeline):
         self.last_run_checksum = last_run_checksum
         self.checksum: str | None = None
         self._vote_ids: set[str] = set()
-        self._vote_group_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
     def _run(self) -> None:
@@ -71,15 +70,12 @@ class RCVListPipeline(BasePipeline):
         self._scrape_procedures()
         self._scrape_eurlex_procedures()
         self._analyze_main_votes()
-        self._analyze_vote_groups()
         self._index_votes()
 
         # Share pictures have to be generated after the votes are indexed. Otherwise,
         # rendering the share pictures fails as data about new votes hasn’t yet been
         # written to the database.
         self._generate_vote_sharepics()
-
-        self._index_vote_groups()
 
         # Send Pushover notification
         send_notification(
@@ -262,8 +258,6 @@ class RCVListPipeline(BasePipeline):
         writer.add(analyzer.run())
         writer.flush()
 
-        self._vote_group_ids = writer.get_touched()
-
     def _generate_vote_sharepics(self) -> None:
         failure_count = 0
         success_count = 0
@@ -299,16 +293,6 @@ class RCVListPipeline(BasePipeline):
         log.info("Indexing votes", date=self.date, term=self.term)
         index_records(Vote, self._votes())
 
-    def _index_vote_groups(self) -> None:
-        log.info("Indexing vote groups", date=self.date, term=self.term)
-        index_records(VoteGroup, self._vote_groups())
-
     def _votes(self) -> Iterator[Vote]:
         aggregator = Aggregator(Vote)
         return aggregator.mapped_records(map_func=map_vote, group_keys=self._vote_ids)
-
-    def _vote_groups(self) -> Iterator[VoteGroup]:
-        aggregator = Aggregator(VoteGroup)
-        return aggregator.mapped_records(
-            map_func=map_vote_group, group_keys=self._vote_group_ids
-        )

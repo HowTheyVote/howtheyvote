@@ -8,7 +8,6 @@ from ..models import (
     PressRelease,
     ProcedureStage,
     Vote,
-    VoteGroup,
     VoteResult,
     deserialize_group_membership,
     deserialize_member_vote,
@@ -99,18 +98,6 @@ def map_vote(record: CompositeRecord) -> Vote:
         oeil_subjects=oeil_subjects,
         responsible_committees=responsible_committees,
         press_release=press_release,
-    )
-
-
-def map_vote_group(record: CompositeRecord) -> VoteGroup:
-    date = record.first("date")
-
-    if date:
-        date = datetime.date.fromisoformat(date)
-
-    return VoteGroup(
-        id=record.group_key,
-        date=date,
     )
 
 
