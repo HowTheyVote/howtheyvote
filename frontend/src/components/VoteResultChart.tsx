@@ -29,21 +29,13 @@ function Bar({ value, total, position }: BarProps) {
   const percentage = Math.round(ratio * 100);
   const style = position.toLowerCase().replaceAll("_", "-");
 
-  let size = null;
-
-  if (percentage < 10) {
-    size = "small";
-  } else if (percentage >= 100 && percentage < 15) {
-    size = "medium";
-  }
-
   return (
     <div
-      className={bem("vote-result-chart__bar", [style, size])}
+      className={bem("vote-result-chart__bar", style)}
       style={{ "--ratio": ratio }}
       title={`${value} MEPs voted ${position} (${percentage}%)`}
     >
-      <span className="vote-result-chart__text">
+      <span className="vote-result-chart__label">
         <Thumb position={position} className="vote-result-chart__thumb" />
         <span class="vote-result-chart__percentage">{percentage}%</span>
       </span>
