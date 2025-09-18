@@ -245,7 +245,8 @@
     "label": "European People\u2019s Party",
     "short_label": "EPP",
     "alt_labels": [
-      "Group of the European People\u2019s Party (Christian Democrats)"
+      "Group of the European People\u2019s Party (Christian Democrats)",
+      "PPE"
     ],
     "start_date": "2019-07-02",
     "end_date": null
@@ -464,7 +465,7 @@
     "code": "PFE",
     "official_label": "Patriots for Europe Group",
     "label": "Patriots for Europe",
-    "short_label": "Patriots for Europe",
+    "short_label": "PfE",
     "alt_labels": [],
     "start_date": "2024-07-08",
     "end_date": null

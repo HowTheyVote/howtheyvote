@@ -4,7 +4,20 @@ from structlog import get_logger
 from unidecode import unidecode
 
 from ..helpers import REFERENCE_REGEX
-from ..models import Fragment, ProcedureStage
+from ..models import (
+    AmendmentAuthor,
+    AmendmentAuthorCommittee,
+    AmendmentAuthorGroup,
+    AmendmentAuthorMembers,
+    AmendmentAuthorOrally,
+    AmendmentAuthorOriginalText,
+    AmendmentAuthorRapporteur,
+    Committee,
+    Fragment,
+    Group,
+    ProcedureStage,
+)
+from .common import ScrapingError
 
 log = get_logger(__name__)
 
@@ -174,3 +187,107 @@ def fill_missing_by_reference(fragments: list[Fragment], key: str) -> list[Fragm
                 data[key] = value
 
     return fragments
+
+
+def parse_amendment_authors(raw_authors: str) -> list[AmendmentAuthor]:
+    # The delimiters used in case of multiple authors aren't consistent and include spaces,
+    # newlines, and commata. In case spaces it’s not trivial to detect if they are used as
+    # a delimiter or as part of an author’s label, e.g. in "Renew The Left Members".
+    raw_authors = raw_authors.lower()
+
+    authors: list[AmendmentAuthor] = []
+
+    if "\n" in raw_authors:
+        delimiter = "\n"
+    elif "," in raw_authors:
+        delimiter = ","
+    else:
+        delimiter = None
+
+    # If a newline or a comma is used as the delimiter, we can simply split the text
+    if delimiter:
+        for raw_author in raw_authors.split(delimiter):
+            authors.extend(parse_amendment_authors(raw_author))
+
+        return authors
+
+    # If a space is used as the delimiter, we need to differentiate between spaces used as a
+    # delimiter and spaces that a part of an author label. We start by splitting the text into
+    # tokens. We then try to parse just the first token. If that fails, we try parsing the
+    # frist two tokens as an author, etc.
+    #
+    # For example, in case of the raw authors string "Renew The Left Members":
+    #
+    # 1. Try to parse just "Renew" as an author.
+    #    This succeeds, so we continue with the next token.
+    # 2. Try to parse just "The" as an author.
+    #    This fails, so we try including the next token.
+    # 3. Try to parse "The Left" as an author.
+    #    This succeeds, so we continue with the next token.
+    # 4. Try to parse "Members" an an author.
+    #    This succeeds. No tokens remain.
+    tokens = raw_authors.strip().split(" ")
+
+    # "CA" is short for "Compromise Amendment". We don’t have a use case for this, so for now
+    # we simply ignore it
+    tokens = [token for token in tokens if token != "(ca)"]
+
+    while len(tokens) > 0:
+        author = None
+
+        for end in range(1, len(tokens) + 1):
+            try:
+                author = parse_amendment_author(" ".join(tokens[0:end]))
+                tokens = tokens[end:]
+
+                # Sometimes the source data contains a "Group" suffix after the group label,
+                # e.g. "The Left Group" instead of just "The Left" which we have to also pop
+                # from the tokens list
+                if (
+                    isinstance(author, AmendmentAuthorGroup)
+                    and len(tokens) > 0
+                    and tokens[0] == "group"
+                ):
+                    tokens = tokens[1:]
+
+                break
+            except ValueError:
+                pass
+
+        if author:
+            authors.append(author)
+        else:
+            raise ScrapingError(f"Could not parse amendment authors: {' '.join(tokens)}")
+
+    return authors
+
+
+def parse_amendment_author(raw_author: str) -> AmendmentAuthor:
+    raw_author = raw_author.strip().removesuffix(":")
+
+    if raw_author == "original text":
+        return AmendmentAuthorOriginalText()
+
+    if raw_author == "members" or raw_author == "meps":
+        return AmendmentAuthorMembers()
+
+    if raw_author == "committee":
+        return AmendmentAuthorCommittee(committee=None)
+
+    if raw_author == "amended orally":
+        return AmendmentAuthorOrally()
+
+    if raw_author == "rapporteur":
+        return AmendmentAuthorRapporteur()
+
+    committee = Committee.get(raw_author.upper())
+
+    if committee:
+        return AmendmentAuthorCommittee(committee=committee)
+
+    group = Group.from_label(raw_author)
+
+    if group:
+        return AmendmentAuthorGroup(group=group)
+
+    raise ValueError(f"Invalid amendment author: {raw_author}")

@@ -2,7 +2,14 @@ import datetime
 
 import pytest
 
-from howtheyvote.models import Fragment, MemberVote, ProcedureStage, VotePosition, VoteResult
+from howtheyvote.models import (
+    AmendmentAuthorType,
+    Fragment,
+    MemberVote,
+    ProcedureStage,
+    VotePosition,
+    VoteResult,
+)
 from howtheyvote.scrapers.common import NoWorkingUrlError, ScrapingError
 from howtheyvote.scrapers.votes import (
     DocumentScraper,
@@ -337,7 +344,9 @@ def test_vot_list_scraper_amendment_info(responses):
     assert votes[1].group_key == "170870"
     assert votes[1].data["amendment_subject"] == "§ 1"
     assert votes[1].data["amendment_number"] == "1"
-    assert votes[1].data["amendment_authors"] == ["PfE"]
+    assert votes[1].data["amendment_authors"] == [
+        {"type": AmendmentAuthorType.GROUP, "group": "PFE"},
+    ]
 
 
 def test_vot_list_scraper_multiple_amendment_authors_newline(responses):
@@ -350,7 +359,10 @@ def test_vot_list_scraper_multiple_amendment_authors_newline(responses):
     votes = list(scraper.run())
 
     assert votes[18].group_key == "168601"
-    assert votes[18].data["amendment_authors"] == ["PPE", "MEPs"]
+    assert votes[18].data["amendment_authors"] == [
+        {"type": AmendmentAuthorType.GROUP, "group": "EPP"},
+        {"type": AmendmentAuthorType.MEMBERS},
+    ]
 
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-VOT_EN.xml",
@@ -360,7 +372,10 @@ def test_vot_list_scraper_multiple_amendment_authors_newline(responses):
     votes = list(scraper.run())
 
     assert votes[5].group_key == "168840"
-    assert votes[5].data["amendment_authors"] == ["committee", "PPE"]
+    assert votes[5].data["amendment_authors"] == [
+        {"type": AmendmentAuthorType.COMMITTEE, "committee": None},
+        {"type": AmendmentAuthorType.GROUP, "group": "EPP"},
+    ]
 
 
 def test_vot_list_scraper_multiple_amendment_authors_comma(responses):
@@ -373,7 +388,12 @@ def test_vot_list_scraper_multiple_amendment_authors_comma(responses):
     votes = list(scraper.run())
 
     assert votes[3].group_key == "163202"
-    assert votes[3].data["amendment_authors"] == ["PPE", "S&D", "Renew", "Verts/ALE"]
+    assert votes[3].data["amendment_authors"] == [
+        {"type": AmendmentAuthorType.GROUP, "group": "EPP"},
+        {"type": AmendmentAuthorType.GROUP, "group": "SD"},
+        {"type": AmendmentAuthorType.GROUP, "group": "RENEW"},
+        {"type": AmendmentAuthorType.GROUP, "group": "GREEN_EFA"},
+    ]
 
 
 def test_vot_list_scraper_multiple_amendment_authors_space(responses):
@@ -386,9 +406,11 @@ def test_vot_list_scraper_multiple_amendment_authors_space(responses):
     votes = list(scraper.run())
 
     assert votes[11].group_key == "166284"
-    assert votes[11].data["amendment_authors"] == ["Verts/ALE", "Members"]
+    assert votes[11].data["amendment_authors"] == [
+        {"type": AmendmentAuthorType.GROUP, "group": "GREEN_EFA"},
+        {"type": AmendmentAuthorType.MEMBERS},
+    ]
 
-    # TODO This currently fails because "The Left" contains a space
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-03-14-VOT_EN.xml",
         body=load_fixture("scrapers/data/votes/vot-list_pv-9-2024-03-14-vot-en.xml"),
@@ -397,7 +419,11 @@ def test_vot_list_scraper_multiple_amendment_authors_space(responses):
     votes = list(scraper.run())
 
     assert votes[1].group_key == "166747"
-    assert votes[1].data["amendment_authors"] == ["Renew", "The Left", "Members"]
+    assert votes[1].data["amendment_authors"] == [
+        {"type": AmendmentAuthorType.GROUP, "group": "RENEW"},
+        {"type": AmendmentAuthorType.GROUP, "group": "GUE_NGL"},
+        {"type": AmendmentAuthorType.MEMBERS},
+    ]
 
 
 def test_procedure_scraper(responses):

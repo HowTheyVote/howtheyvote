@@ -9,6 +9,7 @@ from ..models import (
     ProcedureStage,
     Vote,
     VoteResult,
+    deserialize_amendment_author,
     deserialize_group_membership,
     deserialize_member_vote,
 )
@@ -73,7 +74,17 @@ def map_vote(record: CompositeRecord) -> Vote:
         else None
     )
 
+    if record.first("amendment_authors"):
+        amendment_authors = [
+            deserialize_amendment_author(aa) for aa in record.first("amendment_authors")
+        ]
+    else:
+        amendment_authors = None
+
     press_release = record.first("press_release")
+
+    if record.group_key == "108579":
+        breakpoint()
 
     return Vote(
         id=record.group_key,
@@ -91,7 +102,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         procedure_stage=procedure_stage,
         amendment_subject=record.first("amendment_subject"),
         amendment_number=record.first("amendment_number"),
-        amendment_authors=record.first("amendment_authors"),
+        amendment_authors=amendment_authors,
         is_main=record.first("is_main") or False,
         group_key=record.first("group_key"),
         result=result,

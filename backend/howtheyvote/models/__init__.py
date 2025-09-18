@@ -13,6 +13,14 @@ from .oeil import OEILSubject, OEILSubjectType
 from .press_release import PressRelease
 from .session import PlenarySession, PlenarySessionLocation, PlenarySessionStatus
 from .vote import (
+    AmendmentAuthor,
+    AmendmentAuthorCommittee,
+    AmendmentAuthorGroup,
+    AmendmentAuthorMembers,
+    AmendmentAuthorOrally,
+    AmendmentAuthorOriginalText,
+    AmendmentAuthorRapporteur,
+    AmendmentAuthorType,
     DocumentType,
     MemberVote,
     ProcedureStage,
@@ -22,7 +30,9 @@ from .vote import (
     VotePositionCounts,
     VoteResult,
     VoteResultType,
+    deserialize_amendment_author,
     deserialize_member_vote,
+    serialize_amendment_author,
     serialize_member_vote,
 )
 
@@ -55,9 +65,18 @@ __all__ = [
     "ProcedureStage",
     "ProcedureType",
     "Vote",
+    "AmendmentAuthor",
+    "AmendmentAuthorGroup",
+    "AmendmentAuthorCommittee",
+    "AmendmentAuthorOriginalText",
+    "AmendmentAuthorMembers",
+    "AmendmentAuthorOrally",
+    "AmendmentAuthorRapporteur",
     "PressRelease",
     "serialize_group_membership",
     "deserialize_group_membership",
     "serialize_member_vote",
     "deserialize_member_vote",
+    "serialize_amendment_author",
+    "deserialize_amendment_author",
 ]

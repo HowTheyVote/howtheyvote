@@ -9,6 +9,7 @@ from structlog import get_logger
 
 from ..helpers import parse_procedure_reference, parse_reference
 from ..models import (
+    AmendmentAuthor,
     Committee,
     Country,
     EurovocConcept,
@@ -19,12 +20,14 @@ from ..models import (
     VotePosition,
     VoteResult,
     VoteResultType,
+    serialize_amendment_author,
 )
 from .common import BeautifulSoupScraper, NoWorkingUrlError, RequestCache, ScrapingError
 from .helpers import (
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
+    parse_amendment_authors,
     parse_dlv_title,
     parse_rcv_text,
 )
@@ -420,6 +423,14 @@ class VOTListScraper(BeautifulSoupScraper):
         ):
             return None
 
+        amendment_authors = self._amendment_authors(tag)
+        serialized_amendment_authors = None
+
+        if amendment_authors:
+            serialized_amendment_authors = [
+                serialize_amendment_author(aa) for aa in amendment_authors
+            ]
+
         return self._fragment(
             model=Vote,
             source_id=vote_id,
@@ -430,7 +441,7 @@ class VOTListScraper(BeautifulSoupScraper):
                 "procedure_stage": procedure_stage,
                 "amendment_subject": self._amendment_subject(tag),
                 "amendment_number": self._amendment_number(tag),
-                "amendment_authors": self._amendment_authors(tag),
+                "amendment_authors": serialized_amendment_authors,
             },
         )
 
@@ -499,7 +510,7 @@ class VOTListScraper(BeautifulSoupScraper):
 
         return number
 
-    def _amendment_authors(self, tag: Tag) -> list[str] | None:
+    def _amendment_authors(self, tag: Tag) -> list[AmendmentAuthor] | None:
         author_tag = tag.select_one("amendmentAuthor")
 
         if not author_tag:
@@ -510,19 +521,7 @@ class VOTListScraper(BeautifulSoupScraper):
         if not authors:
             return None
 
-        # Amendments can have multiple authors. The delimiters used in case of multiple
-        # authors aren't consistent and include spaces, newlines, and commata. In some
-        # cases it’s not trivial to unambiguously detect whether a character is used as
-        # a delimiter or as part of an author’s label, e.g. in "Renew The Left Members".
-        # We currently do not handle these cases correctly.
-        if "\n" in authors:
-            delimiter = "\n"
-        elif "," in authors:
-            delimiter = ","
-        else:
-            delimiter = " "
-
-        return [author.strip() for author in re.split(delimiter, authors)]
+        return parse_amendment_authors(authors)
 
 
 class DocumentScraper(BeautifulSoupScraper):
