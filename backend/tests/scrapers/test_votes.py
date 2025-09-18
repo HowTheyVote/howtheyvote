@@ -328,7 +328,9 @@ def test_procedure_scraper(responses):
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
-    scraper = ProcedureScraper(vote_id=162214, procedure_reference="2023/2019(INI)")
+    scraper = ProcedureScraper(
+        vote_id=162214, procedure_reference="2023/2019(INI)", reference=None
+    )
     actual = scraper.run()
 
     expected = Fragment(
@@ -338,6 +340,36 @@ def test_procedure_scraper(responses):
         group_key=162214,
         source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         data={
+            "procedure_reference": "2023/2019(INI)",
+            "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
+            "geo_areas": [],
+            "oeil_subjects": ["2", "3.30.25", "3.45.05", "3.50.15", "4.60.06"],
+            "responsible_committees": {"IMCO"},
+        },
+    )
+
+    assert record_to_dict(actual) == record_to_dict(expected)
+
+
+def test_procedure_scraper_fallback_document_reference(responses):
+    responses.get(
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=A9-0335/2023",
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2023-2019-ini.html"),
+    )
+
+    scraper = ProcedureScraper(
+        vote_id=162214, procedure_reference=None, reference="A9-0335/2023"
+    )
+    actual = scraper.run()
+
+    expected = Fragment(
+        model="Vote",
+        source_name="ProcedureScraper",
+        source_id=162214,
+        group_key=162214,
+        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=A9-0335/2023",
+        data={
+            "procedure_reference": "2023/2019(INI)",
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
             "geo_areas": [],
             "oeil_subjects": ["2", "3.30.25", "3.45.05", "3.50.15", "4.60.06"],
@@ -354,7 +386,9 @@ def test_procedure_scraper_geo_areas(responses):
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022-2852-rsp.html"),
     )
 
-    scraper = ProcedureScraper(vote_id=149218, procedure_reference="2022/2852(RSP)")
+    scraper = ProcedureScraper(
+        vote_id=149218, procedure_reference="2022/2852(RSP)", reference=None
+    )
     fragment = scraper.run()
     assert fragment.data["geo_areas"] == ["BGR", "ROU"]
 
@@ -365,7 +399,9 @@ def test_procedure_scraper_geo_areas_fuzzy(responses):
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022-2201-ini.html"),
     )
 
-    scraper = ProcedureScraper(vote_id=155056, procedure_reference="2022/2201(INI)")
+    scraper = ProcedureScraper(
+        vote_id=155056, procedure_reference="2022/2201(INI)", reference=None
+    )
     fragment = scraper.run()
     assert fragment.data["geo_areas"] == ["XKX"]
 
@@ -376,7 +412,9 @@ def test_procedure_scraper_multiple_responsible_committees(responses):
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2024-0258-cod.html"),
     )
 
-    scraper = ProcedureScraper(vote_id=172102, procedure_reference="2024/0258(COD)")
+    scraper = ProcedureScraper(
+        vote_id=172102, procedure_reference="2024/0258(COD)", reference=None
+    )
     fragment = scraper.run()
     assert fragment.data["responsible_committees"] == {"AFET", "BUDG"}
 
