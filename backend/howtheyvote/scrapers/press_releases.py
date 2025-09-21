@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from typing import cast
 from urllib.parse import parse_qs, urlencode, urlparse
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
 from ..models import Fragment, PressRelease
@@ -180,11 +180,31 @@ class PressReleaseScraper(BeautifulSoupScraper):
         list_ = doc.select_one("#website-body .ep-a_facts ul")
 
         if not list_:
-            # Some press releases use a standard lists at the beginning of the article body
+            # Some press releases use a standard list at the beginning of the article body
             list_ = doc.select_one("#website-body .ep-a_text ul")
 
         if not list_:
             return None
+
+        # In some cases, there are multiple lists with only a single list item each.
+        # We try to collapse all adjacent lists into a single list
+        next_sibling = list_.next_sibling
+
+        while True:
+            if not next_sibling:
+                break
+
+            if not isinstance(next_sibling, Tag) or next_sibling.name == "br":
+                next_sibling = next_sibling.next_sibling
+                continue
+
+            if next_sibling.name == "ul":
+                # Add all list items to the first list
+                list_.extend(next_sibling.select("li"))
+                next_sibling = next_sibling.next_sibling
+                continue
+
+            break
 
         items = [item.text.strip() for item in list_.select("li")]
         items = [f"<li>{item}</li>" for item in items]
