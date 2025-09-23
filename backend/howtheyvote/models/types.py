@@ -2,9 +2,25 @@ from typing import Any, TypeVar
 
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
+from sqlalchemy.sql import ColumnElement
 from sqlalchemy.types import TypeDecorator, TypeEngine
 
 ItemType = TypeVar("ItemType", bound=TypeEngine[Any])
+
+
+class ListTypeComparator(sa.JSON.Comparator[list[ItemType]]):
+    type: "ListType[ItemType]"
+
+    def contains(self, other: ItemType, **kwargs: Any) -> ColumnElement[bool]:
+        json_expr = sa.func.json_each(self.expr).table_valued("value")
+        return sa.exists(
+            sa.select(1)
+            .select_from(json_expr)
+            .where(
+                json_expr.c.value
+                == sa.bindparam("other", unique=True, value=other, type_=self.type.item_type)
+            )
+        )
 
 
 class ListType(TypeDecorator[list[ItemType]]):
@@ -14,6 +30,7 @@ class ListType(TypeDecorator[list[ItemType]]):
 
     impl = sa.JSON
     cache_ok = True
+    comparator_factory = ListTypeComparator
 
     def __init__(self, item_type: ItemType):
         super().__init__()
