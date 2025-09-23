@@ -28,6 +28,8 @@ def index_records(
     chunk_size: int | None = None,
 ) -> None:
     """Writes aggregated records to the database and search backend."""
+    records = _filter_records(records)
+
     if chunk_size:
         for i, chunk in enumerate(chunks(records, size=chunk_size), start=1):
             log.info(
@@ -103,6 +105,19 @@ def index_search(
         for vote in filtered_votes:
             doc = _serialize_vote(vote, generator)
             index.replace_document(int(vote.id), doc)
+
+
+def _filter_records(records: Iterable[RecordType]) -> Iterable[RecordType]:  #  noqa: UP047
+    # This is a bit hacky: If we’ve successfully scraped a VOT list for a given day,
+    # but couldn’t scrape the RCV list for the same day, we’d end up indexing incomplete
+    # vote records without the member votes
+    for record in records:
+        if isinstance(record, Vote) and not record.member_votes:
+            log.warning(
+                "Skipping indexing of vote record without member votes", vote_id=record.id
+            )
+            continue
+        yield record
 
 
 def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
