@@ -98,11 +98,19 @@ def test_database_query_handle_filters():
     response = DatabaseQuery(Vote).handle()
     assert response["total"] == 3
 
-    response = DatabaseQuery(Vote).filter("press_release", "abc").handle()
+    response = DatabaseQuery(Vote).filter("geo_areas", Country["FRA"]).handle()
     assert response["total"] == 1
     assert len(response["results"]) == 1
+    assert response["results"][0].id == 1
+    assert response["results"][0].display_title == "Vote One"
+
+    response = DatabaseQuery(Vote).filter("geo_areas", Country["DEU"]).handle()
+    assert response["total"] == 2
+    assert len(response["results"]) == 2
     assert response["results"][0].id == 2
     assert response["results"][0].display_title == "Vote Two"
+    assert response["results"][1].id == 1
+    assert response["results"][1].display_title == "Vote One"
 
 
 def test_database_query_sql_where():
