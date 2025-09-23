@@ -3,6 +3,7 @@ import shutil
 import tempfile
 
 import click
+from click_aliases import ClickAliasedGroup
 
 from ..db import Session
 from ..export import generate_export
@@ -17,7 +18,7 @@ from .system import system
 from .temp import temp
 
 
-@click.group()
+@click.group(cls=ClickAliasedGroup)
 def cli() -> None:
     pass
 
@@ -35,9 +36,9 @@ def export() -> None:
     generate_export(archive_path)
 
 
-cli.add_command(system)
-cli.add_command(aggregate)
-cli.add_command(pipeline)
+cli.add_command(system, aliases=["sys"])
+cli.add_command(aggregate, aliases=["agg"])
+cli.add_command(pipeline, aliases=["pipe"])
 cli.add_command(dev)
 cli.add_command(temp)
 cli.add_command(flush)
