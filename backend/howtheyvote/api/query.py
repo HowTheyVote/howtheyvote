@@ -22,6 +22,7 @@ from xapian import (
 
 from ..db import Session
 from ..models import BaseWithId
+from ..models.types import ListType
 from ..search import (
     SEARCH_FIELDS,
     boolean_term,
@@ -58,7 +59,7 @@ class Query[T: BaseWithId](ABC):
         self._sort: tuple[str, Order] | None = None
         self._page: int | None = None
         self._page_size: int | None = None
-        self._filters: dict[str, str | bool | int] = {}
+        self._filters: dict[str, Any] = {}
 
     @abstractmethod
     def handle(self) -> QueryResponse[T]:
@@ -119,7 +120,9 @@ class Query[T: BaseWithId](ABC):
 
         return self._sort
 
-    def filter(self, field: str, value: str | bool | int | None) -> Self:
+    # TODO Figure out if there's a type-safe way to ensure that `field` is valid
+    # for the given model and `value` has the respective type.
+    def filter(self, field: str, value: Any) -> Self:
         query = self.copy()
 
         if value is not None:
@@ -127,7 +130,7 @@ class Query[T: BaseWithId](ABC):
 
         return query
 
-    def get_filters(self) -> dict[str, str | bool | int]:
+    def get_filters(self) -> dict[str, Any]:
         return self._filters
 
 
@@ -162,7 +165,11 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
 
         for field, value in self.get_filters().items():
             column = getattr(self.model, field)
-            query = query.where(column == value)
+
+            if isinstance(column.type, ListType):
+                query = query.where(column.contains(value))
+            else:
+                query = query.where(column == value)
 
         for expression in self._where:
             query = query.where(expression)
