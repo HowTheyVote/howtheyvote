@@ -1,5 +1,5 @@
 from .committee import Committee, CommitteeType
-from .common import Base, BaseWithId, DataIssue, Fragment, PipelineRun, PipelineStatus
+from .common import Base, BaseWithId, Fragment, PipelineRun, PipelineStatus
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
@@ -18,7 +18,6 @@ from .vote import (
     ProcedureStage,
     ProcedureType,
     Vote,
-    VoteGroup,
     VotePosition,
     VotePositionCounts,
     VoteResult,
@@ -32,7 +31,6 @@ __all__ = [
     "Fragment",
     "PipelineRun",
     "PipelineStatus",
-    "DataIssue",
     "Country",
     "CountryType",
     "Group",
@@ -55,7 +53,6 @@ __all__ = [
     "ProcedureStage",
     "ProcedureType",
     "Vote",
-    "VoteGroup",
     "PressRelease",
     "serialize_group_membership",
     "deserialize_group_membership",
