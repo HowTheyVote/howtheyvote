@@ -348,11 +348,11 @@
   },
   {
     "code": "GUE_NGL",
-    "official_label": "The Left group in the European Parliament \u2013 GUE/NGL",
-    "label": "The Left in the European Parliament \u2013 GUE/NGL",
+    "official_label": "The Left group in the European Parliament",
+    "label": "The Left in the European Parliament",
     "short_label": "The Left",
     "alt_labels": [
-      "The Left group in the European Parliament"
+      "The Left group in the European Parliament - GUE/NGL"
     ],
     "start_date": "2021-01-01",
     "end_date": null

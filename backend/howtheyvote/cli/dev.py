@@ -27,9 +27,12 @@ GROUP_OVERRIDES: dict[str, Overrides] = {
         "short_label": "Greens/EFA",
     },
     "GUE_NGL": {
-        "official_label": "The Left group in the European Parliament – GUE/NGL",
-        "label": "The Left in the European Parliament – GUE/NGL",
+        "label": "The Left in the European Parliament",
         "short_label": "The Left",
+        "alt_labels": [
+            # Still used by EP MEPs website (as of September 2025)
+            "The Left group in the European Parliament - GUE/NGL"
+        ],
     },
     "NI": {
         "short_label": "Non-attached",
