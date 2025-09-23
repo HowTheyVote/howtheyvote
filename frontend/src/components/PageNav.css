@@ -17,9 +17,12 @@
    * just the text (excluding vertical padding) ensures that the scrollbar
    * isn’t affected by the mask.
    */
-  mask-image: linear-gradient(black, black),
+  mask-image:
+    linear-gradient(black, black),
     linear-gradient(to right, transparent 0, black 75%);
-  mask-size: 100% 100%, var(--space-sm) calc(100% - 2 * var(--space-xs));
+  mask-size:
+    100% 100%,
+    var(--space-sm) calc(100% - 2 * var(--space-xs));
   mask-position-x: 0, right;
   mask-position-y: 0, var(--space-xs);
   mask-repeat: no-repeat;

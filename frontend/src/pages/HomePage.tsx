@@ -1,4 +1,4 @@
-import { type PlenarySession, getSessions } from "../api";
+import { getSessions, type PlenarySession } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
