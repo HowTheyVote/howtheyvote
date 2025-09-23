@@ -65,11 +65,11 @@ describe("MemberVotesList", () => {
 
     assert.strictEqual(items.length, 3);
     assert.ok(within(items[0]).getByText("Max MUSTERMANN"));
-    assert.ok(within(items[0]).getByLabelText("for"));
+    assert.ok(within(items[0]).getByText("for"));
     assert.ok(within(items[1]).getByText("Beate BEISPIEL"));
-    assert.ok(within(items[1]).getByLabelText("against"));
+    assert.ok(within(items[1]).getByText("against"));
     assert.ok(within(items[2]).getByText("Noël TOULEMONDE"));
-    assert.ok(within(items[2]).getByLabelText("abstention"));
+    assert.ok(within(items[2]).getByText("abstention"));
   });
 
   it("can search members by name", async () => {
