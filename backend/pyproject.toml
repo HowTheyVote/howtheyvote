@@ -54,7 +54,7 @@ pytest-mock = "^3.14.1"
 line-length = 95
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "B", "UP", "UP006"]
+select = ["E", "F", "W", "I", "N", "B", "UP", "UP006", "T100"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]

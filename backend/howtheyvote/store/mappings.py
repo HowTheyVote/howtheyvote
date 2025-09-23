@@ -83,9 +83,6 @@ def map_vote(record: CompositeRecord) -> Vote:
 
     press_release = record.first("press_release")
 
-    if record.group_key == "108579":
-        breakpoint()
-
     return Vote(
         id=record.group_key,
         timestamp=datetime.datetime.fromisoformat(record.first("timestamp")),
