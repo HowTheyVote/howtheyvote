@@ -339,3 +339,50 @@ def test_press_release_analyzer_by_position_counts_different_dates():
     fragments = list(analyzer.run())
 
     assert fragments == []
+
+
+def test_press_release_analyzer_by_reference_prefer():
+    # Do not try to match by position counts if matching by document/procedure reference
+    # has already returned a result
+    press_releases = [
+        PressRelease(
+            id="20201217IPR94207",
+            published_at=datetime.datetime(2020, 12, 18, 0, 0, 0),
+            procedure_references=["2020/0362(COD)", "2020/0364(COD)"],
+            position_counts=[
+                {"FOR": 677, "AGAINST": 4, "ABSTENTION": 6, "DID_NOT_VOTE": 17},
+            ],
+        ),
+        PressRelease(
+            id="20201217IPR94211",
+            published_at=datetime.datetime(2025, 12, 18, 0, 0, 0),
+            procedure_references=["2020/0366(COD)"],
+            position_counts=[
+                {"FOR": 677, "AGAINST": 4, "ABSTENTION": 6, "DID_NOT_VOTE": 17},
+            ],
+        ),
+    ]
+
+    votes = [
+        Vote(
+            id="126356",
+            is_main=True,
+            timestamp=datetime.datetime(2025, 1, 1, 0, 0, 0),
+            procedure_reference="2020/0366(COD)",
+            member_votes=_make_member_votes(677, 4, 6),
+        ),
+    ]
+
+    analyzer = PressReleaseAnalyzer(votes, press_releases)
+    fragments = list(analyzer.run())
+
+    expected = Fragment(
+        model="Vote",
+        source_id="126356:20201217IPR94211",
+        source_name="PressReleaseAnalyzer",
+        group_key="126356",
+        data={"press_release": "20201217IPR94211"},
+    )
+
+    assert len(fragments) == 1
+    assert record_to_dict(fragments[0]) == record_to_dict(expected)

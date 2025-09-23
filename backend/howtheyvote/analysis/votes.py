@@ -173,7 +173,9 @@ class PressReleaseAnalyzer:
             release_ids = set()
             release_ids |= self._match_by_reference(vote)
             release_ids |= self._match_by_procedure_reference(vote)
-            release_ids |= self._match_by_position_counts(vote)
+
+            if not release_ids:
+                release_ids = self._match_by_position_counts(vote)
 
             for release_id in release_ids:
                 yield Fragment(

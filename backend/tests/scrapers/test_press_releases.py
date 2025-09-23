@@ -59,3 +59,18 @@ def test_press_releases_scraper_old_text_selector(responses):
     assert fragment.data.get("text").endswith(
         "Parliament praises the efforts and solidarity shown by neighbouring countries, in particular Colombia, Ecuador and Peru and ask the Commission to continue cooperating with these countries."
     )
+
+
+def test_press_release_scraper_facts_collapse_lists(responses):
+    responses.get(
+        "https://www.europarl.europa.eu/news/en/press-room/20201217IPR94207",
+        body=load_fixture("scrapers/data/press_releases/press-release_20201217IPR94207.html"),
+    )
+
+    scraper = PressReleaseScraper(release_id="20201217IPR94207")
+    fragment = scraper.run()
+
+    assert (
+        fragment.data.get("facts")
+        == "<ul><li>Basic air connectivity: the temporary rules ensuring certain air services between the UK and the EU continue for a maximum of six months were adopted with 680 votes in favour (3 against, 4 abstentions). This includes rights for UK and EU air carriers to continue to fly over and make technical stops on EU territory, as well as serve direct routes to the EU. Also a limited number of specific pandemic-related cargo flights will be allowed.</li><li>Aviation safety: the regulation ensuring various certificates for products, parts, appliances and companies remain valid was adopted with 680 votes in favour (3 against, 4 abstentions). This will avoid UK and EU aircraft that use these products and services being grounded.</li><li>Basic road connectivity: the temporary rules ensuring road freight and road passenger transport for a maximum of six months were adopted with 680 votes in favour (4 against, 3 abstentions). This will allow carriage of goods as well as coach and bus services coming to Europe and going to the UK to continue.</li></ul>"
+    )

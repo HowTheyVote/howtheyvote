@@ -186,7 +186,7 @@ class RCVListPipeline(BasePipeline):
         writer = BulkWriter()
 
         for vote in self._votes():
-            if not vote.procedure_reference:
+            if not vote.procedure_reference and not vote.reference:
                 log.info(
                     "Skipping procedure scraper as vote has no procedure reference",
                     vote_id=vote.id,
@@ -196,6 +196,7 @@ class RCVListPipeline(BasePipeline):
             scraper = ProcedureScraper(
                 vote_id=vote.id,
                 procedure_reference=vote.procedure_reference,
+                reference=vote.reference,
                 request_cache=self._request_cache,
             )
 
