@@ -4,9 +4,11 @@ from datetime import date, datetime
 from typing import cast
 from urllib.parse import parse_qs, urlparse
 
+import pytz
 from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
+from .. import config
 from ..helpers import parse_procedure_reference, parse_reference
 from ..models import (
     AmendmentAuthor,
@@ -438,6 +440,7 @@ class VOTListScraper(BeautifulSoupScraper):
             data={
                 "dlv_title": title,
                 "result": result,
+                "timestamp": self._timestamp(tag),
                 "procedure_stage": procedure_stage,
                 "amendment_subject": self._amendment_subject(tag),
                 "amendment_number": self._amendment_number(tag),
@@ -483,6 +486,20 @@ class VOTListScraper(BeautifulSoupScraper):
             raise ScrapingError("Missing title")
 
         return title
+
+    def _timestamp(self, tag: Tag) -> str:
+        try:
+            attr = cast(str, tag["voteTimestamp"])
+            timestamp = datetime.fromisoformat(attr)
+        except KeyError as exc:
+            raise ScrapingError("Missing `voteTimestamp` attribute") from exc
+
+        # The timestamps in VOT lists are timezone-aware. However, we store all timestamps
+        # as naive datetimes in the local Brussels timezone.
+        local_tz = pytz.timezone(config.TIMEZONE)
+        timestamp = timestamp.astimezone(local_tz).replace(tzinfo=None)
+
+        return timestamp.isoformat()
 
     def _amendment_subject(self, tag: Tag) -> str | None:
         subject_tag = tag.select_one("amendmentSubject")

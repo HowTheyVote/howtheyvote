@@ -254,6 +254,7 @@ def test_vot_list_scraper(responses):
     assert votes[0].data == {
         "dlv_title": "Hong Kong, notably the cases of Jimmy Lai and the 45 activists recently convicted under the national security law",
         "result": VoteResult.ADOPTED,
+        "timestamp": "2024-11-28T12:13:21",
         "procedure_stage": None,
         "amendment_subject": None,
         "amendment_number": None,
