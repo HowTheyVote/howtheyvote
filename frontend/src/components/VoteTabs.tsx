@@ -1,7 +1,7 @@
 import type { VoteStatsByCountry, VoteStatsByGroup } from "../api";
 import {
-  type SerializedMemberVotes,
   deserializeMemberVotes,
+  type SerializedMemberVotes,
 } from "../lib/serialization";
 import CountryStatsList from "./CountryStatsList";
 import GroupStatsList from "./GroupStatsList";

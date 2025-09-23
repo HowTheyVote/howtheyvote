@@ -31,7 +31,7 @@ app.registerPage("/about", AboutPage, aboutLoader);
 
 // Redirect vote shortlinks (e.g. howtheyvote.eu/162190)
 const voteIdRegex = /^[0-9]{6}$/;
-app.get("/:id", (request, response, next) => {
+app.get("/:id", (request, _response, next) => {
   const voteId = request.params.id;
 
   if (!voteIdRegex.test(voteId)) {

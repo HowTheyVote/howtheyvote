@@ -7,7 +7,7 @@ import {
   type Response,
 } from "@tinyhttp/app";
 
-import { type FunctionComponent, type VNode, h } from "preact";
+import { type FunctionComponent, h, type VNode } from "preact";
 import render from "preact-render-to-string";
 import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
@@ -29,7 +29,7 @@ export type Page<Data = undefined> = FunctionComponent<{
 // This middleware adds a `isBot` property to request objects
 export function isBot(
   request: Request,
-  response: Response,
+  _response: Response,
   next?: NextFunction,
 ) {
   request.isBot = requestIsBot(request.path, request.headers["user-agent"]);
@@ -79,7 +79,7 @@ export class App extends BaseApp<Request, Response> {
     loader?: Loader<Data>,
   ) {
     return this.get(path, async (request, response) => {
-      let data: Data | undefined = undefined;
+      let data: Data | undefined;
 
       if (loader) {
         data = await loader(request);

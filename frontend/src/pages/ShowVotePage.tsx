@@ -1,10 +1,8 @@
-import { type Vote, getVote } from "../api";
+import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
-import List from "../components/List";
-import ListItem from "../components/ListItem";
 import PageNav from "../components/PageNav";
 import PageNavItem from "../components/PageNavItem";
 import Sources from "../components/Sources";
@@ -18,8 +16,7 @@ import { Island } from "../lib/islands";
 import { getDownloadUrl, getErrorReportFormUrl } from "../lib/links";
 import { getLogger } from "../lib/logging";
 import { serializeMemberVotes } from "../lib/serialization";
-import type { Request } from "../lib/server";
-import type { Loader, Page } from "../lib/server";
+import type { Loader, Page, Request } from "../lib/server";
 
 const log = getLogger();
 
