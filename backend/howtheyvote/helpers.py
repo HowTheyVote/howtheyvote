@@ -169,7 +169,7 @@ def get_attribute_docstrings(type_: type) -> dict[str, str]:
         if isinstance(stmt, ast.Expr):
             if isinstance(stmt.value, ast.Constant):
                 if prev_annotation:
-                    docstrings[prev_annotation] = inspect.cleandoc(stmt.value.value)
+                    docstrings[prev_annotation] = inspect.cleandoc(str(stmt.value.value))
 
         prev_annotation = None
 
