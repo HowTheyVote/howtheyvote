@@ -137,7 +137,7 @@ class Query[T: BaseWithId](ABC):
 class DatabaseQuery[T: BaseWithId](Query[T]):
     def __init__(self, model: type[T]):
         super().__init__(model)
-        self._where: list[ColumnElement[Any]] = []
+        self._where: list[ColumnElement[bool]] = []
 
     def handle(self) -> QueryResponse[T]:
         page = self.get_page()
@@ -191,7 +191,7 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
 
         return response
 
-    def where(self, expression: ColumnElement[Any]) -> Self:
+    def where(self, expression: ColumnElement[bool]) -> Self:
         query = self.copy()
         query._where.append(expression)
         return query
