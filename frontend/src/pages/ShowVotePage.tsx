@@ -38,6 +38,8 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
   const csvUrl = getDownloadUrl(data.id, "csv");
   const jsonUrl = getDownloadUrl(data.id, "json");
 
+  const hasAmendments = data.related.length > 1;
+
   return (
     <App
       title={[data.display_title, "Vote Results"]}
@@ -47,6 +49,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
         <VoteHeader vote={data} />
         <PageNav>
           <PageNavItem href="#result">Vote result</PageNavItem>
+          {hasAmendments && (
+            <PageNavItem href="#amendments">Amendments</PageNavItem>
+          )}
           <PageNavItem href="#more-information">More information</PageNavItem>
           <PageNavItem href="#open-data">Open data</PageNavItem>
           <PageNavItem href="#sources">Sources</PageNavItem>
@@ -71,6 +76,21 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
               )}
             </Wrapper>
           </div>
+          {hasAmendments && (
+            <div class="px">
+              <Wrapper>
+                <h2 id="amendments" class="delta mb--xs">
+                  Amendments
+                </h2>
+                <p class="mb--xs">
+                  This vote's report has had prior votes on amendments. <br />
+                  <a href={`/votes/${data.id}/amendments`}>
+                    See roll-call votes on amendments here.
+                  </a>
+                </p>
+              </Wrapper>
+            </div>
+          )}
           {data.links.length > 0 && (
             <div class="px">
               <Wrapper>
