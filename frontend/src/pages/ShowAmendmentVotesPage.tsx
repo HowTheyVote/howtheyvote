@@ -26,11 +26,11 @@ export const ShowAmendmentVotesPage: Page<Vote> = ({ data }) => {
           <Wrapper>
             <Callout>
               <p>
-                The votes on this page were on <b>amendments</b>. Amendments aim
-                at changing the text of reports.<br /> The outcome of amendments do
-                not dictate the outcome of the vote on a report.<br /> Successful
-                amendments do not become part of official Parliament positions
-                if the report is not accepted in its{" "}
+                The votes on this page were on <b>amendments</b>.<br />
+                Amendments aim at changing the text of reports. The outcome of
+                amendments do not dictate the outcome of the vote on a report.
+                <br /> Successful amendments do not become part of official
+                Parliament positions if the report is not accepted in its{" "}
                 <a href={`/votes/${data.id}`}>final vote</a>.
               </p>
             </Callout>
