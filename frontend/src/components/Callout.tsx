@@ -3,7 +3,7 @@ import type { ComponentChildren } from "preact";
 import "./Callout.css";
 
 type CalloutProps = {
-  title: string;
+  title?: string;
   children?: ComponentChildren;
   className?: string;
 };
@@ -15,7 +15,7 @@ export default function Disclosure({
 }: CalloutProps) {
   return (
     <div className={`callout ${className || ""}`}>
-      <p>{title}</p>
+      {title && <p>{title}</p>}
       {children}
     </div>
   );
