@@ -3,7 +3,7 @@ from typing import TypeVar, cast
 
 from sqlalchemy.dialects.sqlite import insert
 from structlog import get_logger
-from xapian import Document, TermGenerator, sortable_serialise
+from xapian import Document, TermGenerator
 
 from ..db import Session
 from ..helpers import chunks
@@ -15,6 +15,7 @@ from ..search import (
     field_to_slot,
     get_index,
     get_stopper,
+    serialize_value,
 )
 
 log = get_logger(__name__)
@@ -150,10 +151,10 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
     # Store timestamp and press release as sortable values for ranking
-    timestamp = sortable_serialise(vote.timestamp.timestamp())
+    timestamp = serialize_value(vote.timestamp)
     doc.add_value(field_to_slot("timestamp"), timestamp)
 
-    has_press_release = sortable_serialise(int(vote.press_release is not None))
+    has_press_release = serialize_value(int(vote.press_release is not None))
     doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
     # Store document and procedure references as boolean terms. Boolean terms

@@ -129,7 +129,7 @@ def index() -> Response:
                             $ref: '#/components/schemas/VotesQueryResponse'
     """
     query = _query_from_request(DatabaseQuery, request)
-    query = query.filter("is_main", True)
+    query = query.filter("is_main", "=", True)
     query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
 
     return jsonify(_serialize_query(query))
@@ -203,14 +203,14 @@ def search() -> Response:
     q = REFERENCE_REGEX.sub("", q)
 
     for reference in references:
-        query = query.filter("reference", reference)
+        query = query.filter("reference", "=", reference)
 
     # Detect procedure references and apply a filter
     procedure_references = [match.group(0) for match in PROCEDURE_REFERENCE_REGEX.finditer(q)]
     q = PROCEDURE_REFERENCE_REGEX.sub("", q)
 
     for procedure_reference in procedure_references:
-        query = query.filter("procedure_reference", procedure_reference)
+        query = query.filter("procedure_reference", "=", procedure_reference)
 
     if q:
         query = query.query(q)
