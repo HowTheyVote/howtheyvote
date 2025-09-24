@@ -18,7 +18,10 @@ export const loader: Loader<Vote> = async (request: Request) => {
   if (!(data.related.length > 1)) throw new HTTPException(404);
 
   // The last element of `related` is the vote itself
-  if (data.related[data.related.length - 1].id === request.params.id)
+  if (
+    Number(data.related[data.related.length - 1].id) ===
+    Number(request.params.id)
+  )
     data.related = data.related.slice(0, -1);
 
   return data;
