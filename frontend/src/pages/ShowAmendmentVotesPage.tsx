@@ -6,10 +6,17 @@ import BaseLayout from "../components/BaseLayout";
 import Callout from "../components/Callout";
 import Stack from "../components/Stack";
 import Wrapper from "../components/Wrapper";
+import { HTTPException } from "../lib/http";
 import type { Loader, Page, Request } from "../lib/server";
 
 export const loader: Loader<Vote> = async (request: Request) => {
   const { data } = await getVote({ path: { vote_id: request.params.id } });
+
+  // `/amendments` opened on non-main vote which cannot have amendments
+  if (!data.is_main) throw new HTTPException(404);
+  // `/amendments` opened on a main vote which does not have amendments
+  if (!(data.related.length > 1)) throw new HTTPException(404);
+
   // The last element of `related` is the vote itself
   if (data.related[data.related.length - 1].id === request.params.id)
     data.related = data.related.slice(0, -1);
