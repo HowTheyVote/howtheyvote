@@ -246,14 +246,14 @@ def test_votes_api_index_sort(db_session, api):
 def test_votes_api_search(db_session, search_index, api):
     one = Vote(
         id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
         title="Vote One",
         is_main=True,
     )
 
     two = Vote(
         id=2,
-        timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
         title="Vote Two",
         is_main=True,
     )
