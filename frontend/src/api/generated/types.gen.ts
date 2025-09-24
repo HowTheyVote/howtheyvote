@@ -6,6 +6,15 @@ export type BaseVote = {
      */
     id: number;
     /**
+     * Whether this vote is a main vote. We classify certain votes as main votes based
+     * on the text description in the voting records published by Parliament. For example,
+     * if Parliament has voted on amendments, only the vote on the text as a whole is
+     * classified as a main vote. Certain votes such as votes on the agenda are not classified
+     * as main votes. This is not an official classification by the European Parliament
+     * and there may be false negatives.
+     */
+    is_main: boolean;
+    /**
      * Date and time of the vote
      */
     timestamp: string;
