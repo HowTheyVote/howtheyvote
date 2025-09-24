@@ -1,4 +1,5 @@
 .callout {
-  border-radius: 5px;
-  background-color: red;
+  border-radius: var(--border-radius);
+  background-color: var(--gray-light);
+  padding: var(--space-xxs) var(--space-xs);
 }
