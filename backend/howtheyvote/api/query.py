@@ -4,7 +4,7 @@ import enum
 from abc import ABC, abstractmethod
 from typing import Any, Literal, Self, TypedDict
 
-from sqlalchemy import desc, func, select
+from sqlalchemy import and_, asc, desc, func, select, true
 from sqlalchemy.sql import ColumnElement
 from xapian import (
     BM25Weight,
@@ -152,49 +152,23 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
         super().__init__(model)
         self._where: list[ColumnElement[bool]] = []
 
+    def where(self, expression: ColumnElement[bool]) -> Self:
+        query = self.copy()
+        query._where.append(expression)
+        return query
+
     def handle(self) -> QueryResponse[T]:
         page = self.get_page()
         page_size = self.get_page_size()
         limit = self.get_limit()
         offset = self.get_offset()
 
-        query = select(self.model)
-
-        # Apply default sorting if none is specified explicitly
-        sort = self.get_sort()
-        if not sort:
-            sort_field = self.DEFAULT_SORT_FIELD
-            sort_order = self.DEFAULT_SORT_ORDER
-        else:
-            sort_field, sort_order = sort
-
-        # This evaluates to something like `Vote.timestamp`.
-        order_expr = getattr(self.model, sort_field)
-
-        if sort_order == Order.DESC:
-            order_expr = desc(order_expr)
-
-        query = query.order_by(order_expr)
-
-        for (field, op), value in self.get_filters().items():
-            column = getattr(self.model, field)
-
-            if op == FilterOperator.EQ:
-                if isinstance(column.type, ListType):
-                    query = query.where(column.contains(value))
-                else:
-                    query = query.where(column == value)
-            elif op == FilterOperator.GT:
-                query = query.where(column > value)
-            elif op == FilterOperator.GE:
-                query = query.where(column >= value)
-            elif op == FilterOperator.LT:
-                query = query.where(column < value)
-            elif op == FilterOperator.LE:
-                query = query.where(column <= value)
-
-        for expression in self._where:
-            query = query.where(expression)
+        query = (
+            select(self.model)
+            .order_by(self._order_expr())
+            .where(self._filters_expr())
+            .where(*self._where)
+        )
 
         total_query = query.with_only_columns(func.count(self.model.id))
         results_query = query.limit(limit).offset(offset)
@@ -213,10 +187,47 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
 
         return response
 
-    def where(self, expression: ColumnElement[bool]) -> Self:
-        query = self.copy()
-        query._where.append(expression)
-        return query
+    def _order_expr(self) -> ColumnElement[Any]:
+        # Apply default sorting if none is specified explicitly
+        sort = self.get_sort()
+        if not sort:
+            sort_field = self.DEFAULT_SORT_FIELD
+            sort_order = self.DEFAULT_SORT_ORDER
+        else:
+            sort_field, sort_order = sort
+
+        # This evaluates to something like `Vote.timestamp`.
+        order_expr = getattr(self.model, sort_field)
+
+        if sort_order == Order.DESC:
+            return desc(order_expr)
+        else:
+            return asc(order_expr)
+
+    def _filters_expr(self) -> ColumnElement[bool]:
+        conditions = []
+
+        for (field, op), value in self.get_filters().items():
+            column = getattr(self.model, field)
+
+            if op == FilterOperator.EQ:
+                if isinstance(column.type, ListType):
+                    conditions.append(column.contains(value))
+                else:
+                    conditions.append(column == value)
+            elif op == FilterOperator.GT:
+                conditions.append(column > value)
+            elif op == FilterOperator.GE:
+                conditions.append(column >= value)
+            elif op == FilterOperator.LT:
+                conditions.append(column < value)
+            elif op == FilterOperator.LE:
+                conditions.append(column <= value)
+
+        if not conditions:
+            return true()
+
+        return and_(*conditions)
 
 
 class ValueDecayWeightPostingSource(ValuePostingSource):
@@ -350,38 +361,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 self._xapian_age_subquery(),
             )
 
-        for (field, op), value in self.get_filters().items():
-            # Fields have to be indexed as boolean terms to be used with equality filters
-            # and in slots to be used with greater/less than filters
-            if op == FilterOperator.EQ:
-                term = boolean_term(field, value)
-                subquery = XapianQuery(term)
-            elif op == FilterOperator.GT or op == FilterOperator.GE:
-                slot = field_to_slot(field)
-                serialized_value = serialize_value(value)
-                subquery = XapianQuery(XapianQuery.OP_VALUE_GE, slot, serialized_value)
-                if op == FilterOperator.GT:
-                    # Xapian doesn’t have native support for "<", so we need to emulate this:
-                    # field > value <==> field >= value AND !(field <= value)
-                    subquery = XapianQuery(
-                        XapianQuery.OP_AND_NOT,
-                        subquery,
-                        XapianQuery(XapianQuery.OP_VALUE_LE, slot, serialized_value),
-                    )
-            elif op == FilterOperator.LT or op == FilterOperator.LE:
-                slot = field_to_slot(field)
-                serialized_value = serialize_value(value)
-                subquery = XapianQuery(XapianQuery.OP_VALUE_LE, slot, serialize_value(value))
-                if op == FilterOperator.LT:
-                    # Xapian doesn’t have native support for "<", so we need to emulate this:
-                    # field < value <==> field <= value AND !(field >= value)
-                    subquery = XapianQuery(
-                        XapianQuery.OP_AND_NOT,
-                        subquery,
-                        XapianQuery(XapianQuery.OP_VALUE_GE, slot, serialized_value),
-                    )
-
-            query = XapianQuery(XapianQuery.OP_FILTER, query, subquery)
+        query = XapianQuery(XapianQuery.OP_FILTER, query, self._xapian_filters_subquery())
 
         return query
 
@@ -462,3 +442,62 @@ class SearchQuery[T: BaseWithId](Query[T]):
         min_normlen = 0.5
 
         return BM25Weight(k1, k2, k3, b, min_normlen)
+
+    def _xapian_filters_subquery(self) -> XapianQuery:
+        subqueries = []
+
+        for (field, op), value in self.get_filters().items():
+            # Fields have to be indexed as boolean terms to be used with equality filters
+            # and in slots to be used with greater/less than filters
+            if op == FilterOperator.EQ:
+                subqueries.append(self._xapian_filter_eq_subquery(field, value))
+            elif op == FilterOperator.GT:
+                subqueries.append(self._xapian_filter_gt_subquery(field, value))
+            elif op == FilterOperator.GE:
+                subqueries.append(self._xapian_filter_ge_subquery(field, value))
+            elif op == FilterOperator.LT:
+                subqueries.append(self._xapian_filter_lt_subquery(field, value))
+            elif op == FilterOperator.LE:
+                subqueries.append(self._xapian_filter_le_subquery(field, value))
+
+        query = XapianQuery.MatchAll
+
+        for subquery in subqueries:
+            query = XapianQuery(XapianQuery.OP_AND, query, subquery)
+
+        return query
+
+    def _xapian_filter_eq_subquery(self, field: str, value: Any) -> XapianQuery:
+        return XapianQuery(boolean_term(field, value))
+
+    def _xapian_filter_gt_subquery(self, field: str, value: Any) -> XapianQuery:
+        # Xapian doesn’t have native support for "<", so we need to emulate this:
+        # field > value <==> field >= value AND !(field <= value)
+        return XapianQuery(
+            XapianQuery.OP_AND_NOT,
+            self._xapian_filter_ge_subquery(field, value),
+            self._xapian_filter_le_subquery(field, value),
+        )
+
+    def _xapian_filter_ge_subquery(self, field: str, value: Any) -> XapianQuery:
+        return XapianQuery(
+            XapianQuery.OP_VALUE_GE,
+            field_to_slot(field),
+            serialize_value(value),
+        )
+
+    def _xapian_filter_lt_subquery(self, field: str, value: Any) -> XapianQuery:
+        # Xapian doesn’t have native support for "<", so we need to emulate this:
+        # field < value <==> field <= value AND !(field >= value)
+        return XapianQuery(
+            XapianQuery.OP_AND_NOT,
+            self._xapian_filter_le_subquery(field, value),
+            self._xapian_filter_ge_subquery(field, value),
+        )
+
+    def _xapian_filter_le_subquery(self, field: str, value: Any) -> XapianQuery:
+        return XapianQuery(
+            XapianQuery.OP_VALUE_LE,
+            field_to_slot(field),
+            serialize_value(value),
+        )
