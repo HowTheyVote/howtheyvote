@@ -2,7 +2,7 @@ import copy
 import datetime
 import enum
 from abc import ABC, abstractmethod
-from typing import Any, Self, TypedDict
+from typing import Any, Literal, Self, TypedDict
 
 from sqlalchemy import desc, func, select
 from sqlalchemy.sql import ColumnElement
@@ -31,12 +31,25 @@ from ..search import (
     field_to_slot,
     get_index,
     get_stopper,
+    serialize_value,
 )
 
 
 class Order(enum.Enum):
     ASC = "asc"
     DESC = "desc"
+
+
+class FilterOperator(enum.Enum):
+    EQ = "="
+    GT = ">"
+    GE = ">="
+    LT = "<"
+    LE = "<="
+
+
+FilterOperatorSymbol = Literal["=", ">", ">=", "<", "<="]
+Filters = dict[tuple[str, FilterOperator], Any]
 
 
 class QueryResponse[T: BaseWithId](TypedDict):
@@ -59,7 +72,7 @@ class Query[T: BaseWithId](ABC):
         self._sort: tuple[str, Order] | None = None
         self._page: int | None = None
         self._page_size: int | None = None
-        self._filters: dict[str, Any] = {}
+        self._filters: Filters = {}
 
     @abstractmethod
     def handle(self) -> QueryResponse[T]:
@@ -122,15 +135,15 @@ class Query[T: BaseWithId](ABC):
 
     # TODO Figure out if there's a type-safe way to ensure that `field` is valid
     # for the given model and `value` has the respective type.
-    def filter(self, field: str, value: Any) -> Self:
+    def filter(self, field: str, op: FilterOperatorSymbol, value: Any) -> Self:
         query = self.copy()
 
         if value is not None:
-            query._filters[field] = value
+            query._filters[(field, FilterOperator(op))] = value
 
         return query
 
-    def get_filters(self) -> dict[str, Any]:
+    def get_filters(self) -> Filters:
         return self._filters
 
 
@@ -163,13 +176,22 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
 
         query = query.order_by(order_expr)
 
-        for field, value in self.get_filters().items():
+        for (field, op), value in self.get_filters().items():
             column = getattr(self.model, field)
 
-            if isinstance(column.type, ListType):
-                query = query.where(column.contains(value))
-            else:
-                query = query.where(column == value)
+            if op == FilterOperator.EQ:
+                if isinstance(column.type, ListType):
+                    query = query.where(column.contains(value))
+                else:
+                    query = query.where(column == value)
+            elif op == FilterOperator.GT:
+                query = query.where(column > value)
+            elif op == FilterOperator.GE:
+                query = query.where(column >= value)
+            elif op == FilterOperator.LT:
+                query = query.where(column < value)
+            elif op == FilterOperator.LE:
+                query = query.where(column <= value)
 
         for expression in self._where:
             query = query.where(expression)
@@ -328,10 +350,38 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 self._xapian_age_subquery(),
             )
 
-        for field, value in self.get_filters().items():
-            # Fields have to be indexed as boolean terms to be used as filters
-            term = boolean_term(field, value)
-            query = XapianQuery(XapianQuery.OP_FILTER, query, XapianQuery(term))
+        for (field, op), value in self.get_filters().items():
+            # Fields have to be indexed as boolean terms to be used with equality filters
+            # and in slots to be used with greater/less than filters
+            if op == FilterOperator.EQ:
+                term = boolean_term(field, value)
+                subquery = XapianQuery(term)
+            elif op == FilterOperator.GT or op == FilterOperator.GE:
+                slot = field_to_slot(field)
+                serialized_value = serialize_value(value)
+                subquery = XapianQuery(XapianQuery.OP_VALUE_GE, slot, serialized_value)
+                if op == FilterOperator.GT:
+                    # Xapian doesn’t have native support for "<", so we need to emulate this:
+                    # field > value <==> field >= value AND !(field <= value)
+                    subquery = XapianQuery(
+                        XapianQuery.OP_AND_NOT,
+                        subquery,
+                        XapianQuery(XapianQuery.OP_VALUE_LE, slot, serialized_value),
+                    )
+            elif op == FilterOperator.LT or op == FilterOperator.LE:
+                slot = field_to_slot(field)
+                serialized_value = serialize_value(value)
+                subquery = XapianQuery(XapianQuery.OP_VALUE_LE, slot, serialize_value(value))
+                if op == FilterOperator.LT:
+                    # Xapian doesn’t have native support for "<", so we need to emulate this:
+                    # field < value <==> field <= value AND !(field >= value)
+                    subquery = XapianQuery(
+                        XapianQuery.OP_AND_NOT,
+                        subquery,
+                        XapianQuery(XapianQuery.OP_VALUE_GE, slot, serialized_value),
+                    )
+
+            query = XapianQuery(XapianQuery.OP_FILTER, query, subquery)
 
         return query
 

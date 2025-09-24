@@ -75,14 +75,14 @@ def index() -> ResponseValue:
         query = query.sort("start_date", Order.ASC)
 
     if status == "current":
-        query = query.where(PlenarySession.start_date <= today)
-        query = query.where(PlenarySession.end_date >= today)
+        query = query.filter("start_date", "<=", today)
+        query = query.filter("end_date", ">=", today)
 
     if status == "past":
-        query = query.where(PlenarySession.end_date < today)
+        query = query.filter("end_date", "<", today)
 
     if status == "upcoming":
-        query = query.where(PlenarySession.start_date > today)
+        query = query.filter("start_date", ">", today)
 
     response = query.handle()
     results: list[PlenarySessionDict] = [

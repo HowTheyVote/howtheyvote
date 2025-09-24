@@ -1,3 +1,4 @@
+import datetime
 import enum
 import pathlib
 import shutil
@@ -6,7 +7,13 @@ from contextlib import contextmanager
 from typing import Literal, overload
 
 from structlog import get_logger
-from xapian import DB_CREATE_OR_OPEN, Database, SimpleStopper, WritableDatabase
+from xapian import (
+    DB_CREATE_OR_OPEN,
+    Database,
+    SimpleStopper,
+    WritableDatabase,
+    sortable_serialise,
+)
 
 from . import config
 from .models import BaseWithId
@@ -134,3 +141,13 @@ def delete_indexes() -> None:
 
         log.info("Deleting index", path=path.name)
         shutil.rmtree(path)
+
+
+def serialize_value(value: int | float | datetime.date | datetime.datetime) -> str:
+    if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
+        value = datetime.datetime.combine(value, datetime.time(0, 0))
+
+    if isinstance(value, datetime.datetime):
+        value = value.timestamp()
+
+    return sortable_serialise(value)
