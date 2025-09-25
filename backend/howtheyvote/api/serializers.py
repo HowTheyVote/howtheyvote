@@ -394,11 +394,30 @@ class QueryResponseDict(TypedDict):
     """Whether there is a next page of results"""
 
 
+class FacetOptionDict(TypedDict):
+    value: str
+    label: str
+    count: int
+
+
+class FacetDict(TypedDict):
+    field: str
+    options: list[FacetOptionDict]
+
+
+class WithFacetsDict(TypedDict):
+    facets: list[FacetDict]
+
+
 # Using standard inheritance instead of generics as generics are a little
 # difficult to represent in OpenAPI specs/JSONSchema
 class VotesQueryResponseDict(QueryResponseDict):
     results: list[BaseVoteDict]
     """Votes"""
+
+
+class VotesQueryResponseWithFacetsDict(VotesQueryResponseDict, WithFacetsDict):
+    pass
 
 
 class PlenarySessionsQueryResponseDict(QueryResponseDict):

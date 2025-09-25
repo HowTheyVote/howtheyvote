@@ -2,6 +2,7 @@ import copy
 import datetime
 import enum
 from abc import ABC, abstractmethod
+from collections import defaultdict
 from typing import Any, Literal, Self, TypedDict
 
 from sqlalchemy import and_, asc, desc, func, select, true
@@ -9,7 +10,9 @@ from sqlalchemy.sql import ColumnElement
 from xapian import (
     BM25Weight,
     Database,
+    Document,
     Enquire,
+    MatchSpy,
     QueryParser,
     ValuePostingSource,
     ValueWeightPostingSource,
@@ -32,6 +35,7 @@ from ..search import (
     get_index,
     get_stopper,
     serialize_value,
+    unserialize_list,
 )
 
 
@@ -61,6 +65,20 @@ class QueryResponse[T: BaseWithId](TypedDict):
     has_prev: bool
 
 
+class FacetOption(TypedDict):
+    value: str
+    count: int
+
+
+class Facet(TypedDict):
+    field: str
+    options: list[FacetOption]
+
+
+class QueryResponseWithFacets[T: BaseWithId](QueryResponse[T]):
+    facets: list[Facet]
+
+
 class Query[T: BaseWithId](ABC):
     MAX_PAGE_SIZE = 200
     DEFAULT_PAGE_SIZE = 20
@@ -73,6 +91,7 @@ class Query[T: BaseWithId](ABC):
         self._page: int | None = None
         self._page_size: int | None = None
         self._filters: Filters = {}
+        self._facets: list[str] = []
 
     @abstractmethod
     def handle(self) -> QueryResponse[T]:
@@ -145,6 +164,14 @@ class Query[T: BaseWithId](ABC):
 
     def get_filters(self) -> Filters:
         return self._filters
+
+    def facet(self, field: str) -> Self:
+        copy = self.copy()
+        copy._facets.append(field)
+        return copy
+
+    def get_facets(self) -> list[str]:
+        return self._facets
 
 
 class DatabaseQuery[T: BaseWithId](Query[T]):
@@ -259,6 +286,25 @@ class ValueDecayWeightPostingSource(ValuePostingSource):
         return weight
 
 
+class MultiValueCountMatchSpy(MatchSpy):
+    """Match spies are called while Xapian matches documents against the query. They can
+    be used to compute aggregates of the result set. Xapian includes a `ValueCountMatchSpy`
+    which can be used to compute the number of documents per unique slot value. Natively,
+    Xapian only supports a single value per slot, but we have many cases where we need to
+    store multiple values in a single slot (for example geographic areas). To work aorund
+    this, we serialize lists of values during indexing, and unserialize it when the match
+    spy is called."""
+
+    def __init__(self, slot: int):
+        super().__init__()
+        self.slot = slot
+        self.counts: dict[str, int] = defaultdict(int)
+
+    def __call__(self, doc: Document, _weight: float) -> None:
+        for term in unserialize_list(doc.get_value(self.slot)):
+            self.counts[term] += 1
+
+
 class SearchQuery[T: BaseWithId](Query[T]):
     BOOST_FEATURED = 0.075
     """Constant weight added for featured votes."""
@@ -274,8 +320,9 @@ class SearchQuery[T: BaseWithId](Query[T]):
     def __init__(self, model: type[T]):
         super().__init__(model)
         self._query: str | None = None
+        self._facets: list[str] = []
 
-    def handle(self) -> QueryResponse[T]:
+    def handle(self) -> QueryResponseWithFacets[T]:
         page = self.get_page()
         page_size = self.get_page_size()
         limit = self.get_limit()
@@ -301,6 +348,14 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 reverse = self.DEFAULT_SORT_ORDER == Order.DESC
                 enquire.set_sort_by_relevance_then_value(slot, reverse)
 
+            # Add spys to compute facets
+            # https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/facets.html#querying
+            spies = {}
+
+            for field in self.get_facets():
+                spies[field] = MultiValueCountMatchSpy(field_to_slot(field))
+                enquire.add_matchspy(spies[field])
+
             # Fetch one extra result to check if there is a next page
             mset = enquire.get_mset(offset, limit + 1)
 
@@ -317,13 +372,34 @@ class SearchQuery[T: BaseWithId](Query[T]):
         # Sort in the same order as returned in search response
         results = sorted(results, key=lambda r: ids.index(int(r.id)))
 
-        response: QueryResponse[T] = {
+        # Format facets
+        facets: list[Facet] = []
+
+        for field, spy in spies.items():
+            options: list[FacetOption] = [
+                {"value": term, "count": count} for term, count in spy.counts.items()
+            ]
+
+            options.sort(
+                key=lambda option: option["count"],
+                reverse=True,
+            )
+
+            facets.append(
+                {
+                    "field": field,
+                    "options": options,
+                }
+            )
+
+        response: QueryResponseWithFacets[T] = {
             "total": mset.get_matches_estimated(),
             "page": page,
             "page_size": page_size,
             "has_prev": page > 1,
             "has_next": mset.size() > limit,
             "results": results,
+            "facets": facets,
         }
 
         return response

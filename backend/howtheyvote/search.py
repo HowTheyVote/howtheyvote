@@ -58,6 +58,8 @@ FIELD_TO_PREFIX_MAPPING = {
 FIELD_TO_SLOT_MAPPING = {
     "date": 0,
     "has_press_release": 1,
+    "geo_areas": 2,
+    "responsible_committees": 3,
 }
 
 # Some document fields are more important than others. The following factors are applied
@@ -161,3 +163,17 @@ def serialize_value(value: int | float | date | datetime) -> str:
         value = value.timestamp()
 
     return sortable_serialise(value)
+
+
+LIST_SEPARATOR = b"\x03"
+
+
+def serialize_list(values: list[str]) -> bytes:
+    return LIST_SEPARATOR.join(value.encode("utf-8") for value in values)
+
+
+def unserialize_list(value: bytes) -> list[str]:
+    if not value:
+        return []
+
+    return [item.decode("utf-8") for item in value.split(LIST_SEPARATOR)]

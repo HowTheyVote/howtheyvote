@@ -479,6 +479,99 @@ def test_votes_api_search_filters(db_session, search_index, api):
     assert res.json["total"] == 0
 
 
+def test_votes_api_search_facets(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        geo_areas=[Country["DEU"], Country["FRA"]],
+        responsible_committees=[Committee["AFCO"]],
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        geo_areas=[Country["FRA"]],
+        responsible_committees=[Committee["IMCO"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+    index_search(Vote, [one, two])
+
+    res = api.get("/api/votes/search")
+    assert res.json["facets"] == []
+
+    res = api.get("/api/votes/search", query_string={"facets": "geo_areas"})
+    assert res.json["facets"] == [
+        {
+            "field": "geo_areas",
+            "options": [
+                {"value": "FRA", "label": "France", "count": 2},
+                {"value": "DEU", "label": "Germany", "count": 1},
+            ],
+        }
+    ]
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={"facets": ["geo_areas", "responsible_committees"]},
+    )
+    assert res.json["facets"] == [
+        {
+            "field": "geo_areas",
+            "options": [
+                {"value": "FRA", "label": "France", "count": 2},
+                {"value": "DEU", "label": "Germany", "count": 1},
+            ],
+        },
+        {
+            "field": "responsible_committees",
+            "options": [
+                {
+                    "value": "AFCO",
+                    "label": "Committee on Constitutional Affairs",
+                    "count": 1,
+                },
+                {
+                    "value": "IMCO",
+                    "label": "Committee on the Internal Market and Consumer Protection",
+                    "count": 1,
+                },
+            ],
+        },
+    ]
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={
+            "facets": ["geo_areas", "responsible_committees"],
+            "responsible_committees": "IMCO",
+        },
+    )
+    assert res.json["facets"] == [
+        {
+            "field": "geo_areas",
+            "options": [
+                {"value": "FRA", "label": "France", "count": 1},
+            ],
+        },
+        {
+            "field": "responsible_committees",
+            "options": [
+                {
+                    "value": "IMCO",
+                    "label": "Committee on the Internal Market and Consumer Protection",
+                    "count": 1,
+                },
+            ],
+        },
+    ]
+
+
 def test_votes_api_search_special_chars(db_session, search_index, api):
     vote = Vote(
         id=1,

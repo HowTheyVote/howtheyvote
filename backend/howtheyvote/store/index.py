@@ -15,6 +15,7 @@ from ..search import (
     field_to_slot,
     get_index,
     get_stopper,
+    serialize_list,
     serialize_value,
 )
 
@@ -162,7 +163,7 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     has_press_release = serialize_value(int(vote.press_release is not None))
     doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
-    # Store boolean terms. Boolean terms aren’t searchable, but can be used for filtering.
+    # Store categorical values as boolean terms for filtering.
     if vote.reference:
         term = boolean_term("reference", vote.reference)
         doc.add_boolean_term(term)
@@ -178,5 +179,14 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     for committee in vote.responsible_committees:
         term = boolean_term("responsible_committees", committee)
         doc.add_boolean_term(term)
+
+    # Store categorical values in slots to compute facets. Slots can only store a single
+    # value, so we have to serialize the list first.
+    # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html
+    value = serialize_list([geo_area.code for geo_area in vote.geo_areas])
+    doc.add_value(field_to_slot("geo_areas"), value)
+
+    value = serialize_list([committee.code for committee in vote.responsible_committees])
+    doc.add_value(field_to_slot("responsible_committees"), value)
 
     return doc

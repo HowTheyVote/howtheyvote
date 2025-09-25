@@ -8,6 +8,8 @@ from .serializers import (
     CommitteeDict,
     CountryDict,
     EurovocConceptDict,
+    FacetDict,
+    FacetOptionDict,
     GroupDict,
     LinkDict,
     MemberDict,
@@ -23,9 +25,11 @@ from .serializers import (
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
+    VotesQueryResponseWithFacetsDict,
     VoteStatsByCountryDict,
     VoteStatsByGroupDict,
     VoteStatsDict,
+    WithFacetsDict,
 )
 
 DESCRIPTION = """
@@ -67,7 +71,11 @@ schema_classes = [
     SourceDict,
     LinkDict,
     QueryResponseDict,
+    FacetDict,
+    FacetOptionDict,
+    WithFacetsDict,
     VotesQueryResponseDict,
+    VotesQueryResponseWithFacetsDict,
     RelatedVoteDict,
     Statistics,
 ]
