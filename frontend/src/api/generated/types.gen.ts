@@ -104,6 +104,17 @@ export type EurovocConcept = {
     label: string;
 };
 
+export type Facet = {
+    field: string;
+    options: Array<FacetOption>;
+};
+
+export type FacetOption = {
+    value: string;
+    label: string;
+    count: number;
+};
+
 /**
  * Political group in the European Parliament
  */
@@ -401,6 +412,8 @@ export type VotesQueryResponse = QueryResponse & {
     results: Array<BaseVote>;
 };
 
+export type VotesQueryResponseWithFacets = VotesQueryResponse & WithFacets;
+
 export type VoteStats = {
     /**
      * Total number of MEPs by vote position
@@ -426,8 +439,36 @@ export type VoteStatsByGroup = {
     stats: VotePositionCounts;
 };
 
+export type WithFacets = {
+    facets: Array<Facet>;
+};
+
 export type GetVotesData = {
     query?: {
+        /**
+         * Filter votes by date and return only votes that were cast on the given
+         * date.
+         *
+         */
+        date?: string;
+        /**
+         * Filter votes by date and return only votes that were cast on or after the
+         * given date.
+         *
+         */
+        'date:ge'?: string;
+        /**
+         * Filter votes by date and return only votes that were cast on or before the
+         * given date.
+         *
+         */
+        'date:le'?: string;
+        /**
+         * Filter votes by geographic area. Valid values are 3-letter country codes
+         * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+         *
+         */
+        geo_areas?: string;
         /**
          * Results page
          */
@@ -437,9 +478,15 @@ export type GetVotesData = {
          */
         page_size?: number;
         /**
+         * Filter votes by responsible committees. Valid values are 4-letter
+         * committee codes.
+         *
+         */
+        responsible_committees?: string;
+        /**
          * Sort results by this field. Omit to sort by relevance.
          */
-        sort_by?: 'timestamp';
+        sort_by?: 'date';
         /**
          * Sort results in ascending or descending order
          */
@@ -454,6 +501,35 @@ export type GetVotesError = unknown;
 export type SearchVotesData = {
     query?: {
         /**
+         * Filter votes by date and return only votes that were cast on the given
+         * date.
+         *
+         */
+        date?: string;
+        /**
+         * Filter votes by date and return only votes that were cast on or after the
+         * given date.
+         *
+         */
+        'date:ge'?: string;
+        /**
+         * Filter votes by date and return only votes that were cast on or before the
+         * given date.
+         *
+         */
+        'date:le'?: string;
+        /**
+         * Return facet options for the given fields. Can be set multiple times.
+         *
+         */
+        facets?: Array<('geo_areas' | 'responsible_committees')>;
+        /**
+         * Filter votes by geographic area. Valid values are 3-letter country codes
+         * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+         *
+         */
+        geo_areas?: string;
+        /**
          * Results page
          */
         page?: number;
@@ -466,9 +542,15 @@ export type SearchVotesData = {
          */
         q?: string;
         /**
+         * Filter votes by responsible committees. Valid values are 4-letter
+         * committee codes.
+         *
+         */
+        responsible_committees?: string;
+        /**
          * Sort results by this field. Omit to sort by relevance.
          */
-        sort_by?: 'timestamp';
+        sort_by?: 'date';
         /**
          * Sort results in ascending or descending order
          */
@@ -476,7 +558,7 @@ export type SearchVotesData = {
     };
 };
 
-export type SearchVotesResponse = (VotesQueryResponse);
+export type SearchVotesResponse = (VotesQueryResponseWithFacets);
 
 export type SearchVotesError = unknown;
 
