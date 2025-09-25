@@ -16,7 +16,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Country
+from .models import BaseWithId, Committee, Country
 
 log = get_logger(__name__)
 
@@ -44,6 +44,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "geo_area_labels": "XGAL",
     "eurovoc_concept_labels": "XECL",
     "rapporteur": "XRA",
+    "responsible_committees": "XRC",
     "reference": "XR",
     "procedure_reference": "XPR",
 }
@@ -83,7 +84,7 @@ def field_to_boost(field: str) -> float:
 
 def boolean_term(
     field: str,
-    value: str | int | bool | date | datetime | Country,
+    value: str | int | bool | date | datetime | Country | Committee,
 ) -> str:
     prefix = FIELD_TO_PREFIX_MAPPING[field]
 
@@ -91,6 +92,8 @@ def boolean_term(
         # Index bools as integers
         value = int(value)
     if type(value) is Country:
+        value = value.code
+    if type(value) is Committee:
         value = value.code
     if type(value) is str:
         # Normalize strings

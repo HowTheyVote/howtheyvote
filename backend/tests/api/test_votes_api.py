@@ -243,6 +243,42 @@ def test_votes_api_index_sort(db_session, api):
     assert res.json["total"] == 2
 
 
+def test_votes_api_index_filters(db_session, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        geo_areas=[Country["DEU"]],
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        geo_areas=[Country["FRA"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+
+    res = api.get("/api/votes", query_string={"geo_areas": "DEU"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes", query_string={"date": "2024-01-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes", query_string={"date:ge": "2024-02-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get("/api/votes", query_string={"geo_areas": "DEU", "date:ge": "2024-02-01"})
+    assert res.json["total"] == 0
+
+
 def test_votes_api_search(db_session, search_index, api):
     one = Vote(
         id=1,
@@ -401,6 +437,46 @@ def test_votes_api_search_sort(db_session, search_index, api):
     assert res.json["total"] == 2
     assert res.json["results"][0]["id"] == 2
     assert res.json["results"][1]["id"] == 1
+
+
+def test_votes_api_search_filters(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        geo_areas=[Country["DEU"]],
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        geo_areas=[Country["FRA"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+    index_search(Vote, [one, two])
+
+    res = api.get("/api/votes/search", query_string={"geo_areas": "DEU"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"date": "2024-01-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"date:ge": "2024-02-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={"geo_areas": "DEU", "date:ge": "2024-02-01"},
+    )
+    assert res.json["total"] == 0
 
 
 def test_votes_api_search_special_chars(db_session, search_index, api):

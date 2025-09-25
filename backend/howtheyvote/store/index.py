@@ -175,4 +175,8 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
         term = boolean_term("geo_areas", geo_area)
         doc.add_boolean_term(term)
 
+    for committee in vote.responsible_committees:
+        term = boolean_term("responsible_committees", committee)
+        doc.add_boolean_term(term)
+
     return doc
