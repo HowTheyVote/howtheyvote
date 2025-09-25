@@ -1,5 +1,6 @@
 import csv
 from collections.abc import Iterable
+from datetime import date
 from io import StringIO
 
 from flask import Blueprint, Request, Response, abort, jsonify, request
@@ -20,7 +21,14 @@ from ..links import (
     oeil_procedure_url,
     press_release_url,
 )
-from ..models import Fragment, Member, PressRelease, Vote
+from ..models import (
+    Committee,
+    Country,
+    Fragment,
+    Member,
+    PressRelease,
+    Vote,
+)
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 from .query import DatabaseQuery, Order, Query, SearchQuery
@@ -120,6 +128,49 @@ def index() -> Response:
                     enum:
                         - asc
                         - desc
+            -
+                in: query
+                name: date
+                description: |
+                    Filter votes by date and return only votes that were cast on the given
+                    date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date:ge
+                description: |
+                    Filter votes by date and return only votes that were cast on or after the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date:le
+                description: |
+                    Filter votes by date and return only votes that were cast on or before the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: geo_areas
+                description: |
+                    Filter votes by geographic area. Valid values are 3-letter country codes
+                    [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+                schema:
+                    type: string
+            -
+                in: query
+                name: responsible_committees
+                description: |
+                    Filter votes by responsible committees. Valid values are 4-letter
+                    committee codes.
+                schema:
+                    type: string
         responses:
             '200':
                 description: Ok
@@ -186,6 +237,49 @@ def search() -> Response:
                     enum:
                         - asc
                         - desc
+            -
+                in: query
+                name: date
+                description: |
+                    Filter votes by date and return only votes that were cast on the given
+                    date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date:ge
+                description: |
+                    Filter votes by date and return only votes that were cast on or after the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date:le
+                description: |
+                    Filter votes by date and return only votes that were cast on or before the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: geo_areas
+                description: |
+                    Filter votes by geographic area. Valid values are 3-letter country codes
+                    [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+                schema:
+                    type: string
+            -
+                in: query
+                name: responsible_committees
+                description: |
+                    Filter votes by responsible committees. Valid values are 4-letter
+                    committee codes.
+                schema:
+                    type: string
         responses:
             '200':
                 description: Ok
@@ -366,6 +460,17 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
 
     if sort_field:
         query = query.sort(field=sort_field, order=sort_order)
+
+    # Filters
+    query = query.filter("date", "=", request.args.get("date", type=date.fromisoformat))
+    query = query.filter("date", ">=", request.args.get("date:ge", type=date.fromisoformat))
+    query = query.filter("date", "<=", request.args.get("date:le", type=date.fromisoformat))
+
+    geo_area = request.args.get("geo_areas", type=lambda x: Country[x])
+    query = query.filter("geo_areas", "=", geo_area)
+
+    committees = request.args.get("responsible_committees", type=lambda x: Committee[x])
+    query = query.filter("responsible_committees", "=", committees)
 
     return query
 
