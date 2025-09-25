@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from howtheyvote.models import Group
@@ -35,8 +37,28 @@ def test_group_from_label_case_insensitive():
 
 def test_group_from_label_normalized():
     # Note that this doesn't use a proper apostrophe in "People's"
-    epp = Group.from_label("Group of the European People's Party (Christian Democrats)")
+    epp = Group.from_label("Group of the European People's Party")
     assert epp == Group["EPP"]
 
-    guengl = Group.from_label("Group of the European United Left - Nordic Green Left")
+    # Note that this doesn’t use a proper en dash
+    guengl = Group.from_label("The Left group in the European Parliament")
     assert guengl == Group["GUE_NGL"]
+
+
+def test_group_from_alt_labels():
+    guengl = Group.from_label("The Left group in the European Parliament - GUE/NGL")
+    assert guengl == Group["GUE_NGL"]
+
+
+def test_group_from_label_date():
+    epp_current = Group.from_label(
+        "Group of the European People’s Party (Christian Democrats)",
+        date=datetime.date(2025, 1, 1),
+    )
+    assert epp_current == Group["EPP"]
+
+    epp_2009 = Group.from_label(
+        "Group of the European People’s Party (Christian Democrats)",
+        date=datetime.date(2019, 1, 1),
+    )
+    assert epp_2009 == Group["EPP_2009_0"]

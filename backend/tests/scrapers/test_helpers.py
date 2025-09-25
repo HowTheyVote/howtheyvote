@@ -1,8 +1,23 @@
-from howtheyvote.models import Fragment, ProcedureStage
+import pytest
+
+from howtheyvote.models import (
+    AmendmentAuthorCommittee,
+    AmendmentAuthorGroup,
+    AmendmentAuthorMembers,
+    AmendmentAuthorOrally,
+    AmendmentAuthorOriginalText,
+    AmendmentAuthorRapporteur,
+    Committee,
+    Fragment,
+    Group,
+    ProcedureStage,
+)
+from howtheyvote.scrapers.common import ScrapingError
 from howtheyvote.scrapers.helpers import (
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
+    parse_amendment_authors,
     parse_dlv_title,
     parse_full_name,
     parse_rcv_text,
@@ -193,3 +208,83 @@ def test_fill_missing_by_reference():
     ]
 
     assert [f.data for f in actual] == [f.data for f in expected]
+
+
+def test_parse_amendment_authors():
+    # Single group author
+    assert parse_amendment_authors("S&D") == [
+        AmendmentAuthorGroup(group=Group["SD"]),
+    ]
+    assert parse_amendment_authors("The Left") == [
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+    ]
+
+    # Mutliple group authors, comma as delimiter
+    assert parse_amendment_authors("S&D, The Left") == [
+        AmendmentAuthorGroup(group=Group["SD"]),
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+    ]
+
+    # Multiple group authors, newline as delimiter
+    assert parse_amendment_authors("The Left\nS&D") == [
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+        AmendmentAuthorGroup(group=Group["SD"]),
+    ]
+
+    # Multiple group authors, space as delimiter
+    assert parse_amendment_authors("The Left S&D") == [
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+        AmendmentAuthorGroup(group=Group["SD"]),
+    ]
+    assert parse_amendment_authors("S&D The Left") == [
+        AmendmentAuthorGroup(group=Group["SD"]),
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+    ]
+
+    # Multiple group authors, mixed delimiters
+    assert parse_amendment_authors("The Left\nS&D Verts/ALE") == [
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+        AmendmentAuthorGroup(group=Group["SD"]),
+        AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
+    ]
+
+    # Remove group suffix
+    assert parse_amendment_authors("The Left Group S&D") == [
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+        AmendmentAuthorGroup(group=Group["SD"]),
+    ]
+
+    # Remove colon suffix
+    assert parse_amendment_authors("Verts/ALE:") == [
+        AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
+    ]
+
+    # Remove compromise amendment suffix
+    assert parse_amendment_authors("PPE (CA)") == [
+        AmendmentAuthorGroup(group=Group["EPP"]),
+    ]
+
+    # Single committee author
+    assert parse_amendment_authors("committee") == [
+        AmendmentAuthorCommittee(committee=None),
+    ]
+    assert parse_amendment_authors("LIBE") == [
+        AmendmentAuthorCommittee(committee=Committee["LIBE"]),
+    ]
+
+    # Members
+    assert parse_amendment_authors("members") == [AmendmentAuthorMembers()]
+    assert parse_amendment_authors("MEPs") == [AmendmentAuthorMembers()]
+
+    # Original text
+    assert parse_amendment_authors("original text") == [AmendmentAuthorOriginalText()]
+
+    # Amended orally
+    assert parse_amendment_authors("amended orally") == [AmendmentAuthorOrally()]
+
+    # Rapporteur
+    assert parse_amendment_authors("rapporteur") == [AmendmentAuthorRapporteur()]
+
+    # Invalid author
+    with pytest.raises(ScrapingError, match="Could not parse amendment authors: foo bar"):
+        assert parse_amendment_authors("EPP FOO BAR")

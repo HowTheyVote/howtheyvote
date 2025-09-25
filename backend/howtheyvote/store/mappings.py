@@ -9,6 +9,7 @@ from ..models import (
     ProcedureStage,
     Vote,
     VoteResult,
+    deserialize_amendment_author,
     deserialize_group_membership,
     deserialize_member_vote,
 )
@@ -59,7 +60,7 @@ def map_plenary_session(record: CompositeRecord) -> PlenarySession:
 
 def map_vote(record: CompositeRecord) -> Vote:
     """Maps a `howtheyvote.store.CompositeRecord` to a `howtheyvote.models.Vote` object."""
-    member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes")]
+    member_votes = [deserialize_member_vote(mv) for mv in record.first("member_votes", [])]
     geo_areas = {Country[code] for code in record.chain("geo_areas")}
     eurovoc_concepts = {EurovocConcept[id_] for id_ in record.chain("eurovoc_concepts")}
     oeil_subjects = {OEILSubject[code] for code in record.chain("oeil_subjects")}
@@ -72,6 +73,13 @@ def map_vote(record: CompositeRecord) -> Vote:
         if record.first("procedure_stage")
         else None
     )
+
+    if record.first("amendment_authors"):
+        amendment_authors = [
+            deserialize_amendment_author(aa) for aa in record.first("amendment_authors")
+        ]
+    else:
+        amendment_authors = None
 
     press_release = record.first("press_release")
 
@@ -89,6 +97,9 @@ def map_vote(record: CompositeRecord) -> Vote:
         procedure_title=record.first("procedure_title"),
         procedure_reference=record.first("procedure_reference"),
         procedure_stage=procedure_stage,
+        amendment_subject=record.first("amendment_subject"),
+        amendment_number=record.first("amendment_number"),
+        amendment_authors=amendment_authors,
         is_main=record.first("is_main") or False,
         group_key=record.first("group_key"),
         result=result,

@@ -1,7 +1,7 @@
 import dataclasses
 import datetime
 from enum import Enum
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import sqlalchemy as sa
 from flask import url_for
@@ -13,6 +13,7 @@ from .committee import Committee, CommitteeType
 from .common import BaseWithId
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
+from .group import Group
 from .oeil import OEILSubject, OEILSubjectType
 from .types import ListType
 
@@ -22,6 +23,13 @@ class VoteResult(Enum):
     REJECTED = "REJECTED"
     LAPSED = "LAPSED"
     WITHDRAWN = "WITHDRAWN"
+
+
+class VoteResultType(Enum):
+    ROLL_CALL = "ROLL_CALL"
+    ELECTRONICAL = "ELECTRONICAL"
+    RAISE_HAND = "RAISE_HAND"
+    SECRET = "SECRET"
 
 
 class VotePosition(Enum):
@@ -71,18 +79,134 @@ class ProcedureStage(Enum):
     OLP_THIRD_READING = "OLP_THIRD_READING"
 
 
+class AmendmentAuthorType(Enum):
+    GROUP = "GROUP"
+    COMMITTEE = "COMMITTEE"
+    ORIGINAL_TEXT = "ORIGINAL_TEXT"
+    MEMBERS = "MEMBERS"
+    ORALLY = "ORALLY"
+    RAPPORTEUR = "RAPPORTEUR"
+
+
+@dataclasses.dataclass
+class AmendmentAuthorGroup:
+    group: Group | None
+
+
+@dataclasses.dataclass
+class AmendmentAuthorCommittee:
+    committee: Committee | None
+
+
+@dataclasses.dataclass
+class AmendmentAuthorOriginalText:
+    pass
+
+
+@dataclasses.dataclass
+class AmendmentAuthorMembers:
+    pass
+
+
+@dataclasses.dataclass
+class AmendmentAuthorOrally:
+    pass
+
+
+@dataclasses.dataclass
+class AmendmentAuthorRapporteur:
+    pass
+
+
+AmendmentAuthor = (
+    AmendmentAuthorGroup
+    | AmendmentAuthorCommittee
+    | AmendmentAuthorOriginalText
+    | AmendmentAuthorMembers
+    | AmendmentAuthorOrally
+    | AmendmentAuthorRapporteur
+)
+
+AMENDMENT_AUTHOR_TYPE_TO_CLASS: dict[AmendmentAuthorType, type[AmendmentAuthor]] = {
+    AmendmentAuthorType.GROUP: AmendmentAuthorGroup,
+    AmendmentAuthorType.COMMITTEE: AmendmentAuthorCommittee,
+    AmendmentAuthorType.ORIGINAL_TEXT: AmendmentAuthorOriginalText,
+    AmendmentAuthorType.MEMBERS: AmendmentAuthorMembers,
+    AmendmentAuthorType.ORALLY: AmendmentAuthorOrally,
+    AmendmentAuthorType.RAPPORTEUR: AmendmentAuthorRapporteur,
+}
+
+AMENDMENT_AUTHOR_CLASS_TO_TYPE = {v: k for k, v in AMENDMENT_AUTHOR_TYPE_TO_CLASS.items()}
+
+
+def serialize_amendment_author(author: AmendmentAuthor | None) -> dict[str, Any] | None:
+    if not author:
+        return None
+
+    if isinstance(author, AmendmentAuthorGroup):
+        return {
+            "type": AmendmentAuthorType.GROUP,
+            "group": author.group.code if author.group else None,
+        }
+
+    if isinstance(author, AmendmentAuthorCommittee):
+        return {
+            "type": AmendmentAuthorType.COMMITTEE,
+            "committee": author.committee.code if author.committee else None,
+        }
+
+    return {"type": AMENDMENT_AUTHOR_CLASS_TO_TYPE[author.__class__]}
+
+
+def deserialize_amendment_author(author: dict[str, Any] | None) -> AmendmentAuthor | None:
+    if not author:
+        return None
+
+    type_ = AmendmentAuthorType[author["type"]]
+
+    if type_ == AmendmentAuthorType.GROUP:
+        return AmendmentAuthorGroup(group=Group[author["group"]] if author["group"] else None)
+
+    if type_ == AmendmentAuthorType.COMMITTEE:
+        return AmendmentAuthorCommittee(
+            committee=Committee[author["committee"]] if author["committee"] else None,
+        )
+
+    author_class = AMENDMENT_AUTHOR_TYPE_TO_CLASS[type_]
+
+    # Typing this correctly would require a lot of boilerplate. Skipping that
+    # given that this is very isolated
+    return author_class()  # type: ignore
+
+
+class SAAmendmentAuthorType(TypeDecorator[AmendmentAuthor]):
+    impl = sa.JSON
+    cache_ok = True
+
+    def process_bind_param(
+        self, value: AmendmentAuthor | None, dialect: Dialect
+    ) -> dict[str, Any] | None:
+        if value is None:
+            return None
+
+        return serialize_amendment_author(value)
+
+    def process_result_value(
+        self, value: dict[str, Any] | None, dialect: Dialect
+    ) -> AmendmentAuthor | None:
+        if value is None:
+            return None
+
+        return deserialize_amendment_author(value)
+
+
 @dataclasses.dataclass
 class MemberVote:
     web_id: int
     position: VotePosition
 
 
-class SerializedMemberVote(TypedDict):
-    web_id: int
-    position: str
-
-
-def serialize_member_vote(member_vote: MemberVote | None) -> SerializedMemberVote | None:
+def serialize_member_vote(member_vote: MemberVote | None) -> dict[str, Any] | None:
     if not member_vote:
         return None
 
@@ -92,7 +216,7 @@ def serialize_member_vote(member_vote: MemberVote | None) -> SerializedMemberVot
     }
 
 
-def deserialize_member_vote(member_vote: SerializedMemberVote | None) -> MemberVote | None:
+def deserialize_member_vote(member_vote: dict[str, Any] | None) -> MemberVote | None:
     if not member_vote:
         return None
 
@@ -102,17 +226,17 @@ def deserialize_member_vote(member_vote: SerializedMemberVote | None) -> MemberV
     )
 
 
-class MemberVoteType(TypeDecorator[MemberVote]):
+class SAMemberVoteType(TypeDecorator[MemberVote]):
     impl = sa.JSON
     cache_ok = True
 
     def process_bind_param(
         self, value: MemberVote | None, dialect: Dialect
-    ) -> SerializedMemberVote | None:
+    ) -> dict[str, Any] | None:
         return serialize_member_vote(value)
 
     def process_result_value(
-        self, value: SerializedMemberVote | None, dialect: Dialect
+        self, value: dict[str, Any] | None, dialect: Dialect
     ) -> MemberVote | None:
         return deserialize_member_vote(value)
 
@@ -136,6 +260,11 @@ class Vote(BaseWithId):
     procedure_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
+    amendment_subject: Mapped[str | None] = mapped_column(sa.Unicode)
+    amendment_number: Mapped[str | None] = mapped_column(sa.Unicode)
+    amendment_authors: Mapped[list[AmendmentAuthor] | None] = mapped_column(
+        ListType(SAAmendmentAuthorType())
+    )
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     texts_adopted_reference: Mapped[str | None] = mapped_column(sa.Unicode)
@@ -143,13 +272,26 @@ class Vote(BaseWithId):
     is_main: Mapped[bool] = mapped_column(sa.Boolean, default=False)
     group_key: Mapped[str | None] = mapped_column(sa.Unicode)
     result: Mapped[VoteResult | None] = mapped_column(sa.Enum(VoteResult))
-    member_votes: Mapped[list[MemberVote]] = mapped_column(ListType(MemberVoteType()))
-    geo_areas: Mapped[list[Country]] = mapped_column(ListType(CountryType()))
-    eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
-        ListType(EurovocConceptType())
+    member_votes: Mapped[list[MemberVote]] = mapped_column(
+        ListType(SAMemberVoteType()),
+        default=[],
     )
-    oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(ListType(OEILSubjectType()))
-    responsible_committees: Mapped[list[Committee]] = mapped_column(ListType(CommitteeType()))
+    geo_areas: Mapped[list[Country]] = mapped_column(
+        ListType(CountryType()),
+        default=[],
+    )
+    eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
+        ListType(EurovocConceptType()),
+        default=[],
+    )
+    oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(
+        ListType(OEILSubjectType()),
+        default=[],
+    )
+    responsible_committees: Mapped[list[Committee]] = mapped_column(
+        ListType(CommitteeType()),
+        default=[],
+    )
     press_release: Mapped[str | None] = mapped_column(sa.Unicode)
 
     @property

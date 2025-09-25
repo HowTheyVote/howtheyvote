@@ -1,6 +1,6 @@
 import csv
 import datetime
-from typing import Any, TextIO
+from typing import Any, NotRequired, TextIO, TypedDict
 
 import click
 import requests
@@ -14,14 +14,25 @@ log = get_logger(__name__)
 PUBLICATIONS_ENDPOINT = "https://publications.europa.eu/webapi/rdf/sparql"
 DATA_ENDPOINT = "https://data.europa.eu/sparql"
 
-GROUP_OVERRIDES = {
+
+class Overrides(TypedDict):
+    official_label: NotRequired[str]
+    label: NotRequired[str]
+    short_label: NotRequired[str]
+    alt_labels: NotRequired[list[str]]
+
+
+GROUP_OVERRIDES: dict[str, Overrides] = {
     "GREEN_EFA": {
         "short_label": "Greens/EFA",
     },
     "GUE_NGL": {
-        "official_label": "The Left group in the European Parliament – GUE/NGL",
-        "label": "The Left in the European Parliament – GUE/NGL",
-        "short_label": "GUE/NGL",
+        "label": "The Left in the European Parliament",
+        "short_label": "The Left",
+        "alt_labels": [
+            # Still used by EP MEPs website (as of September 2025)
+            "The Left group in the European Parliament - GUE/NGL"
+        ],
     },
     "NI": {
         "short_label": "Non-attached",
@@ -31,6 +42,18 @@ GROUP_OVERRIDES = {
     },
     "SD": {
         "label": "Progressive Alliance of Socialists and Democrats",
+    },
+    "EPP": {
+        "alt_labels": [
+            # Still used by EP MEPs website (as of August 2025)
+            "Group of the European People’s Party (Christian Democrats)",
+            # Used in VOT lists
+            "PPE",
+        ],
+    },
+    "PFE": {
+        # Used in VOT lists
+        "short_label": "PfE",
     },
 }
 
@@ -317,7 +340,7 @@ def load_groups() -> None:
     SELECT ?code ?label ?abbr ?short ?start_date ?end_date
     FROM <http://publications.europa.eu/resource/authority/corporate-body>
     WHERE {
-        ?group org:classification <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_GROUP>.
+        ?group dct:type <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_GROUP>.
 
         ?group dc:identifier ?code.
 
@@ -389,6 +412,7 @@ def load_groups() -> None:
             if overrides.get("short_label"):
                 alt_labels.add(short_label)
                 short_label = overrides["short_label"]
+            alt_labels.update(overrides.get("alt_labels", []))
 
         alt_labels.discard(official_label)
         alt_labels.discard(label)

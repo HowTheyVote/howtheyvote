@@ -3,8 +3,10 @@
     "code": "ALDE",
     "official_label": "Group of the Alliance of Liberals and Democrats for Europe",
     "label": "Alliance of Liberals and Democrats for Europe",
-    "short_label": "ALDE",
-    "alt_labels": [],
+    "short_label": "Alliance of Liberals and Democrats for Europe",
+    "alt_labels": [
+      "ALDE"
+    ],
     "start_date": "2004-07-20",
     "end_date": "2019-06-11"
   },
@@ -14,12 +16,21 @@
     "label": "Rainbow Group in the European Parliament",
     "short_label": "Rainbow Group in the European Parliament",
     "alt_labels": [
-      "Rainbow",
-      "Rainbow Group: Federation of the Green-Alternative European Links, Agelev-Ecolo, the Danish People\u2019s Movement against Membership of the European Community and the European Free Alliance in the European Parliament",
       "Rainbow in the European Parliament"
     ],
-    "start_date": "1984-07-24",
+    "start_date": "1989-07-25",
     "end_date": "1994-07-18"
+  },
+  {
+    "code": "ARC_1984_0",
+    "official_label": "Rainbow Group: Federation of the Green-Alternative European Links, Agelev-Ecolo, the Danish People\u2019s Movement against Membership of the European Community and the European Free Alliance in the European Parliament",
+    "label": "Rainbow Group: Federation of the Green-Alternative European Links, Agelev-Ecolo, the Danish People\u2019s Movement against Membership of the European Community and the European Free Alliance in the European Parliament",
+    "short_label": "Rainbow Group: Federation of the Green-Alternative European Links, Agelev-Ecolo, the Danish People\u2019s Movement against Membership of the European Community and the European Free Alliance in the European Parliament",
+    "alt_labels": [
+      "Rainbow"
+    ],
+    "start_date": "1984-07-24",
+    "end_date": "1989-07-24"
   },
   {
     "code": "ARE",
@@ -46,12 +57,20 @@
     "official_label": "Christian-Democratic Group (Group of the European People\u2019s Party)",
     "label": "Christian-Democratic Group (Group of the European People\u2019s Party)",
     "short_label": "Christian-Democratic Group (Group of the European People\u2019s Party)",
+    "alt_labels": [],
+    "start_date": "1978-03-14",
+    "end_date": "1979-07-16"
+  },
+  {
+    "code": "CHD_1953_0",
+    "official_label": "Christian-Democratic Group",
+    "label": "Christian-Democratic",
+    "short_label": "Christian-Democratic",
     "alt_labels": [
-      "Christian-Democratic Group",
       "Christian-Democratics"
     ],
     "start_date": "1953-06-23",
-    "end_date": "1979-07-16"
+    "end_date": "1978-03-13"
   },
   {
     "code": "COM",
@@ -59,12 +78,21 @@
     "label": "Communist and Allies",
     "short_label": "Communist and Allies",
     "alt_labels": [
-      "Communist and Allies Group (SF, Ind. Sin.)",
-      "Communists and Allies",
+      "Communists and Allies"
+    ],
+    "start_date": "1979-07-17",
+    "end_date": "1989-07-24"
+  },
+  {
+    "code": "COM_1973_0",
+    "official_label": "Communist and Allies Group (SF, Ind. Sin.)",
+    "label": "Communist and Allies Group (SF, Ind. Sin.)",
+    "short_label": "Communist and Allies Group (SF, Ind. Sin.)",
+    "alt_labels": [
       "Communists and Allies (SF, Ind. Sin.)"
     ],
     "start_date": "1973-10-16",
-    "end_date": "1989-07-24"
+    "end_date": "1979-07-16"
   },
   {
     "code": "CTDI",
@@ -102,12 +130,18 @@
     "official_label": "Technical Group of the European Right",
     "label": "Technical Group of the European Right",
     "short_label": "Technical Group of the European Right",
-    "alt_labels": [
-      "European Right",
-      "Group of the European Right"
-    ],
-    "start_date": "1984-07-24",
+    "alt_labels": [],
+    "start_date": "1989-07-25",
     "end_date": "1994-07-18"
+  },
+  {
+    "code": "DR_1984_0",
+    "official_label": "Group of the European Right",
+    "label": "European Right",
+    "short_label": "European Right",
+    "alt_labels": [],
+    "start_date": "1984-07-24",
+    "end_date": "1989-07-24"
   },
   {
     "code": "ECNS",
@@ -166,12 +200,22 @@
     "code": "EFD",
     "official_label": "Europe of freedom and direct democracy Group",
     "label": "Europe of freedom and direct democracy",
-    "short_label": "EFDD",
+    "short_label": "Europe of freedom and direct democracy",
     "alt_labels": [
+      "EFDD",
       "Europe of freedom and democracy Group"
     ],
-    "start_date": "2009-07-14",
+    "start_date": "2014-07-01",
     "end_date": "2019-07-01"
+  },
+  {
+    "code": "EFD_2009_0",
+    "official_label": "Europe of freedom and democracy Group",
+    "label": "Europe of freedom and democracy",
+    "short_label": "Europe of freedom and democracy",
+    "alt_labels": [],
+    "start_date": "2009-07-14",
+    "end_date": "2014-06-30"
   },
   {
     "code": "ELDR",
@@ -188,8 +232,10 @@
     "code": "ENF",
     "official_label": "Europe of Nations and Freedom",
     "label": "Europe of Nations and Freedom",
-    "short_label": "ENF",
-    "alt_labels": [],
+    "short_label": "Europe of Nations and Freedom",
+    "alt_labels": [
+      "ENF"
+    ],
     "start_date": "2015-06-15",
     "end_date": "2019-07-01"
   },
@@ -200,11 +246,43 @@
     "short_label": "EPP",
     "alt_labels": [
       "Group of the European People\u2019s Party (Christian Democrats)",
-      "Group of the European People\u2019s Party (Christian Democrats) and European Democrats",
-      "Group of the European People\u2019s Party (Christian-Democratic Group)"
+      "PPE"
+    ],
+    "start_date": "2019-07-02",
+    "end_date": null
+  },
+  {
+    "code": "EPP_1979_0",
+    "official_label": "Group of the European People\u2019s Party (Christian-Democratic Group)",
+    "label": "European People\u2019s Party (Christian-Democratic Group)",
+    "short_label": "European People\u2019s Party (Christian-Democratic Group)",
+    "alt_labels": [
+      "European People\u2019s Party"
     ],
     "start_date": "1979-07-17",
-    "end_date": null
+    "end_date": "1999-07-19"
+  },
+  {
+    "code": "EPP_1999_0",
+    "official_label": "Group of the European People\u2019s Party (Christian Democrats) and European Democrats",
+    "label": "European People\u2019s Party (Christian Democrats) and European Democrats",
+    "short_label": "European People\u2019s Party (Christian Democrats) and European Democrats",
+    "alt_labels": [
+      "European People\u2019s Party"
+    ],
+    "start_date": "1999-07-20",
+    "end_date": "2009-07-13"
+  },
+  {
+    "code": "EPP_2009_0",
+    "official_label": "Group of the European People\u2019s Party (Christian Democrats)",
+    "label": "European People\u2019s Party (Christian Democrats)",
+    "short_label": "European People\u2019s Party (Christian Democrats)",
+    "alt_labels": [
+      "European People\u2019s Party"
+    ],
+    "start_date": "2009-07-14",
+    "end_date": "2019-07-01"
   },
   {
     "code": "ESN",
@@ -270,23 +348,34 @@
   },
   {
     "code": "GUE_NGL",
-    "official_label": "The Left group in the European Parliament \u2013 GUE/NGL",
-    "label": "The Left in the European Parliament \u2013 GUE/NGL",
-    "short_label": "GUE/NGL",
+    "official_label": "The Left group in the European Parliament",
+    "label": "The Left in the European Parliament",
+    "short_label": "The Left",
     "alt_labels": [
-      "Confederal Group of the European United Left \u2013 Nordic Green Left",
-      "European United Left \u2013 Nordic Green Left",
-      "The Left group in the European Parliament"
+      "The Left group in the European Parliament - GUE/NGL"
+    ],
+    "start_date": "2021-01-01",
+    "end_date": null
+  },
+  {
+    "code": "GUE_NGL_1995_0",
+    "official_label": "Confederal Group of the European United Left \u2013 Nordic Green Left",
+    "label": "Confederal Group of the European United Left \u2013 Nordic Green Left",
+    "short_label": "Confederal Group of the European United Left \u2013 Nordic Green Left",
+    "alt_labels": [
+      "European United Left \u2013 Nordic Green Left"
     ],
     "start_date": "1995-01-06",
-    "end_date": null
+    "end_date": "2020-12-31"
   },
   {
     "code": "ID",
     "official_label": "Identity and Democracy Group",
     "label": "Identity and Democracy",
-    "short_label": "ID",
-    "alt_labels": [],
+    "short_label": "Identity and Democracy",
+    "alt_labels": [
+      "ID"
+    ],
     "start_date": "2019-07-02",
     "end_date": "2024-07-07"
   },
@@ -360,14 +449,23 @@
     "alt_labels": [
       "NI"
     ],
-    "start_date": "1953-06-23",
+    "start_date": "2004-07-20",
     "end_date": null
+  },
+  {
+    "code": "NI_1953_0",
+    "official_label": "Non-attached",
+    "label": "Non-attached",
+    "short_label": "Non-attached",
+    "alt_labels": [],
+    "start_date": "1953-06-23",
+    "end_date": "2004-07-19"
   },
   {
     "code": "PFE",
     "official_label": "Patriots for Europe Group",
     "label": "Patriots for Europe",
-    "short_label": "Patriots for Europe",
+    "short_label": "PfE",
     "alt_labels": [],
     "start_date": "2024-07-08",
     "end_date": null
@@ -378,14 +476,30 @@
     "label": "Socialist Group in the European Parliament",
     "short_label": "Socialist Group in the European Parliament",
     "alt_labels": [
-      "Group of the Party of European Socialists",
-      "Party of European Socialists",
-      "Socialist",
-      "Socialist Group",
+      "Socialist"
+    ],
+    "start_date": "2004-07-20",
+    "end_date": "2009-07-13"
+  },
+  {
+    "code": "PSE_1953_0",
+    "official_label": "Socialist Group",
+    "label": "Socialist",
+    "short_label": "Socialist",
+    "alt_labels": [
       "Socialists"
     ],
     "start_date": "1953-06-23",
-    "end_date": "2009-07-13"
+    "end_date": "1993-04-20"
+  },
+  {
+    "code": "PSE_1993_0",
+    "official_label": "Group of the Party of European Socialists",
+    "label": "Party of European Socialists",
+    "short_label": "Party of European Socialists",
+    "alt_labels": [],
+    "start_date": "1993-04-21",
+    "end_date": "2004-07-19"
   },
   {
     "code": "RDE",

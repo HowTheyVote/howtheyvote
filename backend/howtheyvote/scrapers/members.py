@@ -173,7 +173,7 @@ class MemberGroupsScraper(BeautifulSoupScraper):
 
     def _group_membership(self, tag: Tag) -> dict[str, Any]:
         start, end = self._date_range(tag)
-        group = self._group(tag)
+        group = self._group(tag, date=start)
 
         return {
             "group": group,
@@ -182,7 +182,7 @@ class MemberGroupsScraper(BeautifulSoupScraper):
             "end_date": end,
         }
 
-    def _group(self, tag: Tag) -> str:
+    def _group(self, tag: Tag, date: date) -> str:
         text = "".join(tag.find_all(string=True, recursive=False))
         text = text.removeprefix(" : ")
 
@@ -205,7 +205,7 @@ class MemberGroupsScraper(BeautifulSoupScraper):
         for pos in positions:
             text = text.removesuffix(f" - {pos}")
 
-        group = Group.from_label(text)
+        group = Group.from_label(text, date=date)
 
         if not group:
             raise ScrapingError(f"Could not find group named {text}")
