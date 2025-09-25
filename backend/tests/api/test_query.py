@@ -284,3 +284,15 @@ def test_search_query_handle_filters():
     assert response["total"] == 1
     assert len(response["results"]) == 1
     assert response["results"][0].id == 2
+
+
+def test_search_query_handle_facets():
+    response = SearchQuery(Vote).facet("geo_areas").handle()
+    assert len(response["facets"]) == 1
+    assert response["facets"][0] == {
+        "field": "geo_areas",
+        "options": [
+            {"value": "DEU", "count": 2},
+            {"value": "FRA", "count": 1},
+        ],
+    }

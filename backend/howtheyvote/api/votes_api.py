@@ -31,9 +31,10 @@ from ..models import (
 )
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
-from .query import DatabaseQuery, Order, Query, SearchQuery
+from .query import DatabaseQuery, Facet, FacetOption, Order, Query, SearchQuery
 from .serializers import (
-    BaseVoteDict,
+    FacetDict,
+    FacetOptionDict,
     LinkDict,
     MemberVoteDict,
     ProcedureDict,
@@ -42,6 +43,7 @@ from .serializers import (
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
+    VotesQueryResponseWithFacetsDict,
     VoteStatsByCountryDict,
     VoteStatsByGroupDict,
     VoteStatsDict,
@@ -280,13 +282,27 @@ def search() -> Response:
                     committee codes.
                 schema:
                     type: string
+            -
+                in: query
+                name: facets
+                description: |
+                    Return facet options for the given fields. Can be set multiple times.
+                style: form
+                explode: true
+                schema:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - geo_areas
+                            - responsible_committees
         responses:
             '200':
                 description: Ok
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/VotesQueryResponse'
+                            $ref: '#/components/schemas/VotesQueryResponseWithFacets'
 
     """
     q = request.args.get("q", "").strip()
@@ -309,7 +325,7 @@ def search() -> Response:
     if q:
         query = query.query(q)
 
-    return jsonify(_serialize_query(query))
+    return jsonify(_serialize_query_with_facets(query))
 
 
 @bp.route("/votes/<int:vote_id>")
@@ -472,18 +488,65 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
     committees = request.args.get("responsible_committees", type=lambda x: Committee[x])
     query = query.filter("responsible_committees", "=", committees)
 
+    # Facets
+    facets = request.args.getlist(
+        "facets",
+        type=one_of("geo_areas", "responsible_committees"),
+    )
+
+    for field in facets:
+        query = query.facet(field)
+
     return query
 
 
-def _serialize_query(query: Query[Vote]) -> VotesQueryResponseDict:
+def _serialize_query(query: DatabaseQuery[Vote]) -> VotesQueryResponseDict:
     response = query.handle()
-    results: list[BaseVoteDict] = [
-        serialize_base_vote(result) for result in response["results"]
-    ]
 
     return {
         **response,
-        "results": results,
+        "results": [serialize_base_vote(result) for result in response["results"]],
+    }
+
+
+def _serialize_query_with_facets(query: SearchQuery[Vote]) -> VotesQueryResponseWithFacetsDict:
+    response = query.handle()
+
+    return {
+        **response,
+        "results": [serialize_base_vote(result) for result in response["results"]],
+        "facets": [_serialize_facet(facet) for facet in response["facets"]],
+    }
+
+
+def _serialize_facet(facet: Facet) -> FacetDict:
+    return {
+        **facet,
+        "options": [
+            _serialize_facet_option(facet["field"], option) for option in facet["options"]
+        ],
+    }
+
+
+def _serialize_facet_option(field: str, option: FacetOption) -> FacetOptionDict:
+    # This is no perfect solution. When we handle the query, we’re not aware of the field type
+    # anymore, so we have to manually enrich the options and provide a proper label here. There
+    # probably is a more elegant solution to this, but this is the simplest option for now.
+    if field == "geo_areas":
+        return {
+            **option,
+            "label": Country[option["value"]].label,
+        }
+
+    if field == "responsible_committees":
+        return {
+            **option,
+            "label": Committee[option["value"]].label,
+        }
+
+    return {
+        **option,
+        "label": option["value"],
     }
 
 
