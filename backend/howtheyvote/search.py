@@ -1,9 +1,9 @@
-import datetime
 import enum
 import pathlib
 import shutil
 from collections.abc import Iterator
 from contextlib import contextmanager
+from datetime import date, datetime, time
 from typing import Literal, overload
 
 from structlog import get_logger
@@ -39,6 +39,7 @@ SEARCH_FIELDS = [
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/boolean_filters.html
 FIELD_TO_PREFIX_MAPPING = {
     "display_title": "XDT",
+    "timestamp": "XD",
     "geo_areas": "XGA",
     "eurovoc_concepts": "XEC",
     "rapporteur": "XRA",
@@ -79,7 +80,10 @@ def field_to_boost(field: str) -> float:
     return FIELD_TO_BOOST_MAPPING.get(field, 1)
 
 
-def boolean_term(field: str, value: str | int | bool) -> str:
+def boolean_term(
+    field: str,
+    value: str | int | bool | date | datetime,
+) -> str:
     prefix = FIELD_TO_PREFIX_MAPPING[field]
 
     if type(value) is bool:
@@ -143,11 +147,11 @@ def delete_indexes() -> None:
         shutil.rmtree(path)
 
 
-def serialize_value(value: int | float | datetime.date | datetime.datetime) -> str:
-    if isinstance(value, datetime.date) and not isinstance(value, datetime.datetime):
-        value = datetime.datetime.combine(value, datetime.time(0, 0))
+def serialize_value(value: int | float | date | datetime) -> str:
+    if isinstance(value, date) and not isinstance(value, datetime):
+        value = datetime.combine(value, time(0, 0))
 
-    if isinstance(value, datetime.datetime):
+    if isinstance(value, datetime):
         value = value.timestamp()
 
     return sortable_serialise(value)

@@ -113,6 +113,12 @@ def test_database_query_handle_filters():
     assert response["results"][1].display_title == "Vote One"
 
     response = (
+        DatabaseQuery(Vote).filter("timestamp", "=", datetime.datetime(2024, 1, 2)).handle()
+    )
+    assert response["total"] == 1
+    assert response["results"][0].id == 2
+
+    response = (
         DatabaseQuery(Vote).filter("timestamp", ">", datetime.datetime(2024, 1, 1)).handle()
     )
     assert response["total"] == 2
@@ -241,38 +247,34 @@ def test_search_query_handle_filters():
 
     response = SearchQuery(Vote).filter("geo_areas", "=", "France").handle()
     assert response["total"] == 1
-    assert len(response["results"]) == 1
     assert response["results"][0].id == 1
     assert response["results"][0].display_title == "Vote One"
 
     response = SearchQuery(Vote).filter("geo_areas", "=", "Germany").handle()
     assert response["total"] == 2
-    assert len(response["results"]) == 2
     assert response["results"][0].id == 2
     assert response["results"][0].display_title == "Vote Two"
     assert response["results"][1].id == 1
     assert response["results"][1].display_title == "Vote One"
 
-    response = (
-        SearchQuery(Vote).filter("timestamp", ">", datetime.datetime(2024, 1, 1)).handle()
-    )
+    response = SearchQuery(Vote).filter("timestamp", "=", datetime.date(2024, 1, 2)).handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 2
+
+    response = SearchQuery(Vote).filter("timestamp", ">", datetime.date(2024, 1, 1)).handle()
     assert response["total"] == 2
-    assert len(response["results"]) == 2
     assert response["results"][0].id == 3
     assert response["results"][1].id == 2
 
-    response = (
-        SearchQuery(Vote).filter("timestamp", ">=", datetime.datetime(2024, 1, 2)).handle()
-    )
+    response = SearchQuery(Vote).filter("timestamp", ">=", datetime.date(2024, 1, 2)).handle()
     assert response["total"] == 2
-    assert len(response["results"]) == 2
     assert response["results"][0].id == 3
     assert response["results"][1].id == 2
 
     response = (
         SearchQuery(Vote)
-        .filter("timestamp", ">", datetime.datetime(2024, 1, 1))
-        .filter("timestamp", "<", datetime.datetime(2024, 1, 3))
+        .filter("timestamp", ">", datetime.date(2024, 1, 1))
+        .filter("timestamp", "<", datetime.date(2024, 1, 3))
         .handle()
     )
     assert response["total"] == 1
@@ -281,8 +283,8 @@ def test_search_query_handle_filters():
 
     response = (
         SearchQuery(Vote)
-        .filter("timestamp", ">=", datetime.datetime(2024, 1, 2))
-        .filter("timestamp", "<=", datetime.datetime(2024, 1, 2))
+        .filter("timestamp", ">=", datetime.date(2024, 1, 2))
+        .filter("timestamp", "<=", datetime.date(2024, 1, 2))
         .handle()
     )
     assert response["total"] == 1
