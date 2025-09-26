@@ -245,12 +245,12 @@ def test_search_query_handle_filters():
     response = SearchQuery(Vote).handle()
     assert response["total"] == 3
 
-    response = SearchQuery(Vote).filter("geo_areas", "=", "France").handle()
+    response = SearchQuery(Vote).filter("geo_areas", "=", Country["FRA"]).handle()
     assert response["total"] == 1
     assert response["results"][0].id == 1
     assert response["results"][0].display_title == "Vote One"
 
-    response = SearchQuery(Vote).filter("geo_areas", "=", "Germany").handle()
+    response = SearchQuery(Vote).filter("geo_areas", "=", Country["DEU"]).handle()
     assert response["total"] == 2
     assert response["results"][0].id == 2
     assert response["results"][0].display_title == "Vote Two"

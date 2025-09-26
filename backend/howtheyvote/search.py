@@ -16,7 +16,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId
+from .models import BaseWithId, Country
 
 log = get_logger(__name__)
 
@@ -29,8 +29,8 @@ class AccessType(enum.Enum):
 # These are the fields that are used for full-text search.
 SEARCH_FIELDS = [
     "display_title",
-    "geo_areas",
-    "eurovoc_concepts",
+    "geo_area_labels",
+    "eurovoc_concept_labels",
     "rapporteur",
 ]
 
@@ -41,7 +41,8 @@ FIELD_TO_PREFIX_MAPPING = {
     "display_title": "XDT",
     "timestamp": "XD",
     "geo_areas": "XGA",
-    "eurovoc_concepts": "XEC",
+    "geo_area_labels": "XGAL",
+    "eurovoc_concept_labels": "XECL",
     "rapporteur": "XRA",
     "reference": "XR",
     "procedure_reference": "XPR",
@@ -82,14 +83,16 @@ def field_to_boost(field: str) -> float:
 
 def boolean_term(
     field: str,
-    value: str | int | bool | date | datetime,
+    value: str | int | bool | date | datetime | Country,
 ) -> str:
     prefix = FIELD_TO_PREFIX_MAPPING[field]
 
     if type(value) is bool:
         # Index bools as integers
         value = int(value)
-    elif type(value) is str:
+    if type(value) is Country:
+        value = value.code
+    if type(value) is str:
         # Normalize strings
         value = value.lower()
 
