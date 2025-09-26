@@ -64,7 +64,7 @@ class QueryResponse[T: BaseWithId](TypedDict):
 class Query[T: BaseWithId](ABC):
     MAX_PAGE_SIZE = 200
     DEFAULT_PAGE_SIZE = 20
-    DEFAULT_SORT_FIELD = "timestamp"
+    DEFAULT_SORT_FIELD = "date"
     DEFAULT_SORT_ORDER = Order.DESC
 
     def __init__(self, model: type[T]):
@@ -410,7 +410,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
         now = datetime.datetime.now().timestamp()
         max_diff = datetime.timedelta(days=self.AGE_DECAY_DAYS).total_seconds()
 
-        age_source = ValueDecayWeightPostingSource(field_to_slot("timestamp"))
+        age_source = ValueDecayWeightPostingSource(field_to_slot("date"))
         age_source.set_max_diff(max_diff)
         age_source.set_origin(now)
 

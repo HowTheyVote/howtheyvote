@@ -110,7 +110,7 @@ def index() -> Response:
                 schema:
                     type: string
                     enum:
-                        - timestamp
+                        - date
             -
                 in: query
                 name: sort_order
@@ -176,7 +176,7 @@ def search() -> Response:
                 schema:
                     type: string
                     enum:
-                        - timestamp
+                        - date
             -
                 in: query
                 name: sort_order
@@ -361,7 +361,7 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
     query = query.page_size(request.args.get("page_size", type=int))
 
     # Sort
-    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
+    sort_field = request.args.get("sort_by", type=one_of("date"))
     sort_order = request.args.get("sort_order", type=Order)
 
     if sort_field:
