@@ -23,7 +23,7 @@ def votes(db_session, search_index):
             title="Vote Two",
             timestamp=datetime.datetime(2024, 1, 2),
             press_release="abc",
-            geo_areas=[Country["DEU"]],
+            geo_areas=[Country["DEU"], Country["ITA"]],
         ),
         Vote(
             id=3,
@@ -111,6 +111,15 @@ def test_database_query_handle_filters():
     assert response["results"][0].display_title == "Vote Two"
     assert response["results"][1].id == 1
     assert response["results"][1].display_title == "Vote One"
+
+    response = (
+        DatabaseQuery(Vote)
+        .filter("geo_areas", "in", [Country["FRA"], Country["ITA"]])
+        .handle()
+    )
+    assert response["total"] == 2
+    assert response["results"][0].id == 2
+    assert response["results"][1].id == 1
 
     response = DatabaseQuery(Vote).filter("date", "=", datetime.date(2024, 1, 2)).handle()
     assert response["total"] == 1
@@ -251,6 +260,13 @@ def test_search_query_handle_filters():
     assert response["results"][1].id == 1
     assert response["results"][1].display_title == "Vote One"
 
+    response = (
+        SearchQuery(Vote).filter("geo_areas", "in", [Country["FRA"], Country["ITA"]]).handle()
+    )
+    assert response["total"] == 2
+    assert response["results"][0].id == 2
+    assert response["results"][1].id == 1
+
     response = SearchQuery(Vote).filter("date", "=", datetime.date(2024, 1, 2)).handle()
     assert response["total"] == 1
     assert response["results"][0].id == 2
@@ -294,5 +310,6 @@ def test_search_query_handle_facets():
         "options": [
             {"value": "DEU", "count": 2},
             {"value": "FRA", "count": 1},
+            {"value": "ITA", "count": 1},
         ],
     }

@@ -244,3 +244,36 @@ def test_list_type_type_decorator_contains():
         assert len(results) == 2
         assert results[0] == [deu, fra]
         assert results[1] == [ita]
+
+
+def test_list_type_type_decorator_overlap():
+    engine = create_engine(
+        "sqlite://",
+        json_serializer=json_dumps,
+        json_deserializer=json_loads,
+    )
+    metadata = MetaData()
+
+    table = Table(
+        "votes",
+        metadata,
+        Column("countries", ListType(CountryType)),
+    )
+
+    deu = Country(code="DEU")
+    fra = Country(code="FRA")
+    ita = Country(code="ITA")
+
+    with engine.connect() as connection:
+        metadata.create_all(connection)
+        connection.execute(table.insert().values(countries=[deu, fra]))
+        connection.execute(table.insert().values(countries=[fra]))
+        connection.execute(table.insert().values(countries=[ita]))
+        connection.commit()
+
+        query = select(table.c.countries).where(table.c.countries.overlap([deu, ita]))
+        results = list(connection.execute(query).scalars())
+
+        assert len(results) == 2
+        assert results[0] == [deu, fra]
+        assert results[1] == [ita]
