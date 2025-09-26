@@ -39,7 +39,7 @@ SEARCH_FIELDS = [
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/boolean_filters.html
 FIELD_TO_PREFIX_MAPPING = {
     "display_title": "XDT",
-    "timestamp": "XD",
+    "date": "XD",
     "geo_areas": "XGA",
     "geo_area_labels": "XGAL",
     "eurovoc_concept_labels": "XECL",
@@ -55,7 +55,7 @@ FIELD_TO_PREFIX_MAPPING = {
 # value is stored in a numbered slot.
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/indexing/values.html
 FIELD_TO_SLOT_MAPPING = {
-    "timestamp": 0,
+    "date": 0,
     "has_press_release": 1,
 }
 

@@ -150,12 +150,12 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     if vote.rapporteur:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
-    # Store timestamp in slot for ranking and range filters
-    timestamp = serialize_value(vote.timestamp.date())
-    doc.add_value(field_to_slot("timestamp"), timestamp)
+    # Store date in slot for ranking and range filters
+    date = serialize_value(vote.date)
+    doc.add_value(field_to_slot("date"), date)
 
-    # Also store timestamp as boolean term for eqaulity filters
-    term = boolean_term("timestamp", vote.timestamp.date())
+    # Also store date as boolean term for eqaulity filters
+    term = boolean_term("date", vote.date)
     doc.add_boolean_term(term)
 
     # Store press release in slot for ranking

@@ -87,7 +87,7 @@ def records(db_session):
 def test_votes_api_index(db_session, api):
     one = Vote(
         id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
         title="Vote One",
         is_main=True,
         result=VoteResult.ADOPTED,
@@ -95,7 +95,7 @@ def test_votes_api_index(db_session, api):
 
     two = Vote(
         id=2,
-        timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
         title="Vote Two",
         is_main=True,
         result=VoteResult.REJECTED,
@@ -103,7 +103,7 @@ def test_votes_api_index(db_session, api):
 
     amendment = Vote(
         id=3,
-        timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
         title="Vote Two",
         description="Am 123",
         is_main=False,
@@ -212,7 +212,7 @@ def test_votes_api_index_sort(db_session, api):
     res = api.get(
         "/api/votes",
         query_string={
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "asc",
         },
     )
@@ -223,7 +223,7 @@ def test_votes_api_index_sort(db_session, api):
     res = api.get(
         "/api/votes",
         query_string={
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "desc",
         },
     )
@@ -382,7 +382,7 @@ def test_votes_api_search_sort(db_session, search_index, api):
         "/api/votes/search",
         query_string={
             "q": "vote",
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "asc",
         },
     )
@@ -394,7 +394,7 @@ def test_votes_api_search_sort(db_session, search_index, api):
         "/api/votes/search",
         query_string={
             "q": "vote",
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "desc",
         },
     )
