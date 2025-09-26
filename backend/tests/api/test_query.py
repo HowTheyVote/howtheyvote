@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from howtheyvote.api.query import DatabaseQuery, Order, SearchQuery
-from howtheyvote.models import Country, Vote
+from howtheyvote.models import Committee, Country, Vote
 from howtheyvote.store import index_search
 
 
@@ -16,6 +16,7 @@ def votes(db_session, search_index):
             title="Vote One",
             timestamp=datetime.datetime(2024, 1, 1),
             geo_areas=[Country["DEU"], Country["FRA"]],
+            responsible_committees=[Committee["AFCO"]],
         ),
         Vote(
             id=2,
@@ -24,6 +25,7 @@ def votes(db_session, search_index):
             timestamp=datetime.datetime(2024, 1, 2),
             press_release="abc",
             geo_areas=[Country["DEU"], Country["ITA"]],
+            responsible_committees=[Committee["IMCO"]],
         ),
         Vote(
             id=3,
@@ -313,3 +315,53 @@ def test_search_query_handle_facets():
             {"value": "ITA", "count": 1},
         ],
     }
+
+
+def test_search_query_handle_facets_filters():
+    response = (
+        SearchQuery(Vote)
+        .facet("geo_areas")
+        .facet("responsible_committees")
+        .filter("geo_areas", "=", "FRA")
+        .handle()
+    )
+    assert response["facets"] == [
+        {
+            "field": "geo_areas",
+            "options": [
+                {"value": "DEU", "count": 2},
+                {"value": "FRA", "count": 1},
+                {"value": "ITA", "count": 1},
+            ],
+        },
+        {
+            "field": "responsible_committees",
+            "options": [
+                {"value": "AFCO", "count": 1},
+            ],
+        },
+    ]
+
+    response = (
+        SearchQuery(Vote)
+        .facet("geo_areas")
+        .facet("responsible_committees")
+        .filter("responsible_committees", "=", "AFCO")
+        .handle()
+    )
+    assert response["facets"] == [
+        {
+            "field": "geo_areas",
+            "options": [
+                {"value": "DEU", "count": 1},
+                {"value": "FRA", "count": 1},
+            ],
+        },
+        {
+            "field": "responsible_committees",
+            "options": [
+                {"value": "AFCO", "count": 1},
+                {"value": "IMCO", "count": 1},
+            ],
+        },
+    ]
