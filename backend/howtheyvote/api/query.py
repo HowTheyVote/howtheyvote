@@ -167,6 +167,15 @@ class Query[T: BaseWithId](ABC):
     def get_filters(self) -> Filters:
         return self._filters
 
+    def without_filters(self, field: str) -> Self:
+        query = self.copy()
+        query._filters = {
+            (field_, op): value
+            for ((field_, op), value) in self._filters.items()
+            if field_ != field
+        }
+        return query
+
     def facet(self, field: str) -> Self:
         copy = self.copy()
         copy._facets.append(field)
@@ -355,14 +364,6 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 reverse = self.DEFAULT_SORT_ORDER == Order.DESC
                 enquire.set_sort_by_relevance_then_value(slot, reverse)
 
-            # Add spys to compute facets
-            # https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/facets.html#querying
-            spies = {}
-
-            for field in self.get_facets():
-                spies[field] = MultiValueCountMatchSpy(field_to_slot(field))
-                enquire.add_matchspy(spies[field])
-
             # Fetch one extra result to check if there is a next page
             mset = enquire.get_mset(offset, limit + 1)
 
@@ -379,25 +380,8 @@ class SearchQuery[T: BaseWithId](Query[T]):
         # Sort in the same order as returned in search response
         results = sorted(results, key=lambda r: ids.index(int(r.id)))
 
-        # Format facets
-        facets: list[Facet] = []
-
-        for field, spy in spies.items():
-            options: list[FacetOption] = [
-                {"value": term, "count": count} for term, count in spy.counts.items()
-            ]
-
-            options.sort(
-                key=lambda option: option["count"],
-                reverse=True,
-            )
-
-            facets.append(
-                {
-                    "field": field,
-                    "options": options,
-                }
-            )
+        # Facets
+        facets: list[Facet] = [self._compute_facet(field) for field in self.get_facets()]
 
         response: QueryResponseWithFacets[T] = {
             "total": mset.get_matches_estimated(),
@@ -418,6 +402,44 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def get_query(self) -> str:
         return self._query or ""
+
+    def _compute_facet(self, field: str) -> Facet:
+        spy = MultiValueCountMatchSpy(field_to_slot(field))
+
+        # To compute facets, we basically execute the same query we execute to get the
+        # actual results, except that we ignore any filters for the facet’s field.
+        # Otherwise, selecting multiple options would become impossible, as the filter
+        # options would be narrowed down as soon as the first option is selected.
+        facets_query = self.without_filters(field)
+
+        with get_index(self.model) as index:
+            xapian_query = facets_query._xapian_query(index)
+            enquire = Enquire(index)
+            enquire.set_query(xapian_query)
+            enquire.add_matchspy(spy)
+
+            # Last parameter is the number of documents the matcher at least has to check
+            # before returning the result. Due to optimizations, the matcher might not
+            # check all documents. We’re not interested in any actual results, so the most
+            # efficient way to compute the result set would be to return an empty list
+            # without checking any documents. In that case, the facets would obviously be
+            # entirely wrong, so we force the matcher to check at least 10k documents.
+            # This means that facet options and facet option counts might still be slightly
+            # inaccurate, but this is unlikely to be relevant given the small number of
+            # documents in our index.
+            enquire.get_mset(0, 0, 10_000)
+
+        options: list[FacetOption] = []
+
+        for term, count in spy.counts.items():
+            options.append({"value": term, "count": count})
+
+        options.sort(key=lambda option: option["count"], reverse=True)
+
+        return {
+            "field": field,
+            "options": options,
+        }
 
     def _xapian_query_parser(self, index: Database) -> QueryParser:
         parser = QueryParser()

@@ -597,6 +597,11 @@ def test_votes_api_search_facets(db_session, search_index, api):
             "field": "responsible_committees",
             "options": [
                 {
+                    "value": "AFCO",
+                    "label": "Committee on Constitutional Affairs",
+                    "count": 1,
+                },
+                {
                     "value": "IMCO",
                     "label": "Committee on the Internal Market and Consumer Protection",
                     "count": 1,
