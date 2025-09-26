@@ -291,6 +291,10 @@ def test_votes_api_index_filters(db_session, api):
     res = api.get("/api/votes", query_string={"geo_areas": "DEU", "date:ge": "2024-02-01"})
     assert res.json["total"] == 0
 
+    # Ignores invalid filter values
+    res = api.get("/api/votes", query_string={"geo_areas": "FOO"})
+    assert res.json["total"] == 3
+
 
 def test_votes_api_search(db_session, search_index, api):
     one = Vote(
@@ -503,6 +507,10 @@ def test_votes_api_search_filters(db_session, search_index, api):
         query_string={"geo_areas": "DEU", "date:ge": "2024-02-01"},
     )
     assert res.json["total"] == 0
+
+    # Ignores invalid filter values
+    res = api.get("/api/votes/search", query_string={"geo_areas": "FOO"})
+    assert res.json["total"] == 3
 
 
 def test_votes_api_search_facets(db_session, search_index, api):

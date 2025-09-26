@@ -490,10 +490,10 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
     query = query.filter("date", ">=", request.args.get("date:ge", type=date.fromisoformat))
     query = query.filter("date", "<=", request.args.get("date:le", type=date.fromisoformat))
 
-    geo_areas = request.args.getlist("geo_areas", type=lambda x: Country[x])
+    geo_areas = request.args.getlist("geo_areas", type=_as_country)
     query = query.filter("geo_areas", "in", geo_areas)
 
-    committees = request.args.getlist("responsible_committees", type=lambda x: Committee[x])
+    committees = request.args.getlist("responsible_committees", type=_as_committee)
     query = query.filter("responsible_committees", "in", committees)
 
     # Facets
@@ -506,6 +506,20 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
         query = query.facet(field)
 
     return query
+
+
+def _as_country(code: str) -> Country:
+    try:
+        return Country[code]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_committee(code: str) -> Committee:
+    try:
+        return Committee[code]
+    except KeyError as exc:
+        raise ValueError() from exc
 
 
 def _serialize_query(query: DatabaseQuery[Vote]) -> VotesQueryResponseDict:
