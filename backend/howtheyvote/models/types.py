@@ -12,13 +12,17 @@ class ListTypeComparator(sa.JSON.Comparator[list[ItemType]]):
     type: "ListType[ItemType]"
 
     def contains(self, other: ItemType, **kwargs: Any) -> ColumnElement[bool]:
+        return self.overlap([other])
+
+    def overlap(self, other: list[ItemType], **kwargs: Any) -> ColumnElement[bool]:
         json_expr = sa.func.json_each(self.expr).table_valued("value")
         return sa.exists(
             sa.select(1)
             .select_from(json_expr)
             .where(
-                json_expr.c.value
-                == sa.bindparam("other", unique=True, value=other, type_=self.type.item_type)
+                json_expr.c.value.in_(
+                    sa.bindparam("other", unique=True, value=other, type_=self.type.item_type)
+                )
             )
         )
 

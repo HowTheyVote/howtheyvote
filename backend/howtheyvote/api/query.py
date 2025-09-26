@@ -50,9 +50,10 @@ class FilterOperator(enum.Enum):
     GE = ">="
     LT = "<"
     LE = "<="
+    IN = "in"
 
 
-FilterOperatorSymbol = Literal["=", ">", ">=", "<", "<="]
+FilterOperatorSymbol = Literal["=", ">", ">=", "<", "<=", "in"]
 Filters = dict[tuple[str, FilterOperator], Any]
 
 
@@ -242,6 +243,11 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
                     conditions.append(column.contains(value))
                 else:
                     conditions.append(column == value)
+            elif op == FilterOperator.IN:
+                if isinstance(column.type, ListType):
+                    conditions.append(column.overlap(value))
+                else:
+                    conditions.append(column.in_(value))
             elif op == FilterOperator.GT:
                 conditions.append(column > value)
             elif op == FilterOperator.GE:
@@ -527,6 +533,8 @@ class SearchQuery[T: BaseWithId](Query[T]):
             # and in slots to be used with greater/less than filters
             if op == FilterOperator.EQ:
                 subqueries.append(self._xapian_filter_eq_subquery(field, value))
+            elif op == FilterOperator.IN:
+                subqueries.append(self._xapian_filter_in_subquery(field, value))
             elif op == FilterOperator.GT:
                 subqueries.append(self._xapian_filter_gt_subquery(field, value))
             elif op == FilterOperator.GE:
@@ -545,6 +553,19 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def _xapian_filter_eq_subquery(self, field: str, value: Any) -> XapianQuery:
         return XapianQuery(boolean_term(field, value))
+
+    def _xapian_filter_in_subquery(self, field: str, value: Any) -> XapianQuery:
+        if not value:
+            return XapianQuery.MatchAll
+
+        query = XapianQuery.MatchNothing
+
+        for item in value:
+            query = XapianQuery(
+                XapianQuery.OP_OR, query, self._xapian_filter_eq_subquery(field, item)
+            )
+
+        return query
 
     def _xapian_filter_gt_subquery(self, field: str, value: Any) -> XapianQuery:
         # Xapian doesn’t have native support for "<", so we need to emulate this:
