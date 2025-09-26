@@ -156,10 +156,11 @@ class Query[T: BaseWithId](ABC):
     # TODO Figure out if there's a type-safe way to ensure that `field` is valid
     # for the given model and `value` has the respective type.
     def filter(self, field: str, op: FilterOperatorSymbol, value: Any) -> Self:
-        query = self.copy()
+        if not value:
+            return self
 
-        if value is not None:
-            query._filters[(field, FilterOperator(op))] = value
+        query = self.copy()
+        query._filters[(field, FilterOperator(op))] = value
 
         return query
 
