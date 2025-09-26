@@ -260,12 +260,25 @@ def test_votes_api_index_filters(db_session, api):
         is_main=True,
     )
 
-    db_session.add_all([one, two])
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        geo_areas=[Country["ITA"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two, three])
     db_session.commit()
 
     res = api.get("/api/votes", query_string={"geo_areas": "DEU"})
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes", query_string={"geo_areas": ["DEU", "ITA"]})
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 3
 
     res = api.get("/api/votes", query_string={"date": "2024-01-01"})
     assert res.json["total"] == 1
@@ -456,13 +469,26 @@ def test_votes_api_search_filters(db_session, search_index, api):
         is_main=True,
     )
 
-    db_session.add_all([one, two])
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        geo_areas=[Country["ITA"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two, three])
     db_session.commit()
-    index_search(Vote, [one, two])
+    index_search(Vote, [one, two, three])
 
     res = api.get("/api/votes/search", query_string={"geo_areas": "DEU"})
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"geo_areas": ["DEU", "ITA"]})
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 3
 
     res = api.get("/api/votes/search", query_string={"date": "2024-01-01"})
     assert res.json["total"] == 1

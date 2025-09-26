@@ -468,7 +468,7 @@ export type GetVotesData = {
          * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
          *
          */
-        geo_areas?: string;
+        geo_areas?: Array<(string)>;
         /**
          * Results page
          */
@@ -482,7 +482,7 @@ export type GetVotesData = {
          * committee codes.
          *
          */
-        responsible_committees?: string;
+        responsible_committees?: Array<(string)>;
         /**
          * Sort results by this field. Omit to sort by relevance.
          */
@@ -528,7 +528,7 @@ export type SearchVotesData = {
          * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
          *
          */
-        geo_areas?: string;
+        geo_areas?: Array<(string)>;
         /**
          * Results page
          */
@@ -546,7 +546,7 @@ export type SearchVotesData = {
          * committee codes.
          *
          */
-        responsible_committees?: string;
+        responsible_committees?: Array<(string)>;
         /**
          * Sort results by this field. Omit to sort by relevance.
          */

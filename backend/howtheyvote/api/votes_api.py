@@ -164,7 +164,9 @@ def index() -> Response:
                     Filter votes by geographic area. Valid values are 3-letter country codes
                     [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
                 schema:
-                    type: string
+                    type: array
+                    items:
+                        type: string
             -
                 in: query
                 name: responsible_committees
@@ -172,7 +174,9 @@ def index() -> Response:
                     Filter votes by responsible committees. Valid values are 4-letter
                     committee codes.
                 schema:
-                    type: string
+                    type: array
+                    items:
+                        type: string
         responses:
             '200':
                 description: Ok
@@ -273,7 +277,9 @@ def search() -> Response:
                     Filter votes by geographic area. Valid values are 3-letter country codes
                     [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
                 schema:
-                    type: string
+                    type: array
+                    items:
+                        type: string
             -
                 in: query
                 name: responsible_committees
@@ -281,7 +287,9 @@ def search() -> Response:
                     Filter votes by responsible committees. Valid values are 4-letter
                     committee codes.
                 schema:
-                    type: string
+                    type: array
+                    items:
+                        type: string
             -
                 in: query
                 name: facets
@@ -482,11 +490,11 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
     query = query.filter("date", ">=", request.args.get("date:ge", type=date.fromisoformat))
     query = query.filter("date", "<=", request.args.get("date:le", type=date.fromisoformat))
 
-    geo_area = request.args.get("geo_areas", type=lambda x: Country[x])
-    query = query.filter("geo_areas", "=", geo_area)
+    geo_areas = request.args.getlist("geo_areas", type=lambda x: Country[x])
+    query = query.filter("geo_areas", "in", geo_areas)
 
-    committees = request.args.get("responsible_committees", type=lambda x: Committee[x])
-    query = query.filter("responsible_committees", "=", committees)
+    committees = request.args.getlist("responsible_committees", type=lambda x: Committee[x])
+    query = query.filter("responsible_committees", "in", committees)
 
     # Facets
     facets = request.args.getlist(
