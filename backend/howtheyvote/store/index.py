@@ -135,15 +135,15 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     # the title and first term of the following field).
     generator.increase_termpos()
 
-    # Index EuroVoc concepts for full-text search
+    # Index EuroVoc concept labels for full-text search
     for concept in vote.eurovoc_concepts:
         for term in set([concept.label, *concept.alt_labels]):
-            generator.index_text(term, 1, field_to_prefix("eurovoc_concepts"))
+            generator.index_text(term, 1, field_to_prefix("eurovoc_concept_labels"))
             generator.increase_termpos()
 
-    # Index geographic areas for full-text search
+    # Index geographic area labels for full-text search
     for geo_area in vote.geo_areas:
-        generator.index_text(geo_area.label, 1, field_to_prefix("geo_areas"))
+        generator.index_text(geo_area.label, 1, field_to_prefix("geo_area_labels"))
         generator.increase_termpos()
 
     # Index rapporteur name
@@ -162,14 +162,17 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     has_press_release = serialize_value(int(vote.press_release is not None))
     doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
-    # Store document and procedure references as boolean terms. Boolean terms
-    # aren’t searchable, but can be used for filtering.
+    # Store boolean terms. Boolean terms aren’t searchable, but can be used for filtering.
     if vote.reference:
         term = boolean_term("reference", vote.reference)
         doc.add_boolean_term(term)
 
     if vote.procedure_reference:
         term = boolean_term("procedure_reference", vote.procedure_reference)
+        doc.add_boolean_term(term)
+
+    for geo_area in vote.geo_areas:
+        term = boolean_term("geo_areas", geo_area)
         doc.add_boolean_term(term)
 
     return doc
