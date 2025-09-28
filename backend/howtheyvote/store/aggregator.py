@@ -1,10 +1,10 @@
 import itertools
-from collections import defaultdict
 from collections.abc import Callable, Collection, Iterator
-from typing import Any, TypeVar
+from typing import Any, TypeVar, overload
 
 from sqlalchemy import select
 from structlog import get_logger
+from werkzeug.datastructures import MultiDict
 
 from ..db import Session
 from ..models import Fragment
@@ -15,7 +15,7 @@ GroupKey = str
 GroupKeys = Collection[GroupKey] | None
 
 
-class CompositeRecord:
+class CompositeRecord(MultiDict[str, Any]):
     """Represents a record merged from one or more `howtheyvote.models.Fragment`s.
 
     As multiple fragments can specify a value for the same property, property values
@@ -26,27 +26,35 @@ class CompositeRecord:
     `CompositeRecord` provides helper methods to access merged record data.
     """
 
-    def __init__(self, group_key: str, data: dict[str, list[Any]]):
+    def __init__(self, group_key: str, data: dict[str, list[Any]] | None = None):
+        super().__init__(data)
+
         self.group_key = group_key
         """Common group key for the record."""
-        self.data = data
-        """Merged data from all fragments."""
 
-    def all(self, key: str) -> list[Any]:
-        """Get a list of all values for the given key."""
-        return self.data.get(key, [])
-
-    def first(self, key: str, default: Any = None) -> Any:
-        """Get the first value for the given key."""
-        try:
-            return self.all(key)[0]
-        except IndexError:
-            return default
-
-    def chain(self, key: str) -> list[Any]:
+    @overload
+    def chain(self, key: str, *, unique: bool = False) -> list[Any]: ...
+    @overload
+    def chain[T](
+        self, key: str, *, type: Callable[[Any], T], unique: bool = False
+    ) -> list[T]: ...
+    def chain[T](
+        self, key: str, *, unique: bool = False, type: Callable[[Any], T] | None = None
+    ) -> list[Any]:
         """Chain the values for the given key and return a single list."""
-        iterables = [iterable for iterable in self.all(key) if iterable is not None]
-        return list(itertools.chain.from_iterable(iterables))
+        iterables = [iterable for iterable in self.getlist(key) if iterable is not None]
+        chained = itertools.chain.from_iterable(iterables)
+
+        if type:
+            values = [type(value) for value in chained]
+        else:
+            values = list(chained)
+
+        if unique:
+            # Remove duplicate items without using `set` so we keep the original order
+            values = list(dict.fromkeys(values))
+
+        return values
 
 
 RecordType = TypeVar("RecordType")
@@ -82,13 +90,13 @@ class Aggregator:
         :param group_keys: If set, only records for the given group keys are returned.
         """
         for group_key, fragments in self._grouped_fragments(group_keys):
-            data = defaultdict(list)
+            record = CompositeRecord(group_key)
 
             for fragment in fragments:
                 for key, value in fragment.data.items():
-                    data[key].append(value)
+                    record.add(key, value)
 
-            yield CompositeRecord(group_key, data)
+            yield record
 
     def _grouped_fragments(
         self, group_keys: GroupKeys = None

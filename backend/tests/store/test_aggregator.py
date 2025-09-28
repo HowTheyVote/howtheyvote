@@ -1,7 +1,7 @@
 import datetime
 from typing import TypedDict
 
-from howtheyvote.models import Fragment
+from howtheyvote.models import Country, Fragment
 from howtheyvote.store import Aggregator, CompositeRecord
 
 
@@ -15,9 +15,9 @@ class User(TypedDict):
 def map_user(record: CompositeRecord) -> User:
     return {
         "id": record.group_key,
-        "first_name": record.first("first_name"),
-        "last_name": record.first("last_name"),
-        "date_of_birth": record.first("date_of_birth"),
+        "first_name": record.get("first_name"),
+        "last_name": record.get("last_name"),
+        "date_of_birth": record.get("date_of_birth"),
     }
 
 
@@ -71,18 +71,14 @@ def test_aggregator_records(db_session):
     user_2 = records[1]
 
     assert user_1.group_key == "1"
-    assert user_1.data == {
-        "first_name": ["John"],
-        "last_name": ["Doe"],
-        "date_of_birth": ["1980-01-01"],
-    }
+    assert user_1.getlist("first_name") == ["John"]
+    assert user_1.getlist("last_name") == ["Doe"]
+    assert user_1.getlist("date_of_birth") == ["1980-01-01"]
 
     assert user_2.group_key == "2"
-    assert user_2.data == {
-        "first_name": ["Jane"],
-        "last_name": ["Smith"],
-        "date_of_birth": ["1990-12-31"],
-    }
+    assert user_2.getlist("first_name") == ["Jane"]
+    assert user_2.getlist("last_name") == ["Smith"]
+    assert user_2.getlist("date_of_birth") == ["1990-12-31"]
 
 
 def test_aggregator_records_filtered(db_session):
@@ -140,40 +136,6 @@ def test_aggregator_mapped_records_filtered(db_session):
     assert users[0]["id"] == "1"
 
 
-def test_composite_record_first():
-    record = CompositeRecord(
-        group_key="1",
-        data={
-            "first_name": ["John", "John D."],
-        },
-    )
-
-    assert record.first("first_name") == "John"
-
-
-def test_composite_record_first_default():
-    record = CompositeRecord(
-        group_key="1",
-        data={
-            "first_name": [],
-        },
-    )
-
-    assert record.first("first_name") is None
-    assert record.first("first_name", "unknown") == "unknown"
-
-
-def test_composite_record_all():
-    record = CompositeRecord(
-        group_key="1",
-        data={
-            "websites": ["https://example.org", "https://wikipedia.org"],
-        },
-    )
-
-    assert record.all("websites") == ["https://example.org", "https://wikipedia.org"]
-
-
 def test_composite_record_chain():
     record = CompositeRecord(
         group_key="1",
@@ -215,3 +177,32 @@ def test_composite_record_chain_none():
     )
 
     assert record.chain("amendment_authors") == ["original text"]
+
+
+def test_composite_record_chain_type():
+    record = CompositeRecord(
+        group_key="1",
+        data={
+            "date": [["2024-01-01"], ["2025-01-01"]],
+        },
+    )
+
+    dates = record.chain("date", type=datetime.date.fromisoformat)
+    assert dates == [
+        datetime.date(2024, 1, 1),
+        datetime.date(2025, 1, 1),
+    ]
+
+
+def test_composite_record_chain_unique():
+    record = CompositeRecord(
+        group_key="1",
+        data={
+            "geo_areas": [["DEU", "ITA"], ["ITA", "FRA", "DEU"]],
+        },
+    )
+    geo_areas = record.chain("geo_areas", unique=True)
+    assert geo_areas == ["DEU", "ITA", "FRA"]
+
+    geo_areas = record.chain("geo_areas", unique=True, type=lambda x: Country[x])
+    assert geo_areas == [Country["DEU"], Country["ITA"], Country["FRA"]]
