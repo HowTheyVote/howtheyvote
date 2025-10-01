@@ -47,9 +47,9 @@ class Order(enum.Enum):
 class FilterOperator(enum.Enum):
     EQ = "="
     GT = ">"
-    GE = ">="
+    GTE = ">="
     LT = "<"
-    LE = "<="
+    LTE = "<="
     IN = "in"
 
 
@@ -260,11 +260,11 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
                     conditions.append(column.in_(value))
             elif op == FilterOperator.GT:
                 conditions.append(column > value)
-            elif op == FilterOperator.GE:
+            elif op == FilterOperator.GTE:
                 conditions.append(column >= value)
             elif op == FilterOperator.LT:
                 conditions.append(column < value)
-            elif op == FilterOperator.LE:
+            elif op == FilterOperator.LTE:
                 conditions.append(column <= value)
 
         if not conditions:
@@ -560,11 +560,11 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 subqueries.append(self._xapian_filter_in_subquery(field, value))
             elif op == FilterOperator.GT:
                 subqueries.append(self._xapian_filter_gt_subquery(field, value))
-            elif op == FilterOperator.GE:
+            elif op == FilterOperator.GTE:
                 subqueries.append(self._xapian_filter_ge_subquery(field, value))
             elif op == FilterOperator.LT:
                 subqueries.append(self._xapian_filter_lt_subquery(field, value))
-            elif op == FilterOperator.LE:
+            elif op == FilterOperator.LTE:
                 subqueries.append(self._xapian_filter_le_subquery(field, value))
 
         query = XapianQuery.MatchAll
