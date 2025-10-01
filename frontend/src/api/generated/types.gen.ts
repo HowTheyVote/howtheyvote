@@ -456,13 +456,13 @@ export type GetVotesData = {
          * given date.
          *
          */
-        'date:ge'?: string;
+        'date[gte]'?: string;
         /**
          * Filter votes by date and return only votes that were cast on or before the
          * given date.
          *
          */
-        'date:le'?: string;
+        'date[lte]'?: string;
         /**
          * Filter votes by geographic area. Valid values are 3-letter country codes
          * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
@@ -511,13 +511,13 @@ export type SearchVotesData = {
          * given date.
          *
          */
-        'date:ge'?: string;
+        'date[gte]'?: string;
         /**
          * Filter votes by date and return only votes that were cast on or before the
          * given date.
          *
          */
-        'date:le'?: string;
+        'date[lte]'?: string;
         /**
          * Return facet options for the given fields. Can be set multiple times.
          *
