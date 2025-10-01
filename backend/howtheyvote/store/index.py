@@ -3,7 +3,7 @@ from typing import TypeVar, cast
 
 from sqlalchemy.dialects.sqlite import insert
 from structlog import get_logger
-from xapian import Document, TermGenerator, sortable_serialise
+from xapian import Document, TermGenerator
 
 from ..db import Session
 from ..helpers import chunks
@@ -15,6 +15,8 @@ from ..search import (
     field_to_slot,
     get_index,
     get_stopper,
+    serialize_list,
+    serialize_value,
 )
 
 log = get_logger(__name__)
@@ -134,30 +136,34 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     # the title and first term of the following field).
     generator.increase_termpos()
 
-    # Index EuroVoc concepts for full-text search
+    # Index EuroVoc concept labels for full-text search
     for concept in vote.eurovoc_concepts:
         for term in set([concept.label, *concept.alt_labels]):
-            generator.index_text(term, 1, field_to_prefix("eurovoc_concepts"))
+            generator.index_text(term, 1, field_to_prefix("eurovoc_concept_labels"))
             generator.increase_termpos()
 
-    # Index geographic areas for full-text search
+    # Index geographic area labels for full-text search
     for geo_area in vote.geo_areas:
-        generator.index_text(geo_area.label, 1, field_to_prefix("geo_areas"))
+        generator.index_text(geo_area.label, 1, field_to_prefix("geo_area_labels"))
         generator.increase_termpos()
 
     # Index rapporteur name
     if vote.rapporteur:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
-    # Store timestamp and press release as sortable values for ranking
-    timestamp = sortable_serialise(vote.timestamp.timestamp())
-    doc.add_value(field_to_slot("timestamp"), timestamp)
+    # Store date in slot for ranking and range filters
+    date = serialize_value(vote.date)
+    doc.add_value(field_to_slot("date"), date)
 
-    has_press_release = sortable_serialise(int(vote.press_release is not None))
+    # Also store date as boolean term for eqaulity filters
+    term = boolean_term("date", vote.date)
+    doc.add_boolean_term(term)
+
+    # Store press release in slot for ranking
+    has_press_release = serialize_value(int(vote.press_release is not None))
     doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
-    # Store document and procedure references as boolean terms. Boolean terms
-    # aren’t searchable, but can be used for filtering.
+    # Store categorical values as boolean terms for filtering.
     if vote.reference:
         term = boolean_term("reference", vote.reference)
         doc.add_boolean_term(term)
@@ -165,5 +171,22 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     if vote.procedure_reference:
         term = boolean_term("procedure_reference", vote.procedure_reference)
         doc.add_boolean_term(term)
+
+    for geo_area in vote.geo_areas:
+        term = boolean_term("geo_areas", geo_area)
+        doc.add_boolean_term(term)
+
+    for committee in vote.responsible_committees:
+        term = boolean_term("responsible_committees", committee)
+        doc.add_boolean_term(term)
+
+    # Store categorical values in slots to compute facets. Slots can only store a single
+    # value, so we have to serialize the list first.
+    # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html
+    value = serialize_list([geo_area.code for geo_area in vote.geo_areas])
+    doc.add_value(field_to_slot("geo_areas"), value)
+
+    value = serialize_list([committee.code for committee in vote.responsible_committees])
+    doc.add_value(field_to_slot("responsible_committees"), value)
 
     return doc
