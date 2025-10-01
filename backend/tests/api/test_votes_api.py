@@ -284,11 +284,11 @@ def test_votes_api_index_filters(db_session, api):
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 1
 
-    res = api.get("/api/votes", query_string={"date:ge": "2024-02-01"})
+    res = api.get("/api/votes", query_string={"date[ge]": "2024-02-01"})
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 2
 
-    res = api.get("/api/votes", query_string={"geo_areas": "DEU", "date:ge": "2024-02-01"})
+    res = api.get("/api/votes", query_string={"geo_areas": "DEU", "date[ge]": "2024-02-01"})
     assert res.json["total"] == 0
 
     # Ignores invalid filter values
@@ -498,13 +498,13 @@ def test_votes_api_search_filters(db_session, search_index, api):
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 1
 
-    res = api.get("/api/votes/search", query_string={"date:ge": "2024-02-01"})
+    res = api.get("/api/votes/search", query_string={"date[ge]": "2024-02-01"})
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 2
 
     res = api.get(
         "/api/votes/search",
-        query_string={"geo_areas": "DEU", "date:ge": "2024-02-01"},
+        query_string={"geo_areas": "DEU", "date[ge]": "2024-02-01"},
     )
     assert res.json["total"] == 0
 

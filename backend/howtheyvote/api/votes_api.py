@@ -141,7 +141,7 @@ def index() -> Response:
                     format: date
             -
                 in: query
-                name: date:ge
+                name: date[ge]
                 description: |
                     Filter votes by date and return only votes that were cast on or after the
                     given date.
@@ -150,7 +150,7 @@ def index() -> Response:
                     format: date
             -
                 in: query
-                name: date:le
+                name: date[le]
                 description: |
                     Filter votes by date and return only votes that were cast on or before the
                     given date.
@@ -254,7 +254,7 @@ def search() -> Response:
                     format: date
             -
                 in: query
-                name: date:ge
+                name: date[ge]
                 description: |
                     Filter votes by date and return only votes that were cast on or after the
                     given date.
@@ -263,7 +263,7 @@ def search() -> Response:
                     format: date
             -
                 in: query
-                name: date:le
+                name: date[le]
                 description: |
                     Filter votes by date and return only votes that were cast on or before the
                     given date.
@@ -487,8 +487,8 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
 
     # Filters
     query = query.filter("date", "=", request.args.get("date", type=date.fromisoformat))
-    query = query.filter("date", ">=", request.args.get("date:ge", type=date.fromisoformat))
-    query = query.filter("date", "<=", request.args.get("date:le", type=date.fromisoformat))
+    query = query.filter("date", ">=", request.args.get("date[ge]", type=date.fromisoformat))
+    query = query.filter("date", "<=", request.args.get("date[le]", type=date.fromisoformat))
 
     geo_areas = request.args.getlist("geo_areas", type=_as_country)
     query = query.filter("geo_areas", "in", geo_areas)
