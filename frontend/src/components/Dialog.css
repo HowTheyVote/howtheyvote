@@ -1,0 +1,66 @@
+.dialog {
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  overscroll-behavior: contain;
+
+  width: 100%;
+  max-width: 100%; /* Reset default browser styles */
+  max-height: calc(100% - 2 * var(--space));
+
+  background-color: #fff;
+  border: none;
+  border-top-left-radius: var(--border-radius-lg);
+  border-top-right-radius: var(--border-radius-lg);
+  box-shadow:
+    0 0 2px rgba(0, 0, 0, 0.1),
+    0 0 50px rgba(0, 0, 0, 0.2);
+  outline-offset: -2px;
+}
+
+.dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.dialog__header {
+  display: flex;
+  padding-block: var(--space-sm);
+  padding-block-end: var(--space-xxs);
+  padding-inline: var(--space-xs);
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog__header form {
+  display: contents;
+}
+
+.dialog__close {
+  border-radius: 999px;
+}
+
+.dialog__close svg {
+  display: block;
+  width: var(--space-sm);
+  height: var(--space-sm);
+}
+
+.dialog__body {
+  padding: var(--space-xs);
+}
+
+@media screen and (min-width: 720px) {
+  .dialog {
+    inset: var(--space);
+    width: auto;
+    max-width: var(--max-width);
+    margin: auto;
+    border-radius: var(--border-radius);
+  }
+
+  .dialog__header,
+  .dialog__body {
+    padding-inline: var(--space-sm);
+  }
+}
