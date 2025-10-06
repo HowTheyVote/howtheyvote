@@ -307,14 +307,11 @@ def test_search_query_handle_filters():
 def test_search_query_handle_facets():
     response = SearchQuery(Vote).facet("geo_areas").handle()
     assert len(response["facets"]) == 1
-    assert response["facets"][0] == {
-        "field": "geo_areas",
-        "options": [
-            {"value": "DEU", "count": 2},
-            {"value": "FRA", "count": 1},
-            {"value": "ITA", "count": 1},
-        ],
-    }
+    assert response["facets"]["geo_areas"] == [
+        {"value": "DEU", "count": 2},
+        {"value": "FRA", "count": 1},
+        {"value": "ITA", "count": 1},
+    ]
 
 
 def test_search_query_handle_facets_filters():
@@ -325,22 +322,16 @@ def test_search_query_handle_facets_filters():
         .filter("geo_areas", "=", "FRA")
         .handle()
     )
-    assert response["facets"] == [
-        {
-            "field": "geo_areas",
-            "options": [
-                {"value": "DEU", "count": 2},
-                {"value": "FRA", "count": 1},
-                {"value": "ITA", "count": 1},
-            ],
-        },
-        {
-            "field": "responsible_committees",
-            "options": [
-                {"value": "AFCO", "count": 1},
-            ],
-        },
-    ]
+    assert response["facets"] == {
+        "geo_areas": [
+            {"value": "DEU", "count": 2},
+            {"value": "FRA", "count": 1},
+            {"value": "ITA", "count": 1},
+        ],
+        "responsible_committees": [
+            {"value": "AFCO", "count": 1},
+        ],
+    }
 
     response = (
         SearchQuery(Vote)
@@ -349,19 +340,13 @@ def test_search_query_handle_facets_filters():
         .filter("responsible_committees", "=", "AFCO")
         .handle()
     )
-    assert response["facets"] == [
-        {
-            "field": "geo_areas",
-            "options": [
-                {"value": "DEU", "count": 1},
-                {"value": "FRA", "count": 1},
-            ],
-        },
-        {
-            "field": "responsible_committees",
-            "options": [
-                {"value": "AFCO", "count": 1},
-                {"value": "IMCO", "count": 1},
-            ],
-        },
-    ]
+    assert response["facets"] == {
+        "geo_areas": [
+            {"value": "DEU", "count": 1},
+            {"value": "FRA", "count": 1},
+        ],
+        "responsible_committees": [
+            {"value": "AFCO", "count": 1},
+            {"value": "IMCO", "count": 1},
+        ],
+    }

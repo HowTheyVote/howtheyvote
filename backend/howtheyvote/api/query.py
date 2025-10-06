@@ -71,13 +71,8 @@ class FacetOption(TypedDict):
     count: int
 
 
-class Facet(TypedDict):
-    field: str
-    options: list[FacetOption]
-
-
 class QueryResponseWithFacets[T: BaseWithId](QueryResponse[T]):
-    facets: list[Facet]
+    facets: dict[str, list[FacetOption]]
 
 
 class Query[T: BaseWithId](ABC):
@@ -381,7 +376,9 @@ class SearchQuery[T: BaseWithId](Query[T]):
         results = sorted(results, key=lambda r: ids.index(int(r.id)))
 
         # Facets
-        facets: list[Facet] = [self._compute_facet(field) for field in self.get_facets()]
+        facets: dict[str, list[FacetOption]] = {
+            field: self._compute_facet(field) for field in self.get_facets()
+        }
 
         response: QueryResponseWithFacets[T] = {
             "total": mset.get_matches_estimated(),
@@ -403,7 +400,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
     def get_query(self) -> str:
         return self._query or ""
 
-    def _compute_facet(self, field: str) -> Facet:
+    def _compute_facet(self, field: str) -> list[FacetOption]:
         spy = MultiValueCountMatchSpy(field_to_slot(field))
 
         # To compute facets, we basically execute the same query we execute to get the
@@ -436,10 +433,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
         options.sort(key=lambda option: option["count"], reverse=True)
 
-        return {
-            "field": field,
-            "options": options,
-        }
+        return options
 
     def _xapian_query_parser(self, index: Database) -> QueryParser:
         parser = QueryParser()
