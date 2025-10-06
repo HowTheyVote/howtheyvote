@@ -1,0 +1,14 @@
+.search-facet {
+  border: none;
+}
+
+.search-facet__label {
+  display: block;
+  margin: 0;
+  margin-block-end: var(--space-xxs);
+  font-weight: 600;
+
+  /* Reset browser defaults */
+  float: left;
+  width: 100%;
+}

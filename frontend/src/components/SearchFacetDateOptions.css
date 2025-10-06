@@ -1,0 +1,16 @@
+.search-facet-date-options {
+  display: flex;
+  width: 100%;
+  gap: var(--space-xs);
+}
+
+.search-facet-date-options__date {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.search-facet-date-options__label {
+  margin-block-end: var(--space-xxs);
+  font-size: var(--text-xs);
+}
