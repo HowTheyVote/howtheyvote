@@ -3,7 +3,12 @@
   --line-height: 1.4;
 
   --text-scale-ratio: 1.25;
-  --text-xs: calc(1 / var(--text-scale-ratio) * var(--text-size));
+  --text-xs: calc(
+    1 /
+    var(--text-scale-ratio) /
+    var(--text-scale-ratio) *
+    var(--text-size)
+  );
   --text-sm: calc(1 / var(--text-scale-ratio) * var(--text-size));
   --text-lg: calc(var(--text-scale-ratio) * var(--text-size));
   --text-xl: calc(
@@ -105,7 +110,7 @@
     var(--blue-h),
     var(--blue-s),
     calc(var(--blue-l) + 15%),
-    1
+    0.66
   );
   --focus-outline: 2px solid var(--color-focus-outline);
   --focus-outline-offset: 2px;

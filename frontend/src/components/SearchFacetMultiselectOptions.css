@@ -1,0 +1,46 @@
+.search-facet-multiselect-options__option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxs);
+  width: 100%;
+  padding-block: calc(0.125 * var(--space));
+}
+
+.search-facet-multiselect-options__option[hidden] {
+  display: none;
+}
+
+.search-facet-multiselect-options input,
+.search-facet-multiselect-options__count {
+  flex-shrink: 0;
+  flex-grow: 0;
+  accent-color: var(--blue-darker);
+}
+
+.search-facet-multiselect-options__label {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.search-facet-multiselect-options__count {
+  color: var(--color-text-light);
+}
+
+.search-facet-multiselect-options__toggle {
+  font-weight: 500;
+}
+
+.search-facet-multiselect-options__toggle svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: var(--color-text-light);
+  transform: translateY(5%);
+}
+
+.search-facet-multiselect-options__toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg) translateY(-15%);
+}
