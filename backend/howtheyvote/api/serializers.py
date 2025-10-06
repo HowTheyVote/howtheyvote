@@ -400,13 +400,8 @@ class FacetOptionDict(TypedDict):
     count: int
 
 
-class FacetDict(TypedDict):
-    field: str
-    options: list[FacetOptionDict]
-
-
 class WithFacetsDict(TypedDict):
-    facets: list[FacetDict]
+    facets: dict[str, list[FacetOptionDict]]
 
 
 # Using standard inheritance instead of generics as generics are a little

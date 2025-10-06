@@ -31,9 +31,8 @@ from ..models import (
 )
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
-from .query import DatabaseQuery, Facet, FacetOption, Order, Query, SearchQuery
+from .query import DatabaseQuery, FacetOption, Order, Query, SearchQuery
 from .serializers import (
-    FacetDict,
     FacetOptionDict,
     LinkDict,
     MemberVoteDict,
@@ -537,17 +536,15 @@ def _serialize_query_with_facets(query: SearchQuery[Vote]) -> VotesQueryResponse
     return {
         **response,
         "results": [serialize_base_vote(result) for result in response["results"]],
-        "facets": [_serialize_facet(facet) for facet in response["facets"]],
+        "facets": {
+            field: _serialize_facet_options(field, options)
+            for field, options in response["facets"].items()
+        },
     }
 
 
-def _serialize_facet(facet: Facet) -> FacetDict:
-    return {
-        **facet,
-        "options": [
-            _serialize_facet_option(facet["field"], option) for option in facet["options"]
-        ],
-    }
+def _serialize_facet_options(field: str, options: list[FacetOption]) -> list[FacetOptionDict]:
+    return [_serialize_facet_option(field, option) for option in options]
 
 
 def _serialize_facet_option(field: str, option: FacetOption) -> FacetOptionDict:

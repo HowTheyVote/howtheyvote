@@ -104,11 +104,6 @@ export type EurovocConcept = {
     label: string;
 };
 
-export type Facet = {
-    field: string;
-    options: Array<FacetOption>;
-};
-
 export type FacetOption = {
     value: string;
     label: string;
@@ -440,7 +435,9 @@ export type VoteStatsByGroup = {
 };
 
 export type WithFacets = {
-    facets: Array<Facet>;
+    facets: {
+        [key: string]: Array<FacetOption>;
+    };
 };
 
 export type GetVotesData = {

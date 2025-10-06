@@ -125,6 +125,24 @@ def get_property_definition(prop_type: Any) -> dict[str, Any]:
             "items": item_definition,
         }
 
+    if get_origin(prop_type) is dict:
+        type_args = get_args(prop_type)
+        key_type, value_type = type_args
+
+        if key_type is not str:
+            raise Exception("Only dicts with string keys are supported.")
+
+        value_definition = get_property_definition(value_type)
+
+        if "required" in value_definition:
+            del value_definition["required"]
+
+        return {
+            "type": "object",
+            "required": True,
+            "additionalProperties": value_definition,
+        }
+
     if isinstance(prop_type, UnionType):
         type_args = get_args(prop_type)
 

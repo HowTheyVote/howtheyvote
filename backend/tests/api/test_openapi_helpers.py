@@ -134,6 +134,26 @@ def test_list_types():
     assert get_schema(TestDict) == expected
 
 
+def test_dict_types():
+    class TestDict(TypedDict):
+        mapping: dict[str, int]
+
+    expected = {
+        "type": "object",
+        "properties": {
+            "mapping": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "integer",
+                },
+            },
+        },
+        "required": ["mapping"],
+    }
+
+    assert get_schema(TestDict) == expected
+
+
 def test_nested_types():
     class UserDict(TypedDict):
         name: str

@@ -537,47 +537,38 @@ def test_votes_api_search_facets(db_session, search_index, api):
     index_search(Vote, [one, two])
 
     res = api.get("/api/votes/search")
-    assert res.json["facets"] == []
+    assert res.json["facets"] == {}
 
     res = api.get("/api/votes/search", query_string={"facets": "geo_areas"})
-    assert res.json["facets"] == [
-        {
-            "field": "geo_areas",
-            "options": [
-                {"value": "FRA", "label": "France", "count": 2},
-                {"value": "DEU", "label": "Germany", "count": 1},
-            ],
-        }
-    ]
+    assert res.json["facets"] == {
+        "geo_areas": [
+            {"value": "FRA", "label": "France", "count": 2},
+            {"value": "DEU", "label": "Germany", "count": 1},
+        ],
+    }
 
     res = api.get(
         "/api/votes/search",
         query_string={"facets": ["geo_areas", "responsible_committees"]},
     )
-    assert res.json["facets"] == [
-        {
-            "field": "geo_areas",
-            "options": [
-                {"value": "FRA", "label": "France", "count": 2},
-                {"value": "DEU", "label": "Germany", "count": 1},
-            ],
-        },
-        {
-            "field": "responsible_committees",
-            "options": [
-                {
-                    "value": "AFCO",
-                    "label": "Committee on Constitutional Affairs",
-                    "count": 1,
-                },
-                {
-                    "value": "IMCO",
-                    "label": "Committee on the Internal Market and Consumer Protection",
-                    "count": 1,
-                },
-            ],
-        },
-    ]
+    assert res.json["facets"] == {
+        "geo_areas": [
+            {"value": "FRA", "label": "France", "count": 2},
+            {"value": "DEU", "label": "Germany", "count": 1},
+        ],
+        "responsible_committees": [
+            {
+                "value": "AFCO",
+                "label": "Committee on Constitutional Affairs",
+                "count": 1,
+            },
+            {
+                "value": "IMCO",
+                "label": "Committee on the Internal Market and Consumer Protection",
+                "count": 1,
+            },
+        ],
+    }
 
     res = api.get(
         "/api/votes/search",
@@ -586,29 +577,27 @@ def test_votes_api_search_facets(db_session, search_index, api):
             "responsible_committees": "IMCO",
         },
     )
-    assert res.json["facets"] == [
-        {
-            "field": "geo_areas",
-            "options": [
-                {"value": "FRA", "label": "France", "count": 1},
-            ],
-        },
-        {
-            "field": "responsible_committees",
-            "options": [
-                {
-                    "value": "AFCO",
-                    "label": "Committee on Constitutional Affairs",
-                    "count": 1,
-                },
-                {
-                    "value": "IMCO",
-                    "label": "Committee on the Internal Market and Consumer Protection",
-                    "count": 1,
-                },
-            ],
-        },
-    ]
+    assert res.json["facets"] == {
+        "geo_areas": [
+            {
+                "value": "FRA",
+                "label": "France",
+                "count": 1,
+            },
+        ],
+        "responsible_committees": [
+            {
+                "value": "AFCO",
+                "label": "Committee on Constitutional Affairs",
+                "count": 1,
+            },
+            {
+                "value": "IMCO",
+                "label": "Committee on the Internal Market and Consumer Protection",
+                "count": 1,
+            },
+        ],
+    }
 
 
 def test_votes_api_search_special_chars(db_session, search_index, api):
