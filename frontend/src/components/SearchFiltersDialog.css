@@ -1,0 +1,24 @@
+.search-filters-dialog {
+  font-size: var(--text-sm);
+}
+
+.search-filters-dialog__facets > * + * {
+  border-block-start: 1px solid var(--gray-light);
+  margin-block-start: var(--space-xs);
+  padding-block-start: var(--space-xs);
+}
+
+.search-filters-dialog__submit {
+  position: sticky;
+  bottom: 0;
+
+  padding-block-start: var(--space-sm);
+  padding-block-end: var(--space-xs);
+  text-align: center;
+
+  background-image: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
+}

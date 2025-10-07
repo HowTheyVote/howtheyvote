@@ -1,5 +1,6 @@
 .button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: var(--space-xxs) var(--space-xs);
 
   border: 2px solid var(--gray-dark);
@@ -47,7 +48,24 @@
   padding: var(--space-xs) var(--space-sm);
 }
 
+.button--sm {
+  padding: calc(0.125 * var(--space)) var(--space-xxs);
+}
+
 .button--block {
   display: block;
   width: 100%;
+}
+
+.button--ghost {
+  padding-inline: 0;
+  font-weight: inherit;
+  border: none;
+  color: inherit;
+}
+
+.button--ghost:hover,
+.button--ghost:focus {
+  color: inherit;
+  background-color: transparent;
 }

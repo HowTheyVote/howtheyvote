@@ -1,5 +1,6 @@
 .member-votes-list__action-bar {
   display: flex;
+  column-gap: var(--space-xs);
   flex-wrap: wrap;
   margin-bottom: var(--space-xs);
 }

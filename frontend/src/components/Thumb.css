@@ -4,20 +4,20 @@
   height: 1em;
 }
 
-.thumb > svg {
+.thumb__icon {
   fill: currentColor;
   width: 100%;
   height: 100%;
   vertical-align: -10%;
 }
 
-.thumb--against > svg,
-.thumb--rejected > svg {
+.thumb--against .thumb__icon,
+.thumb--rejected .thumb__icon {
   transform: scale(1, -1);
 }
 
-.thumb--neutral > svg,
-.thumb--abstention > svg {
+.thumb--neutral .thumb__icon,
+.thumb--abstention .thumb__icon {
   transform: rotate(90deg) scale(-1, 1) translateY(-7.5%);
 }
 
@@ -50,17 +50,17 @@
   border: 4px solid var(--gray);
 }
 
-.thumb--did-not-vote > svg {
+.thumb--did-not-vote .thumb__icon {
   display: none;
 }
 
-.thumb--circle > svg {
+.thumb--circle .thumb__icon {
   color: #fff;
   vertical-align: 0;
 }
 
-.thumb--circle.thumb--for > svg,
-.thumb--circle.thumb--adopted > svg,
-.thumb--circle.thumb--abstention > svg {
+.thumb--circle.thumb--for .thumb__icon,
+.thumb--circle.thumb--adopted .thumb__icon,
+.thumb--circle.thumb--abstention .thumb__icon {
   vertical-align: 20%;
 }

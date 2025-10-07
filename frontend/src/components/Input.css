@@ -3,18 +3,23 @@
   border-radius: var(--border-radius);
   display: block;
   width: 100%;
-  padding: var(--space-xxs) var(--space-xs);
+  padding: var(--space-xxs);
   background-color: #fff;
 }
 
 .input--lg {
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-xs);
 }
 
 input[type="search"] {
   -webkit-appearance: none;
 }
 
-.input:focus {
+input[type="date"] {
+  color: inherit;
+}
+
+.input:focus-within {
   border-color: var(--blue);
+  outline-offset: 0;
 }
