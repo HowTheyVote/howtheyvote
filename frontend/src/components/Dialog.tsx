@@ -3,6 +3,7 @@ import { createPortal } from "preact/compat";
 import { useEffect, useId, useRef } from "preact/hooks";
 
 import "./Dialog.css";
+import Icon from "./Icon";
 
 type DialogProps = {
   children: ComponentChildren;
@@ -55,9 +56,7 @@ function Dialog({
           class="dialog__close"
           onClick={() => onOpenChange(false)}
         >
-          <svg aria-hidden="true">
-            <use href="/static/icons.svg#close" />
-          </svg>
+          <Icon name="close" className="dialog__icon" />
           <span class="visually-hidden">Close</span>
         </button>
       </header>
