@@ -38,3 +38,17 @@ export function firstQueryValue(
 
   return value;
 }
+
+export function allQueryValues(query: ParsedUrlQuery, name: string): string[] {
+  const value = query[name];
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (value === undefined) {
+    return [];
+  }
+
+  return [value];
+}

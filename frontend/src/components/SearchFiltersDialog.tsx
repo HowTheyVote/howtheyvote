@@ -16,12 +16,14 @@ type SearchFiltersDialogProps = Pick<
   query: string;
   sort: string;
   facets: Record<string, FacetOption[]>;
+  filters: Record<string, string[]>;
 };
 
 function SearchFiltersDialog({
   query,
   sort,
   facets,
+  filters,
   open,
   onOpenChange,
 }: SearchFiltersDialogProps) {
@@ -55,20 +57,24 @@ function SearchFiltersDialog({
         <input name="sort" type="hidden" value={sort} />
         <div class="search-filters-dialog__facets">
           <SearchFacet label="Date">
-            <SearchFacetDateOptions field="date" />
+            <SearchFacetDateOptions
+              field="date"
+              start={filters["date[gte]"]?.[0]}
+              end={filters["date[lte]"]?.[0]}
+            />
           </SearchFacet>
           <SearchFacet label="Country">
             <SearchFacetMultiselectOptions
               field="geo_areas"
               options={facets.geo_areas}
-              selected={[]}
+              selected={filters.geo_areas}
             />
           </SearchFacet>
           <SearchFacet label="Responsible committee">
             <SearchFacetMultiselectOptions
               field="responsible_committees"
               options={facets.responsible_committees}
-              selected={[]}
+              selected={filters.responsible_committees}
             />
           </SearchFacet>
         </div>
