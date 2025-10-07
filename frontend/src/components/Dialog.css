@@ -40,10 +40,8 @@
   border-radius: 999px;
 }
 
-.dialog__close svg {
+.dialog__icon {
   display: block;
-  width: var(--space-sm);
-  height: var(--space-sm);
 }
 
 .dialog__body {
