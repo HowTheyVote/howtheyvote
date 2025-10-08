@@ -1501,14 +1501,14 @@
   },
   {
     "code": "XAD",
-    "label": "UK Sovereign Base Areas of Akrotiri and Dhekelia",
+    "label": "United Kingdom Sovereign Base Areas of Akrotiri and Dhekelia",
     "alt_label": null,
     "iso_alpha_2": null
   },
   {
     "code": "XBH",
-    "label": "B\u00fcsingen am Hochrhein",
-    "alt_label": null,
+    "label": "B\u00fcsingen",
+    "alt_label": "B\u00fcsingen am Hochrhein",
     "iso_alpha_2": null
   },
   {
@@ -1544,18 +1544,24 @@
   {
     "code": "XIC",
     "label": "Canary Islands",
-    "alt_label": null,
+    "alt_label": "Autonomous Community of the Canary Islands",
     "iso_alpha_2": "IC"
   },
   {
     "code": "XIH",
     "label": "Heligoland",
-    "alt_label": "Islands of Heligoland",
+    "alt_label": "Island of Heligoland",
     "iso_alpha_2": null
   },
   {
     "code": "XIN",
     "label": "International Waters",
+    "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XJL",
+    "label": "Latrun no man\u2019s land",
     "alt_label": null,
     "iso_alpha_2": null
   },
@@ -1573,8 +1579,8 @@
   },
   {
     "code": "XLF",
-    "label": "Fezzan (Libya)",
-    "alt_label": "Fezzan region (Libya)",
+    "label": "Fezzan",
+    "alt_label": "Fezzan region",
     "iso_alpha_2": null
   },
   {
@@ -1627,38 +1633,38 @@
   },
   {
     "code": "XQP",
-    "label": "Colombia/Jamaica (joint regime)",
-    "alt_label": null,
+    "label": "Colombia/Jamaica",
+    "alt_label": "Colombia/Jamaica (joint regime)",
     "iso_alpha_2": null
   },
   {
     "code": "XQR",
-    "label": "Japan/South Korea (joint regime)",
-    "alt_label": null,
+    "label": "Japan/South Korea",
+    "alt_label": "Japan/South Korea (joint regime)",
     "iso_alpha_2": null
   },
   {
     "code": "XSC",
     "label": "Ceuta",
-    "alt_label": null,
+    "alt_label": "Autonomous City of Ceuta",
     "iso_alpha_2": null
   },
   {
     "code": "XSG",
-    "label": "Joint area between Senegal and Guinea-Bissau",
-    "alt_label": null,
+    "label": "Senegal/Guinea-Bissau",
+    "alt_label": "Senegal/Guinea-Bissau (joint regime)",
     "iso_alpha_2": null
   },
   {
     "code": "XSL",
     "label": "Somaliland",
-    "alt_label": "Republic of Somaliland",
+    "alt_label": null,
     "iso_alpha_2": null
   },
   {
     "code": "XSM",
     "label": "Melilla",
-    "alt_label": null,
+    "alt_label": "Autonomous City of Melilla",
     "iso_alpha_2": null
   },
   {
@@ -1668,81 +1674,87 @@
     "iso_alpha_2": null
   },
   {
-    "code": "XXA",
-    "label": "Paracel Islands (disputed territory)",
+    "code": "XUCT",
+    "label": "Unclaimed territory",
     "alt_label": null,
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXA",
+    "label": "Paracel Islands",
+    "alt_label": "Paracel Islands (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXB",
-    "label": "Spratly Islands (disputed territory)",
-    "alt_label": null,
+    "label": "Spratly Islands",
+    "alt_label": "Spratly Islands (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXC",
-    "label": "Aksai Chin (disputed territory)",
-    "alt_label": null,
+    "label": "Aksai Chin",
+    "alt_label": "Aksai Chin (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXD",
-    "label": "Arunashal Pradesh (disputed territory)",
-    "alt_label": null,
+    "label": "Arunachal Pradesh",
+    "alt_label": "Arunachal Pradesh (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXE",
-    "label": "China/India (disputed territory)",
-    "alt_label": null,
+    "label": "China/India",
+    "alt_label": "China/India (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXF",
-    "label": "Hala'Ib Triangle (disputed territory)",
-    "alt_label": null,
+    "label": "Hala\u2019ib Triangle",
+    "alt_label": "Hala\u2019ib Triangle (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXG",
-    "label": "Ilemi Triangle (disputed territory)",
-    "alt_label": null,
+    "label": "Ilemi Triangle",
+    "alt_label": "Ilemi Triangle (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXH",
-    "label": "Jammu Kashmir (disputed territory)",
-    "alt_label": null,
+    "label": "Jammu and Kashmir",
+    "alt_label": "Jammu and Kashmir (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXI",
     "label": "Northern Ireland",
-    "alt_label": "United Kingdom (Northern Ireland)",
+    "alt_label": null,
     "iso_alpha_2": null
   },
   {
     "code": "XXJ",
-    "label": "Liancourt Rock (disputed territory)",
-    "alt_label": null,
+    "label": "Liancourt Rocks",
+    "alt_label": "Liancourt Rocks (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXL",
-    "label": "Navassa Island (disputed territory)",
-    "alt_label": null,
+    "label": "Navassa Island",
+    "alt_label": "Navassa Island (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXM",
-    "label": "Scarborough Reef (disputed territory)",
-    "alt_label": null,
+    "label": "Scarborough Reef",
+    "alt_label": "Scarborough Reef (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXN",
-    "label": "Senkaku Islands (disputed territory)",
-    "alt_label": null,
+    "label": "Senkaku Islands",
+    "alt_label": "Senkaku Islands (disputed territory)",
     "iso_alpha_2": null
   },
   {
@@ -1753,37 +1765,55 @@
   },
   {
     "code": "XXP",
-    "label": "China/Philippines/Viet Nam/Taiwan/Malaysia (disputed territory)",
-    "alt_label": null,
+    "label": "China/Philippines/Viet Nam/Taiwan/Malaysia",
+    "alt_label": "China/Philippines/Viet Nam/Taiwan/Malaysia (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXR",
-    "label": "Gabon/Equatorial Guinea (disputed territory)",
-    "alt_label": null,
+    "label": "Gabon/Equatorial Guinea",
+    "alt_label": "Gabon/Equatorial Guinea (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXS",
-    "label": "Chagos Islands (disputed territory)",
-    "alt_label": null,
+    "label": "Chagos Islands",
+    "alt_label": "Chagos Islands (disputed territory)",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXT",
+    "label": "Sapodilla Cayes",
+    "alt_label": "Sapodilla Cayes (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXU",
-    "label": "Abyei Region (disputed territory)",
-    "alt_label": null,
+    "label": "Abyei region",
+    "alt_label": "Abyei region (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXV",
-    "label": "Bir Tawil (disputed territory)",
-    "alt_label": null,
+    "label": "Bir Tawil",
+    "alt_label": "Bir Tawil (unclaimed territory)",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXW",
+    "label": "Belize/Guatemala",
+    "alt_label": "Belize/Guatemala (disputed territory)",
+    "iso_alpha_2": null
+  },
+  {
+    "code": "XXY",
+    "label": "Essequibo",
+    "alt_label": "Essequibo (disputed territory)",
     "iso_alpha_2": null
   },
   {
     "code": "XXZ",
-    "label": "Kuril Islands (disputed territory)",
+    "label": "disputed part of Kuril islands",
     "alt_label": null,
     "iso_alpha_2": null
   },
