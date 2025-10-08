@@ -304,7 +304,14 @@ def load_committees() -> None:
         code = result["code"]["value"]
         code = code.removeprefix("EP_")
 
-        label = result["label"]["value"]
+        official_label = result["label"]["value"]
+
+        label = (
+            official_label.removeprefix("Committee on the")
+            .removeprefix("Committee on")
+            .strip()
+        )
+
         abbreviation = result["abbr"]["value"] if result.get("abbr") else code
 
         start_date = datetime.date.fromisoformat(result["start_date"]["value"])
@@ -318,6 +325,7 @@ def load_committees() -> None:
             Committee(
                 code=code,
                 label=label,
+                official_label=official_label,
                 abbreviation=abbreviation,
                 start_date=start_date,
                 end_date=end_date,

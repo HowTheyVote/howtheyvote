@@ -585,7 +585,7 @@ def test_votes_api_show(records, db_session, api):
             {
                 "code": "IMCO",
                 "abbreviation": "IMCO",
-                "label": "Committee on the Internal Market and Consumer Protection",
+                "label": "Internal Market and Consumer Protection",
             },
         ],
         "related": [],
