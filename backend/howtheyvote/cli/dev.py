@@ -502,6 +502,11 @@ def exec_sparql_query(endpoint: str, query: str) -> Any:
     response = requests.post(
         endpoint,
         data={"query": query},
-        headers={"Accept": "application/sparql-results+json"},
+        headers={
+            "Accept": "application/sparql-results+json",
+            # Need to fake the browser agent, otherwise requests are blocked
+            # when running in GitHub Actions
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36",  # noqa: E501
+        },
     )
     return response.json()["results"]["bindings"]
