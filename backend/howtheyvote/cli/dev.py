@@ -263,23 +263,23 @@ def load_committees() -> None:
     PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
 
-    SELECT ?code ?label ?abbr ?short ?start_date ?end_date
+    SELECT ?code ?label ?abbr ?start_date ?end_date
     FROM <http://publications.europa.eu/resource/authority/corporate-body>
     WHERE {
-        ?group org:classification <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_CMT>.
+        ?committee dct:type <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_CMT>.
 
-        ?group dc:identifier ?code.
+        ?committee dc:identifier ?code.
 
-        ?group skos:prefLabel ?label.
+        ?committee skos:prefLabel ?label.
         FILTER(lang(?label) = "en")
 
         # The end date is set if the committee isn't active anymore.
-        ?group euvoc:startDate ?start_date.
-        OPTIONAL { ?group euvoc:endDate ?end_date }
+        ?committee euvoc:startDate ?start_date.
+        OPTIONAL { ?committee euvoc:endDate ?end_date }
 
         # Get the current acronym
         OPTIONAL {
-            ?group skosxl:altLabel ?abbr_node.
+            ?committee skosxl:altLabel ?abbr_node.
             ?abbr_node skosxl:literalForm ?abbr.
             ?abbr_node dct:type ?abbr_type.
             ?abbr_node euvoc:status ?abbr_status.
@@ -304,7 +304,14 @@ def load_committees() -> None:
         code = result["code"]["value"]
         code = code.removeprefix("EP_")
 
-        label = result["label"]["value"]
+        official_label = result["label"]["value"]
+
+        label = (
+            official_label.removeprefix("Committee on the")
+            .removeprefix("Committee on")
+            .strip()
+        )
+
         abbreviation = result["abbr"]["value"] if result.get("abbr") else code
 
         start_date = datetime.date.fromisoformat(result["start_date"]["value"])
@@ -318,6 +325,7 @@ def load_committees() -> None:
             Committee(
                 code=code,
                 label=label,
+                official_label=official_label,
                 abbreviation=abbreviation,
                 start_date=start_date,
                 end_date=end_date,

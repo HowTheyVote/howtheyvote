@@ -21,6 +21,7 @@ class CommitteeMeta(type):
 @dataclasses.dataclass(frozen=True)
 class Committee(DeserializableDataclass, metaclass=CommitteeMeta):
     code: str
+    official_label: str
     label: str
     abbreviation: str
     start_date: datetime.date

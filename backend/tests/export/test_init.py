@@ -235,7 +235,7 @@ def test_export_votes(db_session, tmp_path):
     committees_csv = tmp_path.joinpath("committees.csv")
     committees_meta = tmp_path.joinpath("committees.csv-metadata.json")
 
-    expected = "code,label,abbreviation\nAFET,Committee on Foreign Affairs,AFET\n"
+    expected = "code,label,abbreviation\nAFET,Foreign Affairs,AFET\n"
 
     assert committees_csv.read_text() == expected
     assert committees_meta.is_file()
