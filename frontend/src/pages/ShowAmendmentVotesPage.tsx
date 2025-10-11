@@ -34,11 +34,9 @@ export const ShowAmendmentVotesPage: Page<Vote> = ({ data }) => {
           <Wrapper>
             <Callout>
               <p>
-                The votes on this page were on <b>amendments</b>.<br />
-                Amendments aim at changing the text of reports. The outcome of
-                amendments do not dictate the outcome of the vote on a report.
-                <br /> Successful amendments do not become part of official
-                Parliament positions if the report is not accepted in its{" "}
+                Before voting on a text, MEPs might propose changes or vote on
+                individual parts of the text. These votes take place before the
+                final vote. View the result of the{" "}
                 <a href={`/votes/${data.id}`}>final vote</a>.
               </p>
             </Callout>

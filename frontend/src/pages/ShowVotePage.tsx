@@ -87,10 +87,11 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
                   Amendments
                 </h2>
                 <p class="mb--xs">
-                  This vote's report has had prior votes on amendments. <br />
+                  There have been votes on amendments.{" "}
                   <a href={`/votes/${data.id}/amendments`}>
-                    See roll-call votes on amendments here.
-                  </a>
+                    View all roll-call votes,
+                  </a>{" "}
+                  including amendments.
                 </p>
               </Wrapper>
             </div>
