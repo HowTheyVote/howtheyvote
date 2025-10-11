@@ -54,3 +54,15 @@ jobs:
           HTV_TEST_MOCK_REQUESTS: "false"
           HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
           HTV_SEARCH_INDEX_DIR: "${{ github.workspace }}/storage/index"
+
+      - name: Send Pushover notification
+        if: failure()
+        run: |
+          curl \
+            --silent \
+            --form-string "token=${{ secrets.PUSHOVER_API_TOKEN }}" \
+            --form-string "user=${{ secrets.PUSHOVER_USER_KEY }}" \
+            --form-string "message=Scheduled scraper tests failed" \
+            --form-string "url_title=Workflow run" \
+            --form-string "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            https://api.pushover.net/1/messages.json
