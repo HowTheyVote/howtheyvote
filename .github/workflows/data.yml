@@ -65,8 +65,8 @@ jobs:
       - name: Update political groups
         run: poetry run htv dev load-groups
 
-      - name:
-        if: always()
+      - name: Send Pushover notification
+        if: failure()
         run: |
           curl \
             --silent \
