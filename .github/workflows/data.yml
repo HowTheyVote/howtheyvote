@@ -81,6 +81,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch origin
           git checkout -b "bot/update-json-data"
           git add .
           git commit -m "Update JSON reference datasets"
@@ -88,7 +89,6 @@ jobs:
 
       - name: Open pull request
         run: |
-
           if gh pr view bot/update-json-data &>/dev/null; then
             echo "A pull request already exists. Skipping creation."
           else
