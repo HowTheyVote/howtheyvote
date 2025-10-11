@@ -1,6 +1,7 @@
 name: Data
 
 on:
+  pull: {}
   workflow_dispatch: {}
   schedule:
     - cron: "0 0 1 * *" # every month on the 1st at 0:00
@@ -63,6 +64,18 @@ jobs:
 
       - name: Update political groups
         run: poetry run htv dev load-groups
+
+      - name:
+        if: always()
+        run: |
+          curl \
+            --silent \
+            --form-string "token=${{ secrets.PUSHOVER_API_TOKEN }}" \
+            --form-string "user=${{ secrets.PUSHOVER_USER_KEY }}" \
+            --form-string "message=Failed updating JSON reference datasets" \
+            --form-string "url_title=Workflow run" \
+            --form-string "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            https://api.pushover.net/1/messages.json
 
       - name: Commit and push changes
         run: |
