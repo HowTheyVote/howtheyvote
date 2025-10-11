@@ -559,12 +559,12 @@ def test_votes_api_search_facets(db_session, search_index, api):
         "responsible_committees": [
             {
                 "value": "AFCO",
-                "label": "Committee on Constitutional Affairs",
+                "label": "Constitutional Affairs",
                 "count": 1,
             },
             {
                 "value": "IMCO",
-                "label": "Committee on the Internal Market and Consumer Protection",
+                "label": "Internal Market and Consumer Protection",
                 "count": 1,
             },
         ],
@@ -588,12 +588,12 @@ def test_votes_api_search_facets(db_session, search_index, api):
         "responsible_committees": [
             {
                 "value": "AFCO",
-                "label": "Committee on Constitutional Affairs",
+                "label": "Constitutional Affairs",
                 "count": 1,
             },
             {
                 "value": "IMCO",
-                "label": "Committee on the Internal Market and Consumer Protection",
+                "label": "Internal Market and Consumer Protection",
                 "count": 1,
             },
         ],
