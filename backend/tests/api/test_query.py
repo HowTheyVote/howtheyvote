@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from howtheyvote.api.query import DatabaseQuery, Order, SearchQuery
-from howtheyvote.models import Country, Vote
+from howtheyvote.models import Committee, Country, Vote
 from howtheyvote.store import index_search
 
 
@@ -16,6 +16,7 @@ def votes(db_session, search_index):
             title="Vote One",
             timestamp=datetime.datetime(2024, 1, 1),
             geo_areas=[Country["DEU"], Country["FRA"]],
+            responsible_committees=[Committee["AFCO"]],
         ),
         Vote(
             id=2,
@@ -23,7 +24,8 @@ def votes(db_session, search_index):
             title="Vote Two",
             timestamp=datetime.datetime(2024, 1, 2),
             press_release="abc",
-            geo_areas=[Country["DEU"]],
+            geo_areas=[Country["DEU"], Country["ITA"]],
+            responsible_committees=[Committee["IMCO"]],
         ),
         Vote(
             id=3,
@@ -49,7 +51,7 @@ def test_database_query_handle():
 
 
 def test_database_query_handle_sort():
-    response = DatabaseQuery(Vote).sort("timestamp").handle()
+    response = DatabaseQuery(Vote).sort("date").handle()
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
@@ -58,7 +60,7 @@ def test_database_query_handle_sort():
         datetime.datetime(2024, 1, 1),
     ]
 
-    response = DatabaseQuery(Vote).sort("timestamp", Order.ASC).handle()
+    response = DatabaseQuery(Vote).sort("date", Order.ASC).handle()
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
@@ -98,11 +100,64 @@ def test_database_query_handle_filters():
     response = DatabaseQuery(Vote).handle()
     assert response["total"] == 3
 
-    response = DatabaseQuery(Vote).filter("press_release", "abc").handle()
+    response = DatabaseQuery(Vote).filter("geo_areas", "=", Country["FRA"]).handle()
+    assert response["total"] == 1
+    assert len(response["results"]) == 1
+    assert response["results"][0].id == 1
+    assert response["results"][0].display_title == "Vote One"
+
+    response = DatabaseQuery(Vote).filter("geo_areas", "=", Country["DEU"]).handle()
+    assert response["total"] == 2
+    assert len(response["results"]) == 2
+    assert response["results"][0].id == 2
+    assert response["results"][0].display_title == "Vote Two"
+    assert response["results"][1].id == 1
+    assert response["results"][1].display_title == "Vote One"
+
+    response = (
+        DatabaseQuery(Vote)
+        .filter("geo_areas", "in", [Country["FRA"], Country["ITA"]])
+        .handle()
+    )
+    assert response["total"] == 2
+    assert response["results"][0].id == 2
+    assert response["results"][1].id == 1
+
+    response = DatabaseQuery(Vote).filter("date", "=", datetime.date(2024, 1, 2)).handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 2
+
+    response = DatabaseQuery(Vote).filter("date", ">", datetime.date(2024, 1, 1)).handle()
+    assert response["total"] == 2
+    assert len(response["results"]) == 2
+    assert response["results"][0].id == 3
+    assert response["results"][1].id == 2
+
+    response = DatabaseQuery(Vote).filter("date", ">=", datetime.date(2024, 1, 2)).handle()
+    assert response["total"] == 2
+    assert len(response["results"]) == 2
+    assert response["results"][0].id == 3
+    assert response["results"][1].id == 2
+
+    response = (
+        DatabaseQuery(Vote)
+        .filter("date", ">", datetime.date(2024, 1, 1))
+        .filter("date", "<", datetime.date(2024, 1, 3))
+        .handle()
+    )
     assert response["total"] == 1
     assert len(response["results"]) == 1
     assert response["results"][0].id == 2
-    assert response["results"][0].display_title == "Vote Two"
+
+    response = (
+        DatabaseQuery(Vote)
+        .filter("date", ">=", datetime.date(2024, 1, 2))
+        .filter("date", "<=", datetime.date(2024, 1, 2))
+        .handle()
+    )
+    assert response["total"] == 1
+    assert len(response["results"]) == 1
+    assert response["results"][0].id == 2
 
 
 def test_database_query_sql_where():
@@ -129,7 +184,7 @@ def test_search_query_handle():
 
 
 def test_search_query_handle_sort():
-    response = SearchQuery(Vote).sort("timestamp").handle()
+    response = SearchQuery(Vote).sort("date").handle()
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
@@ -138,7 +193,7 @@ def test_search_query_handle_sort():
         datetime.datetime(2024, 1, 1),
     ]
 
-    response = SearchQuery(Vote).sort("timestamp", Order.ASC).handle()
+    response = SearchQuery(Vote).sort("date", Order.ASC).handle()
     results = response["results"]
     assert len(results) == 3
     assert [r.timestamp for r in results] == [
@@ -195,16 +250,103 @@ def test_search_query_handle_filters():
     response = SearchQuery(Vote).handle()
     assert response["total"] == 3
 
-    response = SearchQuery(Vote).filter("geo_areas", "France").handle()
+    response = SearchQuery(Vote).filter("geo_areas", "=", Country["FRA"]).handle()
     assert response["total"] == 1
-    assert len(response["results"]) == 1
     assert response["results"][0].id == 1
     assert response["results"][0].display_title == "Vote One"
 
-    response = SearchQuery(Vote).filter("geo_areas", "Germany").handle()
+    response = SearchQuery(Vote).filter("geo_areas", "=", Country["DEU"]).handle()
     assert response["total"] == 2
-    assert len(response["results"]) == 2
     assert response["results"][0].id == 2
     assert response["results"][0].display_title == "Vote Two"
     assert response["results"][1].id == 1
     assert response["results"][1].display_title == "Vote One"
+
+    response = (
+        SearchQuery(Vote).filter("geo_areas", "in", [Country["FRA"], Country["ITA"]]).handle()
+    )
+    assert response["total"] == 2
+    assert response["results"][0].id == 2
+    assert response["results"][1].id == 1
+
+    response = SearchQuery(Vote).filter("date", "=", datetime.date(2024, 1, 2)).handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 2
+
+    response = SearchQuery(Vote).filter("date", ">", datetime.date(2024, 1, 1)).handle()
+    assert response["total"] == 2
+    assert response["results"][0].id == 3
+    assert response["results"][1].id == 2
+
+    response = SearchQuery(Vote).filter("date", ">=", datetime.date(2024, 1, 2)).handle()
+    assert response["total"] == 2
+    assert response["results"][0].id == 3
+    assert response["results"][1].id == 2
+
+    response = (
+        SearchQuery(Vote)
+        .filter("date", ">", datetime.date(2024, 1, 1))
+        .filter("date", "<", datetime.date(2024, 1, 3))
+        .handle()
+    )
+    assert response["total"] == 1
+    assert len(response["results"]) == 1
+    assert response["results"][0].id == 2
+
+    response = (
+        SearchQuery(Vote)
+        .filter("date", ">=", datetime.date(2024, 1, 2))
+        .filter("date", "<=", datetime.date(2024, 1, 2))
+        .handle()
+    )
+    assert response["total"] == 1
+    assert len(response["results"]) == 1
+    assert response["results"][0].id == 2
+
+
+def test_search_query_handle_facets():
+    response = SearchQuery(Vote).facet("geo_areas").handle()
+    assert len(response["facets"]) == 1
+    assert response["facets"]["geo_areas"] == [
+        {"value": "DEU", "count": 2},
+        {"value": "FRA", "count": 1},
+        {"value": "ITA", "count": 1},
+    ]
+
+
+def test_search_query_handle_facets_filters():
+    response = (
+        SearchQuery(Vote)
+        .facet("geo_areas")
+        .facet("responsible_committees")
+        .filter("geo_areas", "=", "FRA")
+        .handle()
+    )
+    assert response["facets"] == {
+        "geo_areas": [
+            {"value": "DEU", "count": 2},
+            {"value": "FRA", "count": 1},
+            {"value": "ITA", "count": 1},
+        ],
+        "responsible_committees": [
+            {"value": "AFCO", "count": 1},
+        ],
+    }
+
+    response = (
+        SearchQuery(Vote)
+        .facet("geo_areas")
+        .facet("responsible_committees")
+        .filter("responsible_committees", "=", "AFCO")
+        .handle()
+    )
+    assert response["facets"] == {
+        "geo_areas": [
+            {"value": "DEU", "count": 1},
+            {"value": "FRA", "count": 1},
+        ],
+        "responsible_committees": [
+            {"value": "AFCO", "count": 1},
+            {"value": "IMCO", "count": 1},
+        ],
+    }

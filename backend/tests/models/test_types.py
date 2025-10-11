@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy import Column, MetaData, Table, create_engine, select, text
+from sqlalchemy import Column, MetaData, Table, create_engine, or_, select, text
 from sqlalchemy.engine import Dialect
 from sqlalchemy.types import TypeDecorator
 
@@ -209,3 +209,71 @@ def test_list_type_empty_none():
         processed = connection.execute(select(table)).scalars().all()
         assert processed[0] == []
         assert processed[1] is None
+
+
+def test_list_type_type_decorator_contains():
+    engine = create_engine(
+        "sqlite://",
+        json_serializer=json_dumps,
+        json_deserializer=json_loads,
+    )
+    metadata = MetaData()
+
+    table = Table(
+        "votes",
+        metadata,
+        Column("countries", ListType(CountryType)),
+    )
+
+    deu = Country(code="DEU")
+    fra = Country(code="FRA")
+    ita = Country(code="ITA")
+
+    with engine.connect() as connection:
+        metadata.create_all(connection)
+        connection.execute(table.insert().values(countries=[deu, fra]))
+        connection.execute(table.insert().values(countries=[fra]))
+        connection.execute(table.insert().values(countries=[ita]))
+        connection.commit()
+
+        query = select(table.c.countries).where(
+            or_(table.c.countries.contains(deu), table.c.countries.contains(ita))
+        )
+        results = list(connection.execute(query).scalars())
+
+        assert len(results) == 2
+        assert results[0] == [deu, fra]
+        assert results[1] == [ita]
+
+
+def test_list_type_type_decorator_overlap():
+    engine = create_engine(
+        "sqlite://",
+        json_serializer=json_dumps,
+        json_deserializer=json_loads,
+    )
+    metadata = MetaData()
+
+    table = Table(
+        "votes",
+        metadata,
+        Column("countries", ListType(CountryType)),
+    )
+
+    deu = Country(code="DEU")
+    fra = Country(code="FRA")
+    ita = Country(code="ITA")
+
+    with engine.connect() as connection:
+        metadata.create_all(connection)
+        connection.execute(table.insert().values(countries=[deu, fra]))
+        connection.execute(table.insert().values(countries=[fra]))
+        connection.execute(table.insert().values(countries=[ita]))
+        connection.commit()
+
+        query = select(table.c.countries).where(table.c.countries.overlap([deu, ita]))
+        results = list(connection.execute(query).scalars())
+
+        assert len(results) == 2
+        assert results[0] == [deu, fra]
+        assert results[1] == [ita]

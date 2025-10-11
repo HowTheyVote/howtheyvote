@@ -5,7 +5,9 @@ from typing import Any, TypedDict
 
 import sqlalchemy as sa
 from flask import url_for
+from sqlalchemy import ColumnElement
 from sqlalchemy.engine import Dialect
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
 
@@ -293,6 +295,14 @@ class Vote(BaseWithId):
         default=[],
     )
     press_release: Mapped[str | None] = mapped_column(sa.Unicode)
+
+    @hybrid_property
+    def date(self) -> datetime.date:
+        return self.timestamp.date()
+
+    @date.inplace.expression
+    def _date_expression(cls) -> ColumnElement[datetime.date]:  # noqa: N805 (see https://github.com/astral-sh/ruff/issues/4604#issuecomment-1774659014)
+        return sa.func.date(cls.timestamp)
 
     @property
     def display_title(self) -> str | None:

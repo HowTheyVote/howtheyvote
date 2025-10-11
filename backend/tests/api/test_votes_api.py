@@ -87,7 +87,7 @@ def records(db_session):
 def test_votes_api_index(db_session, api):
     one = Vote(
         id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
         title="Vote One",
         is_main=True,
         result=VoteResult.ADOPTED,
@@ -95,7 +95,7 @@ def test_votes_api_index(db_session, api):
 
     two = Vote(
         id=2,
-        timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
         title="Vote Two",
         is_main=True,
         result=VoteResult.REJECTED,
@@ -103,7 +103,7 @@ def test_votes_api_index(db_session, api):
 
     amendment = Vote(
         id=3,
-        timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
         title="Vote Two",
         description="Am 123",
         is_main=False,
@@ -212,7 +212,7 @@ def test_votes_api_index_sort(db_session, api):
     res = api.get(
         "/api/votes",
         query_string={
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "asc",
         },
     )
@@ -223,7 +223,7 @@ def test_votes_api_index_sort(db_session, api):
     res = api.get(
         "/api/votes",
         query_string={
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "desc",
         },
     )
@@ -243,17 +243,70 @@ def test_votes_api_index_sort(db_session, api):
     assert res.json["total"] == 2
 
 
+def test_votes_api_index_filters(db_session, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        geo_areas=[Country["DEU"]],
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        geo_areas=[Country["FRA"]],
+        is_main=True,
+    )
+
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        geo_areas=[Country["ITA"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two, three])
+    db_session.commit()
+
+    res = api.get("/api/votes", query_string={"geo_areas": "DEU"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes", query_string={"geo_areas": ["DEU", "ITA"]})
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 3
+
+    res = api.get("/api/votes", query_string={"date": "2024-01-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes", query_string={"date[gte]": "2024-02-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get("/api/votes", query_string={"geo_areas": "DEU", "date[gte]": "2024-02-01"})
+    assert res.json["total"] == 0
+
+    # Ignores invalid filter values
+    res = api.get("/api/votes", query_string={"geo_areas": "FOO"})
+    assert res.json["total"] == 3
+
+
 def test_votes_api_search(db_session, search_index, api):
     one = Vote(
         id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
         title="Vote One",
         is_main=True,
     )
 
     two = Vote(
         id=2,
-        timestamp=datetime.datetime(2024, 1, 1, 10, 0, 0),
+        timestamp=datetime.datetime(2024, 1, 2, 0, 0, 0),
         title="Vote Two",
         is_main=True,
     )
@@ -382,7 +435,7 @@ def test_votes_api_search_sort(db_session, search_index, api):
         "/api/votes/search",
         query_string={
             "q": "vote",
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "asc",
         },
     )
@@ -394,13 +447,157 @@ def test_votes_api_search_sort(db_session, search_index, api):
         "/api/votes/search",
         query_string={
             "q": "vote",
-            "sort_by": "timestamp",
+            "sort_by": "date",
             "sort_order": "desc",
         },
     )
     assert res.json["total"] == 2
     assert res.json["results"][0]["id"] == 2
     assert res.json["results"][1]["id"] == 1
+
+
+def test_votes_api_search_filters(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        geo_areas=[Country["DEU"]],
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        geo_areas=[Country["FRA"]],
+        is_main=True,
+    )
+
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        geo_areas=[Country["ITA"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two, three])
+    db_session.commit()
+    index_search(Vote, [one, two, three])
+
+    res = api.get("/api/votes/search", query_string={"geo_areas": "DEU"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"geo_areas": ["DEU", "ITA"]})
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 3
+
+    res = api.get("/api/votes/search", query_string={"date": "2024-01-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"date[gte]": "2024-02-01"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={"geo_areas": "DEU", "date[gte]": "2024-02-01"},
+    )
+    assert res.json["total"] == 0
+
+    # Ignores invalid filter values
+    res = api.get("/api/votes/search", query_string={"geo_areas": "FOO"})
+    assert res.json["total"] == 3
+
+
+def test_votes_api_search_facets(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        geo_areas=[Country["DEU"], Country["FRA"]],
+        responsible_committees=[Committee["AFCO"]],
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        geo_areas=[Country["FRA"]],
+        responsible_committees=[Committee["IMCO"]],
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+    index_search(Vote, [one, two])
+
+    res = api.get("/api/votes/search")
+    assert res.json["facets"] == {}
+
+    res = api.get("/api/votes/search", query_string={"facets": "geo_areas"})
+    assert res.json["facets"] == {
+        "geo_areas": [
+            {"value": "FRA", "label": "France", "count": 2},
+            {"value": "DEU", "label": "Germany", "count": 1},
+        ],
+    }
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={"facets": ["geo_areas", "responsible_committees"]},
+    )
+    assert res.json["facets"] == {
+        "geo_areas": [
+            {"value": "FRA", "label": "France", "count": 2},
+            {"value": "DEU", "label": "Germany", "count": 1},
+        ],
+        "responsible_committees": [
+            {
+                "value": "AFCO",
+                "label": "Constitutional Affairs",
+                "count": 1,
+            },
+            {
+                "value": "IMCO",
+                "label": "Internal Market and Consumer Protection",
+                "count": 1,
+            },
+        ],
+    }
+
+    res = api.get(
+        "/api/votes/search",
+        query_string={
+            "facets": ["geo_areas", "responsible_committees"],
+            "responsible_committees": "IMCO",
+        },
+    )
+    assert res.json["facets"] == {
+        "geo_areas": [
+            {
+                "value": "FRA",
+                "label": "France",
+                "count": 1,
+            },
+        ],
+        "responsible_committees": [
+            {
+                "value": "AFCO",
+                "label": "Constitutional Affairs",
+                "count": 1,
+            },
+            {
+                "value": "IMCO",
+                "label": "Internal Market and Consumer Protection",
+                "count": 1,
+            },
+        ],
+    }
 
 
 def test_votes_api_search_special_chars(db_session, search_index, api):

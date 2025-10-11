@@ -3,13 +3,20 @@ import pathlib
 import shutil
 from collections.abc import Iterator
 from contextlib import contextmanager
+from datetime import date, datetime, time
 from typing import Literal, overload
 
 from structlog import get_logger
-from xapian import DB_CREATE_OR_OPEN, Database, SimpleStopper, WritableDatabase
+from xapian import (
+    DB_CREATE_OR_OPEN,
+    Database,
+    SimpleStopper,
+    WritableDatabase,
+    sortable_serialise,
+)
 
 from . import config
-from .models import BaseWithId
+from .models import BaseWithId, Committee, Country
 
 log = get_logger(__name__)
 
@@ -22,8 +29,8 @@ class AccessType(enum.Enum):
 # These are the fields that are used for full-text search.
 SEARCH_FIELDS = [
     "display_title",
-    "geo_areas",
-    "eurovoc_concepts",
+    "geo_area_labels",
+    "eurovoc_concept_labels",
     "rapporteur",
 ]
 
@@ -32,9 +39,12 @@ SEARCH_FIELDS = [
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/boolean_filters.html
 FIELD_TO_PREFIX_MAPPING = {
     "display_title": "XDT",
+    "date": "XD",
     "geo_areas": "XGA",
-    "eurovoc_concepts": "XEC",
+    "geo_area_labels": "XGAL",
+    "eurovoc_concept_labels": "XECL",
     "rapporteur": "XRA",
+    "responsible_committees": "XRC",
     "reference": "XR",
     "procedure_reference": "XPR",
 }
@@ -46,8 +56,10 @@ FIELD_TO_PREFIX_MAPPING = {
 # value is stored in a numbered slot.
 # See: https://getting-started-with-xapian.readthedocs.io/en/latest/concepts/indexing/values.html
 FIELD_TO_SLOT_MAPPING = {
-    "timestamp": 0,
+    "date": 0,
     "has_press_release": 1,
+    "geo_areas": 2,
+    "responsible_committees": 3,
 }
 
 # Some document fields are more important than others. The following factors are applied
@@ -72,13 +84,20 @@ def field_to_boost(field: str) -> float:
     return FIELD_TO_BOOST_MAPPING.get(field, 1)
 
 
-def boolean_term(field: str, value: str | int | bool) -> str:
+def boolean_term(
+    field: str,
+    value: str | int | bool | date | datetime | Country | Committee,
+) -> str:
     prefix = FIELD_TO_PREFIX_MAPPING[field]
 
     if type(value) is bool:
         # Index bools as integers
         value = int(value)
-    elif type(value) is str:
+    if type(value) is Country:
+        value = value.code
+    if type(value) is Committee:
+        value = value.code
+    if type(value) is str:
         # Normalize strings
         value = value.lower()
 
@@ -134,3 +153,27 @@ def delete_indexes() -> None:
 
         log.info("Deleting index", path=path.name)
         shutil.rmtree(path)
+
+
+def serialize_value(value: int | float | date | datetime) -> str:
+    if isinstance(value, date) and not isinstance(value, datetime):
+        value = datetime.combine(value, time(0, 0))
+
+    if isinstance(value, datetime):
+        value = value.timestamp()
+
+    return sortable_serialise(value)
+
+
+LIST_SEPARATOR = b"\x03"
+
+
+def serialize_list(values: list[str]) -> bytes:
+    return LIST_SEPARATOR.join(value.encode("utf-8") for value in values)
+
+
+def unserialize_list(value: bytes) -> list[str]:
+    if not value:
+        return []
+
+    return [item.decode("utf-8") for item in value.split(LIST_SEPARATOR)]

@@ -20,8 +20,8 @@ const log = getLogger();
 
 const SORT_PARAMS = {
   relevance: {},
-  newest: { sort_by: "timestamp", sort_order: "desc" },
-  oldest: { sort_by: "timestamp", sort_order: "asc" },
+  newest: { sort_by: "date", sort_order: "desc" },
+  oldest: { sort_by: "date", sort_order: "asc" },
 } as const;
 
 type VotesSearchSortOptions = "relevance" | "newest" | "oldest";

@@ -1,5 +1,6 @@
 import csv
 from collections.abc import Iterable
+from datetime import date
 from io import StringIO
 
 from flask import Blueprint, Request, Response, abort, jsonify, request
@@ -20,12 +21,19 @@ from ..links import (
     oeil_procedure_url,
     press_release_url,
 )
-from ..models import Fragment, Member, PressRelease, Vote
+from ..models import (
+    Committee,
+    Country,
+    Fragment,
+    Member,
+    PressRelease,
+    Vote,
+)
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
-from .query import DatabaseQuery, Order, Query, SearchQuery
+from .query import DatabaseQuery, FacetOption, Order, Query, SearchQuery
 from .serializers import (
-    BaseVoteDict,
+    FacetOptionDict,
     LinkDict,
     MemberVoteDict,
     ProcedureDict,
@@ -34,6 +42,7 @@ from .serializers import (
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
+    VotesQueryResponseWithFacetsDict,
     VoteStatsByCountryDict,
     VoteStatsByGroupDict,
     VoteStatsDict,
@@ -110,7 +119,7 @@ def index() -> Response:
                 schema:
                     type: string
                     enum:
-                        - timestamp
+                        - date
             -
                 in: query
                 name: sort_order
@@ -120,6 +129,53 @@ def index() -> Response:
                     enum:
                         - asc
                         - desc
+            -
+                in: query
+                name: date
+                description: |
+                    Filter votes by date and return only votes that were cast on the given
+                    date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date[gte]
+                description: |
+                    Filter votes by date and return only votes that were cast on or after the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date[lte]
+                description: |
+                    Filter votes by date and return only votes that were cast on or before the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: geo_areas
+                description: |
+                    Filter votes by geographic area. Valid values are 3-letter country codes
+                    [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+                schema:
+                    type: array
+                    items:
+                        type: string
+            -
+                in: query
+                name: responsible_committees
+                description: |
+                    Filter votes by responsible committees. Valid values are 4-letter
+                    committee codes.
+                schema:
+                    type: array
+                    items:
+                        type: string
         responses:
             '200':
                 description: Ok
@@ -129,7 +185,7 @@ def index() -> Response:
                             $ref: '#/components/schemas/VotesQueryResponse'
     """
     query = _query_from_request(DatabaseQuery, request)
-    query = query.filter("is_main", True)
+    query = query.filter("is_main", "=", True)
     query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
 
     return jsonify(_serialize_query(query))
@@ -176,7 +232,7 @@ def search() -> Response:
                 schema:
                     type: string
                     enum:
-                        - timestamp
+                        - date
             -
                 in: query
                 name: sort_order
@@ -186,13 +242,74 @@ def search() -> Response:
                     enum:
                         - asc
                         - desc
+            -
+                in: query
+                name: date
+                description: |
+                    Filter votes by date and return only votes that were cast on the given
+                    date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date[gte]
+                description: |
+                    Filter votes by date and return only votes that were cast on or after the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date[lte]
+                description: |
+                    Filter votes by date and return only votes that were cast on or before the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: geo_areas
+                description: |
+                    Filter votes by geographic area. Valid values are 3-letter country codes
+                    [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+                schema:
+                    type: array
+                    items:
+                        type: string
+            -
+                in: query
+                name: responsible_committees
+                description: |
+                    Filter votes by responsible committees. Valid values are 4-letter
+                    committee codes.
+                schema:
+                    type: array
+                    items:
+                        type: string
+            -
+                in: query
+                name: facets
+                description: |
+                    Return facet options for the given fields. Can be set multiple times.
+                style: form
+                explode: true
+                schema:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - geo_areas
+                            - responsible_committees
         responses:
             '200':
                 description: Ok
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/VotesQueryResponse'
+                            $ref: '#/components/schemas/VotesQueryResponseWithFacets'
 
     """
     q = request.args.get("q", "").strip()
@@ -203,19 +320,19 @@ def search() -> Response:
     q = REFERENCE_REGEX.sub("", q)
 
     for reference in references:
-        query = query.filter("reference", reference)
+        query = query.filter("reference", "=", reference)
 
     # Detect procedure references and apply a filter
     procedure_references = [match.group(0) for match in PROCEDURE_REFERENCE_REGEX.finditer(q)]
     q = PROCEDURE_REFERENCE_REGEX.sub("", q)
 
     for procedure_reference in procedure_references:
-        query = query.filter("procedure_reference", procedure_reference)
+        query = query.filter("procedure_reference", "=", procedure_reference)
 
     if q:
         query = query.query(q)
 
-    return jsonify(_serialize_query(query))
+    return jsonify(_serialize_query_with_facets(query))
 
 
 @bp.route("/votes/<int:vote_id>")
@@ -361,24 +478,94 @@ def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
     query = query.page_size(request.args.get("page_size", type=int))
 
     # Sort
-    sort_field = request.args.get("sort_by", type=one_of("timestamp"))
+    sort_field = request.args.get("sort_by", type=one_of("date"))
     sort_order = request.args.get("sort_order", type=Order)
 
     if sort_field:
         query = query.sort(field=sort_field, order=sort_order)
 
+    # Filters
+    query = query.filter("date", "=", request.args.get("date", type=date.fromisoformat))
+    query = query.filter("date", ">=", request.args.get("date[gte]", type=date.fromisoformat))
+    query = query.filter("date", "<=", request.args.get("date[lte]", type=date.fromisoformat))
+
+    geo_areas = request.args.getlist("geo_areas", type=_as_country)
+    query = query.filter("geo_areas", "in", geo_areas)
+
+    committees = request.args.getlist("responsible_committees", type=_as_committee)
+    query = query.filter("responsible_committees", "in", committees)
+
+    # Facets
+    facets = request.args.getlist(
+        "facets",
+        type=one_of("geo_areas", "responsible_committees"),
+    )
+
+    for field in facets:
+        query = query.facet(field)
+
     return query
 
 
-def _serialize_query(query: Query[Vote]) -> VotesQueryResponseDict:
+def _as_country(code: str) -> Country:
+    try:
+        return Country[code]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_committee(code: str) -> Committee:
+    try:
+        return Committee[code]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _serialize_query(query: DatabaseQuery[Vote]) -> VotesQueryResponseDict:
     response = query.handle()
-    results: list[BaseVoteDict] = [
-        serialize_base_vote(result) for result in response["results"]
-    ]
 
     return {
         **response,
-        "results": results,
+        "results": [serialize_base_vote(result) for result in response["results"]],
+    }
+
+
+def _serialize_query_with_facets(query: SearchQuery[Vote]) -> VotesQueryResponseWithFacetsDict:
+    response = query.handle()
+
+    return {
+        **response,
+        "results": [serialize_base_vote(result) for result in response["results"]],
+        "facets": {
+            field: _serialize_facet_options(field, options)
+            for field, options in response["facets"].items()
+        },
+    }
+
+
+def _serialize_facet_options(field: str, options: list[FacetOption]) -> list[FacetOptionDict]:
+    return [_serialize_facet_option(field, option) for option in options]
+
+
+def _serialize_facet_option(field: str, option: FacetOption) -> FacetOptionDict:
+    # This is no perfect solution. When we handle the query, we’re not aware of the field type
+    # anymore, so we have to manually enrich the options and provide a proper label here. There
+    # probably is a more elegant solution to this, but this is the simplest option for now.
+    if field == "geo_areas":
+        return {
+            **option,
+            "label": Country[option["value"]].label,
+        }
+
+    if field == "responsible_committees":
+        return {
+            **option,
+            "label": Committee[option["value"]].label,
+        }
+
+    return {
+        **option,
+        "label": option["value"],
     }
 
 

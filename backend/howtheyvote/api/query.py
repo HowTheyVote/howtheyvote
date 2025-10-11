@@ -2,14 +2,17 @@ import copy
 import datetime
 import enum
 from abc import ABC, abstractmethod
-from typing import Any, Self, TypedDict
+from collections import defaultdict
+from typing import Any, Literal, Self, TypedDict
 
-from sqlalchemy import desc, func, select
+from sqlalchemy import and_, asc, desc, func, select, true
 from sqlalchemy.sql import ColumnElement
 from xapian import (
     BM25Weight,
     Database,
+    Document,
     Enquire,
+    MatchSpy,
     QueryParser,
     ValuePostingSource,
     ValueWeightPostingSource,
@@ -22,6 +25,7 @@ from xapian import (
 
 from ..db import Session
 from ..models import BaseWithId
+from ..models.types import ListType
 from ..search import (
     SEARCH_FIELDS,
     boolean_term,
@@ -30,12 +34,27 @@ from ..search import (
     field_to_slot,
     get_index,
     get_stopper,
+    serialize_value,
+    unserialize_list,
 )
 
 
 class Order(enum.Enum):
     ASC = "asc"
     DESC = "desc"
+
+
+class FilterOperator(enum.Enum):
+    EQ = "="
+    GT = ">"
+    GTE = ">="
+    LT = "<"
+    LTE = "<="
+    IN = "in"
+
+
+FilterOperatorSymbol = Literal["=", ">", ">=", "<", "<=", "in"]
+Filters = dict[tuple[str, FilterOperator], Any]
 
 
 class QueryResponse[T: BaseWithId](TypedDict):
@@ -47,10 +66,19 @@ class QueryResponse[T: BaseWithId](TypedDict):
     has_prev: bool
 
 
+class FacetOption(TypedDict):
+    value: str
+    count: int
+
+
+class QueryResponseWithFacets[T: BaseWithId](QueryResponse[T]):
+    facets: dict[str, list[FacetOption]]
+
+
 class Query[T: BaseWithId](ABC):
     MAX_PAGE_SIZE = 200
     DEFAULT_PAGE_SIZE = 20
-    DEFAULT_SORT_FIELD = "timestamp"
+    DEFAULT_SORT_FIELD = "date"
     DEFAULT_SORT_ORDER = Order.DESC
 
     def __init__(self, model: type[T]):
@@ -58,7 +86,8 @@ class Query[T: BaseWithId](ABC):
         self._sort: tuple[str, Order] | None = None
         self._page: int | None = None
         self._page_size: int | None = None
-        self._filters: dict[str, str | bool | int] = {}
+        self._filters: Filters = {}
+        self._facets: list[str] = []
 
     @abstractmethod
     def handle(self) -> QueryResponse[T]:
@@ -119,22 +148,47 @@ class Query[T: BaseWithId](ABC):
 
         return self._sort
 
-    def filter(self, field: str, value: str | bool | int | None) -> Self:
-        query = self.copy()
+    # TODO Figure out if there's a type-safe way to ensure that `field` is valid
+    # for the given model and `value` has the respective type.
+    def filter(self, field: str, op: FilterOperatorSymbol, value: Any) -> Self:
+        if not value:
+            return self
 
-        if value is not None:
-            query._filters[field] = value
+        query = self.copy()
+        query._filters[(field, FilterOperator(op))] = value
 
         return query
 
-    def get_filters(self) -> dict[str, str | bool | int]:
+    def get_filters(self) -> Filters:
         return self._filters
+
+    def without_filters(self, field: str) -> Self:
+        query = self.copy()
+        query._filters = {
+            (field_, op): value
+            for ((field_, op), value) in self._filters.items()
+            if field_ != field
+        }
+        return query
+
+    def facet(self, field: str) -> Self:
+        copy = self.copy()
+        copy._facets.append(field)
+        return copy
+
+    def get_facets(self) -> list[str]:
+        return self._facets
 
 
 class DatabaseQuery[T: BaseWithId](Query[T]):
     def __init__(self, model: type[T]):
         super().__init__(model)
-        self._where: list[ColumnElement[Any]] = []
+        self._where: list[ColumnElement[bool]] = []
+
+    def where(self, expression: ColumnElement[bool]) -> Self:
+        query = self.copy()
+        query._where.append(expression)
+        return query
 
     def handle(self) -> QueryResponse[T]:
         page = self.get_page()
@@ -142,30 +196,12 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
         limit = self.get_limit()
         offset = self.get_offset()
 
-        query = select(self.model)
-
-        # Apply default sorting if none is specified explicitly
-        sort = self.get_sort()
-        if not sort:
-            sort_field = self.DEFAULT_SORT_FIELD
-            sort_order = self.DEFAULT_SORT_ORDER
-        else:
-            sort_field, sort_order = sort
-
-        # This evaluates to something like `Vote.timestamp`.
-        order_expr = getattr(self.model, sort_field)
-
-        if sort_order == Order.DESC:
-            order_expr = desc(order_expr)
-
-        query = query.order_by(order_expr)
-
-        for field, value in self.get_filters().items():
-            column = getattr(self.model, field)
-            query = query.where(column == value)
-
-        for expression in self._where:
-            query = query.where(expression)
+        query = (
+            select(self.model)
+            .order_by(self._order_expr())
+            .where(self._filters_expr())
+            .where(*self._where)
+        )
 
         total_query = query.with_only_columns(func.count(self.model.id))
         results_query = query.limit(limit).offset(offset)
@@ -184,10 +220,52 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
 
         return response
 
-    def where(self, expression: ColumnElement[Any]) -> Self:
-        query = self.copy()
-        query._where.append(expression)
-        return query
+    def _order_expr(self) -> ColumnElement[Any]:
+        # Apply default sorting if none is specified explicitly
+        sort = self.get_sort()
+        if not sort:
+            sort_field = self.DEFAULT_SORT_FIELD
+            sort_order = self.DEFAULT_SORT_ORDER
+        else:
+            sort_field, sort_order = sort
+
+        # This evaluates to something like `Vote.timestamp`.
+        order_expr = getattr(self.model, sort_field)
+
+        if sort_order == Order.DESC:
+            return desc(order_expr)
+        else:
+            return asc(order_expr)
+
+    def _filters_expr(self) -> ColumnElement[bool]:
+        conditions = []
+
+        for (field, op), value in self.get_filters().items():
+            column = getattr(self.model, field)
+
+            if op == FilterOperator.EQ:
+                if isinstance(column.type, ListType):
+                    conditions.append(column.contains(value))
+                else:
+                    conditions.append(column == value)
+            elif op == FilterOperator.IN:
+                if isinstance(column.type, ListType):
+                    conditions.append(column.overlap(value))
+                else:
+                    conditions.append(column.in_(value))
+            elif op == FilterOperator.GT:
+                conditions.append(column > value)
+            elif op == FilterOperator.GTE:
+                conditions.append(column >= value)
+            elif op == FilterOperator.LT:
+                conditions.append(column < value)
+            elif op == FilterOperator.LTE:
+                conditions.append(column <= value)
+
+        if not conditions:
+            return true()
+
+        return and_(*conditions)
 
 
 class ValueDecayWeightPostingSource(ValuePostingSource):
@@ -219,6 +297,25 @@ class ValueDecayWeightPostingSource(ValuePostingSource):
         return weight
 
 
+class MultiValueCountMatchSpy(MatchSpy):
+    """Match spies are called while Xapian matches documents against the query. They can
+    be used to compute aggregates of the result set. Xapian includes a `ValueCountMatchSpy`
+    which can be used to compute the number of documents per unique slot value. Natively,
+    Xapian only supports a single value per slot, but we have many cases where we need to
+    store multiple values in a single slot (for example geographic areas). To work aorund
+    this, we serialize lists of values during indexing, and unserialize it when the match
+    spy is called."""
+
+    def __init__(self, slot: int):
+        super().__init__()
+        self.slot = slot
+        self.counts: dict[str, int] = defaultdict(int)
+
+    def __call__(self, doc: Document, _weight: float) -> None:
+        for term in unserialize_list(doc.get_value(self.slot)):
+            self.counts[term] += 1
+
+
 class SearchQuery[T: BaseWithId](Query[T]):
     BOOST_FEATURED = 0.075
     """Constant weight added for featured votes."""
@@ -234,8 +331,9 @@ class SearchQuery[T: BaseWithId](Query[T]):
     def __init__(self, model: type[T]):
         super().__init__(model)
         self._query: str | None = None
+        self._facets: list[str] = []
 
-    def handle(self) -> QueryResponse[T]:
+    def handle(self) -> QueryResponseWithFacets[T]:
         page = self.get_page()
         page_size = self.get_page_size()
         limit = self.get_limit()
@@ -277,13 +375,19 @@ class SearchQuery[T: BaseWithId](Query[T]):
         # Sort in the same order as returned in search response
         results = sorted(results, key=lambda r: ids.index(int(r.id)))
 
-        response: QueryResponse[T] = {
+        # Facets
+        facets: dict[str, list[FacetOption]] = {
+            field: self._compute_facet(field) for field in self.get_facets()
+        }
+
+        response: QueryResponseWithFacets[T] = {
             "total": mset.get_matches_estimated(),
             "page": page,
             "page_size": page_size,
             "has_prev": page > 1,
             "has_next": mset.size() > limit,
             "results": results,
+            "facets": facets,
         }
 
         return response
@@ -295,6 +399,41 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def get_query(self) -> str:
         return self._query or ""
+
+    def _compute_facet(self, field: str) -> list[FacetOption]:
+        spy = MultiValueCountMatchSpy(field_to_slot(field))
+
+        # To compute facets, we basically execute the same query we execute to get the
+        # actual results, except that we ignore any filters for the facet’s field.
+        # Otherwise, selecting multiple options would become impossible, as the filter
+        # options would be narrowed down as soon as the first option is selected.
+        facets_query = self.without_filters(field)
+
+        with get_index(self.model) as index:
+            xapian_query = facets_query._xapian_query(index)
+            enquire = Enquire(index)
+            enquire.set_query(xapian_query)
+            enquire.add_matchspy(spy)
+
+            # Last parameter is the number of documents the matcher at least has to check
+            # before returning the result. Due to optimizations, the matcher might not
+            # check all documents. We’re not interested in any actual results, so the most
+            # efficient way to compute the result set would be to return an empty list
+            # without checking any documents. In that case, the facets would obviously be
+            # entirely wrong, so we force the matcher to check at least 10k documents.
+            # This means that facet options and facet option counts might still be slightly
+            # inaccurate, but this is unlikely to be relevant given the small number of
+            # documents in our index.
+            enquire.get_mset(0, 0, 10_000)
+
+        options: list[FacetOption] = []
+
+        for term, count in spy.counts.items():
+            options.append({"value": term, "count": count})
+
+        options.sort(key=lambda option: option["count"], reverse=True)
+
+        return options
 
     def _xapian_query_parser(self, index: Database) -> QueryParser:
         parser = QueryParser()
@@ -321,10 +460,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 self._xapian_age_subquery(),
             )
 
-        for field, value in self.get_filters().items():
-            # Fields have to be indexed as boolean terms to be used as filters
-            term = boolean_term(field, value)
-            query = XapianQuery(XapianQuery.OP_FILTER, query, XapianQuery(term))
+        query = XapianQuery(XapianQuery.OP_FILTER, query, self._xapian_filters_subquery())
 
         return query
 
@@ -373,7 +509,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
         now = datetime.datetime.now().timestamp()
         max_diff = datetime.timedelta(days=self.AGE_DECAY_DAYS).total_seconds()
 
-        age_source = ValueDecayWeightPostingSource(field_to_slot("timestamp"))
+        age_source = ValueDecayWeightPostingSource(field_to_slot("date"))
         age_source.set_max_diff(max_diff)
         age_source.set_origin(now)
 
@@ -405,3 +541,77 @@ class SearchQuery[T: BaseWithId](Query[T]):
         min_normlen = 0.5
 
         return BM25Weight(k1, k2, k3, b, min_normlen)
+
+    def _xapian_filters_subquery(self) -> XapianQuery:
+        subqueries = []
+
+        for (field, op), value in self.get_filters().items():
+            # Fields have to be indexed as boolean terms to be used with equality filters
+            # and in slots to be used with greater/less than filters
+            if op == FilterOperator.EQ:
+                subqueries.append(self._xapian_filter_eq_subquery(field, value))
+            elif op == FilterOperator.IN:
+                subqueries.append(self._xapian_filter_in_subquery(field, value))
+            elif op == FilterOperator.GT:
+                subqueries.append(self._xapian_filter_gt_subquery(field, value))
+            elif op == FilterOperator.GTE:
+                subqueries.append(self._xapian_filter_ge_subquery(field, value))
+            elif op == FilterOperator.LT:
+                subqueries.append(self._xapian_filter_lt_subquery(field, value))
+            elif op == FilterOperator.LTE:
+                subqueries.append(self._xapian_filter_le_subquery(field, value))
+
+        query = XapianQuery.MatchAll
+
+        for subquery in subqueries:
+            query = XapianQuery(XapianQuery.OP_AND, query, subquery)
+
+        return query
+
+    def _xapian_filter_eq_subquery(self, field: str, value: Any) -> XapianQuery:
+        return XapianQuery(boolean_term(field, value))
+
+    def _xapian_filter_in_subquery(self, field: str, value: Any) -> XapianQuery:
+        if not value:
+            return XapianQuery.MatchAll
+
+        query = XapianQuery.MatchNothing
+
+        for item in value:
+            query = XapianQuery(
+                XapianQuery.OP_OR, query, self._xapian_filter_eq_subquery(field, item)
+            )
+
+        return query
+
+    def _xapian_filter_gt_subquery(self, field: str, value: Any) -> XapianQuery:
+        # Xapian doesn’t have native support for ">", so we need to emulate this:
+        # field > value <==> field >= value AND !(field <= value)
+        return XapianQuery(
+            XapianQuery.OP_AND_NOT,
+            self._xapian_filter_ge_subquery(field, value),
+            self._xapian_filter_le_subquery(field, value),
+        )
+
+    def _xapian_filter_ge_subquery(self, field: str, value: Any) -> XapianQuery:
+        return XapianQuery(
+            XapianQuery.OP_VALUE_GE,
+            field_to_slot(field),
+            serialize_value(value),
+        )
+
+    def _xapian_filter_lt_subquery(self, field: str, value: Any) -> XapianQuery:
+        # Xapian doesn’t have native support for "<", so we need to emulate this:
+        # field < value <==> field <= value AND !(field >= value)
+        return XapianQuery(
+            XapianQuery.OP_AND_NOT,
+            self._xapian_filter_le_subquery(field, value),
+            self._xapian_filter_ge_subquery(field, value),
+        )
+
+    def _xapian_filter_le_subquery(self, field: str, value: Any) -> XapianQuery:
+        return XapianQuery(
+            XapianQuery.OP_VALUE_LE,
+            field_to_slot(field),
+            serialize_value(value),
+        )
