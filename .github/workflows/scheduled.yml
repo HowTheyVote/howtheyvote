@@ -6,7 +6,7 @@ on:
     - cron: "0 0 * * 2" # every Tuesday at 00:00
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     defaults:
