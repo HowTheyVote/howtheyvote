@@ -14,10 +14,10 @@ def test_map_vote_eurovoc_concepts_deduplication():
     )
 
     vote = map_vote(record)
-    expected = {EurovocConcept["4514"], EurovocConcept["5585"]}
+    expected = [EurovocConcept["4514"], EurovocConcept["5585"]]
 
     assert len(vote.eurovoc_concepts) == 2
-    assert set(vote.eurovoc_concepts) == expected
+    assert vote.eurovoc_concepts == expected
 
 
 def test_map_vote_eurovoc_concepts_geo_areas():
@@ -31,10 +31,10 @@ def test_map_vote_eurovoc_concepts_geo_areas():
     )
 
     vote = map_vote(record)
-    expected = {Country["XXI"], Country["GBR"]}
+    expected = [Country["XXI"], Country["GBR"]]
 
     assert len(vote.geo_areas) == 2
-    assert set(vote.geo_areas) == expected
+    assert vote.geo_areas == expected
 
 
 def test_map_vote_geo_areas_dedpuplication():
@@ -50,4 +50,4 @@ def test_map_vote_geo_areas_dedpuplication():
     vote = map_vote(record)
 
     assert len(vote.geo_areas) == 1
-    assert vote.geo_areas == {Country["BEL"]}
+    assert vote.geo_areas == [Country["BEL"]]
