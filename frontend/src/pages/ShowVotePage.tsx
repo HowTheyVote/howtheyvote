@@ -1,6 +1,7 @@
 import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
+import Callout from "../components/Callout";
 import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
 import PageNav from "../components/PageNav";
@@ -44,6 +45,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
       (related_vote) => !related_vote.is_main || related_vote.id === data.id,
     ).length > 1;
 
+  // This will not work in all cases, but might be good enough in combination with the amendment condition above.
+  const main_vote = data.related.find((related_vote) => related_vote.is_main);
+
   return (
     <App
       title={[data.display_title, "Vote Results"]}
@@ -64,9 +68,21 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
         <Stack space="lg">
           <div id="result" className="px mt--lg">
             <Wrapper>
-              {data.stats && <VoteResultChart stats={data.stats.total} />}
+              <Stack space="sm">
+                {!data.is_main && (
+                  <Callout>
+                    <p>
+                      This is a vote on an amendment! View the result of the{" "}
+                      <a href={`/votes/${main_vote?.id}`}>final vote</a>.
+                    </p>
+                  </Callout>
+                )}
+
+                {data.stats && <VoteResultChart stats={data.stats.total} />}
+              </Stack>
             </Wrapper>
           </div>
+
           <div className="px">
             <Wrapper>
               {data.member_votes && data.stats && (
