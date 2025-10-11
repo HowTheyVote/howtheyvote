@@ -585,7 +585,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
         return query
 
     def _xapian_filter_gt_subquery(self, field: str, value: Any) -> XapianQuery:
-        # Xapian doesn’t have native support for "<", so we need to emulate this:
+        # Xapian doesn’t have native support for ">", so we need to emulate this:
         # field > value <==> field >= value AND !(field <= value)
         return XapianQuery(
             XapianQuery.OP_AND_NOT,
