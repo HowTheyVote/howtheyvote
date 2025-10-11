@@ -225,6 +225,12 @@ def test_parse_amendment_authors():
         AmendmentAuthorGroup(group=Group["GUE_NGL"]),
     ]
 
+    # Multiple group authors, semicolon as delimiter
+    assert parse_amendment_authors("PfE; ECR") == [
+        AmendmentAuthorGroup(group=Group["PFE"]),
+        AmendmentAuthorGroup(group=Group["ECR"]),
+    ]
+
     # Multiple group authors, newline as delimiter
     assert parse_amendment_authors("The Left\nS&D") == [
         AmendmentAuthorGroup(group=Group["GUE_NGL"]),

@@ -201,6 +201,8 @@ def parse_amendment_authors(raw_authors: str) -> list[AmendmentAuthor]:
         delimiter = "\n"
     elif "," in raw_authors:
         delimiter = ","
+    elif ";" in raw_authors:
+        delimiter = ";"
     else:
         delimiter = None
 
