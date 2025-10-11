@@ -838,6 +838,7 @@ def test_votes_api_related_votes(db_session, api):
 
     amendment = Vote(
         id=1,
+        is_main=False,
         timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
         order=1,
         title="Should we have pizza for lunch?",
@@ -853,6 +854,7 @@ def test_votes_api_related_votes(db_session, api):
 
     main_vote = Vote(
         id=2,
+        is_main=True,
         timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
         order=2,
         title="Should we have pizza for lunch?",
@@ -874,11 +876,13 @@ def test_votes_api_related_votes(db_session, api):
     expected = [
         {
             "id": 1,
+            "is_main": False,
             "timestamp": "2023-01-01T00:00:00",
             "description": "Am 1",
         },
         {
             "id": 2,
+            "is_main": True,
             "timestamp": "2023-01-01T00:00:00",
             "description": "Resolution (text as a whole)",
         },
