@@ -231,7 +231,7 @@ def load_countries() -> None:
     """  # noqa: E501
 
     log.info("Retrieving countries")
-    results = exec_sparql_query(PUBLICATIONS_ENDPOINT, query)
+    results = exec_sparql_query(DATA_ENDPOINT, query)
     container = DataclassContainer(
         dataclass=Country,
         file_path=DATA_DIR.joinpath("countries.json"),
@@ -510,6 +510,11 @@ def exec_sparql_query(endpoint: str, query: str) -> Any:
     response = requests.post(
         endpoint,
         data={"query": query},
-        headers={"Accept": "application/sparql-results+json"},
+        headers={
+            "Accept": "application/sparql-results+json",
+            # Need to fake the browser agent, otherwise requests are blocked
+            # when running in GitHub Actions
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:144.0) Gecko/20100101 Firefox/144.0",  # noqa: E501
+        },
     )
     return response.json()["results"]["bindings"]

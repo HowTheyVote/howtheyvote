@@ -1,13 +1,17 @@
-name: Scheduled scraper tests
+name: Data
 
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 0 * * 2" # every Tuesday at 00:00
+    - cron: "0 0 1 * *" # every month on the 1st at 0:00
 
 jobs:
-  test:
+  update:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
 
     defaults:
       run:
@@ -36,7 +40,7 @@ jobs:
           cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
 
       - name: Install poetry
-        run: pipx install poetry
+        run: pipx install poetry==2.1.4
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -48,12 +52,17 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Run tests against live data sources
-        run: make test
-        env:
-          HTV_TEST_MOCK_REQUESTS: "false"
-          HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
-          HTV_SEARCH_INDEX_DIR: "${{ github.workspace }}/storage/index"
+      - name: Update committees
+        run: poetry run htv dev load-committees
+
+      - name: Update countries
+        run: poetry run htv dev load-countries
+
+      - name: Update EuroVoc concepts
+        run: poetry run htv dev load-eurovoc
+
+      - name: Update political groups
+        run: poetry run htv dev load-groups
 
       - name: Send Pushover notification
         if: failure()
@@ -62,7 +71,31 @@ jobs:
             --silent \
             --form-string "token=${{ secrets.PUSHOVER_API_TOKEN }}" \
             --form-string "user=${{ secrets.PUSHOVER_USER_KEY }}" \
-            --form-string "message=Scheduled scraper tests failed" \
+            --form-string "message=Failed updating JSON reference datasets" \
             --form-string "url_title=Workflow run" \
             --form-string "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             https://api.pushover.net/1/messages.json
+
+      - name: Commit and push changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch origin
+          git checkout -b "bot/update-json-data"
+          git add .
+          git commit -m "Update JSON reference datasets"
+          git push --force-with-lease origin bot/update-json-data
+
+      - name: Open pull request
+        run: |
+          if gh pr view bot/update-json-data &>/dev/null; then
+            echo "A pull request already exists. Skipping creation."
+          else
+            gh pr create \
+              --title "Update JSON data" \
+              --body "This pull request was opened automatically." \
+              --head "bot/update-json-data" \
+              --base main
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
