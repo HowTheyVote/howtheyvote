@@ -641,6 +641,7 @@ def test_votes_api_show(records, db_session, api):
 
     expected = {
         "id": 1,
+        "is_main": False,
         "display_title": "Should we have pizza for lunch?",
         "timestamp": "2023-01-01T00:00:00",
         "reference": None,
