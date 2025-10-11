@@ -38,7 +38,11 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
   const csvUrl = getDownloadUrl(data.id, "csv");
   const jsonUrl = getDownloadUrl(data.id, "json");
 
-  const hasAmendments = data.is_main && data.related.length > 1;
+  const hasAmendments =
+    data.is_main &&
+    data.related.filter(
+      (related_vote) => !related_vote.is_main || related_vote.id === data.id,
+    ).length > 1;
 
   return (
     <App

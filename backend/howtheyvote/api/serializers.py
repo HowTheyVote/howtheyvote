@@ -260,6 +260,14 @@ class RelatedVoteDict(TypedDict):
     id: Annotated[int, 157420]
     """ID as published in the official roll-call vote results"""
 
+    is_main: Annotated[bool, False]
+    """Whether this vote is a main vote. We classify certain votes as main votes based
+    on the text description in the voting records published by Parliament. For example,
+    if Parliament has voted on amendments, only the vote on the text as a whole is
+    classified as a main vote. Certain votes such as votes on the agenda are not classified
+    as main votes. This is not an official classification by the European Parliament
+    and there may be false negatives."""
+
     timestamp: Annotated[datetime.datetime, "2023-07-12T12:44:14"]
     """Date and time of the vote"""
 

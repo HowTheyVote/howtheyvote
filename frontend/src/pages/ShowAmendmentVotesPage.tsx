@@ -14,15 +14,13 @@ export const loader: Loader<Vote> = async (request: Request) => {
 
   // `/amendments` opened on non-main vote which cannot have amendments
   if (!data.is_main) throw new HTTPException(404);
-  // `/amendments` opened on a main vote which does not have amendments
-  if (!(data.related.length > 1)) throw new HTTPException(404);
 
-  // The last element of `related` is the vote itself
-  if (
-    Number(data.related[data.related.length - 1].id) ===
-    Number(request.params.id)
-  )
-    data.related = data.related.slice(0, -1);
+  data.related = data.related.filter(
+    (related_vote) => !related_vote.is_main || related_vote.id === data.id,
+  );
+
+  // `/amendments` opened on a main vote which does not have amendments
+  if (data.related.length <= 1) throw new HTTPException(404);
 
   return data;
 };
