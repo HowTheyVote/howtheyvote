@@ -17,8 +17,12 @@ export default function AmendmentHeader({ vote }: VoteHeaderProps) {
     <header className="vote-header">
       <Wrapper>
         <Stack space="sm">
-          <h2 className="beta">Amendments</h2>
-          <h1 className="alpha">{title}</h1>
+          <h1>
+            <div class="beta">
+              Amendments<span class="visually-hidden">:</span>
+            </div>
+            <div class="alpha">{title}</div>
+          </h1>
           <p>
             <strong>
               <time datetime={vote.timestamp}>
