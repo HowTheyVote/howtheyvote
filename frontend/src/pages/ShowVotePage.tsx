@@ -1,6 +1,7 @@
 import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
+import Callout from "../components/Callout";
 import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
 import PageNav from "../components/PageNav";
@@ -38,6 +39,15 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
   const csvUrl = getDownloadUrl(data.id, "csv");
   const jsonUrl = getDownloadUrl(data.id, "json");
 
+  const hasAmendments =
+    data.is_main &&
+    data.related.filter(
+      (related_vote) => !related_vote.is_main || related_vote.id === data.id,
+    ).length > 1;
+
+  // This will not work in all cases, but might be good enough in combination with the amendment condition above.
+  const main_vote = data.related.find((related_vote) => related_vote.is_main);
+
   return (
     <App
       title={[data.display_title, "Vote Results"]}
@@ -47,6 +57,9 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
         <VoteHeader vote={data} />
         <PageNav>
           <PageNavItem href="#result">Vote result</PageNavItem>
+          {hasAmendments && (
+            <PageNavItem href="#amendments">Amendments</PageNavItem>
+          )}
           <PageNavItem href="#more-information">More information</PageNavItem>
           <PageNavItem href="#open-data">Open data</PageNavItem>
           <PageNavItem href="#sources">Sources</PageNavItem>
@@ -55,9 +68,21 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
         <Stack space="lg">
           <div id="result" className="px mt--lg">
             <Wrapper>
-              {data.stats && <VoteResultChart stats={data.stats.total} />}
+              <Stack space="sm">
+                {!data.is_main && (
+                  <Callout>
+                    <p>
+                      This is a vote on an amendment! View the result of the{" "}
+                      <a href={`/votes/${main_vote?.id}`}>final vote</a>.
+                    </p>
+                  </Callout>
+                )}
+
+                {data.stats && <VoteResultChart stats={data.stats.total} />}
+              </Stack>
             </Wrapper>
           </div>
+
           <div className="px">
             <Wrapper>
               {data.member_votes && data.stats && (
@@ -71,6 +96,22 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
               )}
             </Wrapper>
           </div>
+          {hasAmendments && (
+            <div class="px">
+              <Wrapper>
+                <h2 id="amendments" class="delta mb--xs">
+                  Amendments
+                </h2>
+                <p class="mb--xs">
+                  There have been votes on amendments.{" "}
+                  <a href={`/votes/${data.id}/amendments`}>
+                    View all roll-call votes,
+                  </a>{" "}
+                  including amendments.
+                </p>
+              </Wrapper>
+            </div>
+          )}
           {data.links.length > 0 && (
             <div class="px">
               <Wrapper>

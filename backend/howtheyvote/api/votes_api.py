@@ -604,6 +604,7 @@ def _format_related(votes: Iterable[Vote]) -> list[RelatedVoteDict]:
         formatted.append(
             {
                 "id": vote.id,
+                "is_main": vote.is_main,
                 "timestamp": vote.timestamp,
                 "description": vote.description,
             }

@@ -6,6 +6,10 @@ import { DevelopersPage } from "./pages/DevelopersPage";
 import { HomePage, loader as homeLoader } from "./pages/HomePage";
 import { ImprintPage } from "./pages/ImprintPage";
 import { SearchPage, loader as searchLoader } from "./pages/SearchPage";
+import {
+  ShowAmendmentVotesPage,
+  loader as showAmendmentVotesLoader,
+} from "./pages/ShowAmendmentVotesPage";
 import { ShowVotePage, loader as showVoteLoader } from "./pages/ShowVotePage";
 import {
   VoteSharepicPage,
@@ -24,6 +28,11 @@ app.use(logRequests);
 app.registerPage("/", HomePage, homeLoader);
 app.registerPage("/votes", SearchPage, searchLoader);
 app.registerPage("/votes/:id", ShowVotePage, showVoteLoader);
+app.registerPage(
+  "/votes/:id/amendments",
+  ShowAmendmentVotesPage,
+  showAmendmentVotesLoader,
+);
 app.registerPage("/votes/:id/sharepic", VoteSharepicPage, voteSharepicLoader);
 app.registerPage(["/developers", "/developers/*"], DevelopersPage);
 app.registerPage("/imprint", ImprintPage);
