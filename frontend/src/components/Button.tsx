@@ -3,8 +3,8 @@ import { bem } from "../lib/bem";
 import "./Button.css";
 
 type ButtonProps = Omit<JSX.ButtonHTMLAttributes, "size"> & {
-  size?: "lg";
-  style?: "fill" | "block";
+  size?: "lg" | "sm";
+  style?: "fill" | "block" | "ghost";
   className?: string;
   children: ComponentChildren;
 };

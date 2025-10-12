@@ -1,6 +1,7 @@
 import type { JSX } from "preact";
 import type { MemberVote } from "../api";
 import { bem } from "../lib/bem";
+import Icon from "./Icon";
 
 import "./Thumb.css";
 
@@ -19,9 +20,7 @@ export default function Thumb({ position, style, className }: ThumbProps) {
       title={label}
     >
       {position !== "DID_NOT_VOTE" && (
-        <svg aria-hidden="true">
-          <use href="/static/icons.svg#thumb" />
-        </svg>
+        <Icon name="thumb" className="thumb__icon" />
       )}
       <span class="visually-hidden">{label}</span>
     </span>

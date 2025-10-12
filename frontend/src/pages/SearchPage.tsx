@@ -1,20 +1,18 @@
-import { searchVotes, type VotesQueryResponse } from "../api";
+import { searchVotes, type VotesQueryResponseWithFacets } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
 import Pagination from "../components/Pagination";
+import SearchActions from "../components/SearchActions";
 import SearchForm from "../components/SearchForm";
-import SortSelect from "../components/SortSelect";
 import Stack from "../components/Stack";
 import VoteCards from "../components/VoteCards";
 import Wrapper from "../components/Wrapper";
-import { firstQueryValue, redirect } from "../lib/http";
+import { allQueryValues, firstQueryValue, redirect } from "../lib/http";
 import { Island } from "../lib/islands";
 import { getLogger } from "../lib/logging";
 import type { Loader, Page, Request } from "../lib/server";
 import { oneOf } from "../lib/validation";
-
-import "./SearchPage.css";
 
 const log = getLogger();
 
@@ -24,10 +22,19 @@ const SORT_PARAMS = {
   oldest: { sort_by: "date", sort_order: "asc" },
 } as const;
 
-type VotesSearchSortOptions = "relevance" | "newest" | "oldest";
+const FILTER_FIELDS = [
+  "geo_areas",
+  "responsible_committees",
+  "date[gte]",
+  "date[lte]",
+] as const;
 
-type SearchPageData = VotesQueryResponse & {
-  sort: VotesSearchSortOptions;
+type SortOptions = "relevance" | "newest" | "oldest";
+
+type SearchPageData = VotesQueryResponseWithFacets & {
+  query: string;
+  sort: SortOptions;
+  filters: Record<string, string[]>;
 };
 
 export const loader: Loader<SearchPageData> = async (request: Request) => {
@@ -44,10 +51,19 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
     "relevance",
   );
 
+  const filters = Object.fromEntries(
+    FILTER_FIELDS.map((field) => [
+      field,
+      allQueryValues(request.query, field),
+    ]).filter(([_, values]) => values.length > 0),
+  );
+
   const { data } = await searchVotes({
     query: {
       q,
       page,
+      facets: ["geo_areas", "responsible_committees"],
+      ...filters,
       ...SORT_PARAMS[sort],
     },
   });
@@ -67,21 +83,23 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
     redirect(`/votes/${data.results[0].id}`);
   }
 
-  return { ...data, sort };
+  return { ...data, query: q, sort, filters };
 };
 
-function pageUrl(
-  query: string,
-  sort: VotesSearchSortOptions,
-  page: number,
-): string {
+function pageUrl(data: SearchPageData, page: number): string {
   const params = new URLSearchParams();
 
-  if (query !== "") {
-    params.set("q", query);
+  if (data.query !== "") {
+    params.set("q", data.query);
   }
 
-  params.set("sort", sort);
+  for (const [field, values] of Object.entries(data.filters)) {
+    for (const value of values) {
+      params.append(field, value);
+    }
+  }
+
+  params.set("sort", data.sort);
 
   if (page > 1) {
     params.set("page", page.toString());
@@ -90,9 +108,7 @@ function pageUrl(
   return `/votes?${params.toString()}`;
 }
 
-export const SearchPage: Page<SearchPageData> = ({ data, request }) => {
-  const query = firstQueryValue(request.query, "q") || "";
-
+export const SearchPage: Page<SearchPageData> = ({ data }) => {
   return (
     <App title={"All Votes"}>
       <BaseLayout>
@@ -100,33 +116,31 @@ export const SearchPage: Page<SearchPageData> = ({ data, request }) => {
           <Hero
             title="All Votes"
             text="Explore recent votes or search our database by subject."
-            action={<SearchForm style="elevated" value={query} />}
+            action={<SearchForm style="elevated" value={data.query} />}
           />
           <div class="px">
             <Wrapper className="search-page">
               <Stack space="lg">
-                <div class="search-page__info">
-                  <div>{data.total} results</div>
-                  <label class="search-page__sort">
-                    Sort by:
-                    <Island>
-                      <SortSelect value={data.sort} />
-                    </Island>
-                  </label>
-                </div>
+                <Island>
+                  <SearchActions
+                    total={data.total}
+                    query={data.query}
+                    facets={data.facets}
+                    filters={data.filters}
+                    sort={data.sort}
+                  />
+                </Island>
 
                 <VoteCards
-                  groupByDate={!request.query.q}
+                  groupByDate={
+                    !data.query && Object.keys(data.filters).length === 0
+                  }
                   votes={data.results}
                 />
 
                 <Pagination
-                  next={
-                    data.has_next && pageUrl(query, data.sort, data.page + 1)
-                  }
-                  prev={
-                    data.has_prev && pageUrl(query, data.sort, data.page - 1)
-                  }
+                  next={data.has_next && pageUrl(data, data.page + 1)}
+                  prev={data.has_prev && pageUrl(data, data.page - 1)}
                 />
               </Stack>
             </Wrapper>

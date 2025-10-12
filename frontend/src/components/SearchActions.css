@@ -1,0 +1,31 @@
+.search-actions {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  font-size: var(--text-sm);
+  gap: var(--space);
+  color: var(--color-text-light);
+}
+
+.search-actions__total {
+  display: none;
+}
+
+.search-actions__sort {
+  margin-inline-start: auto;
+}
+
+.search-actions__toggle {
+  color: inherit;
+}
+
+@media screen and (min-width: 720px) {
+  .search-actions__total {
+    display: block;
+    margin-inline-end: auto;
+  }
+
+  .search-actions__sort {
+    margin: 0;
+  }
+}

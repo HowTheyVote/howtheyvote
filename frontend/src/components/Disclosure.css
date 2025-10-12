@@ -23,7 +23,7 @@
   display: none;
 }
 
-.disclosure > summary > svg {
+.disclosure__icon {
   flex-shrink: 0;
   flex-grow: 0;
   transform: rotate(-90deg);
@@ -31,7 +31,7 @@
   fill: var(--color-text-light);
 }
 
-.disclosure[open] > summary > svg {
+.disclosure[open] .disclosure__icon {
   transform: rotate(0);
 }
 
