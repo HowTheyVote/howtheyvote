@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from typing import TypeVar, cast
 
+from bs4 import BeautifulSoup
 from sqlalchemy.dialects.sqlite import insert
 from structlog import get_logger
 from xapian import Document, TermGenerator
@@ -136,6 +137,17 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     # the title and first term of the following field).
     generator.increase_termpos()
 
+    if vote.press_release:
+        if vote.press_release.facts:
+            facts = html_to_plaintext(vote.press_release.facts)
+            generator.index_text(facts, 1, field_to_prefix("press_release"))
+            generator.increase_termpos()
+
+        if vote.press_release.text:
+            text = html_to_plaintext(vote.press_release.text)
+            generator.index_text(text, 1, field_to_prefix("press_release"))
+            generator.increase_termpos()
+
     # Index EuroVoc concept labels for full-text search
     for concept in vote.eurovoc_concepts:
         for term in set([concept.label, *concept.alt_labels]):
@@ -190,3 +202,9 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     doc.add_value(field_to_slot("responsible_committees"), value)
 
     return doc
+
+
+def html_to_plaintext(html: str) -> str:
+    """Convert HTML string to plaintext suitable for search indexing."""
+    doc = BeautifulSoup(html, "lxml")
+    return doc.get_text(strip=True, separator=" ")

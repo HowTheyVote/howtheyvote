@@ -32,6 +32,7 @@ SEARCH_FIELDS = [
     "geo_area_labels",
     "eurovoc_concept_labels",
     "rapporteur",
+    "press_release",
 ]
 
 
@@ -47,6 +48,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "responsible_committees": "XRC",
     "reference": "XR",
     "procedure_reference": "XPR",
+    "press_release": "XPRR",
 }
 
 # Each document can have a set of values associated with it. Values are similar to DocValues

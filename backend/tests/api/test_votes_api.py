@@ -11,6 +11,7 @@ from howtheyvote.models import (
     Member,
     MemberVote,
     OEILSubject,
+    PressRelease,
     Vote,
     VotePosition,
     VoteResult,
@@ -393,6 +394,29 @@ def test_votes_api_search_references(db_session, search_index, api):
     # to make it an OR, simply ranking votes that match both higher.
     res = api.get("/api/votes/search", query_string={"q": "two A9-0043/2024"})
     assert res.json["total"] == 0
+
+
+def test_votes_api_search_press_release(db_session, search_index, api):
+    vote = Vote(
+        id=178285,
+        timestamp=datetime.datetime(2025, 1, 1, 0, 0, 0),
+        title="Carbon Border Adjustment Mechanism: simplification and strengthening",
+        press_release_id="20250905IPR30181",
+        is_main=True,
+    )
+
+    press_release = PressRelease(
+        id="20250905IPR30181",
+        facts="<ul><li>New threshold will exempt 90% of importers from EU carbon border adjustment mechanism (CBAM) rules</li><li>Climate ambition maintained as 99% of CO2 emissions from iron, steel, aluminium and cement imports will still be covered</li><li>Procedures for imports covered by CBAM rules will also be simplified</li></ul>",
+    )
+
+    db_session.add_all([vote, press_release])
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    res = api.get("/api/votes/search", query_string={"q": "aluminium"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 178285
 
 
 def test_votes_api_search_sort(db_session, search_index, api):
