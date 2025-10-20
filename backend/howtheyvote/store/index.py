@@ -160,7 +160,7 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     doc.add_boolean_term(term)
 
     # Store press release in slot for ranking
-    has_press_release = serialize_value(int(vote.press_release is not None))
+    has_press_release = serialize_value(int(vote.press_release_id is not None))
     doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
     # Store categorical values as boolean terms for filtering.

@@ -1,10 +1,10 @@
 import datetime
 
 import sqlalchemy as sa
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .common import BaseWithId
-from .vote import VotePositionCounts
+from .vote import Vote, VotePositionCounts
 
 
 class PressRelease(BaseWithId):
@@ -21,3 +21,4 @@ class PressRelease(BaseWithId):
     position_counts: Mapped[list[VotePositionCounts]] = mapped_column(
         sa.JSON(none_as_null=True)
     )
+    votes: Mapped[list[Vote]] = relationship(back_populates="press_release")
