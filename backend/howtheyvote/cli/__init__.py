@@ -13,6 +13,7 @@ from .aggregate import aggregate
 from .dev import dev
 from .flush import flush
 from .pipeline import pipeline
+from .search import search
 from .system import system
 from .temp import temp
 
@@ -41,3 +42,4 @@ cli.add_command(pipeline)
 cli.add_command(dev)
 cli.add_command(temp)
 cli.add_command(flush)
+cli.add_command(search)
