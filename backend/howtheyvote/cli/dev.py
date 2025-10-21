@@ -242,11 +242,15 @@ def load_countries() -> None:
         container.add(
             Country(
                 code=result["code"]["value"],
-                label=result["label"]["value"],
-                iso_alpha_2=result["iso_alpha_2"]["value"]
-                if result.get("iso_alpha_2")
-                else None,
-                alt_label=result["alt_label"]["value"] if result.get("alt_label") else None,
+                label=result["label"]["value"].removesuffix("*"),
+                iso_alpha_2=(
+                    result["iso_alpha_2"]["value"] if result.get("iso_alpha_2") else None
+                ),
+                alt_label=(
+                    result["alt_label"]["value"].removesuffix("*")
+                    if result.get("alt_label")
+                    else None
+                ),
             )
         )
 

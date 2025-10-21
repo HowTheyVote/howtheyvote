@@ -33,15 +33,13 @@ def test_country_from_label_alternates():
 
 def test_country_from_label_fuzzy():
     # Sanity check: exact match
-    assert Country.from_label("Kosovo*") == Country["XKX"]
+    assert Country.from_label("Kosovo") == Country["XKX"]
 
     # Sanity check: By default, only exact matches are returned
-    assert Country.from_label("Kosovo") is None
     assert Country.from_label("Kosovo under UNSCR 1244/1999") is None
 
     # If fuzzy=True, countries that start with the same substring are matched, too.
     assert Country.from_label("Kosovo under UNSCR 1244/1999", fuzzy=True) == Country["XKX"]
-    assert Country.from_label("Kosovo", fuzzy=True) == Country["XKX"]
 
 
 def test_country_type():
