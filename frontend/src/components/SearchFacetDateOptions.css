@@ -10,6 +10,14 @@
   width: 50%;
 }
 
+.search-facet-date-options__input {
+  /* I have no idea why, but this seems to be the only way to ensure that
+   * the date input takes up 100% width in iOS Safari.
+   */
+  display: flex;
+  width: 100%;
+}
+
 .search-facet-date-options__label {
   margin-block-end: var(--space-xxs);
   font-size: var(--text-xs);

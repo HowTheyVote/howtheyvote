@@ -10,7 +10,7 @@
 
   background-image:
     linear-gradient(to bottom, transparent, var(--blue-darkest)),
-    url(/static/bg-dark.jpg);
+    url(../images/bg-dark.jpg);
   background-size: cover;
   background-position: top center;
 }

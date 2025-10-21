@@ -6,6 +6,9 @@ import "../css/typography.css";
 import "../css/utils.css";
 import "../css/variables.css";
 
+import faviconUrl from "../images/favicon-32px.png";
+import touchIconUrl from "../images/touch-icon-180px.png";
+
 import { assetUrl } from "../lib/caching";
 
 type AppProps = {
@@ -41,8 +44,8 @@ export default function App({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
 
-        <link rel="icon" type="image/png" href="/static/favicon-32px.png" />
-        <link rel="apple-touch-icon" href="/static/touch-icon-180px.png" />
+        <link rel="icon" type="image/png" href={faviconUrl} />
+        <link rel="apple-touch-icon" href={touchIconUrl} />
         <link rel="manifest" href="/static/manifest.json" />
         <meta name="apple-mobile-web-app-title" content="HowTheyVote" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

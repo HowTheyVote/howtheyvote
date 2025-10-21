@@ -4,6 +4,7 @@ import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import SearchForm from "../components/SearchForm";
+import metaImageUrl from "../images/sharepic-default.png";
 import { formatDate } from "../lib/dates";
 import type { Loader, Page } from "../lib/server";
 
@@ -156,7 +157,7 @@ function MetaTags() {
         property="og:title"
         content="Find out how Members of the European Parliament vote"
       />
-      <meta property="og:image" content="/static/sharepic-default.png" />
+      <meta property="og:image" content={metaImageUrl} />
       <meta
         property="og:image:alt"
         content="A photo of the hemicycle in the European Parliament building in Strasbourg, with text overlay: “HowTheyVote.eu. Find out how the Members of the European Parliament vote.”"

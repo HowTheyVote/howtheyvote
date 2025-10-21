@@ -20,7 +20,6 @@ typegen:
 test:
 	node \
 		--import ./src/setupTests.js \
-		--import ./src/cssLoader.js \
 		--import tsx/esm \
 		--test \
 		./src/**/*.test.tsx ./src/**/*.test.ts
@@ -34,9 +33,12 @@ build-server:
 		--platform=node \
 		--format=esm \
 		--packages=external \
-		--external:*jpg \
-		--external:*.woff \
-		--external:*.woff2 \
+		--loader:.jpg=file \
+		--loader:.png=file \
+		--loader:.svg=file \
+		--loader:.woff=file \
+		--loader:.woff2=file \
+		--public-path=/dist \
 		--sourcemap=inline \
 		--outfile=dist/server.entry.mjs \
 		--keep-names \
@@ -45,7 +47,10 @@ build-server:
 build-client:
 	./node_modules/.bin/esbuild \
 		--bundle \
-		--external:*.jpg \
+		--loader:.jpg=file \
+		--loader:.png=file \
+		--loader:.svg=file \
+		--public-path=/dist \
 		--outfile=dist/client.entry.js \
 		--minify \
 		--keep-names \

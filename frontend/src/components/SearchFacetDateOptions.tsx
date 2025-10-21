@@ -13,21 +13,25 @@ function SearchFacetDateOptions({ field, start, end }: SearchFacetDateOptions) {
     <div class="search-facet-date-options">
       <label class="search-facet-date-options__date">
         <div class="search-facet-date-options__label">From</div>
-        <Input
-          type="date"
-          name={`${field}[gte]`}
-          placeholder="From"
-          value={start}
-        />
+        <div class="search-facet-date-options__input">
+          <Input
+            type="date"
+            name={`${field}[gte]`}
+            placeholder="From"
+            value={start}
+          />
+        </div>
       </label>
       <label class="search-facet-date-options__date">
         <div class="search-facet-date-options__label">To</div>
-        <Input
-          type="date"
-          name={`${field}[lte]`}
-          placeholder="To"
-          value={end}
-        />
+        <div class="search-facet-date-options__input">
+          <Input
+            type="date"
+            name={`${field}[lte]`}
+            placeholder="To"
+            value={end}
+          />
+        </div>
       </label>
     </div>
   );

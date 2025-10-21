@@ -18,8 +18,8 @@ import {
 
 const app = new App({ onError, noMatchHandler });
 
-const distMiddleware = sirv("dist", { etag: true });
-const staticMiddleware = sirv("static", { etag: true });
+const distMiddleware = sirv("dist");
+const staticMiddleware = sirv("static");
 app.use("dist/", distMiddleware);
 app.use("static/", staticMiddleware);
 app.use(isBot);
