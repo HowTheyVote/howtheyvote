@@ -27,7 +27,7 @@ def map_member(record: CompositeRecord) -> Member:
         country=record.get("country", type=lambda x: Country[x]),
         date_of_birth=record.get("date_of_birth", type=datetime.date.fromisoformat),
         terms=record.getlist("term"),
-        group_memberships=record.get("group_memberships", type=deserialize_group_membership),
+        group_memberships=record.chain("group_memberships", type=deserialize_group_membership),
         email=record.get("email"),
         facebook=record.get("facebook"),
         twitter=record.get("twitter"),
