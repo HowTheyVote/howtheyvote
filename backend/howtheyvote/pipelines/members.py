@@ -28,8 +28,8 @@ class MembersPipeline(BasePipeline):
         self._scrape_members()
         self._scrape_member_groups()
         self._scrape_member_infos()
-        self._download_member_photos()
         self._index_members()
+        self._download_member_photos()
 
     def _scrape_members(self) -> None:
         log.info("Scraping RCV lists", term=self.term)
