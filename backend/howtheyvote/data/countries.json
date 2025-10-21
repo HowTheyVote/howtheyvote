@@ -1129,8 +1129,8 @@
   },
   {
     "code": "PSE",
-    "label": "Palestine*",
-    "alt_label": "Palestine*",
+    "label": "Palestine",
+    "alt_label": "Palestine",
     "iso_alpha_2": "PS"
   },
   {
@@ -1573,8 +1573,8 @@
   },
   {
     "code": "XKX",
-    "label": "Kosovo*",
-    "alt_label": "Kosovo*",
+    "label": "Kosovo",
+    "alt_label": "Kosovo",
     "iso_alpha_2": null
   },
   {
