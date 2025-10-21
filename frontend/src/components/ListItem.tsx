@@ -18,12 +18,18 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   thumb,
   chart,
 }) => {
+  const isExternal = link?.startsWith("https://");
+
   return (
     <li className="list-item">
       {avatar && <div className="list-item__avatar">{avatar}</div>}
       <div className="list-item__text">
         {link ? (
-          <a href={link}>
+          <a
+            href={link}
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noopener noreferrer" : undefined}
+          >
             <strong>{title}</strong>
           </a>
         ) : (
