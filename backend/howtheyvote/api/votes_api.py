@@ -393,10 +393,9 @@ def show(vote_id: int) -> Response:
 
     related_votes = _format_related(_load_related(vote))
 
-    press_release = _load_press_release(vote)
-    facts = press_release.facts if press_release else None
+    facts = vote.press_release.facts if vote.press_release else None
 
-    fragments = _load_fragments(vote, press_release)
+    fragments = _load_fragments(vote, vote.press_release)
     sources = _format_sources(fragments)
 
     links = _format_links(vote)
@@ -574,14 +573,6 @@ def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[
     return Session.execute(stmt).scalars()
 
 
-def _load_press_release(vote: Vote) -> PressRelease | None:
-    if not vote.press_release:
-        return None
-
-    stmt = select(PressRelease).where(PressRelease.id == vote.press_release)
-    return Session.execute(stmt).scalar()
-
-
 def _load_members(vote: Vote) -> Iterable[Member]:
     member_ids = [mv.web_id for mv in vote.member_votes]
     stmt = select(Member).where(Member.id.in_(member_ids))
@@ -637,12 +628,12 @@ def _format_sources(fragments: Iterable[Fragment]) -> list[SourceDict]:
 def _format_links(vote: Vote) -> list[LinkDict]:
     links: list[LinkDict] = []
 
-    if vote.press_release:
+    if vote.press_release_id:
         links.append(
             {
                 "title": "Press release",
                 "description": "Press release published by the European Parliament’s Press Service. Press releases often contain more information about the subject of the vote and next steps.",  #  noqa: E501
-                "url": press_release_url(vote.press_release),
+                "url": press_release_url(vote.press_release_id),
             }
         )
 

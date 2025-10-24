@@ -23,7 +23,7 @@ def votes(db_session, search_index):
             is_main=True,
             title="Vote Two",
             timestamp=datetime.datetime(2024, 1, 2),
-            press_release="abc",
+            press_release_id="abc",
             geo_areas=[Country["DEU"], Country["ITA"]],
             responsible_committees=[Committee["IMCO"]],
         ),

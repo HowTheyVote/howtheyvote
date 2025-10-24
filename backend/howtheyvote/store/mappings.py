@@ -105,7 +105,7 @@ def map_vote(record: CompositeRecord) -> Vote:
             type=lambda x: Committee[x],
             unique=True,
         ),
-        press_release=record.get("press_release"),
+        press_release_id=record.get("press_release"),
     )
 
 

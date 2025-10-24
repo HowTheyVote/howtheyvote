@@ -82,7 +82,15 @@ class Aggregator:
         :param group_keys: If set, only records for the given group keys are returned.
         """
         for record in self.records(group_keys):
-            yield map_func(record)
+            mapped_record = map_func(record)
+
+            # By default, relationships are only loaded when an object is bound to a session
+            # (e.g., after it has been persisted to the database or loaded from the database).
+            # This isn’t the case here as we’re manually instantiating ORM objects based on
+            # fragments, so we need to explicitly bind the mapped object to a session.
+            Session().enable_relationship_loading(mapped_record)
+
+            yield mapped_record
 
     def records(self, group_keys: GroupKeys = None) -> Iterator[CompositeRecord]:
         """Returns an iterator over records composed from fragments.
