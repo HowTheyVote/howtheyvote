@@ -123,6 +123,12 @@ class VoteRow(TypedDict):
     reference: str | None
     """Reference to a plenary document such as a report or a resolution"""
 
+    amendment_number: str | None
+    """Placeholder"""
+
+    amendment_authors: str | None
+    """Placeholder"""
+
     description: str | None
     """Description of the vote as published in the roll-call vote results"""
 
@@ -136,6 +142,9 @@ class VoteRow(TypedDict):
 
     procedure_reference: str | None
     """Procedure reference as listed in the Legislative Observatory"""
+
+    rapporteur: str | None
+    """Boilerplate"""
 
     procedure_title: str | None
     """Title of the legislative procedure as listed in the Legislative Observatory"""
@@ -534,9 +543,14 @@ class Export:
                         "timestamp": vote.timestamp,
                         "display_title": vote.display_title,
                         "reference": vote.reference,
+                        "amendment_number": vote.amendment_number,
+                        "amendment_authors": "; ".join(
+                            aa.stringify() for aa in (vote.amendment_authors or [])
+                        ),
                         "description": vote.description,
                         "is_main": vote.is_main,
                         "procedure_reference": vote.procedure_reference,
+                        "rapporteur": vote.rapporteur,
                         "procedure_title": vote.procedure_title,
                         "procedure_type": (
                             procedure_reference["type"].value if procedure_reference else None
