@@ -94,30 +94,40 @@ class AmendmentAuthorType(Enum):
 class AmendmentAuthorGroup:
     group: Group | None
 
+    def stringify(self) -> str:
+        return self.group.code + " group" if self.group is not None else ""
+
 
 @dataclasses.dataclass
 class AmendmentAuthorCommittee:
     committee: Committee | None
 
+    def stringify(self) -> str:
+        return self.committee.code + " committee" if self.committee is not None else ""
+
 
 @dataclasses.dataclass
 class AmendmentAuthorOriginalText:
-    pass
+    def stringify(self) -> str:
+        return "original text"
 
 
 @dataclasses.dataclass
 class AmendmentAuthorMembers:
-    pass
+    def stringify(self) -> str:
+        return "members"
 
 
 @dataclasses.dataclass
 class AmendmentAuthorOrally:
-    pass
+    def stringify(self) -> str:
+        return "orally"
 
 
 @dataclasses.dataclass
 class AmendmentAuthorRapporteur:
-    pass
+    def stringify(self) -> str:
+        return "rapporteur"
 
 
 AmendmentAuthor = (
