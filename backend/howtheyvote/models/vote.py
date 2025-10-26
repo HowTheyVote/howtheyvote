@@ -94,30 +94,46 @@ class AmendmentAuthorType(Enum):
 class AmendmentAuthorGroup:
     group: Group | None
 
+    @property
+    def type(self):
+        return AmendmentAuthorType.GROUP
+
 
 @dataclasses.dataclass
 class AmendmentAuthorCommittee:
     committee: Committee | None
 
+    @property
+    def type(self):
+        return AmendmentAuthorType.COMMITTEE
+
 
 @dataclasses.dataclass
 class AmendmentAuthorOriginalText:
-    pass
+    @property
+    def type(self):
+        return AmendmentAuthorType.ORIGINAL_TEXT
 
 
 @dataclasses.dataclass
 class AmendmentAuthorMembers:
-    pass
+    @property
+    def type(self):
+        return AmendmentAuthorType.MEMBERS
 
 
 @dataclasses.dataclass
 class AmendmentAuthorOrally:
-    pass
+    @property
+    def type(self):
+        return AmendmentAuthorType.ORALLY
 
 
 @dataclasses.dataclass
 class AmendmentAuthorRapporteur:
-    pass
+    @property
+    def type(self):
+        return AmendmentAuthorType.RAPPORTEUR
 
 
 AmendmentAuthor = (
@@ -138,8 +154,6 @@ AMENDMENT_AUTHOR_TYPE_TO_CLASS: dict[AmendmentAuthorType, type[AmendmentAuthor]]
     AmendmentAuthorType.RAPPORTEUR: AmendmentAuthorRapporteur,
 }
 
-AMENDMENT_AUTHOR_CLASS_TO_TYPE = {v: k for k, v in AMENDMENT_AUTHOR_TYPE_TO_CLASS.items()}
-
 
 def serialize_amendment_author(author: AmendmentAuthor | None) -> dict[str, Any] | None:
     if not author:
@@ -157,7 +171,7 @@ def serialize_amendment_author(author: AmendmentAuthor | None) -> dict[str, Any]
             "committee": author.committee.code if author.committee else None,
         }
 
-    return {"type": AMENDMENT_AUTHOR_CLASS_TO_TYPE[author.__class__]}
+    return {"type": author.type}
 
 
 def deserialize_amendment_author(author: dict[str, Any] | None) -> AmendmentAuthor | None:
