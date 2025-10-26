@@ -135,6 +135,14 @@ class VoteRow(TypedDict):
     description: str | None
     """Description of the vote as published in the roll-call vote results"""
 
+    amendment_subject: str | None
+    """Subject of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_number: str | None
+    """Number of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
     is_main: bool
     """Whether this vote is a main vote. We classify certain votes as main votes based on
     the text description in the voting records published by Parliament. For example, if
@@ -173,6 +181,10 @@ class VoteRow(TypedDict):
     result: str | None
     """Vote result. One of `ADOPTED`, `REJECTED`, `LAPSED`. This field is only available for
     votes starting in 2024."""
+
+    adopted_text_reference: str | None
+    """"EP reference number of the text as it was adopted.
+    This includes all amendments that were adopted to an original text."""
 
 
 class MemberVoteRow(TypedDict):
@@ -570,6 +582,8 @@ class Export:
                         "display_title": vote.display_title,
                         "reference": vote.reference,
                         "description": vote.description,
+                        "amendment_subject": vote.amendment_subject,
+                        "amendment_number": vote.amendment_number,
                         "is_main": vote.is_main,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
@@ -584,6 +598,7 @@ class Export:
                         "count_abstention": position_counts["ABSTENTION"],
                         "count_did_not_vote": position_counts["DID_NOT_VOTE"],
                         "result": vote.result.value if vote.result else None,
+                        "adopted_text_reference": vote.texts_adopted_reference,
                     }
                 )
 
