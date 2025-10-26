@@ -16,6 +16,7 @@ log = get_logger(__name__)
 class PipelineResult:
     status: PipelineStatus
     checksum: str | None
+    exception: Exception | None = None
 
 
 class DataUnavailable(Exception):  # noqa: N818
@@ -37,6 +38,7 @@ class BasePipeline(ABC):
 
     def run(self) -> PipelineResult:
         self._log.info("Running pipeline")
+        exception = None
 
         try:
             self._run()
@@ -45,13 +47,15 @@ class BasePipeline(ABC):
             status = PipelineStatus.DATA_UNAVAILABLE
         except DataUnchanged:
             status = PipelineStatus.DATA_UNCHANGED
-        except ScrapingError:
+        except ScrapingError as exc:
+            exception = exc
             status = PipelineStatus.FAILURE
             self._log.exception("Failed running pipeline")
 
         return PipelineResult(
             status=status,
             checksum=self.checksum,
+            exception=exception,
         )
 
     @abstractmethod
