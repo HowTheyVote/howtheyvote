@@ -95,7 +95,7 @@ class AmendmentAuthorGroup:
     group: Group | None
 
     @property
-    def type(self):
+    def type(self) -> AmendmentAuthorType:
         return AmendmentAuthorType.GROUP
 
 
@@ -104,35 +104,35 @@ class AmendmentAuthorCommittee:
     committee: Committee | None
 
     @property
-    def type(self):
+    def type(self) -> AmendmentAuthorType:
         return AmendmentAuthorType.COMMITTEE
 
 
 @dataclasses.dataclass
 class AmendmentAuthorOriginalText:
     @property
-    def type(self):
+    def type(self) -> AmendmentAuthorType:
         return AmendmentAuthorType.ORIGINAL_TEXT
 
 
 @dataclasses.dataclass
 class AmendmentAuthorMembers:
     @property
-    def type(self):
+    def type(self) -> AmendmentAuthorType:
         return AmendmentAuthorType.MEMBERS
 
 
 @dataclasses.dataclass
 class AmendmentAuthorOrally:
     @property
-    def type(self):
+    def type(self) -> AmendmentAuthorType:
         return AmendmentAuthorType.ORALLY
 
 
 @dataclasses.dataclass
 class AmendmentAuthorRapporteur:
     @property
-    def type(self):
+    def type(self) -> AmendmentAuthorType:
         return AmendmentAuthorType.RAPPORTEUR
 
 
