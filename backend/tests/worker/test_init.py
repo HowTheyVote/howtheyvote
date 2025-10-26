@@ -192,7 +192,7 @@ def test_rcv_list_notification_no_votes(db_session, mocker):
     # Wednesday, July 9th, at 07:50 pm
     with time_machine.travel("2025-07-09T19:50:00+02:00"):
         rcv_mock.return_value = PipelineResult(
-            status=PipelineStatus.DATA_UNAVAILABLE,
+            status=PipelineStatus.FAILURE,
             checksum=None,
         )
 
@@ -200,13 +200,38 @@ def test_rcv_list_notification_no_votes(db_session, mocker):
 
         runs = list(db_session.execute(query).scalars())
         assert len(runs) == 2
-        assert runs[1].status == PipelineStatus.DATA_UNAVAILABLE
+        assert runs[1].status == PipelineStatus.FAILURE
 
     # Wednesday, July 9th, at 08:00 pm
     with time_machine.travel("2025-07-09T20:00:00+02:00"):
         worker.run_pending()
 
-        # A notification has been sent because the pipeline hasn’t been executed successfully
+        # No new notification has been sent because pipeline failed
+        assert pushover_mock.call_count == 0
+
+    # Thursday, July 10th, at 07:45 pm
+    with time_machine.travel("2025-07-10T19:45:00+02:00"):
+        # Create worker and schedule pipelines
+        worker = get_worker()
+
+    # Thursday, July 10th, at 07:50 pm
+    with time_machine.travel("2025-07-10T19:50:00+02:00"):
+        rcv_mock.return_value = PipelineResult(
+            status=PipelineStatus.DATA_UNAVAILABLE,
+            checksum=None,
+        )
+
+        worker.run_pending()
+
+        runs = list(db_session.execute(query).scalars())
+        assert len(runs) == 3
+        assert runs[2].status == PipelineStatus.DATA_UNAVAILABLE
+
+    # Thursday, July 10th, at 08:00 pm
+    with time_machine.travel("2025-07-10T20:00:00+02:00"):
+        worker.run_pending()
+
+        # A notification has been sent because the pipeline has found no data
         assert pushover_mock.call_count == 1
         assert pushover_mock.call_args.kwargs["title"] == "No RCV list found at end of day"
 

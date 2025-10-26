@@ -3,7 +3,7 @@ import time
 from collections.abc import Callable
 
 from prometheus_client import Gauge
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from structlog import get_logger
 
 from .. import config
@@ -66,19 +66,25 @@ def rcv_list_notification_handler() -> None:
         select(PipelineRun)
         .where(PipelineRun.pipeline == RCVListPipeline.__name__)
         .where(func.date(PipelineRun.started_at) == func.date(today))
-        .where(PipelineRun.status == PipelineStatus.SUCCESS)
+        .where(
+            or_(
+                PipelineRun.status == PipelineStatus.SUCCESS,
+                PipelineRun.status == PipelineStatus.FAILURE,
+            )
+        )
     )
     run = Session.execute(query).scalar()
 
     if run:
-        # RCV pipeline ran successfully, do nothing
+        # RCV pipeline ran successfully or failed, do nothing.
+        # Failed pipeline runs always send notifications separately.
         return None
 
     send_notification(
         title="No RCV list found at end of day",
         message=(
             "The last scheduled run of the day did not find an RCV list."
-            "Either there were no roll-call votes today, or there was an issue."
+            "Either there were no roll-call votes today or source data is not yet available."
         ),
     )
 
