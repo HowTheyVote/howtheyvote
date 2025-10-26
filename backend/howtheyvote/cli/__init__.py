@@ -7,6 +7,7 @@ import click
 from ..db import Session
 from ..export import generate_export
 from ..files import file_path
+from ..sentry import init_sentry
 from ..sharepics import generate_vote_sharepic
 from ..worker import worker as worker_
 from .aggregate import aggregate
@@ -25,6 +26,7 @@ def cli() -> None:
 @cli.command()
 def worker() -> None:
     """Start a worker process to execute scheduled pipeline runs."""
+    init_sentry()
     worker_.run()
 
 
