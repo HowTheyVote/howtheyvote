@@ -208,17 +208,37 @@ def test_worker_schedule_pipeline_unhandled_exception_notification(db_session, m
     send_notification = mocker.patch("howtheyvote.worker.worker.send_notification")
     worker = Worker()
 
-    def woops():
+    def pipeline_handler():
         raise Exception("Woops, that didn’t work!")
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0)):
-        worker.schedule_pipeline(woops, name="woops", hours={10})
+        worker.schedule_pipeline(pipeline_handler, name="pipeline_handler", hours={10})
 
     with time_machine.travel(datetime.datetime(2024, 1, 1, 10, 0)):
         worker.run_pending()
         send_notification.assert_called_with(
-            title="Pipeline failure: woops",
+            title="Pipeline failure: pipeline_handler",
             message="Check logs for details. Error message: Woops, that didn’t work!",
+        )
+
+
+def test_worker_schedule_pipeline_failure_notification(db_session, mocker):
+    send_notification = mocker.patch("howtheyvote.worker.worker.send_notification")
+    worker = Worker()
+
+    def pipeline_handler():
+        return PipelineResult(
+            status=PipelineStatus.FAILURE, exception=Exception("Error message"), checksum=None
+        )
+
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 0, 0)):
+        worker.schedule_pipeline(pipeline_handler, name="pipeline_handler", hours={10})
+
+    with time_machine.travel(datetime.datetime(2024, 1, 1, 10, 0)):
+        worker.run_pending()
+        send_notification.assert_called_with(
+            title="Pipeline failure: pipeline_handler",
+            message="Check logs for details. Error message: Error message",
         )
 
 

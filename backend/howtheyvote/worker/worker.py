@@ -189,17 +189,21 @@ class Worker:
             try:
                 result = handler()
                 status = result.status
+                exception = result.exception
                 checksum = result.checksum
             except SkipPipeline:
                 # Do not log skipped pipeline runs
                 return
             except Exception as exc:
+                exception = exc
                 status = PipelineStatus.FAILURE
                 checksum = None
                 log.exception("Unhandled exception during pipeline run", pipeline=name)
+
+            if status == PipelineStatus.FAILURE:
                 send_notification(
                     title=f"Pipeline failure: {name}",
-                    message=f"Check logs for details. Error message: {exc}",
+                    message=f"Check logs for details. Error message: {exception}",
                 )
 
             duration = time.time() - start_time
