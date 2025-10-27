@@ -9,6 +9,7 @@ import Stack from "../components/Stack";
 import Stats from "../components/Stats";
 import StatsCard from "../components/StatsCard";
 import Wrapper from "../components/Wrapper";
+import fundersUrl from "../images/funders.png";
 import { formatDate, formatNumber } from "../lib/dates";
 import { getErrorReportFormUrl } from "../lib/links";
 import type { Loader, Page } from "../lib/server";
@@ -396,7 +397,7 @@ function FundingSection() {
         secure and ad-free email account.
       </p>
       <img
-        src="/static/funders.png"
+        src={fundersUrl}
         alt="Logo of the Federal Ministry of Education and Research of Germany, the Prototype Fund and the MIZ Babelsberg."
         style="max-width: 100%; max-height: 100%; display: block;"
       />

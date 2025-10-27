@@ -12,4 +12,4 @@ beforeEach(() => {
 });
 
 // Registers a custom loader that simply drops CSS imports when executing tests
-register("./cssLoader.js", import.meta.url);
+register("./testLoader.js", import.meta.url);

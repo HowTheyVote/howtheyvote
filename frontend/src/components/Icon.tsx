@@ -1,3 +1,5 @@
+import iconsUrl from "../images/icons.svg";
+
 import "./Icon.css";
 
 type IconProps = {
@@ -13,7 +15,7 @@ function Icon({ name, className }: IconProps) {
       class={`icon ${className || ""}`}
       aria-hidden="true"
     >
-      <use href={`/static/icons.svg#${name}`} />
+      <use href={`${iconsUrl}#${name}`} />
     </svg>
   );
 }
