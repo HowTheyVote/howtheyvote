@@ -1,5 +1,6 @@
 import Banner from "./components/Banner";
 import CountryStatsList from "./components/CountryStatsList";
+import DatawrapperLink from "./components/DatawrapperLink";
 import Eyes from "./components/Eyes";
 import GroupStatsList from "./components/GroupStatsList";
 import MemberVotesList from "./components/MemberVotesList";
@@ -17,4 +18,5 @@ hydrateIslands([
   ShareButton,
   Banner,
   SearchActions,
+  DatawrapperLink,
 ]);
