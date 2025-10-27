@@ -7,7 +7,7 @@ function getEnv(name: string): string | undefined;
 function getEnv(name: string, defaultValue: string): string;
 function getEnv(name: string, defaultValue?: string): string | undefined {
   // `process.env` isn’t available on the client
-  if (!process?.env) {
+  if (typeof process === "undefined") {
     return defaultValue;
   }
 
