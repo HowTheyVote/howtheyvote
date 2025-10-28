@@ -9,7 +9,16 @@ from structlog import get_logger
 
 from ..db import Session
 from ..helpers import parse_procedure_reference
-from ..models import Committee, Country, EurovocConcept, Member, OEILSubject, Vote
+from ..models import (
+    AmendmentAuthorCommittee,
+    AmendmentAuthorGroup,
+    Committee,
+    Country,
+    EurovocConcept,
+    Member,
+    OEILSubject,
+    Vote,
+)
 from ..vote_stats import count_vote_positions
 from .csvw_helpers import Table
 
@@ -126,6 +135,14 @@ class VoteRow(TypedDict):
     description: str | None
     """Description of the vote as published in the roll-call vote results"""
 
+    amendment_subject: str | None
+    """Subject of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_number: str | None
+    """Number of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
     is_main: bool
     """Whether this vote is a main vote. We classify certain votes as main votes based on
     the text description in the voting records published by Parliament. For example, if
@@ -164,6 +181,10 @@ class VoteRow(TypedDict):
     result: str | None
     """Vote result. One of `ADOPTED`, `REJECTED`, `LAPSED`. This field is only available for
     votes starting in 2024."""
+
+    texts_adopted_reference: str | None
+    """"EP reference number of the text as it was adopted.
+    This includes all amendments that were adopted to an original text."""
 
 
 class MemberVoteRow(TypedDict):
@@ -280,6 +301,23 @@ class ResponsibleCommitteeVoteRow(TypedDict):
     """Committee code"""
 
 
+class AmendmentAuthorVoteRow(TypedDict):
+    """Authors of the vote if vote is amendment. Multiple authors result in multiple rows.
+    This information is only available for votes starting in 2024."""
+
+    vote_id: int
+    """Vote ID"""
+
+    author_type: str
+    """Either `GROUP, `COMMITTEE`, `MEMBERS`, `ORALLY`, `ORIGINAL_TEXT`, or `RAPPORTEUR`"""
+
+    group_code: str
+    """Group code, if applicable."""
+
+    committee_code: str
+    """Committee code, if applicable."""
+
+
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
@@ -382,6 +420,13 @@ class Export:
             primary_key=["vote_id", "committee_code"],
         )
 
+        self.amendment_authors = Table(
+            row_type=AmendmentAuthorVoteRow,
+            outdir=self.outdir,
+            name="amendment_authors_votes",
+            primary_key=["vote_id", "author_type", "group_code", "committee_code"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -401,6 +446,7 @@ class Export:
                 self.geo_area_votes,
                 self.committees,
                 self.responsible_committee_votes,
+                self.amendment_authors,
             ]
         )
         self.export_members()
@@ -513,6 +559,7 @@ class Export:
             self.oeil_subject_votes.open() as oeil_subject_votes,
             self.geo_area_votes.open() as geo_area_votes,
             self.responsible_committee_votes.open() as responsible_committee_votes,
+            self.amendment_authors.open() as amendment_author_votes,
         ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
@@ -535,6 +582,8 @@ class Export:
                         "display_title": vote.display_title,
                         "reference": vote.reference,
                         "description": vote.description,
+                        "amendment_subject": vote.amendment_subject,
+                        "amendment_number": vote.amendment_number,
                         "is_main": vote.is_main,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
@@ -549,6 +598,7 @@ class Export:
                         "count_abstention": position_counts["ABSTENTION"],
                         "count_did_not_vote": position_counts["DID_NOT_VOTE"],
                         "result": vote.result.value if vote.result else None,
+                        "texts_adopted_reference": vote.texts_adopted_reference,
                     }
                 )
 
@@ -583,6 +633,22 @@ class Export:
                             "committee_code": responsible_committee.code,
                         }
                     )
+
+                if vote.amendment_authors:
+                    for author in vote.amendment_authors:
+                        amendment_author_votes.write_row(
+                            {
+                                "vote_id": vote.id,
+                                "author_type": author.type.value,
+                                "group_code": author.group.code
+                                if isinstance(author, AmendmentAuthorGroup) and author.group
+                                else "",
+                                "committee_code": author.committee.code
+                                if isinstance(author, AmendmentAuthorCommittee)
+                                and author.committee
+                                else "",
+                            }
+                        )
 
                 for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]

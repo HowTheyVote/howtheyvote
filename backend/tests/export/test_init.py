@@ -147,6 +147,9 @@ def test_export_votes(db_session, tmp_path):
         ],
         responsible_committees=[Committee["AFET"]],
         result=VoteResult.ADOPTED,
+        amendment_subject=None,
+        amendment_number=None,
+        texts_adopted_reference="P10_TA(2025)0123",
     )
 
     db_session.add_all([member, vote])
@@ -159,8 +162,8 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,count_for,count_against,count_abstention,count_did_not_vote,result\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,1,0,0,0,ADOPTED\n"
+        "id,timestamp,display_title,reference,description,amendment_subject,amendment_number,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,count_for,count_against,count_abstention,count_did_not_vote,result,texts_adopted_reference\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,1,0,0,0,ADOPTED,P10_TA(2025)0123\n"
     )
 
     assert votes_csv.read_text() == expected
