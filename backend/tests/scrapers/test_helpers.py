@@ -254,6 +254,14 @@ def test_parse_amendment_authors():
         AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
     ]
 
+    # Multiple group authors, delimiter followed by additional whitespace
+    # A real-life example can be found here:
+    # https://www.europarl.europa.eu/doceo/document/PV-10-2025-10-22-VOT_EN.xml
+    assert parse_amendment_authors("S&D,\nRenew") == [
+        AmendmentAuthorGroup(group=Group["SD"]),
+        AmendmentAuthorGroup(group=Group["RENEW"]),
+    ]
+
     # Remove group suffix
     assert parse_amendment_authors("The Left Group S&D") == [
         AmendmentAuthorGroup(group=Group["GUE_NGL"]),
