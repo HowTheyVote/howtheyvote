@@ -32,6 +32,7 @@ SEARCH_FIELDS = [
     "geo_area_labels",
     "eurovoc_concept_labels",
     "rapporteur",
+    "press_release",
 ]
 
 
@@ -47,7 +48,10 @@ FIELD_TO_PREFIX_MAPPING = {
     "responsible_committees": "XRC",
     "reference": "XR",
     "procedure_reference": "XPR",
+    "press_release": "XPRR",
 }
+
+PREFIX_TO_FIELD_MAPPING = {v: k for k, v in FIELD_TO_PREFIX_MAPPING.items()}
 
 # Each document can have a set of values associated with it. Values are similar to DocValues
 # in Lucene and stored in a column-oriented way that makes value lookups for many documents
@@ -78,6 +82,10 @@ def field_to_slot(field: str) -> int:
 
 def field_to_prefix(field: str) -> str:
     return FIELD_TO_PREFIX_MAPPING[field]
+
+
+def prefix_to_field(prefix: str) -> str:
+    return PREFIX_TO_FIELD_MAPPING[prefix]
 
 
 def field_to_boost(field: str) -> float:

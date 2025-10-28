@@ -1,24 +1,30 @@
 import datetime
-from typing import TypedDict
 
-from howtheyvote.models import Country, Fragment
+import sqlalchemy as sa
+from sqlalchemy.orm import Mapped, mapped_column
+
+from howtheyvote.models import BaseWithId, Country, Fragment
 from howtheyvote.store import Aggregator, CompositeRecord
 
+from ..helpers import record_to_dict
 
-class User(TypedDict):
-    id: str
-    first_name: str
-    last_name: str
-    date_of_birth: datetime.date
+
+class User(BaseWithId):
+    __tablename__ = "users"
+
+    id: Mapped[str] = mapped_column(sa.Unicode, primary_key=True)
+    first_name: Mapped[str] = mapped_column(sa.Unicode)
+    last_name: Mapped[str] = mapped_column(sa.Unicode)
+    date_of_birth: Mapped[datetime.date] = mapped_column(sa.DateTime)
 
 
 def map_user(record: CompositeRecord) -> User:
-    return {
-        "id": record.group_key,
-        "first_name": record.get("first_name"),
-        "last_name": record.get("last_name"),
-        "date_of_birth": record.get("date_of_birth"),
-    }
+    return User(
+        id=record.group_key,
+        first_name=record.get("first_name"),
+        last_name=record.get("last_name"),
+        date_of_birth=record.get("date_of_birth"),
+    )
 
 
 def create_fragments(db_session):
@@ -106,19 +112,16 @@ def test_aggregator_mapped_records(db_session):
     aggregator = Aggregator(User)
     users = list(aggregator.mapped_records(map_user))
 
-    user_1 = users[0]
-    user_2 = users[1]
-
     assert len(users) == 2
 
-    assert user_1 == {
+    assert record_to_dict(users[0]) == {
         "id": "1",
         "first_name": "John",
         "last_name": "Doe",
         "date_of_birth": "1980-01-01",
     }
 
-    assert user_2 == {
+    assert record_to_dict(users[1]) == {
         "id": "2",
         "first_name": "Jane",
         "last_name": "Smith",
@@ -133,7 +136,7 @@ def test_aggregator_mapped_records_filtered(db_session):
     users = list(aggregator.mapped_records(map_user, group_keys={"1"}))
 
     assert len(users) == 1
-    assert users[0]["id"] == "1"
+    assert users[0].id == "1"
 
 
 def test_composite_record_chain():

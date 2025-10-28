@@ -1,14 +1,14 @@
 import dataclasses
 import datetime
 from enum import Enum
-from typing import Any, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 import sqlalchemy as sa
 from flask import url_for
-from sqlalchemy import ColumnElement
+from sqlalchemy import ColumnElement, ForeignKey
 from sqlalchemy.engine import Dialect
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import TypeDecorator
 
 from .committee import Committee, CommitteeType
@@ -18,6 +18,9 @@ from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
 from .oeil import OEILSubject, OEILSubjectType
 from .types import ListType
+
+if TYPE_CHECKING:
+    from ..models import PressRelease
 
 
 class VoteResult(Enum):
@@ -294,7 +297,8 @@ class Vote(BaseWithId):
         ListType(CommitteeType()),
         default=[],
     )
-    press_release: Mapped[str | None] = mapped_column(sa.Unicode)
+    press_release_id: Mapped[str | None] = mapped_column(ForeignKey("press_releases.id"))
+    press_release: Mapped["PressRelease | None"] = relationship(back_populates="votes")
 
     @hybrid_property
     def date(self) -> datetime.date:
