@@ -182,7 +182,7 @@ class VoteRow(TypedDict):
     """Vote result. One of `ADOPTED`, `REJECTED`, `LAPSED`. This field is only available for
     votes starting in 2024."""
 
-    adopted_text_reference: str | None
+    texts_adopted_reference: str | None
     """"EP reference number of the text as it was adopted.
     This includes all amendments that were adopted to an original text."""
 
@@ -309,7 +309,7 @@ class AmendmentAuthorVoteRow(TypedDict):
     """Vote ID"""
 
     author_type: str
-    """Either GROUP, COMMITTEE, MEMBERS, ORALLY, ORIGINAL_TEXT, or RAPPORTEUR"""
+    """Either `GROUP, `COMMITTEE`, `MEMBERS`, `ORALLY`, `ORIGINAL_TEXT`, or `RAPPORTEUR`"""
 
     group_code: str
     """Group code, if applicable."""
@@ -424,7 +424,7 @@ class Export:
             row_type=AmendmentAuthorVoteRow,
             outdir=self.outdir,
             name="amendment_authors_votes",
-            primary_key=["vote_id"],
+            primary_key=["vote_id", "author_type", "group_code", "committee_code"],
         )
 
     def run(self) -> None:
@@ -598,7 +598,7 @@ class Export:
                         "count_abstention": position_counts["ABSTENTION"],
                         "count_did_not_vote": position_counts["DID_NOT_VOTE"],
                         "result": vote.result.value if vote.result else None,
-                        "adopted_text_reference": vote.texts_adopted_reference,
+                        "texts_adopted_reference": vote.texts_adopted_reference,
                     }
                 )
 
