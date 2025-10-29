@@ -6,7 +6,7 @@ from structlog import get_logger
 from ..models import Vote
 from ..scrapers import NoWorkingUrlError, VOTListScraper
 from ..store import Aggregator, BulkWriter, index_records, map_vote
-from .common import BasePipeline, DataUnavailable
+from .common import BasePipeline, DataUnavailable, generate_vote_sharepics
 
 log = get_logger(__name__)
 
@@ -21,6 +21,8 @@ class VOTListPipeline(BasePipeline):
     def _run(self) -> None:
         self._scrape_vot_list()
         self._index_votes()
+
+        generate_vote_sharepics(self._votes())
 
     def _scrape_vot_list(self) -> None:
         self._log.info("Scraping VOT list")
