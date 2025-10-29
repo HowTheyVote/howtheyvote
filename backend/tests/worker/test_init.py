@@ -14,6 +14,10 @@ from howtheyvote.worker import get_worker
 
 
 def test_rcv_list_pipeline(db_session, mocker):
+    # Same as below, not patching these make the test extremely slow
+    mocker.patch("howtheyvote.pipelines.rcv_list.generate_vote_sharepics", return_value=None)
+    mocker.patch("howtheyvote.pipelines.vot_list.generate_vote_sharepics", return_value=None)
+
     plenary_session = PlenarySession(
         id="2025-07-07",
         start_date=datetime.date(2025, 7, 7),
