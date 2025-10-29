@@ -209,14 +209,18 @@ def parse_amendment_authors(raw_authors: str) -> list[AmendmentAuthor]:
     # If a newline or a comma is used as the delimiter, we can simply split the text
     if delimiter:
         for raw_author in raw_authors.split(delimiter):
-            authors.extend(parse_amendment_authors(raw_author))
+            # Ignore cases where additional, unnecessary white-space delimiters are present
+            raw_author = raw_author.strip()
+
+            if raw_author:
+                authors.extend(parse_amendment_authors(raw_author))
 
         return authors
 
     # If a space is used as the delimiter, we need to differentiate between spaces used as a
     # delimiter and spaces that a part of an author label. We start by splitting the text into
     # tokens. We then try to parse just the first token. If that fails, we try parsing the
-    # frist two tokens as an author, etc.
+    # first two tokens as an author, etc.
     #
     # For example, in case of the raw authors string "Renew The Left Members":
     #
