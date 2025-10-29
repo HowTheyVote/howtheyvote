@@ -98,6 +98,7 @@
   --gray-s: 35%;
   --gray-l: 52.5%;
   --gray: hsl(var(--gray-h), var(--gray-s), var(--gray-l));
+  --gray-medium: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) + 20%));
   --gray-light: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) + 35%));
   --gray-lightest: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) + 43%));
   --gray-dark: hsl(var(--gray-h), var(--gray-s), calc(var(--gray-l) - 20%));
