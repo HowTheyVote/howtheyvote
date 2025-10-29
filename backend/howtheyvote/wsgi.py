@@ -17,7 +17,7 @@ from .sentry import init_sentry
 
 log = get_logger(__name__)
 
-init_sentry()
+init_sentry("backend")
 
 app = Flask(__name__, static_folder=None)
 app.register_blueprint(api_bp, url_prefix="/api")
