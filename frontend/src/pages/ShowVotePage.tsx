@@ -211,10 +211,6 @@ function Copyright({ vote }: { vote: Vote }) {
 }
 
 function MetaTags({ vote }: { vote: Vote }) {
-  if (!vote.sharepic_url) {
-    return null;
-  }
-
   const date = formatDate(vote.timestamp);
   const stats = vote.stats.total;
   const total = stats.FOR + stats.AGAINST + stats.ABSTENTION;
@@ -226,14 +222,19 @@ function MetaTags({ vote }: { vote: Vote }) {
 
   return (
     <>
-      <meta name="description" content={description} />
-      <meta property="og:site_name" content="HowTheyVote.eu" />
-      <meta property="og:type" content="article" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:image" content={vote.sharepic_url} />
-      <meta property="og:image:alt" content={altText} />
-      <meta property="article:published_time" content={vote.timestamp} />
+      {!vote.is_main && <meta name="robots" content="noindex" />}
+      {vote.sharepic_url && (
+        <>
+          <meta name="description" content={description} />
+          <meta property="og:site_name" content="HowTheyVote.eu" />
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:image" content={vote.sharepic_url} />
+          <meta property="og:image:alt" content={altText} />
+          <meta property="article:published_time" content={vote.timestamp} />
+        </>
+      )}
     </>
   );
 }
