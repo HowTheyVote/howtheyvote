@@ -46,6 +46,8 @@ services:
       HTV_FRONTEND_PRIVATE_URL: "http://frontend:8000"
       PUSHOVER_API_TOKEN: "${PUSHOVER_API_TOKEN}"
       PUSHOVER_USER_KEY: "${PUSHOVER_USER_KEY}"
+      SENTRY_DSN: "${SENTRY_DSN}"
+      SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 
   worker:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
@@ -69,6 +71,8 @@ services:
       HTV_FRONTEND_PRIVATE_URL: "http://frontend:8000"
       PUSHOVER_API_TOKEN: "${PUSHOVER_API_TOKEN}"
       PUSHOVER_USER_KEY: "${PUSHOVER_USER_KEY}"
+      SENTRY_DSN: "${SENTRY_DSN}"
+      SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 
   caddy:
     image: "caddy:2.10.2-alpine"

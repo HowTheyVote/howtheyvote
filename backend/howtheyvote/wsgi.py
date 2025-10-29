@@ -13,8 +13,11 @@ from .api import bp as api_bp
 from .db import Session
 from .json import JSONProvider
 from .metrics import DataCollector
+from .sentry import init_sentry
 
 log = get_logger(__name__)
+
+init_sentry()
 
 app = Flask(__name__, static_folder=None)
 app.register_blueprint(api_bp, url_prefix="/api")

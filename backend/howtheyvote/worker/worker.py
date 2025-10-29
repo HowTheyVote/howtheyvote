@@ -6,6 +6,7 @@ from collections.abc import Callable, Iterable
 from typing import Any
 
 import prometheus_client
+import sentry_sdk
 from prometheus_client import Counter, Gauge, Histogram
 from prometheus_client import start_http_server as start_metrics_server
 from schedule import Scheduler
@@ -133,6 +134,16 @@ class Worker:
         ```
         """
 
+        # Wrap the actual handler in a new Sentry context, this ensures that breadcrumbs etc.
+        # are cleared after the handler has been executed.
+        def wrapped_handler() -> None:
+            with sentry_sdk.isolation_scope() as scope:
+                scope.clear_breadcrumbs()
+                scope.set_tag(
+                    "worker_tag", tag
+                )  # Can be used to filter events in the Sentry UI
+                handler()
+
         # `schedule` doesn’t support some use cases, for example:
         # "Run job every 10 minutes on Monday between 3 and pm".
         # This is a very naive wrapper around `schedule` that schedules every combination
@@ -148,7 +159,7 @@ class Worker:
                     job = self._scheduler.every()
                     job = getattr(job, weekday.value)
                     job = job.at(formatted_time, tz)
-                    job = job.do(handler)
+                    job = job.do(wrapped_handler)
 
                     if tag:
                         job = job.tag(tag)
@@ -200,12 +211,6 @@ class Worker:
                 checksum = None
                 log.exception("Unhandled exception during pipeline run", pipeline=name)
 
-            if status == PipelineStatus.FAILURE:
-                send_notification(
-                    title=f"Pipeline failure: {name}",
-                    message=f"Check logs for details. Error message: {exception}",
-                )
-
             duration = time.time() - start_time
             finished_at = datetime.datetime.now(datetime.UTC)
 
@@ -235,6 +240,24 @@ class Worker:
                 duration=duration,
                 status=status.value,
             )
+
+            if status == PipelineStatus.FAILURE:
+                send_notification(
+                    title=f"Pipeline failure: {name}",
+                    message=f"Check logs for details. Error message: {exception}",
+                )
+                sentry_sdk.set_context(
+                    "Pipeline",
+                    {
+                        "name": name,
+                        "run_id": run.id,
+                        "started_at": started_at,
+                        "finished_at": finished_at,
+                        "duration": duration,
+                        "status": status.value,
+                    },
+                )
+                sentry_sdk.capture_exception(exception)
 
             Session.remove()
 
