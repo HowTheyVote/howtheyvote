@@ -1,8 +1,10 @@
+from typing import Literal
+
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 
-def init_sentry() -> None:
+def init_sentry(component: Literal["backend", "worker"]) -> None:
     sentry_sdk.init(
         enable_logs=True,
         send_default_pii=False,
@@ -17,3 +19,4 @@ def init_sentry() -> None:
             ),
         ],
     )
+    sentry_sdk.set_tag("component", component)

@@ -27,7 +27,7 @@ def cli() -> None:
 @cli.command()
 def worker() -> None:
     """Start a worker process to execute scheduled pipeline runs."""
-    init_sentry()
+    init_sentry("worker")
     worker_.run()
 
 
