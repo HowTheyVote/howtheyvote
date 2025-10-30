@@ -33,6 +33,16 @@ export type BaseVote = {
      */
     description?: string;
     /**
+     * Subject of the specific amendment if applicable.
+     * This field is only available for votes starting in 2024
+     */
+    amendment_subject?: string;
+    /**
+     * Number of the specific amendment if applicable.
+     * This field is only available for votes starting in 2024
+     */
+    amendment_number?: string;
+    /**
      * Countries or territories related to this vote
      */
     geo_areas: Array<Country>;

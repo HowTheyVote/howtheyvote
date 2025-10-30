@@ -301,6 +301,14 @@ class BaseVoteDict(TypedDict):
     description: Annotated[str | None, "Commission proposal"]
     """Description of the vote as published in the roll-call vote results"""
 
+    amendment_subject: Annotated[str | None, "After § 127"]
+    """Subject of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+    
+    amendment_number: Annotated[str | None, "113"]
+    """Number of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
     geo_areas: list[CountryDict]
     """Countries or territories related to this vote"""
 
@@ -332,6 +340,8 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "timestamp": vote.timestamp,
         "display_title": vote.display_title,
         "description": vote.description,
+        "amendment_subject": vote.amendment_subject,
+        "amendment_number": vote.amendment_number,
         "reference": vote.reference,
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
