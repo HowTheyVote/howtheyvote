@@ -915,13 +915,21 @@ def test_votes_api_related_votes(db_session, api):
             "id": 1,
             "is_main": False,
             "timestamp": "2023-01-01T00:00:00",
+            "amendment_subject": None,
+            "amendment_number": None,
+            "amendment_authors": [],
             "description": "Am 1",
+            "result": None,
         },
         {
             "id": 2,
             "is_main": True,
             "timestamp": "2023-01-01T00:00:00",
+            "amendment_subject": None,
+            "amendment_number": None,
+            "amendment_authors": [],
             "description": "Resolution (text as a whole)",
+            "result": None,
         },
     ]
 

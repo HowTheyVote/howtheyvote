@@ -379,6 +379,25 @@ export type RelatedVote = {
      * Description of the vote as published in the roll-call vote results
      */
     description?: string;
+    /**
+     * Subject of the specific amendment if applicable.
+     * This field is only available for votes starting in 2024
+     */
+    amendment_subject?: string;
+    /**
+     * Number of the specific amendment if applicable.
+     * This field is only available for votes starting in 2024
+     */
+    amendment_number?: string;
+    /**
+     * Information regarding the authors of an amendment.
+     * This field is only available for votes starting in 2024
+     */
+    amendment_authors: Array<AmendmentAuthor>;
+    /**
+     * Vote result. This field is only available for votes starting in 2024.
+     */
+    result?: 'ADOPTED' | 'REJECTED' | 'LAPSED' | 'WITHDRAWN';
 };
 
 export type Source = {

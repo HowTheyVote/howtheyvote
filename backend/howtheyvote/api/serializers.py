@@ -258,25 +258,6 @@ class LinkDict(TypedDict):
     """URL"""
 
 
-class RelatedVoteDict(TypedDict):
-    id: Annotated[int, 157420]
-    """ID as published in the official roll-call vote results"""
-
-    is_main: Annotated[bool, False]
-    """Whether this vote is a main vote. We classify certain votes as main votes based
-    on the text description in the voting records published by Parliament. For example,
-    if Parliament has voted on amendments, only the vote on the text as a whole is
-    classified as a main vote. Certain votes such as votes on the agenda are not classified
-    as main votes. This is not an official classification by the European Parliament
-    and there may be false negatives."""
-
-    timestamp: Annotated[datetime.datetime, "2023-07-12T12:44:14"]
-    """Date and time of the vote"""
-
-    description: Annotated[str | None, "Am 123"]
-    """Description of the vote as published in the roll-call vote results"""
-
-
 class AmendmentAuthorDict(TypedDict):
     type: Annotated[AmendmentAuthorType | None, "ORALLY"]
     """Indicates which entity authored an amendment.
@@ -301,6 +282,40 @@ def serialize_amendment_author(author: AmendmentAuthor) -> AmendmentAuthorDict:
         "group": serialized_group,
         "committee": serialized_committee,
     }
+
+
+class RelatedVoteDict(TypedDict):
+    id: Annotated[int, 157420]
+    """ID as published in the official roll-call vote results"""
+
+    is_main: Annotated[bool, False]
+    """Whether this vote is a main vote. We classify certain votes as main votes based
+    on the text description in the voting records published by Parliament. For example,
+    if Parliament has voted on amendments, only the vote on the text as a whole is
+    classified as a main vote. Certain votes such as votes on the agenda are not classified
+    as main votes. This is not an official classification by the European Parliament
+    and there may be false negatives."""
+
+    timestamp: Annotated[datetime.datetime, "2023-07-12T12:44:14"]
+    """Date and time of the vote"""
+
+    description: Annotated[str | None, "Am 123"]
+    """Description of the vote as published in the roll-call vote results"""
+
+    amendment_subject: Annotated[str | None, "After § 127"]
+    """Subject of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_number: Annotated[str | None, "113"]
+    """Number of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_authors: list[AmendmentAuthorDict]
+    """Information regarding the authors of an amendment.
+    This field is only available for votes starting in 2024"""
+
+    result: VoteResult | None
+    """Vote result. This field is only available for votes starting in 2024."""
 
 
 class BaseVoteDict(TypedDict):
