@@ -313,6 +313,7 @@ class Vote(BaseWithId):
     )
     press_release_id: Mapped[str | None] = mapped_column(ForeignKey("press_releases.id"))
     press_release: Mapped["PressRelease | None"] = relationship(back_populates="votes")
+    oeil_summary_id: Mapped[int | None ] = mapped_column(sa.Integer)
 
     @hybrid_property
     def date(self) -> datetime.date:
