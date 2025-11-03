@@ -10,6 +10,7 @@ from .votes import (
     DocumentScraper,
     EurlexDocumentScraper,
     EurlexProcedureScraper,
+    OEILSummaryScraper,
     OEILSummaryIDScraper,
     ProcedureScraper,
     RCVListEnglishScraper,
@@ -37,4 +38,5 @@ __all__ = [
     "PressReleasesRSSScraper",
     "PressReleaseScraper",
     "OEILSummaryIDScraper",
+    "OEILSummaryScraper",
 ]
