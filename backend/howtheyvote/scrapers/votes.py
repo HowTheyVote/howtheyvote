@@ -967,3 +967,52 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
             }
         )
 
+
+class OEILSummaryScraper(BeautifulSoupScraper):
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/document-summary"
+
+    def __init__(self,
+                 vote_id: int,
+                 summary_id: int,
+                 request_cache: RequestCache | None = None,
+    ):
+        super().__init__(request_cache=request_cache)
+        self.vote_id = vote_id
+        self.summary_id = summary_id
+
+    def _url(self) -> str:
+        params = f"?id={self.summary_id}"
+        return f"{self.BASE_URL}{params}"
+
+    def _extract_data(self, doc: BeautifulSoup) -> Fragment:
+        text = doc.select_one(".erpl_product-content")
+        items = text.select(".MsoNormal")
+        items = [self._format_paragraph(item) for item in items]
+
+        summary = "\n\n".join(items)
+
+        return self._fragment(
+            model=Vote,
+            source_id=self.vote_id,
+            group_key=self.vote_id,
+            data={
+                "oeil_summary": summary
+            }
+        )
+
+    def _format_paragraph(self, paragraph: Tag) -> str:
+        text = paragraph.text.strip().replace("\n", " ")
+
+        style = paragraph.get("style")
+
+        if not style:
+            return text
+
+        # Headings aren't marked up using appropriate HTML tags.
+        # Instead, they are simply styled using inline CSS.
+        # In case we detect those styles, we prepend Markdown
+        # syntax for second-level headings.
+        if "font-weight" in style and "bold" in style:
+            return "## " + text
+
+        return text
