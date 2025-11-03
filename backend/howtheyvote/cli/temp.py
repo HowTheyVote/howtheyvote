@@ -15,6 +15,7 @@ from ..scrapers import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     NoWorkingUrlError,
+    OEILSummaryIDScraper,
     PressReleaseScraper,
     ProcedureScraper,
     RCVListScraper,
@@ -297,3 +298,27 @@ def press_releases() -> None:
         )
         writer.add(PressReleaseAnalyzer(votes, releases).run())
         writer.flush()
+
+
+@temp.command()
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
+def oeil_ids(date: datetime.datetime) -> None:
+    print(date)
+    query = select(Vote)
+    query = query.where(func.date(Vote.timestamp) == date.date())  
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for vote in votes:
+        print(vote.reference)
+        try:
+            scraper = OEILSummaryIDScraper(
+                vote_id=vote.id,
+                reference=vote.reference,
+                day_of_vote=date,
+            )
+            writer.add(scraper.run())
+        except ScrapingError:
+            pass
+
+    writer.flush()

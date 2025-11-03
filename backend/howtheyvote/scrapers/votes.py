@@ -914,3 +914,56 @@ class EurlexDocumentScraper(BeautifulSoupScraper):
                 "geo_areas": geo_areas,
             },
         )
+
+class OEILSummaryIDScraper(BeautifulSoupScraper):
+    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file"
+
+    def __init__(self,
+                 vote_id: int,
+                 day_of_vote: int,
+                 reference: str,
+                 request_cache: RequestCache | None = None,
+    ):
+        super().__init__(request_cache=request_cache)
+        self.day_of_vote = day_of_vote
+        self.vote_id = vote_id
+        self.reference = reference
+
+    def _url(self) -> str:
+        ref = f"?reference={self.reference}"
+        return f"{self.BASE_URL}{ref}"
+
+    def _extract_data(self, doc: BeautifulSoup) -> Fragment:
+        sections = doc.select(".erpl_product-section")
+        summary_id = None
+        for section in sections:
+            # TODO: Assuming it is section3 all the time, which is likely, this can be significantly simplified
+            heading = section.select_one("h2", class_="erpl_title-h2")
+            if not heading or heading.get_text(strip=True) != "Key events":
+                continue
+            for row in section.select("tr"):
+                row_text = row.get_text()
+                if "Decision by Parliament" not in row_text:
+                    continue
+                if "Summary" not in row_text:
+                    continue
+                if self.day_of_vote.strftime("%d/%m/%Y") not in row_text:
+                    continue
+                links = row.select("a")
+                for link in links:
+                    if "/oeil/en/document-summary?id=" in link["href"]:
+                        if summary_id is not None:
+                            raise ScrapingError("Multiple summaries available for the same day.")
+                        summary_id = re.search(r"[?&]id=(\d+)", link["href"]).group(1)
+        if summary_id is None:
+            raise ScrapingError("No summary found.")
+        
+        return self._fragment(
+            model=Vote,
+            source_id=self.vote_id,
+            group_key=self.vote_id,
+            data={
+                "oeil_summary_id": summary_id
+            }
+        )
+
