@@ -8,10 +8,10 @@
   "dependencies": {
     "@hey-api/client-fetch": "^0.6.0",
     "@tinyhttp/app": "^2.4.0",
-    "isbot": "^5.1.31",
+    "isbot": "^5.1.32",
     "pino": "^10.1.0",
     "preact": "^10.27.2",
-    "preact-render-to-string": "^6.6.2",
+    "preact-render-to-string": "^6.6.3",
     "sirv": "^3.0.2"
   },
   "devDependencies": {
