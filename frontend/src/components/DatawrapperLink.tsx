@@ -8,6 +8,8 @@ type DatawrapperLinkProps = {
   title: string;
   timestamp: string;
   stats: VotePositionCounts;
+  reference?: string;
+  description?: string;
   children?: ComponentChildren;
 };
 
@@ -15,13 +17,22 @@ function DatawrapperLink({
   voteId,
   title,
   timestamp,
+  reference,
+  description,
   stats,
   children,
 }: DatawrapperLinkProps) {
   const onClick: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.preventDefault();
 
-    const config = getPresetConfig(voteId, title, timestamp, stats);
+    const config = getPresetConfig(
+      voteId,
+      title,
+      timestamp,
+      stats,
+      reference,
+      description,
+    );
 
     const form = document.createElement("form");
     form.target = "_blank";
@@ -60,6 +71,8 @@ function getPresetConfig(
   title: string,
   timestamp: string,
   stats: VotePositionCounts,
+  reference?: string,
+  description?: string,
 ) {
   // More information about Datawrapper visualization presets:
   // https://developer.datawrapper.de/docs/let-others-create-datawrapper-visualizations-from-presets
@@ -70,7 +83,9 @@ function getPresetConfig(
 
   config.title = title;
   config.description =
-    `Result of the vote in the European Parliament on ${formatDate(timestamp)}: ` +
+    `${formatDate(timestamp)} · ` +
+    (reference && `${reference} · `) +
+    (description && `${description} · `) +
     `<b style="border-bottom: 2px solid ${GREEN};">${stats.FOR} votes in favor</b>, ` +
     `<b style="border-bottom:2px solid ${RED};">${stats.AGAINST} votes against</b>, ` +
     `<b style="border-bottom:2px solid ${BLUE};">${stats.ABSTENTION} abstentions</b>.`;

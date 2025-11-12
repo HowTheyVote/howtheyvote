@@ -155,6 +155,8 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
                     voteId={data.id}
                     title={data.display_title || data.id.toString()}
                     timestamp={data.timestamp}
+                    reference={data.reference}
+                    description={data.description}
                     stats={data.stats.total}
                   >
                     Datawrapper template
