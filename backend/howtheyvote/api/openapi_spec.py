@@ -4,6 +4,7 @@ from apispec_webframeworks.flask import FlaskPlugin
 from .. import config
 from .openapi_helpers import get_schema, normalize_schema_name
 from .serializers import (
+    AmendmentAuthorDict,
     BaseVoteDict,
     CommitteeDict,
     CountryDict,
@@ -51,6 +52,7 @@ spec = APISpec(
 )
 
 schema_classes = [
+    AmendmentAuthorDict,
     MemberDict,
     GroupDict,
     CountryDict,

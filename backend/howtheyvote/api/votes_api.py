@@ -46,6 +46,7 @@ from .serializers import (
     VoteStatsByCountryDict,
     VoteStatsByGroupDict,
     VoteStatsDict,
+    serialize_amendment_author,
     serialize_base_vote,
     serialize_country,
     serialize_group,
@@ -592,12 +593,19 @@ def _format_related(votes: Iterable[Vote]) -> list[RelatedVoteDict]:
     formatted: list[RelatedVoteDict] = []
 
     for vote in votes:
+        authors = []
+        if vote.amendment_authors:
+            authors = [serialize_amendment_author(author) for author in vote.amendment_authors]
         formatted.append(
             {
                 "id": vote.id,
                 "is_main": vote.is_main,
                 "timestamp": vote.timestamp,
                 "description": vote.description,
+                "amendment_subject": vote.amendment_subject,
+                "amendment_number": vote.amendment_number,
+                "amendment_authors": authors,
+                "result": vote.result,
             }
         )
 

@@ -66,6 +66,7 @@ __all__ = [
     "ProcedureType",
     "Vote",
     "AmendmentAuthor",
+    "AmendmentAuthorType",
     "AmendmentAuthorGroup",
     "AmendmentAuthorCommittee",
     "AmendmentAuthorOriginalText",

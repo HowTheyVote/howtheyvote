@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from howtheyvote.models import (
+    AmendmentAuthorOriginalText,
     Committee,
     Country,
     Fragment,
@@ -65,6 +66,9 @@ def records(db_session):
         order=1,
         title="Should we have pizza for lunch?",
         description="Am 123",
+        amendment_number=1,
+        amendment_subject="$",
+        amendment_authors=[AmendmentAuthorOriginalText()],
         procedure_reference="1234/2025(COD)",
         member_votes=[
             MemberVote(
@@ -670,6 +674,15 @@ def test_votes_api_show(records, db_session, api):
         "timestamp": "2023-01-01T00:00:00",
         "reference": None,
         "description": "Am 123",
+        "amendment_subject": "$",
+        "amendment_number": "1",
+        "amendment_authors": [
+            {
+                "type": "ORIGINAL_TEXT",
+                "group": None,
+                "committee": None,
+            }
+        ],
         "procedure": {
             "title": None,
             "type": "COD",
@@ -902,13 +915,21 @@ def test_votes_api_related_votes(db_session, api):
             "id": 1,
             "is_main": False,
             "timestamp": "2023-01-01T00:00:00",
+            "amendment_subject": None,
+            "amendment_number": None,
+            "amendment_authors": [],
             "description": "Am 1",
+            "result": None,
         },
         {
             "id": 2,
             "is_main": True,
             "timestamp": "2023-01-01T00:00:00",
+            "amendment_subject": None,
+            "amendment_number": None,
+            "amendment_authors": [],
             "description": "Resolution (text as a whole)",
+            "result": None,
         },
     ]
 

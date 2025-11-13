@@ -2,6 +2,8 @@ import datetime
 from typing import Annotated, TypedDict
 
 from ..models import (
+    AmendmentAuthor,
+    AmendmentAuthorType,
     Committee,
     Country,
     EurovocConcept,
@@ -256,6 +258,32 @@ class LinkDict(TypedDict):
     """URL"""
 
 
+class AmendmentAuthorDict(TypedDict):
+    type: Annotated[AmendmentAuthorType | None, "ORALLY"]
+    """Indicates which entity authored an amendment.
+    Either `GROUP, `COMMITTEE`, `MEMBERS`, `ORALLY`, `ORIGINAL_TEXT`, or `RAPPORTEUR`"""
+
+    group: GroupDict | None
+    """Group authoring the amendment if applicable."""
+
+    committee: CommitteeDict | None
+    """Committee authoring the amendment if applicable."""
+
+
+def serialize_amendment_author(author: AmendmentAuthor) -> AmendmentAuthorDict:
+    group = getattr(author, "group", None)
+    committee = getattr(author, "committee", None)
+
+    serialized_group = serialize_group(group) if group else None
+    serialized_committee = serialize_committee(committee) if committee else None
+
+    return {
+        "type": author.type,
+        "group": serialized_group,
+        "committee": serialized_committee,
+    }
+
+
 class RelatedVoteDict(TypedDict):
     id: Annotated[int, 157420]
     """ID as published in the official roll-call vote results"""
@@ -273,6 +301,21 @@ class RelatedVoteDict(TypedDict):
 
     description: Annotated[str | None, "Am 123"]
     """Description of the vote as published in the roll-call vote results"""
+
+    amendment_subject: Annotated[str | None, "After § 127"]
+    """Subject of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_number: Annotated[str | None, "113"]
+    """Number of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_authors: list[AmendmentAuthorDict] | None
+    """Information regarding the authors of an amendment.
+    This field is only available for votes starting in 2024"""
+
+    result: VoteResult | None
+    """Vote result. This field is only available for votes starting in 2024."""
 
 
 class BaseVoteDict(TypedDict):
@@ -301,6 +344,18 @@ class BaseVoteDict(TypedDict):
     description: Annotated[str | None, "Commission proposal"]
     """Description of the vote as published in the roll-call vote results"""
 
+    amendment_subject: Annotated[str | None, "After § 127"]
+    """Subject of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_number: Annotated[str | None, "113"]
+    """Number of the specific amendment if applicable.
+    This field is only available for votes starting in 2024"""
+
+    amendment_authors: list[AmendmentAuthorDict] | None
+    """Information regarding the authors of an amendment.
+    This field is only available for votes starting in 2024"""
+
     geo_areas: list[CountryDict]
     """Countries or territories related to this vote"""
 
@@ -325,6 +380,11 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     responsible_committees = [
         serialize_committee(committee) for committee in vote.responsible_committees
     ]
+    amendment_authors = None
+    if vote.amendment_authors:
+        amendment_authors = [
+            serialize_amendment_author(author) for author in vote.amendment_authors
+        ]
 
     return {
         "id": vote.id,
@@ -332,6 +392,9 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "timestamp": vote.timestamp,
         "display_title": vote.display_title,
         "description": vote.description,
+        "amendment_subject": vote.amendment_subject,
+        "amendment_number": vote.amendment_number,
+        "amendment_authors": amendment_authors,
         "reference": vote.reference,
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
