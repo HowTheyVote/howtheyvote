@@ -472,7 +472,7 @@ def test_procedure_scraper_fallback_document_reference(responses):
         source_name="ProcedureScraper",
         source_id=162214,
         group_key=162214,
-        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=A9-0335/2023",
+        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         data={
             "procedure_reference": "2023/2019(INI)",
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
