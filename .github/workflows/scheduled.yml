@@ -36,7 +36,7 @@ jobs:
           cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
 
       - name: Install poetry
-        run: pipx install poetry
+        run: pipx install poetry==2.1.4
 
       - name: Set up Python
         uses: actions/setup-python@v6
