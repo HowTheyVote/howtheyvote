@@ -667,7 +667,7 @@ class ProcedureScraper(BeautifulSoupScraper):
         )
 
     def _procedure_reference(self, doc: BeautifulSoup) -> str | None:
-        heading = doc.select_one("#website-body h2.erpl_title-h1")
+        heading = doc.select_one("#website-body h2.es_title-h1")
 
         if not heading:
             return None
@@ -675,7 +675,7 @@ class ProcedureScraper(BeautifulSoupScraper):
         return heading.get_text(strip=True)
 
     def _title(self, doc: BeautifulSoup) -> str | None:
-        title = doc.select_one("#website-body h2.erpl_title-h2")
+        title = doc.select_one("#website-body h2.es_title-h2")
 
         if not title:
             return None
@@ -739,7 +739,7 @@ class ProcedureScraper(BeautifulSoupScraper):
         committees: set[str] = set()
 
         table = doc.select_one(
-            "#erpl_accordion-committee :where("
+            "#es_accordion-committee :where("
             + 'table:has(th:-soup-contains("Committee responsible")),'
             + 'table:has(th:-soup-contains("Joint committee responsible"))'
             + ")"
@@ -748,7 +748,7 @@ class ProcedureScraper(BeautifulSoupScraper):
         if not table:
             return committees
 
-        badges = table.select("tbody tr .erpl_badge-committee")
+        badges = table.select("tbody tr .es_badge-committee")
 
         for badge in badges:
             text = badge.text.strip()
