@@ -310,7 +310,7 @@ class RelatedVoteDict(TypedDict):
     """Number of the specific amendment if applicable.
     This field is only available for votes starting in 2024"""
 
-    amendment_authors: list[AmendmentAuthorDict]
+    amendment_authors: list[AmendmentAuthorDict] | None
     """Information regarding the authors of an amendment.
     This field is only available for votes starting in 2024"""
 
@@ -352,7 +352,7 @@ class BaseVoteDict(TypedDict):
     """Number of the specific amendment if applicable.
     This field is only available for votes starting in 2024"""
 
-    amendment_authors: list[AmendmentAuthorDict]
+    amendment_authors: list[AmendmentAuthorDict] | None
     """Information regarding the authors of an amendment.
     This field is only available for votes starting in 2024"""
 
@@ -380,7 +380,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     responsible_committees = [
         serialize_committee(committee) for committee in vote.responsible_committees
     ]
-    amendment_authors = []
+    amendment_authors = None
     if vote.amendment_authors:
         amendment_authors = [
             serialize_amendment_author(author) for author in vote.amendment_authors
