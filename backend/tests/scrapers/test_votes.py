@@ -459,6 +459,13 @@ def test_procedure_scraper(responses):
 def test_procedure_scraper_fallback_document_reference(responses):
     responses.get(
         "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=A9-0335/2023",
+        status=301,
+        headers={
+            "Location": "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)"
+        },
+    )
+    responses.get(
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
