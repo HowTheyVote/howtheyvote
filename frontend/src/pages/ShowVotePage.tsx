@@ -2,6 +2,7 @@ import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Callout from "../components/Callout";
+import DatawrapperLink from "../components/DatawrapperLink";
 import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
 import PageNav from "../components/PageNav";
@@ -62,6 +63,7 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
           )}
           <PageNavItem href="#more-information">More information</PageNavItem>
           <PageNavItem href="#open-data">Open data</PageNavItem>
+          <PageNavItem href="#embed">Embed</PageNavItem>
           <PageNavItem href="#sources">Sources</PageNavItem>
           <PageNavItem href="#errors">Report an error</PageNavItem>
         </PageNav>
@@ -138,6 +140,29 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
                 <a href="/about#license">our data license</a> or download data
                 in <a href={csvUrl}>CSV format</a> or{" "}
                 <a href={jsonUrl}>JSON format</a>.
+              </p>
+            </Wrapper>
+          </div>
+          <div class="px">
+            <Wrapper>
+              <h2 id="embed" class="delta mb--xs">
+                Embed
+              </h2>
+              <p>
+                Want to embed the results of this vote on your website? Use our{" "}
+                <Island>
+                  <DatawrapperLink
+                    voteId={data.id}
+                    title={data.display_title || data.id.toString()}
+                    timestamp={data.timestamp}
+                    reference={data.reference}
+                    description={data.description}
+                    stats={data.stats.total}
+                  >
+                    Datawrapper template
+                  </DatawrapperLink>
+                </Island>{" "}
+                to create an interactive table in just a few clicks.
               </p>
             </Wrapper>
           </div>
