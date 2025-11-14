@@ -53,6 +53,7 @@ class RCVListPipeline(BasePipeline):
         self.last_run_checksum = last_run_checksum
         self.checksum: str | None = None
         self._vote_ids: set[str] = set()
+        self._main_vote_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
     def _run(self) -> None:
@@ -72,7 +73,7 @@ class RCVListPipeline(BasePipeline):
         # Send Pushover notification
         send_notification(
             title=f"Scraped RCV list for {self.date.strftime('%a, %b %-d')}",
-            message=f"{len(self._vote_ids)} votes",
+            message=f"{len(self._vote_ids)} votes ({len(self._main_vote_ids)} main votes)",
             url=frontend_url("votes"),
         )
 
@@ -238,11 +239,14 @@ class RCVListPipeline(BasePipeline):
 
         for vote in self._votes():
             analyzer = MainVoteAnalyzer(
-                vote_id=vote.id, description=vote.description, title=vote.title
+                vote_id=vote.id,
+                description=vote.description,
+                title=vote.title,
             )
             writer.add(analyzer.run())
 
         writer.flush()
+        self._main_vote_ids = writer.get_touched()
 
     def _analyze_vote_groups(self) -> None:
         log.info("Running vote groups analysis", date=self.date, term=self.term)
