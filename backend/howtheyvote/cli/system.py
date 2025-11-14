@@ -1,6 +1,7 @@
 import click
 
 from ..db import migrate as _migrate
+from ..db import optimize as _optimize
 from ..search import delete_indexes as _delete_indexes
 
 
@@ -26,3 +27,9 @@ def migrate() -> None:
 def upgrade() -> None:
     """Equivalent of running the `migrate` and `configure-indexes` subcommands."""
     _migrate()
+
+
+@system.command()
+def optimize() -> None:
+    """Merge the SQLite WAL and vacuum."""
+    _optimize()
