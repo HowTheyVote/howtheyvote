@@ -14,6 +14,7 @@ from howtheyvote.models import (
 )
 from howtheyvote.scrapers.common import ScrapingError
 from howtheyvote.scrapers.helpers import (
+    apostrophize,
     fill_missing_by_reference,
     normalize_name,
     normalize_whitespace,
@@ -22,6 +23,11 @@ from howtheyvote.scrapers.helpers import (
     parse_full_name,
     parse_rcv_text,
 )
+
+
+def test_apostrophize():
+    assert apostrophize("Russia´s") == "Russia’s"
+    assert apostrophize("Tést") == "Tést"
 
 
 def test_parse_full_name():
