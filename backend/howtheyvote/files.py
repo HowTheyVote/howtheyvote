@@ -26,6 +26,10 @@ def vote_sharepic_path(vote_id: int) -> Path:
     return file_path(f"votes/sharepic-{vote_id}.png")
 
 
+def feed_path() -> str:
+    return file_path("atom.xml").__str__()
+
+
 def download_file(url: str, path: str | Path) -> Path | None:
     # Ensure that the download path is inside the files directory
     path = file_path(path)

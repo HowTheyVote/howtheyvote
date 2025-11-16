@@ -13,6 +13,11 @@
         file_server
     }
 
+    handle_path /files/feed_icon.png {
+        root * /howtheyvote/files/feed_icon.png
+        file_server
+    }
+
     handle /feed {
         root * /howtheyvote/files
         try_files /atom.xml
