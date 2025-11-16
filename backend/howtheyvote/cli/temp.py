@@ -7,6 +7,7 @@ from structlog import get_logger
 
 from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
+from ..feed import VotesFeed
 from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
 from ..query import member_active_at
@@ -297,3 +298,8 @@ def press_releases() -> None:
         )
         writer.add(PressReleaseAnalyzer(votes, releases).run())
         writer.flush()
+
+
+@temp.command()
+def feed() -> None:
+    VotesFeed.create()

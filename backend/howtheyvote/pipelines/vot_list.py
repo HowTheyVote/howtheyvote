@@ -3,6 +3,7 @@ from collections.abc import Iterator
 
 from structlog import get_logger
 
+from ..feed import VotesFeed
 from ..models import Vote
 from ..scrapers import NoWorkingUrlError, VOTListScraper
 from ..store import Aggregator, BulkWriter, index_records, map_vote
@@ -23,6 +24,7 @@ class VOTListPipeline(BasePipeline):
         self._index_votes()
 
         generate_vote_sharepics(self._votes())
+        VotesFeed.create()
 
     def _scrape_vot_list(self) -> None:
         self._log.info("Scraping VOT list")
