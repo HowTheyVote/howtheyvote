@@ -22,7 +22,7 @@ RUN pip install poetry
 WORKDIR /howtheyvote/backend
 
 # Copy files required to install dependencies
-COPY pyproject.toml poetry.toml poetry.lock .
+COPY pyproject.toml poetry.toml poetry.lock ./
 
 RUN poetry env use python3.12
 
@@ -43,4 +43,4 @@ ENV PATH="/howtheyvote/backend/.venv/bin:$PATH"
 # Make Python system packages (such as Xapian) accessible
 ENV PYTHONPATH=/usr/lib/python3.12/site-packages
 
-CMD gunicorn -b [::]:5000 --workers=5 --forwarded-allow-ips=* howtheyvote.wsgi:app
+CMD ["gunicorn", "-b", "[::]:5000", "--workers=5", "--forwarded-allow-ips=*", "howtheyvote.wsgi:app"]
