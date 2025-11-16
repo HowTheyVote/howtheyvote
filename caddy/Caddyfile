@@ -13,6 +13,13 @@
         file_server
     }
 
+    handle /feed {
+        root * /howtheyvote/files
+        try_files /atom.xml
+        file_server
+    }
+
+
     # Enable Gzip compression for common plaintext formats such as
     # HTML, CSS, JS, JSON, SVG etc.
     encode gzip
