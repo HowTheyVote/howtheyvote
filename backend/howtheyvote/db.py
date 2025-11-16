@@ -1,5 +1,6 @@
 from typing import Any
 
+import sqlalchemy as sa
 from alembic import command as alembic_command
 from alembic.config import Config
 from sqlalchemy import create_engine, event
@@ -45,3 +46,10 @@ def migrate() -> None:
         alembic_config.attributes["connection"] = connection
         log.info("Running database migrations.")
         alembic_command.upgrade(alembic_config, "head")
+
+
+def optimize() -> None:
+    """Merge the SQLite WAL and vacuum."""
+    with engine.connect() as connection:
+        connection.execute(sa.text("PRAGMA wal_checkpoint(TRUNCATE)"))
+        connection.execute(sa.text("VACUUM"))
