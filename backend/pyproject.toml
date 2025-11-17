@@ -57,7 +57,7 @@ types-pytz = "^2025.2.0.20250809"
 line-length = 95
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "B", "UP", "UP006", "T100"]
+select = ["E", "F", "W", "I", "N", "B", "UP", "UP006", "T100", "T201"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E501"]
