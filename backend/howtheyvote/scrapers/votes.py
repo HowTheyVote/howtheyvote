@@ -17,6 +17,7 @@ from ..models import (
     EurovocConcept,
     Fragment,
     MemberVote,
+    OEILSummary,
     ProcedureStage,
     Vote,
     VotePosition,
@@ -971,12 +972,10 @@ class OEILSummaryScraper(BeautifulSoupScraper):
     BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/document-summary"
 
     def __init__(self,
-                 vote_id: int,
                  summary_id: int,
                  request_cache: RequestCache | None = None,
     ):
         super().__init__(request_cache=request_cache)
-        self.vote_id = vote_id
         self.summary_id = summary_id
 
     def _url(self) -> str:
@@ -988,14 +987,12 @@ class OEILSummaryScraper(BeautifulSoupScraper):
         items = text.select(".MsoNormal")
         items = [self._format_paragraph(item) for item in items]
 
-        summary = "\n\n".join(items)
-
         return self._fragment(
-            model=Vote,
-            source_id=self.vote_id,
-            group_key=self.vote_id,
+            model=OEILSummary,
+            source_id=self.summary_id,
+            group_key=self.summary_id,
             data={
-                "oeil_summary": summary
+                "oeil_summary": items
             }
         )
 
@@ -1005,13 +1002,20 @@ class OEILSummaryScraper(BeautifulSoupScraper):
         style = paragraph.get("style")
 
         if not style:
-            return text
+            return {
+                "type": "paragraph",
+                "content": text
+                }
 
         # Headings aren't marked up using appropriate HTML tags.
         # Instead, they are simply styled using inline CSS.
-        # In case we detect those styles, we prepend Markdown
-        # syntax for second-level headings.
         if "font-weight" in style and "bold" in style:
-            return "## " + text
+            return {
+                "type": "heading",
+                "content": text
+                }
 
-        return text
+        return {
+                "type": "paragraph",
+                "content": text
+                }

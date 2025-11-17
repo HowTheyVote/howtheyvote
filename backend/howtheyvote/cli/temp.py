@@ -2,7 +2,7 @@ import datetime
 
 import click
 from cachetools import LRUCache
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, or_, select, distinct
 from structlog import get_logger
 
 from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
@@ -324,17 +324,15 @@ def oeil_ids(date: datetime.datetime) -> None:
 
 @temp.command()
 def oeil_summaries() -> None:
-    query = select(Vote)
-    query = query.where(Vote.oeil_summary_id)  
-    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    query = select(distinct(Vote.oeil_summary_id)).where(Vote.oeil_summary_id != None)
+    result = Session.execute(query).scalars().all()
     
     writer = BulkWriter()
 
-    for vote in votes:
+    for summary_id in result:
         try:
             scraper = OEILSummaryScraper(
-                vote_id=vote.id,
-                summary_id=vote.oeil_summary_id
+                summary_id=summary_id
             )
             writer.add(scraper.run())
         except ScrapingError:
