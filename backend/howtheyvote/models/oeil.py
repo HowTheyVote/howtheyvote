@@ -3,6 +3,7 @@ import dataclasses
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
 from sqlalchemy.types import TypeDecorator
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
 
@@ -64,3 +65,12 @@ class OEILSubjectType(TypeDecorator[OEILSubject]):
             return None
 
         return oeil_subjects.get(value)
+
+class OEILSummary():
+#     __tablename__ = "votes"
+# 
+    id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
+#     member_votes: Mapped[list[OEILSummaryParagraph]] = mapped_column(
+#         ListType(SAMemberVoteType()),
+#         default=[],
+#     )

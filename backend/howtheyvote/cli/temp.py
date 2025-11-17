@@ -2,7 +2,7 @@ import datetime
 
 import click
 from cachetools import LRUCache
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, or_, select, distinct
 from structlog import get_logger
 
 from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
@@ -15,6 +15,8 @@ from ..scrapers import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     NoWorkingUrlError,
+    OEILSummaryScraper,
+    OEILSummaryIDScraper,
     PressReleaseScraper,
     ProcedureScraper,
     RCVListScraper,
@@ -297,3 +299,43 @@ def press_releases() -> None:
         )
         writer.add(PressReleaseAnalyzer(votes, releases).run())
         writer.flush()
+
+
+@temp.command()
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
+def oeil_ids(date: datetime.datetime) -> None:
+    query = select(Vote)
+    query = query.where(func.date(Vote.timestamp) == date.date())  
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for vote in votes:
+        try:
+            scraper = OEILSummaryIDScraper(
+                vote_id=vote.id,
+                reference=vote.reference,
+                day_of_vote=date,
+            )
+            writer.add(scraper.run())
+        except ScrapingError:
+            pass
+
+    writer.flush()
+
+@temp.command()
+def oeil_summaries() -> None:
+    query = select(distinct(Vote.oeil_summary_id)).where(Vote.oeil_summary_id != None)
+    result = Session.execute(query).scalars().all()
+    
+    writer = BulkWriter()
+
+    for summary_id in result:
+        try:
+            scraper = OEILSummaryScraper(
+                summary_id=summary_id
+            )
+            writer.add(scraper.run())
+        except ScrapingError:
+            pass
+
+    writer.flush()
