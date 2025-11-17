@@ -10,6 +10,7 @@ from ..analysis import (
     VoteGroupsAnalyzer,
 )
 from ..db import Session
+from ..feed import VotesFeed
 from ..helpers import frontend_url
 from ..models import Member, Vote
 from ..pushover import send_notification
@@ -76,6 +77,7 @@ class RCVListPipeline(BasePipeline):
             message=f"{len(self._vote_ids)} votes ({len(self._main_vote_ids)} main votes)",
             url=frontend_url("votes"),
         )
+        VotesFeed.create()
 
     def _scrape_rcv_list(self) -> None:
         log.info("Fetching active members", date=self.date)
