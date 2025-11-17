@@ -3,7 +3,7 @@ import datetime
 import enum
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Any, Literal, Self, TypedDict
+from typing import Any, Literal, Self, TypedDict, overload
 
 from sqlalchemy import and_, asc, desc, func, select, true
 from sqlalchemy.sql import ColumnElement
@@ -55,7 +55,7 @@ class FilterOperator(enum.Enum):
 
 
 FilterOperatorSymbol = Literal["=", ">", ">=", "<", "<=", "in"]
-Filters = dict[tuple[str, FilterOperator], Any]
+Filters = dict[tuple[str, FilterOperator], str | list[str]]
 
 
 class QueryResponse[T: BaseWithId](TypedDict):
@@ -163,6 +163,18 @@ class Query[T: BaseWithId](ABC):
 
     def get_filters(self) -> Filters:
         return self._filters
+
+    @overload
+    def get_filter(self, field: str, op: Literal["in"]) -> list[str]: ...  # type: ignore[overload-overlap]
+    @overload
+    def get_filter(self, field: str, op: FilterOperatorSymbol) -> str | None: ...
+    def get_filter(self, field: str, op: FilterOperatorSymbol) -> str | None | list[str]:
+        op_ = FilterOperator(op)
+
+        if op_ == FilterOperator.IN:
+            return self.get_filters().get((field, op_), [])
+
+        return self.get_filters().get((field, op_))
 
     def without_filters(self, field: str) -> Self:
         query = self.copy()
@@ -430,9 +442,11 @@ class SearchQuery[T: BaseWithId](Query[T]):
             enquire.get_mset(0, 0, 10_000)
 
         options: list[FacetOption] = []
+        option_values: set[Any] = set()
 
         for raw_value, count in spy.counts.items():
             value = type_.deserialize_value(raw_value)
+            option_values.add(value)
             options.append(
                 {
                     "value": raw_value,
@@ -440,6 +454,21 @@ class SearchQuery[T: BaseWithId](Query[T]):
                     "count": count,
                 }
             )
+
+        filter_values: set[Any] = set()
+        filter_values.add(self.get_filter(field, "="))
+        filter_values.update(self.get_filter(field, "in"))
+
+        # Add selected facet options that do not match any of the results
+        for value in filter_values:
+            if value and value not in option_values:
+                options.append(
+                    {
+                        "value": type_.serialize_value(value),
+                        "label": type_.get_label(value),
+                        "count": 0,
+                    }
+                )
 
         options.sort(key=lambda option: option["count"], reverse=True)
 

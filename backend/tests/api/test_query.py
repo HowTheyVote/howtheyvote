@@ -394,3 +394,85 @@ def test_search_query_handle_facets_filters():
             },
         ],
     }
+
+
+def test_search_query_handle_facets_selected():
+    response = (
+        SearchQuery(Vote)
+        .facet("geo_areas")
+        .facet("responsible_committees")
+        .filter("geo_areas", "=", Country["ITA"])
+        .filter("responsible_committees", "=", Committee["AFCO"])
+        .handle()
+    )
+    assert response["facets"] == {
+        "geo_areas": [
+            {
+                "value": "DEU",
+                "label": "Germany",
+                "count": 1,
+            },
+            {
+                "value": "FRA",
+                "label": "France",
+                "count": 1,
+            },
+            {
+                "value": "ITA",
+                "label": "Italy",
+                "count": 0,
+            },
+        ],
+        "responsible_committees": [
+            {
+                "value": "IMCO",
+                "label": "Internal Market and Consumer Protection",
+                "count": 1,
+            },
+            {
+                "value": "AFCO",
+                "label": "Constitutional Affairs",
+                "count": 0,
+            },
+        ],
+    }
+
+    response = (
+        SearchQuery(Vote)
+        .facet("geo_areas")
+        .facet("responsible_committees")
+        .filter("geo_areas", "in", [Country["ITA"]])
+        .filter("responsible_committees", "in", [Committee["AFCO"]])
+        .handle()
+    )
+    assert response["facets"] == {
+        "geo_areas": [
+            {
+                "value": "DEU",
+                "label": "Germany",
+                "count": 1,
+            },
+            {
+                "value": "FRA",
+                "label": "France",
+                "count": 1,
+            },
+            {
+                "value": "ITA",
+                "label": "Italy",
+                "count": 0,
+            },
+        ],
+        "responsible_committees": [
+            {
+                "value": "IMCO",
+                "label": "Internal Market and Consumer Protection",
+                "count": 1,
+            },
+            {
+                "value": "AFCO",
+                "label": "Constitutional Affairs",
+                "count": 0,
+            },
+        ],
+    }
