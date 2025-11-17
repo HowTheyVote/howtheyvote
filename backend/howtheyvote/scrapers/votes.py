@@ -935,10 +935,11 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         sections = doc.select(".erpl_product-section")
+        sections = doc.select(".es_product-section")
         summary_id = None
         for section in sections:
             # TODO: Assuming it is section3 all the time, which is likely, this can be significantly simplified
-            heading = section.select_one("h2", class_="erpl_title-h2")
+            heading = section.select_one("h2", class_="es_title-h2")
             if not heading or heading.get_text(strip=True) != "Key events":
                 continue
             for row in section.select("tr"):
@@ -985,7 +986,7 @@ class OEILSummaryScraper(BeautifulSoupScraper):
         return f"{self.BASE_URL}{params}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
-        text = doc.select_one(".erpl_product-content")
+        text = doc.select_one(".es_product-content")
         items = text.select(".MsoNormal")
         items = [self._format_paragraph(item) for item in items]
 
