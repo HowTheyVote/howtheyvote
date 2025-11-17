@@ -308,9 +308,21 @@ def test_search_query_handle_facets():
     response = SearchQuery(Vote).facet("geo_areas").handle()
     assert len(response["facets"]) == 1
     assert response["facets"]["geo_areas"] == [
-        {"value": "DEU", "count": 2},
-        {"value": "FRA", "count": 1},
-        {"value": "ITA", "count": 1},
+        {
+            "value": "DEU",
+            "label": "Germany",
+            "count": 2,
+        },
+        {
+            "value": "FRA",
+            "label": "France",
+            "count": 1,
+        },
+        {
+            "value": "ITA",
+            "label": "Italy",
+            "count": 1,
+        },
     ]
 
 
@@ -319,17 +331,33 @@ def test_search_query_handle_facets_filters():
         SearchQuery(Vote)
         .facet("geo_areas")
         .facet("responsible_committees")
-        .filter("geo_areas", "=", "FRA")
+        .filter("geo_areas", "=", Country["FRA"])
         .handle()
     )
     assert response["facets"] == {
         "geo_areas": [
-            {"value": "DEU", "count": 2},
-            {"value": "FRA", "count": 1},
-            {"value": "ITA", "count": 1},
+            {
+                "value": "DEU",
+                "label": "Germany",
+                "count": 2,
+            },
+            {
+                "value": "FRA",
+                "label": "France",
+                "count": 1,
+            },
+            {
+                "value": "ITA",
+                "label": "Italy",
+                "count": 1,
+            },
         ],
         "responsible_committees": [
-            {"value": "AFCO", "count": 1},
+            {
+                "value": "AFCO",
+                "label": "Constitutional Affairs",
+                "count": 1,
+            },
         ],
     }
 
@@ -337,16 +365,32 @@ def test_search_query_handle_facets_filters():
         SearchQuery(Vote)
         .facet("geo_areas")
         .facet("responsible_committees")
-        .filter("responsible_committees", "=", "AFCO")
+        .filter("responsible_committees", "=", Committee["AFCO"])
         .handle()
     )
     assert response["facets"] == {
         "geo_areas": [
-            {"value": "DEU", "count": 1},
-            {"value": "FRA", "count": 1},
+            {
+                "value": "DEU",
+                "label": "Germany",
+                "count": 1,
+            },
+            {
+                "value": "FRA",
+                "label": "France",
+                "count": 1,
+            },
         ],
         "responsible_committees": [
-            {"value": "AFCO", "count": 1},
-            {"value": "IMCO", "count": 1},
+            {
+                "value": "AFCO",
+                "label": "Constitutional Affairs",
+                "count": 1,
+            },
+            {
+                "value": "IMCO",
+                "label": "Internal Market and Consumer Protection",
+                "count": 1,
+            },
         ],
     }

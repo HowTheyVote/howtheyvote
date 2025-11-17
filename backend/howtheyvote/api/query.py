@@ -29,13 +29,14 @@ from ..models.types import ListType
 from ..search import (
     SEARCH_FIELDS,
     boolean_term,
+    deserialize_list,
     field_to_boost,
     field_to_prefix,
     field_to_slot,
+    field_to_type,
     get_index,
     get_stopper,
-    serialize_value,
-    unserialize_list,
+    serialize_sortable_value,
 )
 
 
@@ -68,6 +69,7 @@ class QueryResponse[T: BaseWithId](TypedDict):
 
 class FacetOption(TypedDict):
     value: str
+    label: str
     count: int
 
 
@@ -309,11 +311,11 @@ class MultiValueCountMatchSpy(MatchSpy):
     def __init__(self, slot: int):
         super().__init__()
         self.slot = slot
-        self.counts: dict[str, int] = defaultdict(int)
+        self.counts: dict[Any, int] = defaultdict(int)
 
     def __call__(self, doc: Document, _weight: float) -> None:
-        for term in unserialize_list(doc.get_value(self.slot)):
-            self.counts[term] += 1
+        for value in deserialize_list(doc.get_value(self.slot)):
+            self.counts[value] += 1
 
 
 class SearchQuery[T: BaseWithId](Query[T]):
@@ -402,6 +404,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def _compute_facet(self, field: str) -> list[FacetOption]:
         spy = MultiValueCountMatchSpy(field_to_slot(field))
+        type_ = field_to_type(field)
 
         # To compute facets, we basically execute the same query we execute to get the
         # actual results, except that we ignore any filters for the facet’s field.
@@ -428,8 +431,15 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
         options: list[FacetOption] = []
 
-        for term, count in spy.counts.items():
-            options.append({"value": term, "count": count})
+        for raw_value, count in spy.counts.items():
+            value = type_.deserialize_value(raw_value)
+            options.append(
+                {
+                    "value": raw_value,
+                    "label": type_.get_label(value),
+                    "count": count,
+                }
+            )
 
         options.sort(key=lambda option: option["count"], reverse=True)
 
@@ -597,7 +607,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
         return XapianQuery(
             XapianQuery.OP_VALUE_GE,
             field_to_slot(field),
-            serialize_value(value),
+            serialize_sortable_value(value),
         )
 
     def _xapian_filter_lt_subquery(self, field: str, value: Any) -> XapianQuery:
@@ -613,5 +623,5 @@ class SearchQuery[T: BaseWithId](Query[T]):
         return XapianQuery(
             XapianQuery.OP_VALUE_LE,
             field_to_slot(field),
-            serialize_value(value),
+            serialize_sortable_value(value),
         )
