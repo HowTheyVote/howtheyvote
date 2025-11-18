@@ -17,6 +17,7 @@ from ..search import (
     get_index,
     get_stopper,
     serialize_list,
+    serialize_sortable_value,
     serialize_value,
 )
 
@@ -164,7 +165,7 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
     # Store date in slot for ranking and range filters
-    date = serialize_value(vote.date)
+    date = serialize_sortable_value(vote.date)
     doc.add_value(field_to_slot("date"), date)
 
     # Also store date as boolean term for eqaulity filters
@@ -172,7 +173,7 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     doc.add_boolean_term(term)
 
     # Store press release in slot for ranking
-    has_press_release = serialize_value(int(vote.press_release_id is not None))
+    has_press_release = serialize_sortable_value(int(vote.press_release_id is not None))
     doc.add_value(field_to_slot("has_press_release"), has_press_release)
 
     # Store categorical values as boolean terms for filtering.
@@ -195,11 +196,21 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     # Store categorical values in slots to compute facets. Slots can only store a single
     # value, so we have to serialize the list first.
     # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html
-    value = serialize_list([geo_area.code for geo_area in vote.geo_areas])
-    doc.add_value(field_to_slot("geo_areas"), value)
-
-    value = serialize_list([committee.code for committee in vote.responsible_committees])
-    doc.add_value(field_to_slot("responsible_committees"), value)
+    doc.add_value(
+        field_to_slot("geo_areas"),
+        serialize_list(
+            [serialize_value("geo_areas", geo_area) for geo_area in vote.geo_areas]
+        ),
+    )
+    doc.add_value(
+        field_to_slot("responsible_committees"),
+        serialize_list(
+            [
+                serialize_value("responsible_committees", committee)
+                for committee in vote.responsible_committees
+            ]
+        ),
+    )
 
     return doc
 

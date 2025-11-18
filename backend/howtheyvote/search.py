@@ -1,10 +1,11 @@
 import enum
 import pathlib
 import shutil
+from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import date, datetime, time
-from typing import Literal, overload
+from typing import Any, Literal, overload
 
 from structlog import get_logger
 from xapian import (
@@ -51,6 +52,75 @@ FIELD_TO_PREFIX_MAPPING = {
     "press_release": "XPRR",
 }
 
+
+class Type[T](ABC):
+    @abstractmethod
+    def serialize_value(self, value: T) -> str: ...
+
+    @abstractmethod
+    def deserialize_value(self, value: str) -> T: ...
+
+    @abstractmethod
+    def get_label(self, value: T) -> str: ...
+
+
+class StringType(Type[str]):
+    def serialize_value(self, value: str) -> str:
+        return value
+
+    def deserialize_value(self, value: str) -> str:
+        return value
+
+    def get_label(self, value: str) -> str:
+        return value
+
+
+class DateType(Type[date]):
+    def serialize_value(self, value: date) -> str:
+        return value.isoformat()
+
+    def deserialize_value(self, value: str) -> date:
+        return date.fromisoformat(value)
+
+    def get_label(self, value: date) -> str:
+        return value.isoformat()
+
+
+class CountryType(Type[Country]):
+    def serialize_value(self, value: Country) -> str:
+        return value.code
+
+    def deserialize_value(self, value: str) -> Country:
+        return Country[value]
+
+    def get_label(self, value: Country) -> str:
+        return value.label
+
+
+class CommitteeType(Type[Committee]):
+    def serialize_value(self, value: Committee) -> str:
+        return value.code
+
+    def deserialize_value(self, value: str) -> Committee:
+        return Committee[value]
+
+    def get_label(self, value: Committee) -> str:
+        return value.label
+
+
+FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
+    "date": DateType(),
+    "geo_areas": CountryType(),
+    "responsible_committees": CommitteeType(),
+    "reference": StringType(),
+    "procedure_reference": StringType(),
+}
+
+
+def field_to_type(field: str) -> Type[Any]:
+    return FIELD_TO_TYPE_MAPPING[field]
+
+
 PREFIX_TO_FIELD_MAPPING = {v: k for k, v in FIELD_TO_PREFIX_MAPPING.items()}
 
 # Each document can have a set of values associated with it. Values are similar to DocValues
@@ -92,24 +162,18 @@ def field_to_boost(field: str) -> float:
     return FIELD_TO_BOOST_MAPPING.get(field, 1)
 
 
-def boolean_term(
-    field: str,
-    value: str | int | bool | date | datetime | Country | Committee,
-) -> str:
-    prefix = FIELD_TO_PREFIX_MAPPING[field]
+def serialize_value(field: str, value: Any) -> str:
+    return field_to_type(field).serialize_value(value)
 
-    if type(value) is bool:
-        # Index bools as integers
-        value = int(value)
-    if type(value) is Country:
-        value = value.code
-    if type(value) is Committee:
-        value = value.code
-    if type(value) is str:
-        # Normalize strings
-        value = value.lower()
 
-    return f"{prefix}{value}"
+def deserialize_value(field: str, value: str) -> Any:
+    return field_to_type(field).deserialize_value(value)
+
+
+def boolean_term(field: str, value: Any) -> str:
+    prefix = field_to_prefix(field)
+    value = serialize_value(field, value)
+    return f"{prefix}{value.lower()}"
 
 
 @overload
@@ -163,7 +227,7 @@ def delete_indexes() -> None:
         shutil.rmtree(path)
 
 
-def serialize_value(value: int | float | date | datetime) -> str:
+def serialize_sortable_value(value: int | float | date | datetime) -> str:
     if isinstance(value, date) and not isinstance(value, datetime):
         value = datetime.combine(value, time(0, 0))
 
@@ -180,7 +244,7 @@ def serialize_list(values: list[str]) -> bytes:
     return LIST_SEPARATOR.join(value.encode("utf-8") for value in values)
 
 
-def unserialize_list(value: bytes) -> list[str]:
+def deserialize_list(value: bytes) -> list[str]:
     if not value:
         return []
 

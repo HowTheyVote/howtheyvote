@@ -31,9 +31,8 @@ from ..models import (
 )
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
-from .query import DatabaseQuery, FacetOption, Order, Query, SearchQuery
+from .query import DatabaseQuery, Order, Query, SearchQuery
 from .serializers import (
-    FacetOptionDict,
     LinkDict,
     MemberVoteDict,
     ProcedureDict,
@@ -536,36 +535,7 @@ def _serialize_query_with_facets(query: SearchQuery[Vote]) -> VotesQueryResponse
     return {
         **response,
         "results": [serialize_base_vote(result) for result in response["results"]],
-        "facets": {
-            field: _serialize_facet_options(field, options)
-            for field, options in response["facets"].items()
-        },
-    }
-
-
-def _serialize_facet_options(field: str, options: list[FacetOption]) -> list[FacetOptionDict]:
-    return [_serialize_facet_option(field, option) for option in options]
-
-
-def _serialize_facet_option(field: str, option: FacetOption) -> FacetOptionDict:
-    # This is no perfect solution. When we handle the query, we’re not aware of the field type
-    # anymore, so we have to manually enrich the options and provide a proper label here. There
-    # probably is a more elegant solution to this, but this is the simplest option for now.
-    if field == "geo_areas":
-        return {
-            **option,
-            "label": Country[option["value"]].label,
-        }
-
-    if field == "responsible_committees":
-        return {
-            **option,
-            "label": Committee[option["value"]].label,
-        }
-
-    return {
-        **option,
-        "label": option["value"],
+        "facets": response["facets"],
     }
 
 
