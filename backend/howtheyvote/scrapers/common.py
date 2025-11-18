@@ -38,6 +38,7 @@ def get_url(
     headers: dict[str, str],
     request_cache: RequestCache | None = None,
     max_retries: int = 0,
+    timeout: int = config.REQUEST_TIMEOUT,
 ) -> requests.Response | None:
     if isinstance(request_cache, Cache):
         if url in request_cache:
@@ -50,7 +51,7 @@ def get_url(
 
     for retry in range(0, max_retries + 1):
         try:
-            response = requests.get(url, headers=headers, timeout=config.REQUEST_TIMEOUT)
+            response = requests.get(url, headers=headers, timeout=timeout)
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
@@ -93,6 +94,7 @@ class BaseScraper[T](ABC):
     REQUEST_MAX_RETRIES: int = 0
 
     def __init__(self, request_cache: RequestCache | None = None, **kwargs: Any) -> None:
+        self.REQUEST_TIMEOUT = config.REQUEST_TIMEOUT
         self._request_cache = request_cache
         self._log = log.bind(scraper=type(self).__name__, **kwargs)
 
@@ -144,6 +146,7 @@ class BaseScraper[T](ABC):
                 headers=headers,
                 request_cache=self._request_cache,
                 max_retries=self.REQUEST_MAX_RETRIES,
+                timeout=self.REQUEST_TIMEOUT or config.REQUEST_TIMEOUT,
             )
 
             if not response or not response.ok:
