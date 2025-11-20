@@ -48,6 +48,8 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
     });
   }
 
+  // This is a shortcut for power users. If a user searches for a resolution/report reference,
+  // and there is only a single (main) vote for that reference, we redirect to that vote.
   if (
     data.results.length === 1 &&
     data.results[0].reference === searchQuery.q
