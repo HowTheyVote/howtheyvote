@@ -225,7 +225,7 @@ function MethodologySection() {
           </a>{" "}
           published as part of the plenary minutes, data about legislative
           procedures from the{" "}
-          <a href="https://oeil.secure.europarl.europa.eu/oeil/home/home.do">
+          <a href="https://oeil.europarl.europa.eu/oeil/home/home.do">
             Legislative Observatory
           </a>
           , and{" "}

@@ -59,7 +59,7 @@ def test_run(responses, db_session, member, mocker):
         body=load_fixture("pipelines/data/document_a-9-2024-0163-en.html"),
     )
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2024/2006(REG)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2024/2006(REG)",
         body=load_fixture("pipelines/data/oeil_2024-2006-reg.html"),
     )
 

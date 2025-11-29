@@ -23,7 +23,7 @@ All data sources listed above use a single ID to identify individual MEPs. The I
 | Source | Scraper | Example | Usage |
 | --- | --- | --- | --- |
 | Roll-call vote (RCV) list | `votes.RCVListScraper` | [Link](https://www.europarl.europa.eu/doceo/document/PV-9-2023-05-10-RCV_FR.xml) | Retrieving vote metadata (titles, dates, …) and voting behavior of individual MEPs for all roll-call votes on a given date |
-| Legislative Observatory procedure file | `votes.OeilTitleScraper` | [Link](https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=2022/2081(DEC)&l=en) | Retrieving a title for a given vote in case a title could not be extracted from the RCV list data |
+| Legislative Observatory procedure file | `votes.OeilTitleScraper` | [Link](https://oeil.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=2022/2081(DEC)&l=en) | Retrieving a title for a given vote in case a title could not be extracted from the RCV list data |
 
 We use the the `Identifier` attribute in RCV lists as vote IDs in HowTheyVote. We extract references to documents such as reports and resolutions (e.g. `A9-0101/2023`) to find the corresponding procedure file in the Legislative Observatory.
 

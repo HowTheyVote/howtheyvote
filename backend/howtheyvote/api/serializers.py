@@ -25,13 +25,13 @@ class ProcedureDict(TypedDict):
     """European Union legislative procedure"""
 
     title: Annotated[str | None, "Nature restoration"]
-    """Title of the legislative procedure as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+    """Title of the legislative procedure as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)"""
 
     type: ProcedureType
-    """Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+    """Procedure type as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)"""
 
     reference: Annotated[str, "2022/0195(COD)"]
-    """Procedure reference as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+    """Procedure reference as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)"""
 
     stage: ProcedureStage | None
     """Stage of the procedure in which the vote took place. This field is only available for
@@ -123,7 +123,7 @@ def serialize_eurovoc_concept(eurovoc_concept: EurovocConcept) -> EurovocConcept
 
 
 class OEILSubjectDict(TypedDict):
-    """A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)"""
+    """A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)"""
 
     code: Annotated[str, "2.50.04"]
     """Code"""
@@ -364,7 +364,7 @@ class BaseVoteDict(TypedDict):
     that are related to this vote"""
 
     oeil_subjects: list[OEILSubjectDict]
-    """Subjects as listed for the vote’s procedure in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)."""
+    """Subjects as listed for the vote’s procedure in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)."""
 
     responsible_committees: list[CommitteeDict] | None
     """Committees responsible for the legislative procedure"""
