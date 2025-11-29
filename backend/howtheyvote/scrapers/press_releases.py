@@ -269,6 +269,9 @@ class PressReleaseScraper(BeautifulSoupScraper):
                 (
                     "https://oeil.europarl.europa.eu/oeil/popups/ficheprocedure.do",
                     "https://oeil.europarl.europa.eu/oeil/en/procedure-file",
+                    # Older sites might still use this URL
+                    "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do",
+                    "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file",
                 )
             ):
                 continue
