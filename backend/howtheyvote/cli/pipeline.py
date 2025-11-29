@@ -8,6 +8,7 @@ from ..db import Session
 from ..models import PlenarySession
 from ..pipelines import (
     MembersPipeline,
+    OEILSummaryPipeline,
     PressPipeline,
     RCVListPipeline,
     SessionsPipeline,
@@ -128,4 +129,13 @@ def sessions(term: int) -> None:
     """Run the sessions pipeline for a given term. This scrapes plenary session dates
     and locations."""
     pipeline = SessionsPipeline(term=term)
+    pipeline.run()
+
+
+@pipeline.command()
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False)
+def oeil_summaries(date: datetime.datetime | None = None) -> None:
+    """Scrape all OEIL summaries for texts voted on in the last four weeks.
+    Does not take into account any existing summaries nor ids."""
+    pipeline = OEILSummaryPipeline(date=date, force=True)
     pipeline.run()

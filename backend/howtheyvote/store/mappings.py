@@ -12,9 +12,10 @@ from ..models import (
     deserialize_amendment_author,
     deserialize_group_membership,
     deserialize_member_vote,
+    deserialize_summary_section_vote,
 )
 from ..models.eurovoc import EurovocConcept
-from ..models.oeil import OEILSubject
+from ..models.oeil import OEILSubject, OEILSummary
 from .aggregator import CompositeRecord
 
 
@@ -121,4 +122,11 @@ def map_press_release(record: CompositeRecord) -> PressRelease:
         facts=record.get("facts"),
         text=record.get("text"),
         position_counts=record.get("position_counts"),
+    )
+
+
+def map_summary(record: CompositeRecord) -> OEILSummary:
+    return OEILSummary(
+        id=record.group_key,
+        content=record.chain("content", type=deserialize_summary_section_vote),
     )

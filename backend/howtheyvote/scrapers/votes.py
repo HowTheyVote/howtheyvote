@@ -17,6 +17,7 @@ from ..models import (
     EurovocConcept,
     Fragment,
     MemberVote,
+    OEILSummary,
     ProcedureStage,
     Vote,
     VotePosition,
@@ -915,14 +916,16 @@ class EurlexDocumentScraper(BeautifulSoupScraper):
             },
         )
 
+
 class OEILSummaryIDScraper(BeautifulSoupScraper):
     BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file"
 
-    def __init__(self,
-                 vote_id: int,
-                 day_of_vote: int,
-                 reference: str,
-                 request_cache: RequestCache | None = None,
+    def __init__(
+        self,
+        vote_id: int,
+        day_of_vote: date,
+        reference: str,
+        request_cache: RequestCache | None = None,
     ):
         super().__init__(request_cache=request_cache)
         self.day_of_vote = day_of_vote
@@ -934,12 +937,12 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
         return f"{self.BASE_URL}{ref}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
-        sections = doc.select(".erpl_product-section")
         sections = doc.select(".es_product-section")
         summary_id = None
         for section in sections:
-            # TODO: Assuming it is section3 all the time, which is likely, this can be significantly simplified
-            heading = section.select_one("h2", class_="es_title-h2")
+            # TODO: Assuming it is the third section all the time, which is likely,
+            # this can be significantly simplified.
+            heading = section.select_one("h2.es_title-h2")
             if not heading or heading.get_text(strip=True) != "Key events":
                 continue
             for row in section.select("tr"):
@@ -950,35 +953,37 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
                     continue
                 if self.day_of_vote.strftime("%d/%m/%Y") not in row_text:
                     continue
+
                 links = row.select("a")
                 for link in links:
-                    if "/oeil/en/document-summary?id=" in link["href"]:
+                    href: str = link["href"]  # type: ignore
+                    if "/oeil/en/document-summary?id=" in href:
                         if summary_id is not None:
-                            raise ScrapingError("Multiple summaries available for the same day.")
-                        summary_id = re.search(r"[?&]id=(\d+)", link["href"]).group(1)
+                            raise ScrapingError(
+                                "Multiple summaries available for the same day."
+                            )
+                        summary_id_match = re.search(r"[?&]id=(\d+)", href)
+                        summary_id = summary_id_match.group(1) if summary_id_match else None
         if summary_id is None:
             raise ScrapingError("No summary found.")
-        
+
         return self._fragment(
             model=Vote,
             source_id=self.vote_id,
             group_key=self.vote_id,
-            data={
-                "oeil_summary_id": summary_id
-            }
+            data={"oeil_summary_id": summary_id},
         )
 
 
 class OEILSummaryScraper(BeautifulSoupScraper):
     BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/document-summary"
 
-    def __init__(self,
-                 vote_id: int,
-                 summary_id: int,
-                 request_cache: RequestCache | None = None,
+    def __init__(
+        self,
+        summary_id: int,
+        request_cache: RequestCache | None = None,
     ):
         super().__init__(request_cache=request_cache)
-        self.vote_id = vote_id
         self.summary_id = summary_id
 
     def _url(self) -> str:
@@ -987,33 +992,32 @@ class OEILSummaryScraper(BeautifulSoupScraper):
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         text = doc.select_one(".es_product-content")
-        items = text.select(".MsoNormal")
-        items = [self._format_paragraph(item) for item in items]
 
-        summary = "\n\n".join(items)
+        if not text:
+            raise ScrapingError
+
+        items = text.select(".MsoNormal")
+
+        content = [self._format_paragraph(item) for item in items]
 
         return self._fragment(
-            model=Vote,
-            source_id=self.vote_id,
-            group_key=self.vote_id,
-            data={
-                "oeil_summary": summary
-            }
+            model=OEILSummary,
+            source_id=self.summary_id,
+            group_key=self.summary_id,
+            data={"content": content},
         )
 
-    def _format_paragraph(self, paragraph: Tag) -> str:
+    def _format_paragraph(self, paragraph: Tag) -> dict[str, str]:
         text = paragraph.text.strip().replace("\n", " ")
 
         style = paragraph.get("style")
 
         if not style:
-            return text
+            return {"type": "paragraph", "content": text}
 
         # Headings aren't marked up using appropriate HTML tags.
         # Instead, they are simply styled using inline CSS.
-        # In case we detect those styles, we prepend Markdown
-        # syntax for second-level headings.
         if "font-weight" in style and "bold" in style:
-            return "## " + text
+            return {"type": "heading", "content": text}
 
-        return text
+        return {"type": "paragraph", "content": text}
