@@ -1,3 +1,4 @@
+import datetime as dt
 from collections.abc import Iterator
 from datetime import datetime, timedelta
 
@@ -14,9 +15,9 @@ log = get_logger(__name__)
 
 
 class OEILSummaryPipeline(BasePipeline):
-    def __init__(self, date: datetime | None = None, force: bool = False):
+    def __init__(self, date: dt.date | None = None, force: bool = False):
         super().__init__()
-        self.date = date.date() if date else None
+        self.date = date if date else None
         self.force = force
 
     def _run(self) -> None:
@@ -28,7 +29,7 @@ class OEILSummaryPipeline(BasePipeline):
     def _scrape_summary_ids(self) -> None:
         query = select(Vote).where(Vote.is_main)
         if self.date:
-            query = query.where(func.date(Vote.timestamp) == self.date)
+            query = query.where(func.date(Vote.date) == self.date)
         else:
             query = query.where(
                 Vote.timestamp.between(datetime.now() - timedelta(weeks=8), datetime.now())
