@@ -134,7 +134,7 @@ def sessions(term: int) -> None:
 
 @pipeline.command()
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False)
-def oeil_summaries(date: datetime.datetime | None = None) -> None:
+def oeil_summaries(date: datetime.date | None = None) -> None:
     """Scrape all OEIL summaries for texts voted on in the last four weeks.
     Does not take into account any existing summaries nor ids."""
     pipeline = OEILSummaryPipeline(date=date, force=True)
