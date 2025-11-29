@@ -1,6 +1,7 @@
 import type { ComponentProps } from "preact";
 import type { JSX } from "preact/jsx-runtime";
 import type { FacetOption } from "../api";
+import type { SearchQuery } from "../lib/search";
 import Button from "./Button";
 import Dialog from "./Dialog";
 import SearchFacet from "./SearchFacet";
@@ -13,17 +14,13 @@ type SearchFiltersDialogProps = Pick<
   ComponentProps<typeof Dialog>,
   "open" | "onOpenChange"
 > & {
-  query: string;
-  sort: string;
+  searchQuery: SearchQuery;
   facets: Record<string, FacetOption[]>;
-  filters: Record<string, string[]>;
 };
 
 function SearchFiltersDialog({
-  query,
-  sort,
+  searchQuery,
   facets,
-  filters,
   open,
   onOpenChange,
 }: SearchFiltersDialogProps) {
@@ -53,28 +50,28 @@ function SearchFiltersDialog({
       className="search-filters-dialog"
     >
       <form method="get" onSubmit={onSubmit}>
-        <input name="q" type="hidden" value={query} />
-        <input name="sort" type="hidden" value={sort} />
+        <input name="q" type="hidden" value={searchQuery.q} />
+        <input name="sort" type="hidden" value={searchQuery.sort} />
         <div class="search-filters-dialog__facets">
           <SearchFacet label="Date">
             <SearchFacetDateOptions
               field="date"
-              start={filters["date[gte]"]?.[0]}
-              end={filters["date[lte]"]?.[0]}
+              start={searchQuery.getFilter("date[gte]")[0]}
+              end={searchQuery.getFilter("date[lte]")[0]}
             />
           </SearchFacet>
           <SearchFacet label="Country">
             <SearchFacetMultiselectOptions
               field="geo_areas"
               options={facets.geo_areas}
-              selected={filters.geo_areas}
+              selected={searchQuery.getFilter("geo_areas")}
             />
           </SearchFacet>
           <SearchFacet label="Responsible committee">
             <SearchFacetMultiselectOptions
               field="responsible_committees"
               options={facets.responsible_committees}
-              selected={filters.responsible_committees}
+              selected={searchQuery.getFilter("responsible_committees")}
             />
           </SearchFacet>
         </div>
