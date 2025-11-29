@@ -3,7 +3,7 @@ import datetime
 import enum
 from abc import ABC, abstractmethod
 from collections import defaultdict
-from typing import Any, Literal, Self, TypedDict
+from typing import Any, Literal, Self, TypedDict, overload
 
 from sqlalchemy import and_, asc, desc, func, select, true
 from sqlalchemy.sql import ColumnElement
@@ -29,13 +29,14 @@ from ..models.types import ListType
 from ..search import (
     SEARCH_FIELDS,
     boolean_term,
+    deserialize_list,
     field_to_boost,
     field_to_prefix,
     field_to_slot,
+    field_to_type,
     get_index,
     get_stopper,
-    serialize_value,
-    unserialize_list,
+    serialize_sortable_value,
 )
 
 
@@ -54,7 +55,7 @@ class FilterOperator(enum.Enum):
 
 
 FilterOperatorSymbol = Literal["=", ">", ">=", "<", "<=", "in"]
-Filters = dict[tuple[str, FilterOperator], Any]
+Filters = dict[tuple[str, FilterOperator], str | list[str]]
 
 
 class QueryResponse[T: BaseWithId](TypedDict):
@@ -68,6 +69,7 @@ class QueryResponse[T: BaseWithId](TypedDict):
 
 class FacetOption(TypedDict):
     value: str
+    label: str
     count: int
 
 
@@ -161,6 +163,18 @@ class Query[T: BaseWithId](ABC):
 
     def get_filters(self) -> Filters:
         return self._filters
+
+    @overload
+    def get_filter(self, field: str, op: Literal["in"]) -> list[str]: ...  # type: ignore[overload-overlap]
+    @overload
+    def get_filter(self, field: str, op: FilterOperatorSymbol) -> str | None: ...
+    def get_filter(self, field: str, op: FilterOperatorSymbol) -> str | None | list[str]:
+        op_ = FilterOperator(op)
+
+        if op_ == FilterOperator.IN:
+            return self.get_filters().get((field, op_), [])
+
+        return self.get_filters().get((field, op_))
 
     def without_filters(self, field: str) -> Self:
         query = self.copy()
@@ -309,11 +323,11 @@ class MultiValueCountMatchSpy(MatchSpy):
     def __init__(self, slot: int):
         super().__init__()
         self.slot = slot
-        self.counts: dict[str, int] = defaultdict(int)
+        self.counts: dict[Any, int] = defaultdict(int)
 
     def __call__(self, doc: Document, _weight: float) -> None:
-        for term in unserialize_list(doc.get_value(self.slot)):
-            self.counts[term] += 1
+        for value in deserialize_list(doc.get_value(self.slot)):
+            self.counts[value] += 1
 
 
 class SearchQuery[T: BaseWithId](Query[T]):
@@ -402,6 +416,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def _compute_facet(self, field: str) -> list[FacetOption]:
         spy = MultiValueCountMatchSpy(field_to_slot(field))
+        type_ = field_to_type(field)
 
         # To compute facets, we basically execute the same query we execute to get the
         # actual results, except that we ignore any filters for the facet’s field.
@@ -427,9 +442,33 @@ class SearchQuery[T: BaseWithId](Query[T]):
             enquire.get_mset(0, 0, 10_000)
 
         options: list[FacetOption] = []
+        option_values: set[Any] = set()
 
-        for term, count in spy.counts.items():
-            options.append({"value": term, "count": count})
+        for raw_value, count in spy.counts.items():
+            value = type_.deserialize_value(raw_value)
+            option_values.add(value)
+            options.append(
+                {
+                    "value": raw_value,
+                    "label": type_.get_label(value),
+                    "count": count,
+                }
+            )
+
+        filter_values: set[Any] = set()
+        filter_values.add(self.get_filter(field, "="))
+        filter_values.update(self.get_filter(field, "in"))
+
+        # Add selected facet options that do not match any of the results
+        for value in filter_values:
+            if value and value not in option_values:
+                options.append(
+                    {
+                        "value": type_.serialize_value(value),
+                        "label": type_.get_label(value),
+                        "count": 0,
+                    }
+                )
 
         options.sort(key=lambda option: option["count"], reverse=True)
 
@@ -597,7 +636,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
         return XapianQuery(
             XapianQuery.OP_VALUE_GE,
             field_to_slot(field),
-            serialize_value(value),
+            serialize_sortable_value(value),
         )
 
     def _xapian_filter_lt_subquery(self, field: str, value: Any) -> XapianQuery:
@@ -613,5 +652,5 @@ class SearchQuery[T: BaseWithId](Query[T]):
         return XapianQuery(
             XapianQuery.OP_VALUE_LE,
             field_to_slot(field),
-            serialize_value(value),
+            serialize_sortable_value(value),
         )
