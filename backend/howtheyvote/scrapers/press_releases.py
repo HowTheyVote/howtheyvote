@@ -267,8 +267,8 @@ class PressReleaseScraper(BeautifulSoupScraper):
         for link in self._links(doc):
             if not link.startswith(
                 (
-                    "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do",
-                    "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file",
+                    "https://oeil.europarl.europa.eu/oeil/popups/ficheprocedure.do",
+                    "https://oeil.europarl.europa.eu/oeil/en/procedure-file",
                 )
             ):
                 continue

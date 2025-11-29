@@ -20,7 +20,7 @@ def doceo_texts_adopted_url(reference: str) -> str:
 
 def oeil_procedure_url(reference: str) -> str:
     ref = parse_procedure_reference(reference)
-    base_url = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference="
+    base_url = "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference="
     url = f"{base_url}{ref['year']}/{ref['number']:04}({ref['type'].value})"
 
     return url
