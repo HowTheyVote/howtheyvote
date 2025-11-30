@@ -570,8 +570,8 @@ def test_votes_api_search_facets(db_session, search_index, api):
     res = api.get("/api/votes/search", query_string={"facets": "geo_areas"})
     assert res.json["facets"] == {
         "geo_areas": [
-            {"value": "FRA", "label": "France", "count": 2},
-            {"value": "DEU", "label": "Germany", "count": 1},
+            {"value": "FRA", "label": "France", "short_label": None, "count": 2},
+            {"value": "DEU", "label": "Germany", "short_label": None, "count": 1},
         ],
     }
 
@@ -581,18 +581,20 @@ def test_votes_api_search_facets(db_session, search_index, api):
     )
     assert res.json["facets"] == {
         "geo_areas": [
-            {"value": "FRA", "label": "France", "count": 2},
-            {"value": "DEU", "label": "Germany", "count": 1},
+            {"value": "FRA", "label": "France", "short_label": None, "count": 2},
+            {"value": "DEU", "label": "Germany", "short_label": None, "count": 1},
         ],
         "responsible_committees": [
             {
                 "value": "AFCO",
                 "label": "Constitutional Affairs",
+                "short_label": "AFCO",
                 "count": 1,
             },
             {
                 "value": "IMCO",
                 "label": "Internal Market and Consumer Protection",
+                "short_label": "IMCO",
                 "count": 1,
             },
         ],
@@ -610,6 +612,7 @@ def test_votes_api_search_facets(db_session, search_index, api):
             {
                 "value": "FRA",
                 "label": "France",
+                "short_label": None,
                 "count": 1,
             },
         ],
@@ -617,11 +620,13 @@ def test_votes_api_search_facets(db_session, search_index, api):
             {
                 "value": "AFCO",
                 "label": "Constitutional Affairs",
+                "short_label": "AFCO",
                 "count": 1,
             },
             {
                 "value": "IMCO",
                 "label": "Internal Market and Consumer Protection",
+                "short_label": "IMCO",
                 "count": 1,
             },
         ],

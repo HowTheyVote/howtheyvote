@@ -68,7 +68,7 @@ export type BaseVote = {
      * Information regarding the authors of an amendment.
      * This field is only available for votes starting in 2024
      */
-    amendment_authors: Array<AmendmentAuthor>;
+    amendment_authors?: Array<AmendmentAuthor>;
     /**
      * Countries or territories related to this vote
      */
@@ -153,6 +153,7 @@ export type EurovocConcept = {
 export type FacetOption = {
     value: string;
     label: string;
+    short_label?: string;
     count: number;
 };
 
@@ -393,7 +394,7 @@ export type RelatedVote = {
      * Information regarding the authors of an amendment.
      * This field is only available for votes starting in 2024
      */
-    amendment_authors: Array<AmendmentAuthor>;
+    amendment_authors?: Array<AmendmentAuthor>;
     /**
      * Vote result. This field is only available for votes starting in 2024.
      */

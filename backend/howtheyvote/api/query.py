@@ -70,6 +70,7 @@ class QueryResponse[T: BaseWithId](TypedDict):
 class FacetOption(TypedDict):
     value: str
     label: str
+    short_label: str | None
     count: int
 
 
@@ -451,6 +452,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 {
                     "value": raw_value,
                     "label": type_.get_label(value),
+                    "short_label": type_.get_short_label(value),
                     "count": count,
                 }
             )
@@ -466,6 +468,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
                     {
                         "value": type_.serialize_value(value),
                         "label": type_.get_label(value),
+                        "short_label": type_.get_short_label(value),
                         "count": 0,
                     }
                 )

@@ -477,6 +477,7 @@ class QueryResponseDict(TypedDict):
 class FacetOptionDict(TypedDict):
     value: str
     label: str
+    short_label: str | None
     count: int
 
 

@@ -33,7 +33,7 @@ function SearchFacetMultiselectOptions({
 
   return (
     <div class="search-facet-multiselect-options">
-      {options.map(({ value, label, count }, index) => (
+      {options.map(({ value, label, short_label, count }, index) => (
         <label
           class="search-facet-multiselect-options__option"
           hidden={!isExpanded && index >= maxOptions ? true : undefined}
@@ -44,7 +44,9 @@ function SearchFacetMultiselectOptions({
             value={value}
             checked={selected.includes(value) ? true : undefined}
           />
-          <span class="search-facet-multiselect-options__label">{label}</span>{" "}
+          <span class="search-facet-multiselect-options__label">
+            {label} {short_label && `(${short_label})`}
+          </span>{" "}
           <span class="search-facet-multiselect-options__count">
             <span aria-hidden="true">{count}</span>
             <span class="visually-hidden">{`(${count} results)`}</span>
