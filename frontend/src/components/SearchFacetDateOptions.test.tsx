@@ -8,7 +8,7 @@ describe("SearchFacetDateOptions", () => {
     render(<SearchFacetDateOptions field="date" />);
 
     screen.getByLabelText("From");
-    screen.getByLabelText("To");
+    screen.getByLabelText("Until");
   });
 
   it("handles selected values", () => {
@@ -21,7 +21,7 @@ describe("SearchFacetDateOptions", () => {
     );
 
     const from = screen.getByLabelText<HTMLInputElement>("From");
-    const to = screen.getByLabelText<HTMLInputElement>("To");
+    const to = screen.getByLabelText<HTMLInputElement>("Until");
 
     assert.strictEqual(from.value, "2025-01-01");
     assert.strictEqual(to.value, "2025-12-31");

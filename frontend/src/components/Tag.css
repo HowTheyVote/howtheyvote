@@ -1,8 +1,39 @@
 .tag {
-  display: inline-block;
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
   padding-inline: var(--space-xxs);
-  font-weight: 500;
   background-color: var(--gray-lightest);
-  border-radius: var(--border-radius-sm);
+  border-radius: 9999px;
   border: 1px solid var(--gray-light);
+}
+
+.tag__label {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text-light);
+}
+
+.tag__delete {
+  display: block;
+  margin: 2px;
+  margin-inline-end: calc(2px - var(--space-xxs));
+  padding: 0.125em;
+  border-radius: 999px;
+}
+
+.tag__delete:hover {
+  background-color: var(--gray-light);
+}
+
+.tag__delete svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.tag__delete:hover svg {
+  fill: var(--color-text);
 }

@@ -3,6 +3,8 @@ import type { FacetOption } from "../api";
 import { SearchQuery } from "../lib/search";
 import Button from "./Button";
 import Icon from "./Icon";
+import SearchFacetDateTag from "./SearchFacetDateTag";
+import SearchFacetMultiselectTags from "./SearchFacetMultiselectTags";
 import SearchFiltersDialog from "./SearchFiltersDialog";
 import SortSelect from "./SortSelect";
 
@@ -41,6 +43,28 @@ function SearchActions({ url, total, facets }: SearchActionsProps) {
         {"Sort by: "}
         <SortSelect searchQuery={searchQuery} />
       </label>
+      <ul class="search-actions__facet-tags" aria-label="Active filters">
+        <SearchFacetDateTag
+          searchQuery={searchQuery}
+          id="date[gte]"
+          prefix="From"
+        />
+        <SearchFacetDateTag
+          searchQuery={searchQuery}
+          id="date[lte]"
+          prefix="Until"
+        />
+        <SearchFacetMultiselectTags
+          searchQuery={searchQuery}
+          id="geo_areas"
+          options={facets.geo_areas}
+        />
+        <SearchFacetMultiselectTags
+          searchQuery={searchQuery}
+          id="responsible_committees"
+          options={facets.responsible_committees}
+        />
+      </ul>
     </div>
   );
 }

@@ -54,3 +54,8 @@ export function formatNumber(number?: number): string | null {
 
   return number.toLocaleString("en-US");
 }
+
+export function isValidDate(date: Date) {
+  // https://stackoverflow.com/a/38182068
+  return !Number.isNaN(date.getTime());
+}

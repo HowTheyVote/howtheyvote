@@ -23,12 +23,12 @@ function SearchFacetDateOptions({ field, start, end }: SearchFacetDateOptions) {
         </div>
       </label>
       <label class="search-facet-date-options__date">
-        <div class="search-facet-date-options__label">To</div>
+        <div class="search-facet-date-options__label">Until</div>
         <div class="search-facet-date-options__input">
           <Input
             type="date"
             name={`${field}[lte]`}
-            placeholder="To"
+            placeholder="Until"
             value={end}
           />
         </div>

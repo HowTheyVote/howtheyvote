@@ -115,6 +115,12 @@ export class SearchQuery {
     return this.filters[key] || [];
   }
 
+  withoutFilter(key: string, value: string) {
+    const clone = this.clone();
+    clone.filters[key] = clone.filters[key].filter((other) => other !== value);
+    return clone;
+  }
+
   setSort(order: string) {
     const clone = this.clone();
 
