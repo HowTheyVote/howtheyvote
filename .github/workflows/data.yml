@@ -1,4 +1,4 @@
-name: Data
+name: Update JSON data
 
 on:
   workflow_dispatch: {}
@@ -88,7 +88,9 @@ jobs:
 
       - name: Open pull request
         run: |
-          if gh pr view bot/update-json-data &>/dev/null; then
+          pr_count=$(gh pr list --head=bot/update-json-data --state=open --json=id --jq=length)
+
+          if [[ "$count" -gt 0 ]]; then
             echo "A pull request already exists. Skipping creation."
           else
             gh pr create \
