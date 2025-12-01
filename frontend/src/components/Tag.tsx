@@ -1,17 +1,23 @@
-import type { ComponentChildren } from "preact";
+import type { ComponentProps, JSX } from "preact";
 import Icon from "./Icon";
 
 import "./Tag.css";
 
-type TagProps = {
-  children: ComponentChildren;
+type TagProps<T extends keyof JSX.IntrinsicElements> = {
+  as: T;
   deleteLink?: string;
   deleteLabel?: string;
-};
+} & ComponentProps<T>;
 
-function Tag({ children, deleteLink, deleteLabel }: TagProps) {
+function Tag<T extends keyof JSX.IntrinsicElements>({
+  as: Component = "span",
+  children,
+  deleteLink,
+  deleteLabel,
+  ...rest
+}: TagProps<T>) {
   return (
-    <span class="tag">
+    <Component class="tag" {...rest}>
       <span class="tag__label">{children}</span>
       {deleteLink && (
         <a href={deleteLink} class="tag__delete">
@@ -19,7 +25,7 @@ function Tag({ children, deleteLink, deleteLabel }: TagProps) {
           <Icon className="search-filter-pill__icon" name="close" />
         </a>
       )}
-    </span>
+    </Component>
   );
 }
 

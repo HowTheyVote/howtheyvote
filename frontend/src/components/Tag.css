@@ -16,6 +16,11 @@
   color: var(--color-text-light);
 }
 
+.tag:where(button, a):hover,
+.tag:where(button, a):focus-visible {
+  background-color: var(--gray-light);
+}
+
 .tag__delete {
   display: block;
   margin: 2px;
