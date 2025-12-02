@@ -305,7 +305,7 @@ def test_votes_api_index_filters(db_session, search_index, api):
     assert res.json["total"] == 3
 
 
-def test_votes_api_search(db_session, search_index, api):
+def test_votes_api_index_search(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -359,7 +359,7 @@ def test_votes_api_search(db_session, search_index, api):
     assert res.json["total"] == 2
 
 
-def test_votes_api_search_references(db_session, search_index, api):
+def test_votes_api_index_search_references(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
@@ -404,7 +404,7 @@ def test_votes_api_search_references(db_session, search_index, api):
     assert res.json["total"] == 0
 
 
-def test_votes_api_search_press_release(db_session, search_index, api):
+def test_votes_api_index_search_press_release(db_session, search_index, api):
     vote = Vote(
         id=178285,
         timestamp=datetime.datetime(2025, 1, 1, 0, 0, 0),
@@ -427,125 +427,7 @@ def test_votes_api_search_press_release(db_session, search_index, api):
     assert res.json["results"][0]["id"] == 178285
 
 
-def test_votes_api_search_sort(db_session, search_index, api):
-    one = Vote(
-        id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
-        title="Vote One",
-        reference="A9-0043/2024",
-        procedure_reference="2022/0362(NLE)",
-        is_main=True,
-    )
-
-    two = Vote(
-        id=2,
-        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
-        title="Vote Two",
-        reference="A9-0282/2023",
-        procedure_reference="2022/2148(INI)",
-        is_main=True,
-    )
-
-    db_session.add_all([one, two])
-    db_session.commit()
-    index_search(Vote, [one, two])
-
-    # If all results are equally relevant, results are sorted by timestamp in descending order
-    res = api.get("/api/votes/search", query_string={"q": "vote"})
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 2
-    assert res.json["results"][1]["id"] == 1
-
-    # By default, results are sorted by relevance
-    res = api.get("/api/votes/search", query_string={"q": "vote one"})
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 1
-    assert res.json["results"][1]["id"] == 2
-
-    # Sorting can be controlled via query params
-    res = api.get(
-        "/api/votes/search",
-        query_string={
-            "q": "vote",
-            "sort_by": "date",
-            "sort_order": "asc",
-        },
-    )
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 1
-    assert res.json["results"][1]["id"] == 2
-
-    res = api.get(
-        "/api/votes/search",
-        query_string={
-            "q": "vote",
-            "sort_by": "date",
-            "sort_order": "desc",
-        },
-    )
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 2
-    assert res.json["results"][1]["id"] == 1
-
-
-def test_votes_api_search_filters(db_session, search_index, api):
-    one = Vote(
-        id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
-        title="Vote One",
-        geo_areas=[Country["DEU"]],
-        is_main=True,
-    )
-
-    two = Vote(
-        id=2,
-        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
-        title="Vote Two",
-        geo_areas=[Country["FRA"]],
-        is_main=True,
-    )
-
-    three = Vote(
-        id=3,
-        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
-        title="Vote Three",
-        geo_areas=[Country["ITA"]],
-        is_main=True,
-    )
-
-    db_session.add_all([one, two, three])
-    db_session.commit()
-    index_search(Vote, [one, two, three])
-
-    res = api.get("/api/votes/search", query_string={"geo_areas": "DEU"})
-    assert res.json["total"] == 1
-    assert res.json["results"][0]["id"] == 1
-
-    res = api.get("/api/votes/search", query_string={"geo_areas": ["DEU", "ITA"]})
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 1
-    assert res.json["results"][1]["id"] == 3
-
-    res = api.get("/api/votes/search", query_string={"date": "2024-01-01"})
-    assert res.json["total"] == 1
-    assert res.json["results"][0]["id"] == 1
-
-    res = api.get("/api/votes/search", query_string={"date[gte]": "2024-02-01"})
-    assert res.json["total"] == 1
-    assert res.json["results"][0]["id"] == 2
-
-    res = api.get(
-        "/api/votes/search",
-        query_string={"geo_areas": "DEU", "date[gte]": "2024-02-01"},
-    )
-    assert res.json["total"] == 0
-
-    # Ignores invalid filter values
-    res = api.get("/api/votes/search", query_string={"geo_areas": "FOO"})
-    assert res.json["total"] == 3
-
-
-def test_votes_api_search_facets(db_session, search_index, api):
+def test_votes_api_index_facets(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -637,7 +519,7 @@ def test_votes_api_search_facets(db_session, search_index, api):
     }
 
 
-def test_votes_api_search_special_chars(db_session, search_index, api):
+def test_votes_api_index_search_special_chars(db_session, search_index, api):
     vote = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
