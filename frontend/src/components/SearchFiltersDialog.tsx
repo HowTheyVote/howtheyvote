@@ -65,6 +65,7 @@ function SearchFiltersDialog({
               field="geo_areas"
               options={facets.geo_areas}
               selected={searchQuery.getFilter("geo_areas")}
+              searchLabel="Filter countries"
             />
           </SearchFacet>
           <SearchFacet label="Responsible committee">
@@ -72,6 +73,7 @@ function SearchFiltersDialog({
               field="responsible_committees"
               options={facets.responsible_committees}
               selected={searchQuery.getFilter("responsible_committees")}
+              searchLabel="Filter committees"
             />
           </SearchFacet>
         </div>

@@ -7,7 +7,7 @@ const TRANSLITERATION = {
 };
 
 export function normalize(string: string): string {
-  let normalized = string.toLowerCase();
+  let normalized = string.toLowerCase().trim().replaceAll(/\s+/g, " ");
 
   // Some characters cannot be properly decomposed so they need to be manually
   // transliterated. We only do this for a few characters that a re common in EU
