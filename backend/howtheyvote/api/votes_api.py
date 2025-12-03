@@ -4,7 +4,7 @@ from datetime import date
 from io import StringIO
 
 from flask import Blueprint, Request, Response, abort, jsonify, request
-from sqlalchemy import or_, select
+from sqlalchemy import select
 from structlog import get_logger
 
 from ..db import Session
@@ -31,7 +31,7 @@ from ..models import (
 )
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
-from .query import DatabaseQuery, Order, Query, SearchQuery
+from .query import Order, SearchQuery
 from .serializers import (
     LinkDict,
     MemberVoteDict,
@@ -41,7 +41,6 @@ from .serializers import (
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
-    VotesQueryResponseWithFacetsDict,
     VoteStatsByCountryDict,
     VoteStatsByGroupDict,
     VoteStatsDict,
@@ -87,123 +86,20 @@ SOURCE_INFO = {
 }
 
 
+@bp.route("/votes/search")
 @bp.route("/votes")
 def index() -> Response:
-    """List votes
+    """
+    Get votes
     ---
     get:
         operationId: getVotes
         tags:
             - Votes
         summary: List votes
-        description: List votes in chronological order.
-        parameters:
-            -
-                in: query
-                name: page
-                description: Results page
-                schema:
-                    type: integer
-                    default: 1
-            -
-                in: query
-                name: page_size
-                description: Number of results per page
-                schema:
-                    type: integer
-                    default: 20
-            -
-                in: query
-                name: sort_by
-                description: Sort results by this field. Omit to sort by relevance.
-                schema:
-                    type: string
-                    enum:
-                        - date
-            -
-                in: query
-                name: sort_order
-                description: Sort results in ascending or descending order
-                schema:
-                    type: string
-                    enum:
-                        - asc
-                        - desc
-            -
-                in: query
-                name: date
-                description: |
-                    Filter votes by date and return only votes that were cast on the given
-                    date.
-                schema:
-                    type: string
-                    format: date
-            -
-                in: query
-                name: date[gte]
-                description: |
-                    Filter votes by date and return only votes that were cast on or after the
-                    given date.
-                schema:
-                    type: string
-                    format: date
-            -
-                in: query
-                name: date[lte]
-                description: |
-                    Filter votes by date and return only votes that were cast on or before the
-                    given date.
-                schema:
-                    type: string
-                    format: date
-            -
-                in: query
-                name: geo_areas
-                description: |
-                    Filter votes by geographic area. Valid values are 3-letter country codes
-                    [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
-                schema:
-                    type: array
-                    items:
-                        type: string
-            -
-                in: query
-                name: responsible_committees
-                description: |
-                    Filter votes by responsible committees. Valid values are 4-letter
-                    committee codes.
-                schema:
-                    type: array
-                    items:
-                        type: string
-        responses:
-            '200':
-                description: Ok
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/VotesQueryResponse'
-    """
-    query = _query_from_request(DatabaseQuery, request)
-    query = query.filter("is_main", "=", True)
-    query = query.where(or_(Vote.title != None, Vote.procedure_title != None))  # noqa: E711
-
-    return jsonify(_serialize_query(query))
-
-
-@bp.route("/votes/search")
-def search() -> Response:
-    """
-    Search votes
-    ---
-    get:
-        operationId: searchVotes
-        tags:
-            - Votes
-        summary: Search votes
         description: |
-            Search votes by title and reference. This endpoint returns a maximum of 1,000
-            results, even if more than 1,000 votes match the search query.
+            Get a list of roll-call votes. You can optionally provide a search query
+            and filters.
         parameters:
             -
                 in: query
@@ -309,30 +205,11 @@ def search() -> Response:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/VotesQueryResponseWithFacets'
+                            $ref: '#/components/schemas/VotesQueryResponse'
 
     """
-    q = request.args.get("q", "").strip()
-    query = _query_from_request(SearchQuery, request)
-
-    # Detect document references and apply a filter
-    references = [match.group(0) for match in REFERENCE_REGEX.finditer(q)]
-    q = REFERENCE_REGEX.sub("", q)
-
-    for reference in references:
-        query = query.filter("reference", "=", reference)
-
-    # Detect procedure references and apply a filter
-    procedure_references = [match.group(0) for match in PROCEDURE_REFERENCE_REGEX.finditer(q)]
-    q = PROCEDURE_REFERENCE_REGEX.sub("", q)
-
-    for procedure_reference in procedure_references:
-        query = query.filter("procedure_reference", "=", procedure_reference)
-
-    if q:
-        query = query.query(q)
-
-    return jsonify(_serialize_query_with_facets(query))
+    query = _query_from_request(request)
+    return jsonify(_serialize_query(query))
 
 
 @bp.route("/votes/<int:vote_id>")
@@ -469,8 +346,27 @@ def show_csv(vote_id: int) -> Response:
     )
 
 
-def _query_from_request[T: Query[Vote]](cls: type[T], request: Request) -> T:
-    query = cls(Vote)
+def _query_from_request(request: Request) -> SearchQuery[Vote]:
+    query = SearchQuery(Vote)
+
+    q = request.args.get("q", "").strip()
+
+    # Detect document references and apply a filter
+    references = [match.group(0) for match in REFERENCE_REGEX.finditer(q)]
+    q = REFERENCE_REGEX.sub("", q)
+
+    for reference in references:
+        query = query.filter("reference", "=", reference)
+
+    # Detect procedure references and apply a filter
+    procedure_references = [match.group(0) for match in PROCEDURE_REFERENCE_REGEX.finditer(q)]
+    q = PROCEDURE_REFERENCE_REGEX.sub("", q)
+
+    for procedure_reference in procedure_references:
+        query = query.filter("procedure_reference", "=", procedure_reference)
+
+    if q:
+        query = query.query(q)
 
     # Pagination
     query = query.page(request.args.get("page", type=int))
@@ -520,16 +416,7 @@ def _as_committee(code: str) -> Committee:
         raise ValueError() from exc
 
 
-def _serialize_query(query: DatabaseQuery[Vote]) -> VotesQueryResponseDict:
-    response = query.handle()
-
-    return {
-        **response,
-        "results": [serialize_base_vote(result) for result in response["results"]],
-    }
-
-
-def _serialize_query_with_facets(query: SearchQuery[Vote]) -> VotesQueryResponseWithFacetsDict:
+def _serialize_query(query: SearchQuery[Vote]) -> VotesQueryResponseDict:
     response = query.handle()
 
     return {

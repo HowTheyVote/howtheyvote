@@ -1,4 +1,4 @@
-import { searchVotes, type VotesQueryResponseWithFacets } from "../api";
+import { getVotes, type VotesQueryResponse } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
@@ -23,14 +23,14 @@ const SORT_PARAMS = {
   oldest: { sort_by: "date", sort_order: "asc" },
 } as const;
 
-type SearchPageData = VotesQueryResponseWithFacets & {
+type SearchPageData = VotesQueryResponse & {
   searchQuery: SearchQuery;
 };
 
 export const loader: Loader<SearchPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
-  const { data } = await searchVotes({
+  const { data } = await getVotes({
     query: {
       q: searchQuery.q,
       page: searchQuery.page,

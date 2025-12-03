@@ -481,19 +481,13 @@ class FacetOptionDict(TypedDict):
     count: int
 
 
-class WithFacetsDict(TypedDict):
-    facets: dict[str, list[FacetOptionDict]]
-
-
 # Using standard inheritance instead of generics as generics are a little
 # difficult to represent in OpenAPI specs/JSONSchema
 class VotesQueryResponseDict(QueryResponseDict):
     results: list[BaseVoteDict]
     """Votes"""
 
-
-class VotesQueryResponseWithFacetsDict(VotesQueryResponseDict, WithFacetsDict):
-    pass
+    facets: dict[str, list[FacetOptionDict]]
 
 
 class PlenarySessionsQueryResponseDict(QueryResponseDict):

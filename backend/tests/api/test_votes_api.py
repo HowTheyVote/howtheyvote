@@ -89,7 +89,7 @@ def records(db_session):
     db_session.commit()
 
 
-def test_votes_api_index(db_session, api):
+def test_votes_api_index(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -116,6 +116,7 @@ def test_votes_api_index(db_session, api):
 
     db_session.add_all([one, two, amendment])
     db_session.commit()
+    index_search(Vote, [one, two])
 
     res = api.get("/api/votes")
     assert res.json["total"]
@@ -155,7 +156,7 @@ def test_votes_api_index(db_session, api):
     assert res.json["results"][0]["display_title"] == "Vote One"
 
 
-def test_votes_api_index_empty_title(db_session, api):
+def test_votes_api_index_empty_title(db_session, search_index, api):
     empty_title = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -178,6 +179,7 @@ def test_votes_api_index_empty_title(db_session, api):
 
     db_session.add_all([empty_title, non_empty_vote_title, non_empty_procedure_title])
     db_session.commit()
+    index_search(Vote, [empty_title, non_empty_vote_title, non_empty_procedure_title])
 
     res = api.get("/api/votes")
     assert len(res.json["results"]) == 2
@@ -185,7 +187,7 @@ def test_votes_api_index_empty_title(db_session, api):
     assert res.json["results"][1]["display_title"] == "Vote title"
 
 
-def test_votes_api_index_sort(db_session, api):
+def test_votes_api_index_sort(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -206,6 +208,7 @@ def test_votes_api_index_sort(db_session, api):
 
     db_session.add_all([one, two])
     db_session.commit()
+    index_search(Vote, [one, two])
 
     # By default, results are sorted by timestamp in descending order
     res = api.get("/api/votes")
@@ -248,7 +251,7 @@ def test_votes_api_index_sort(db_session, api):
     assert res.json["total"] == 2
 
 
-def test_votes_api_index_filters(db_session, api):
+def test_votes_api_index_filters(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -275,6 +278,7 @@ def test_votes_api_index_filters(db_session, api):
 
     db_session.add_all([one, two, three])
     db_session.commit()
+    index_search(Vote, [one, two, three])
 
     res = api.get("/api/votes", query_string={"geo_areas": "DEU"})
     assert res.json["total"] == 1

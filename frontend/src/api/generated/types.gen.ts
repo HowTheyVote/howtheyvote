@@ -480,9 +480,10 @@ export type VotesQueryResponse = QueryResponse & {
      * Votes
      */
     results: Array<BaseVote>;
+    facets: {
+        [key: string]: Array<FacetOption>;
+    };
 };
-
-export type VotesQueryResponseWithFacets = VotesQueryResponse & WithFacets;
 
 export type VoteStats = {
     /**
@@ -509,68 +510,7 @@ export type VoteStatsByGroup = {
     stats: VotePositionCounts;
 };
 
-export type WithFacets = {
-    facets: {
-        [key: string]: Array<FacetOption>;
-    };
-};
-
 export type GetVotesData = {
-    query?: {
-        /**
-         * Filter votes by date and return only votes that were cast on the given
-         * date.
-         *
-         */
-        date?: string;
-        /**
-         * Filter votes by date and return only votes that were cast on or after the
-         * given date.
-         *
-         */
-        'date[gte]'?: string;
-        /**
-         * Filter votes by date and return only votes that were cast on or before the
-         * given date.
-         *
-         */
-        'date[lte]'?: string;
-        /**
-         * Filter votes by geographic area. Valid values are 3-letter country codes
-         * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
-         *
-         */
-        geo_areas?: Array<(string)>;
-        /**
-         * Results page
-         */
-        page?: number;
-        /**
-         * Number of results per page
-         */
-        page_size?: number;
-        /**
-         * Filter votes by responsible committees. Valid values are 4-letter
-         * committee codes.
-         *
-         */
-        responsible_committees?: Array<(string)>;
-        /**
-         * Sort results by this field. Omit to sort by relevance.
-         */
-        sort_by?: 'date';
-        /**
-         * Sort results in ascending or descending order
-         */
-        sort_order?: 'asc' | 'desc';
-    };
-};
-
-export type GetVotesResponse = (VotesQueryResponse);
-
-export type GetVotesError = unknown;
-
-export type SearchVotesData = {
     query?: {
         /**
          * Filter votes by date and return only votes that were cast on the given
@@ -630,9 +570,9 @@ export type SearchVotesData = {
     };
 };
 
-export type SearchVotesResponse = (VotesQueryResponseWithFacets);
+export type GetVotesResponse = (VotesQueryResponse);
 
-export type SearchVotesError = unknown;
+export type GetVotesError = unknown;
 
 export type GetVoteData = {
     path: {

@@ -25,11 +25,9 @@ from .serializers import (
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
-    VotesQueryResponseWithFacetsDict,
     VoteStatsByCountryDict,
     VoteStatsByGroupDict,
     VoteStatsDict,
-    WithFacetsDict,
 )
 
 DESCRIPTION = """
@@ -73,9 +71,7 @@ schema_classes = [
     LinkDict,
     QueryResponseDict,
     FacetOptionDict,
-    WithFacetsDict,
     VotesQueryResponseDict,
-    VotesQueryResponseWithFacetsDict,
     RelatedVoteDict,
     Statistics,
 ]
