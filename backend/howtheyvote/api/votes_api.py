@@ -35,6 +35,7 @@ from .query import Order, SearchQuery
 from .serializers import (
     LinkDict,
     MemberVoteDict,
+    MemberVotesQueryResponseDict,
     ProcedureDict,
     RelatedVoteDict,
     SourceDict,
@@ -46,6 +47,7 @@ from .serializers import (
     VoteStatsDict,
     serialize_amendment_author,
     serialize_base_vote,
+    serialize_base_vote_with_member_position,
     serialize_country,
     serialize_group,
     serialize_member,
@@ -206,10 +208,134 @@ def index() -> Response:
                     application/json:
                         schema:
                             $ref: '#/components/schemas/VotesQueryResponse'
-
     """
     query = _query_from_request(request)
-    return jsonify(_serialize_query(query))
+    return jsonify(_serialize_votes_query(query))
+
+
+@bp.route("/members/<int:member_id>/votes")
+def member_votes_index(member_id: int) -> Response:
+    """
+    Get member’s votes
+    ---
+    get:
+        operationId: getMemberVotes
+        tags:
+            - Members
+        summary: Get member’s votes
+        description: |
+            Get a list of roll-call votes along with the member’s vote position. You can
+            optionally provide a search query and filters.
+        parameters:
+            -
+                in: query
+                name: q
+                description: Search query
+                schema:
+                    type: string
+            -
+                in: query
+                name: page
+                description: Results page
+                schema:
+                    type: integer
+                    default: 1
+            -
+                in: query
+                name: page_size
+                description: Number of results per page
+                schema:
+                    type: integer
+                    default: 20
+            -
+                in: query
+                name: sort_by
+                description: Sort results by this field. Omit to sort by relevance.
+                schema:
+                    type: string
+                    enum:
+                        - date
+            -
+                in: query
+                name: sort_order
+                description: Sort results in ascending or descending order
+                schema:
+                    type: string
+                    enum:
+                        - asc
+                        - desc
+            -
+                in: query
+                name: date
+                description: |
+                    Filter votes by date and return only votes that were cast on the given
+                    date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date[gte]
+                description: |
+                    Filter votes by date and return only votes that were cast on or after the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: date[lte]
+                description: |
+                    Filter votes by date and return only votes that were cast on or before the
+                    given date.
+                schema:
+                    type: string
+                    format: date
+            -
+                in: query
+                name: geo_areas
+                description: |
+                    Filter votes by geographic area. Valid values are 3-letter country codes
+                    [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+                schema:
+                    type: array
+                    items:
+                        type: string
+            -
+                in: query
+                name: responsible_committees
+                description: |
+                    Filter votes by responsible committees. Valid values are 4-letter
+                    committee codes.
+                schema:
+                    type: array
+                    items:
+                        type: string
+            -
+                in: query
+                name: facets
+                description: |
+                    Return facet options for the given fields. Can be set multiple times.
+                style: form
+                explode: true
+                schema:
+                    type: array
+                    items:
+                        type: string
+                        enum:
+                            - geo_areas
+                            - responsible_committees
+        responses:
+            '200':
+                description: Ok
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/MemberVotesQueryResponse'
+    """
+    query = _query_from_request(request)
+    query = query.filter("member_id", "=", member_id)
+    return jsonify(_serialize_member_votes_query(query, member_id))
 
 
 @bp.route("/votes/<int:vote_id>")
@@ -416,12 +542,27 @@ def _as_committee(code: str) -> Committee:
         raise ValueError() from exc
 
 
-def _serialize_query(query: SearchQuery[Vote]) -> VotesQueryResponseDict:
+def _serialize_votes_query(query: SearchQuery[Vote]) -> VotesQueryResponseDict:
     response = query.handle()
 
     return {
         **response,
         "results": [serialize_base_vote(result) for result in response["results"]],
+        "facets": response["facets"],
+    }
+
+
+def _serialize_member_votes_query(
+    query: SearchQuery[Vote], member_id: int
+) -> MemberVotesQueryResponseDict:
+    response = query.handle()
+
+    return {
+        **response,
+        "results": [
+            serialize_base_vote_with_member_position(result, member_id)
+            for result in response["results"]
+        ],
         "facets": response["facets"],
     }
 

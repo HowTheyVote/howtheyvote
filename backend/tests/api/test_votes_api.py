@@ -21,7 +21,7 @@ from howtheyvote.store import index_search
 
 
 @pytest.fixture()
-def records(db_session):
+def records(db_session, search_index):
     john = Member(
         id=1,
         first_name="John",
@@ -65,11 +65,12 @@ def records(db_session):
         timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
         order=1,
         title="Should we have pizza for lunch?",
-        description="Am 123",
+        description="Résolution (ensemble du texte)",
         amendment_number=1,
         amendment_subject="$",
         amendment_authors=[AmendmentAuthorOriginalText()],
         procedure_reference="1234/2025(COD)",
+        is_main=True,
         member_votes=[
             MemberVote(
                 web_id=1,
@@ -87,6 +88,7 @@ def records(db_session):
 
     db_session.add_all([john, jane, vote])
     db_session.commit()
+    index_search(Vote, [vote])
 
 
 def test_votes_api_index(db_session, search_index, api):
@@ -542,6 +544,57 @@ def test_votes_api_index_search_special_chars(db_session, search_index, api):
     assert res.json["results"][0]["id"] == 1
 
 
+def test_votes_api_member_votes_index(records, api):
+    res = api.get("/api/members/1/votes")
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][0]["position"] == "FOR"
+
+    res = api.get("/api/members/2/votes")
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][0]["position"] == "AGAINST"
+
+
+def test_votes_api_member_votes_index_filter(db_session, search_index, api):
+    member = Member(
+        id=1,
+        first_name="John",
+        last_name="Doe",
+        country=Country["FRA"],
+        terms=[9],
+    )
+
+    vote_1 = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        is_main=True,
+        title="Vote 1",
+        member_votes=[
+            MemberVote(web_id=member.id, position=VotePosition.FOR),
+        ],
+    )
+
+    vote_2 = Vote(
+        id=2,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        is_main=True,
+        title="Vote 2",
+        member_votes=[],
+    )
+
+    db_session.add_all([member, vote_1, vote_2])
+    db_session.commit()
+    index_search(Vote, [vote_1, vote_2])
+
+    res = api.get("/api/members/1/votes")
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][0]["display_title"] == "Vote 1"
+    assert res.json["results"][0]["position"] == "FOR"
+
+
 def test_votes_api_show(records, db_session, api):
     fragment = Fragment(
         model="Vote",
@@ -560,11 +613,11 @@ def test_votes_api_show(records, db_session, api):
 
     expected = {
         "id": 1,
-        "is_main": False,
+        "is_main": True,
         "display_title": "Should we have pizza for lunch?",
         "timestamp": "2023-01-01T00:00:00",
         "reference": None,
-        "description": "Am 123",
+        "description": "Résolution (ensemble du texte)",
         "amendment_subject": "$",
         "amendment_number": "1",
         "amendment_authors": [
@@ -581,7 +634,7 @@ def test_votes_api_show(records, db_session, api):
             "stage": None,
         },
         "facts": None,
-        "sharepic_url": None,
+        "sharepic_url": "/api/static/votes/sharepic-1.png",
         "stats": {
             "total": {
                 "FOR": 1,
