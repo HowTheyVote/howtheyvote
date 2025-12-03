@@ -693,3 +693,13 @@ export type GetSessionsError = unknown;
 export type GetStatsResponse = ((Statistics));
 
 export type GetStatsError = unknown;
+
+export type GetMemberData = {
+    path: {
+        member_id: string;
+    };
+};
+
+export type GetMemberResponse = (Member);
+
+export type GetMemberError = unknown;

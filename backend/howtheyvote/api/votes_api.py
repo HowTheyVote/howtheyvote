@@ -216,13 +216,12 @@ def index() -> Response:
 @bp.route("/members/<int:member_id>/votes")
 def member_votes_index(member_id: int) -> Response:
     """
-    Get member’s votes
     ---
     get:
         operationId: getMemberVotes
         tags:
             - Members
-        summary: Get member’s votes
+        summary: List member’s votes
         description: |
             Get a list of roll-call votes along with the member’s vote position. You can
             optionally provide a search query and filters.
