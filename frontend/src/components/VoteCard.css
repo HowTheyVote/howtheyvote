@@ -1,4 +1,5 @@
 .vote-card {
+  position: relative;
   display: flex;
   width: 100%;
   padding: var(--space-xs);
@@ -9,6 +10,11 @@
   border: 1px solid var(--gray-light);
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow);
+}
+
+.vote-card:focus-within {
+  outline: var(--focus-outline);
+  outline-offset: -1px;
 }
 
 .vote-card__thumb {
@@ -32,11 +38,6 @@
   margin-block-end: var(--space-xxs);
 }
 
-.vote-card__title:focus-within {
-  outline: var(--focus-outline);
-  border-radius: var(--border-radius-xs);
-}
-
 .vote-card__title a {
   text-decoration: none;
 }
@@ -45,8 +46,18 @@
   text-decoration: underline;
 }
 
-.vote-card__title a:focus {
+.vote-card__title a:focus-visible {
   outline: none;
+}
+
+.vote-card__title a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .vote-card__meta {
