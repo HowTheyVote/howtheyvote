@@ -3,8 +3,6 @@ import type { BaseVote, RelatedVote } from "../api";
 import { formatDate } from "../lib/dates";
 import Stack from "./Stack";
 
-import "./VoteCards.css";
-
 type VoteType = BaseVote | RelatedVote;
 
 type VoteCardsProps<T extends VoteType> = {
@@ -41,11 +39,7 @@ export default function VoteCards<T extends VoteType>({
   children,
 }: VoteCardsProps<T>) {
   if (!groupByDate) {
-    return (
-      <div class="vote-cards">
-        <Group votes={votes}>{children}</Group>
-      </div>
-    );
+    return <Group votes={votes}>{children}</Group>;
   }
 
   const groups = new Map<string, Array<T>>();
@@ -62,12 +56,12 @@ export default function VoteCards<T extends VoteType>({
   }
 
   return (
-    <div class="vote-cards">
+    <Stack space="xl">
       {Array.from(groups.entries()).map(([formattedDate, votes]) => (
         <Group key={formattedDate} votes={votes} title={formattedDate}>
           {children}
         </Group>
       ))}
-    </div>
+    </Stack>
   );
 }

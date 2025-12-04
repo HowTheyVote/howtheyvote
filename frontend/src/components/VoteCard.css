@@ -1,3 +1,26 @@
+.vote-card {
+  display: flex;
+  width: 100%;
+  padding: var(--space-xs);
+  gap: var(--space-xs);
+  flex-direction: row-reverse;
+  align-items: center;
+
+  border: 1px solid var(--gray-light);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.vote-card__thumb {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.vote-card__text {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .vote-card__title {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -5,6 +28,7 @@
   overflow: hidden;
   font-size: var(--text);
   font-weight: 500;
+  margin-block-start: calc(-0.125 * var(--space));
   margin-block-end: var(--space-xxs);
 }
 
