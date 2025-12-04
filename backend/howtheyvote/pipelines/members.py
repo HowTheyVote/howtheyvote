@@ -4,7 +4,13 @@ from collections.abc import Iterator
 from structlog import get_logger
 
 from .. import config
-from ..files import download_file, image_thumb, member_photo_path
+from ..files import (
+    download_file,
+    ensure_parent,
+    image_thumb,
+    member_photo_path,
+    member_sharepic_path,
+)
 from ..models import Member
 from ..scrapers import (
     MemberGroupsScraper,
@@ -12,6 +18,7 @@ from ..scrapers import (
     MembersScraper,
     ScrapingError,
 )
+from ..sharepics import generate_member_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_member
 from .common import BasePipeline
 
@@ -30,9 +37,10 @@ class MembersPipeline(BasePipeline):
         self._scrape_member_infos()
         self._index_members()
         self._download_member_photos()
+        self._generate_sharepics()
 
     def _scrape_members(self) -> None:
-        log.info("Scraping RCV lists", term=self.term)
+        log.info("Scraping members", term=self.term)
 
         writer = BulkWriter()
         scraper = MembersScraper(term=self.term)
@@ -93,6 +101,18 @@ class MembersPipeline(BasePipeline):
             image_thumb(path, member_photo_path(member.id, size=104), format="jpeg", size=104)
 
             time.sleep(config.REQUEST_SLEEP)
+
+    def _generate_sharepics(self) -> None:
+        for member in self._members():
+            log.info("Generating member sharepic.", member_id=member.id)
+
+            try:
+                image = generate_member_sharepic(member.id)
+                path = member_sharepic_path(member.id)
+                ensure_parent(path)
+                path.write_bytes(image)
+            except Exception:
+                log.exception("Failed generating member sharepic.", member=member.id)
 
     def _index_members(self) -> None:
         log.info("Indexing members", term=self.term)
