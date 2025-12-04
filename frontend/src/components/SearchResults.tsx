@@ -27,19 +27,13 @@ function SearchResults({ url, data }: SearchResultsProps) {
       </Island>
 
       <VoteCards
-        groupByDate={
-          !searchQuery.q && Object.keys(searchQuery.filters).length === 0
-        }
+        groupByDate={!searchQuery.q && !searchQuery.hasFilters()}
         votes={data.results}
       />
 
       <Pagination
-        next={
-          data.has_next && searchQuery.setPage(searchQuery.page + 1).toUrl()
-        }
-        prev={
-          data.has_prev && searchQuery.setPage(searchQuery.page - 1).toUrl()
-        }
+        next={data.has_next && searchQuery.setNextPage().toUrl()}
+        prev={data.has_prev && searchQuery.setPrevPage().toUrl()}
       />
     </Stack>
   );
