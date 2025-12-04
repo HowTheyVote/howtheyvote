@@ -64,7 +64,14 @@ export const SearchPage: Page<SearchPageData> = ({ data, request }) => {
           <Hero
             title="All Votes"
             text="Explore recent votes or search our database by subject."
-            action={<SearchForm style="elevated" value={searchQuery.q} />}
+            action={
+              <SearchForm
+                action={searchQuery.base}
+                size="lg"
+                style="elevated"
+                value={searchQuery.q}
+              />
+            }
           />
           <div class="px">
             <Wrapper>
