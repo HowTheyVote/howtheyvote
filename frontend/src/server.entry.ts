@@ -5,6 +5,10 @@ import { AboutPage, loader as aboutLoader } from "./pages/AboutPage";
 import { DevelopersPage } from "./pages/DevelopersPage";
 import { HomePage, loader as homeLoader } from "./pages/HomePage";
 import { ImprintPage } from "./pages/ImprintPage";
+import {
+  MemberSharepicPage,
+  loader as memberSharepicLoader,
+} from "./pages/MemberSharepicPage";
 import { SearchPage, loader as searchLoader } from "./pages/SearchPage";
 import {
   ShowAmendmentVotesPage,
@@ -39,6 +43,11 @@ app.registerPage(
 );
 app.registerPage("/votes/:id/sharepic", VoteSharepicPage, voteSharepicLoader);
 app.registerPage("/members/:id", ShowMemberPage, showMemberLoader);
+app.registerPage(
+  "/members/:id/sharepic",
+  MemberSharepicPage,
+  memberSharepicLoader,
+);
 app.registerPage(["/developers", "/developers/*"], DevelopersPage);
 app.registerPage("/imprint", ImprintPage);
 app.registerPage("/about", AboutPage, aboutLoader);

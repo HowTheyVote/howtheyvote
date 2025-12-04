@@ -22,6 +22,10 @@ def member_photo_path(member_id: int, size: int | None = None) -> Path:
     return file_path(f"members/{member_id}.jpg")
 
 
+def member_sharepic_path(member_id: int) -> Path:
+    return file_path(f"members/sharepic-{member_id}.png")
+
+
 def vote_sharepic_path(vote_id: int) -> Path:
     return file_path(f"votes/sharepic-{vote_id}.png")
 
