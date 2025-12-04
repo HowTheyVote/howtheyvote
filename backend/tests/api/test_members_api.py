@@ -6,7 +6,7 @@ from howtheyvote.models import Country, Group, GroupMembership, Member
 
 
 def test_members_api_show(api, db_session):
-    member = Member(
+    john = Member(
         id=1,
         first_name="John",
         last_name="Doe",
@@ -27,7 +27,24 @@ def test_members_api_show(api, db_session):
             ),
         ],
     )
-    db_session.add(member)
+
+    jane = Member(
+        id=2,
+        first_name="Jane",
+        last_name="Smith",
+        country=Country["DEU"],
+        terms=[9],
+        group_memberships=[
+            GroupMembership(
+                term=9,
+                start_date=datetime.date(2023, 1, 1),
+                end_date=datetime.date(2023, 12, 31),
+                group=Group["EPP"],
+            ),
+        ],
+    )
+
+    db_session.add_all([john, jane])
     db_session.commit()
 
     res = api.get("/api/members/123")
@@ -66,3 +83,11 @@ def test_members_api_show(api, db_session):
             "label": "Non-attached Members",
             "short_label": "Non-attached",
         }
+
+    res = api.get("/api/members/2")
+    assert res.status_code == 200
+    assert res.json["group"] == {
+        "code": "EPP",
+        "label": "European People’s Party",
+        "short_label": "EPP",
+    }
