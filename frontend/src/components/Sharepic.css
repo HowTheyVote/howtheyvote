@@ -1,0 +1,14 @@
+.sharepic {
+  width: 600px;
+  height: 315px;
+
+  /* Center vertically and horizontally */
+  margin: auto;
+
+  border-top: 4px solid var(--blue-darker);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    0 0 10px rgba(0, 0, 0, 0.25);
+
+  overflow: hidden;
+}

@@ -13,11 +13,7 @@ export default function MemberHeader({ member, size }: MemberHeaderProps) {
   return (
     <header className={bem("member-header", [size])}>
       <Wrapper className="member-header__wrapper">
-        <img
-          class="member-header__photo"
-          src={member.photo_url}
-          alt=""
-        />
+        <img class="member-header__photo" src={member.photo_url} alt="" />
         <div class="member-header__text">
           <h1
             class={`member-header__title ${size === "lg" ? "alpha" : "beta"}`}
