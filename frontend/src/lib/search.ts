@@ -1,12 +1,21 @@
 const SORT_ORDERS = ["relevance", "newest", "oldest"] as const;
-type SortOrder = (typeof SORT_ORDERS)[0];
-const DEFAULT_SORT_ORDER: SortOrder = "relevance";
-const FILTERS = [
+export type SortOrder = (typeof SORT_ORDERS)[0];
+export const DEFAULT_SORT_ORDER: SortOrder = "relevance";
+
+export const FILTERS = [
   "geo_areas",
   "responsible_committees",
   "date[lte]",
   "date[gte]",
-];
+] as const;
+
+export const FACETS = ["geo_areas", "responsible_committees"] as const;
+
+export const SORT_PARAMS = {
+  relevance: {},
+  newest: { sort_by: "date", sort_order: "desc" },
+  oldest: { sort_by: "date", sort_order: "asc" },
+} as const;
 
 export class SearchQuery {
   base: string;
