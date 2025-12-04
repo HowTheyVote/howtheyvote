@@ -130,6 +130,10 @@ export class SearchQuery {
     return clone;
   }
 
+  hasFilters() {
+    return Object.values(this.filters).some((values) => values.length > 0);
+  }
+
   setSort(order: string) {
     const clone = this.clone();
 
@@ -144,6 +148,14 @@ export class SearchQuery {
     const clone = this.clone();
     clone.page = page;
     return clone;
+  }
+
+  setNextPage() {
+    return this.setPage(this.page + 1);
+  }
+
+  setPrevPage() {
+    return this.setPage(this.page - 1);
   }
 }
 
