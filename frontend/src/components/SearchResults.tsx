@@ -4,6 +4,7 @@ import { SearchQuery } from "../lib/search";
 import Pagination from "./Pagination";
 import SearchActions from "./SearchActions";
 import Stack from "./Stack";
+import VoteCard from "./VoteCard";
 import VoteCards from "./VoteCards";
 
 type SearchResultsProps = {
@@ -29,7 +30,11 @@ function SearchResults({ url, data }: SearchResultsProps) {
       <VoteCards
         groupByDate={!searchQuery.q && !searchQuery.hasFilters()}
         votes={data.results}
-      />
+      >
+        {({ vote }: { vote: (typeof data)["results"][number] }) => (
+          <VoteCard key={vote.id} vote={vote} />
+        )}
+      </VoteCards>
 
       <Pagination
         next={data.has_next && searchQuery.setNextPage().toUrl()}

@@ -1,42 +1,54 @@
-import type { BaseVote } from "../api";
+import type { FunctionComponent } from "preact";
+import type { BaseVote, RelatedVote } from "../api";
 import { formatDate } from "../lib/dates";
 import Stack from "./Stack";
-import VoteCard from "./VoteCard";
 
 import "./VoteCards.css";
 
-type VoteCardsProps = {
-  votes: Array<BaseVote>;
+type VoteType = BaseVote | RelatedVote;
+
+type VoteCardsProps<T extends VoteType> = {
+  votes: Array<T>;
   groupByDate?: boolean;
+  children: FunctionComponent<{ vote: T }>;
 };
 
-type GroupProps = {
-  votes: Array<BaseVote>;
+type GroupProps<T extends VoteType> = {
+  votes: Array<T>;
   title?: string;
+  children: FunctionComponent<{ vote: T }>;
 };
 
-function Group({ votes, title }: GroupProps) {
+function Group<T extends VoteType>({
+  votes,
+  title,
+  children: Component,
+}: GroupProps<T>) {
   return (
     <Stack space="sm">
       {title && <h2 class="delta">{title}</h2>}
 
-      {votes.map((vote: BaseVote) => (
-        <VoteCard key={vote.id} vote={vote} />
+      {votes.map((vote: T) => (
+        <Component key={vote.id} vote={vote} />
       ))}
     </Stack>
   );
 }
 
-export default function VoteCards({ votes, groupByDate }: VoteCardsProps) {
+export default function VoteCards<T extends VoteType>({
+  votes,
+  groupByDate,
+  children,
+}: VoteCardsProps<T>) {
   if (!groupByDate) {
     return (
       <div class="vote-cards">
-        <Group votes={votes} />
+        <Group votes={votes}>{children}</Group>
       </div>
     );
   }
 
-  const groups = new Map<string, Array<BaseVote>>();
+  const groups = new Map<string, Array<T>>();
 
   for (const vote of votes) {
     const key = formatDate(new Date(vote.timestamp));
@@ -52,7 +64,9 @@ export default function VoteCards({ votes, groupByDate }: VoteCardsProps) {
   return (
     <div class="vote-cards">
       {Array.from(groups.entries()).map(([formattedDate, votes]) => (
-        <Group key={formattedDate} votes={votes} title={formattedDate} />
+        <Group key={formattedDate} votes={votes} title={formattedDate}>
+          {children}
+        </Group>
       ))}
     </div>
   );
