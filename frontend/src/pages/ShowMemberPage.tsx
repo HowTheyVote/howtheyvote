@@ -9,6 +9,7 @@ import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
 import MemberHeader from "../components/MemberHeader";
+import SearchForm from "../components/SearchForm";
 import SearchResults from "../components/SearchResults";
 import Stack from "../components/Stack";
 import Wrapper from "../components/Wrapper";
@@ -46,6 +47,7 @@ export const loader: Loader<ShowMemberPageData> = async (request: Request) => {
 
 export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
   const url = new URL(request.url, PUBLIC_URL);
+  const searchQuery = SearchQuery.fromUrl(url);
 
   const copyright = (
     <>
@@ -74,7 +76,10 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
           <MemberHeader member={data.member} />
           <div class="px">
             <Wrapper>
-              <SearchResults data={data.votes} url={url} thumb="position" />
+              <Stack space="xxs">
+                <SearchForm action={searchQuery.base} value={searchQuery.q} />
+                <SearchResults data={data.votes} url={url} thumb="position" />
+              </Stack>
             </Wrapper>
           </div>
         </Stack>
