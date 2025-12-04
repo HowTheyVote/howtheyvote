@@ -73,7 +73,10 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
     >
       <BaseLayout footer={footer}>
         <Stack>
-          <MemberHeader member={data.member} />
+          <MemberHeader
+            member={data.member}
+            size={searchQuery.page === 1 ? "lg" : undefined}
+          />
           <div class="px">
             <Wrapper>
               <Stack space="xxs">
