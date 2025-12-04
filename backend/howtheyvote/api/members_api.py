@@ -4,7 +4,7 @@ from flask import Blueprint, Response, abort, jsonify
 
 from ..db import Session
 from ..models import Member
-from .serializers import serialize_member
+from .serializers import serialize_group, serialize_member
 
 bp = Blueprint("members_api", __name__)
 
@@ -41,4 +41,11 @@ def show(member_id: int) -> Response:
     if not member:
         return abort(404)
 
-    return jsonify(serialize_member(member, today))
+    group = member.group_at(today) or member.group_memberships[-1].group
+
+    return jsonify(
+        {
+            **serialize_member(member, today),
+            "group": serialize_group(group),
+        }
+    )
