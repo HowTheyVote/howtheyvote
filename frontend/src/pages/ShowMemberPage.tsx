@@ -3,7 +3,7 @@ import {
   getMember,
   getMemberVotes,
   type Member,
-  type VotesQueryResponse,
+  type MemberVotesQueryResponse,
 } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
@@ -18,7 +18,7 @@ import type { Loader, Page } from "../lib/server";
 
 type ShowMemberPageData = {
   member: Member;
-  votes: VotesQueryResponse;
+  votes: MemberVotesQueryResponse;
 };
 
 export const loader: Loader<ShowMemberPageData> = async (request: Request) => {
@@ -74,7 +74,7 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
           <MemberHeader member={data.member} />
           <div class="px">
             <Wrapper>
-              <SearchResults data={data.votes} url={url} />
+              <SearchResults data={data.votes} url={url} thumb="position" />
             </Wrapper>
           </div>
         </Stack>
