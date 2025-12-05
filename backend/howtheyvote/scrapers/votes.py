@@ -546,7 +546,8 @@ class DocumentScraper(BeautifulSoupScraper):
     BS_PARSER = "lxml"
     BASE_URL = "https://www.europarl.europa.eu/doceo/document"
     PROCEDURE_URL_REGEX = re.compile(
-        r"^https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do"
+        # .secure necessary for compatibility with older sites
+        r"^https://oeil.(?:secure.)?europarl.europa.eu/oeil/popups/ficheprocedure.do"
     )
     TEXTS_ADOPTED_URL_REGEX = re.compile(r"^/doceo/document/TA-")
 
@@ -615,7 +616,7 @@ class DocumentScraper(BeautifulSoupScraper):
 
 class ProcedureScraper(BeautifulSoupScraper):
     BS_PARSER = "lxml"
-    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file"
+    BASE_URL = "https://oeil.europarl.europa.eu/oeil/en/procedure-file"
 
     TITLE_PREFIXES = ["Resolution on", "Motion"]
 

@@ -10,7 +10,7 @@ def test_oeil_procedure_url():
     url = oeil_procedure_url("2025/2024(INI)")
     assert (
         url
-        == "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2025/2024(INI)"
+        == "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2025/2024(INI)"
     )
 
 
