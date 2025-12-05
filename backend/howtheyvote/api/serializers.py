@@ -139,7 +139,7 @@ def serialize_oeil_subject(oeil_subject: OEILSubject) -> OEILSubjectDict:
     }
 
 
-class MemberDict(TypedDict):
+class BaseMemberDict(TypedDict):
     """Member of the European Parliament (MEP)"""
 
     id: Annotated[int, 118859]
@@ -152,12 +152,6 @@ class MemberDict(TypedDict):
     last_name: Annotated[str, "METSOLA"]
     """Last name"""
 
-    date_of_birth: Annotated[datetime.date | None, "1979-01-18"]
-    """Date of birth"""
-
-    terms: Annotated[list[int], [7, 8, 9]]
-    """List of parliamentary terms"""
-
     country: CountryDict
 
     group: GroupDict | None
@@ -168,6 +162,34 @@ class MemberDict(TypedDict):
 
     thumb_url: str
     """URL to a smaller, optimized variant of the official portrait photo"""
+
+
+def serialize_base_member(
+    member: Member,
+    date: datetime.date | datetime.datetime | None = None,
+) -> BaseMemberDict:
+    if not date:
+        date = datetime.date.today()
+
+    group = member.group_at(date)
+
+    return {
+        "id": member.id,
+        "first_name": member.first_name,
+        "last_name": member.last_name,
+        "country": serialize_country(member.country),
+        "group": serialize_group(group) if group else None,
+        "photo_url": member.photo_url(),
+        "thumb_url": member.photo_url(104),
+    }
+
+
+class MemberDict(BaseMemberDict):
+    date_of_birth: Annotated[datetime.date | None, "1979-01-18"]
+    """Date of birth"""
+
+    terms: Annotated[list[int], [7, 8, 9]]
+    """List of parliamentary terms"""
 
     email: str | None
     """Official email address"""
@@ -180,23 +202,13 @@ class MemberDict(TypedDict):
 
 
 def serialize_member(
-    member: Member, date: datetime.date | datetime.datetime | None = None
+    member: Member,
+    date: datetime.date | datetime.datetime | None = None,
 ) -> MemberDict:
-    if not date:
-        date = datetime.date.today()
-
-    group = member.group_at(date)
-
     return {
-        "id": member.id,
-        "first_name": member.first_name,
-        "last_name": member.last_name,
+        **serialize_base_member(member),
         "date_of_birth": member.date_of_birth,
         "terms": member.terms,
-        "country": serialize_country(member.country),
-        "group": serialize_group(group) if group else None,
-        "photo_url": member.photo_url(),
-        "thumb_url": member.photo_url(104),
         "email": member.email,
         "facebook": member.facebook,
         "twitter": member.twitter,
@@ -204,7 +216,7 @@ def serialize_member(
 
 
 class MemberVoteDict(TypedDict):
-    member: MemberDict
+    member: BaseMemberDict
     position: VotePosition
 
 
