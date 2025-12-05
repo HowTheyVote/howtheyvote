@@ -531,6 +531,24 @@ def test_procedure_scraper_multiple_responsible_committees(responses):
     assert fragment.data["responsible_committees"] == {"AFET", "BUDG"}
 
 
+def test_procedure_scraper_apostrophization(responses):
+    responses.get(
+        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/0377(NLE)",
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022_0377-nle.html"),
+    )
+
+    scraper = ProcedureScraper(
+        vote_id=155030, procedure_reference="2022/0377(NLE)", reference=None
+    )
+    fragment = scraper.run()
+    assert fragment.data["procedure_title"] == (
+        "EU/Brazil Agreement: modification of concessions"
+        " on all the tariff rate quotas included in"
+        " the EU Schedule CLXXV as a consequence of"
+        " the United Kingdom’s withdrawal from the European Union"
+    )
+
+
 def test_eurlex_procedure_scraper_eurovoc_concepts(responses):
     responses.get(
         "https://eur-lex.europa.eu/procedure/EN/2021_106",

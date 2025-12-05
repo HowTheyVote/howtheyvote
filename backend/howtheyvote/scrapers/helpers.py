@@ -76,6 +76,11 @@ def normalize_name(name: str) -> str:
     return unidecode(name.lower()).replace("-", " ")
 
 
+def apostrophize(text: str) -> str:
+    text = text.replace("`s", "’s")
+    return text.replace("´s", "’s")
+
+
 def parse_rcv_text(
     text: str, extract_english: bool = False
 ) -> tuple[str | None, str | None, str | None, str | None]:
@@ -134,6 +139,9 @@ def parse_rcv_text(
     else:
         description = None
 
+    if title is not None:
+        title = apostrophize(title)
+
     return (title, rapporteur, reference, description)
 
 
@@ -153,6 +161,7 @@ PROCEDURE_STAGE_MAPPING = {
 
 def parse_dlv_title(title: str) -> tuple[str, ProcedureStage | None]:
     title = title.strip()
+    title = apostrophize(title)
 
     for stage_pattern, stage in PROCEDURE_STAGE_MAPPING.items():
         pattern = r"(?P<title>.*)\s+" + stage_pattern
