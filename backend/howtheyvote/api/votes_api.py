@@ -46,11 +46,11 @@ from .serializers import (
     VoteStatsByGroupDict,
     VoteStatsDict,
     serialize_amendment_author,
+    serialize_base_member,
     serialize_base_vote,
     serialize_base_vote_with_member_position,
     serialize_country,
     serialize_group,
-    serialize_member,
 )
 from .util import one_of
 
@@ -685,7 +685,7 @@ def _format_member_votes(vote: Vote, members_by_id: MembersById) -> list[MemberV
 
         member_votes.append(
             {
-                "member": serialize_member(member, vote.timestamp.date()),
+                "member": serialize_base_member(member, vote.timestamp.date()),
                 "position": position,
             }
         )
