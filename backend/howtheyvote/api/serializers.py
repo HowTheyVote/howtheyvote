@@ -191,6 +191,9 @@ class MemberDict(BaseMemberDict):
     terms: Annotated[list[int], [7, 8, 9]]
     """List of parliamentary terms"""
 
+    sharepic_url: str
+    """URL to a share picture for the MEP"""
+
     email: str | None
     """Official email address"""
 
@@ -209,6 +212,7 @@ def serialize_member(
         **serialize_base_member(member),
         "date_of_birth": member.date_of_birth,
         "terms": member.terms,
+        "sharepic_url": member.sharepic_url,
         "email": member.email,
         "facebook": member.facebook,
         "twitter": member.twitter,
