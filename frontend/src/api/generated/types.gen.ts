@@ -238,6 +238,10 @@ export type Member = BaseMember & {
      */
     terms: Array<(number)>;
     /**
+     * URL to a share picture for the MEP
+     */
+    sharepic_url: string;
+    /**
      * Official email address
      */
     email?: string;
