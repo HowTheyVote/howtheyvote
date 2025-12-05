@@ -1,5 +1,0 @@
-.vote-cards > * + * {
-  margin-top: var(--space-lg);
-  padding-top: var(--space-lg);
-  border-top: 1px solid var(--gray-light);
-}

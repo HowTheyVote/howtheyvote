@@ -404,6 +404,30 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     }
 
 
+class BaseVoteWithMemberPositionDict(BaseVoteDict):
+    position: VotePosition
+
+
+def serialize_base_vote_with_member_position(
+    vote: Vote,
+    member_id: int,
+) -> BaseVoteWithMemberPositionDict:
+    position = next(
+        (mv.position for mv in vote.member_votes if mv.web_id == member_id),
+        None,
+    )
+
+    if not position:
+        raise Exception(
+            f"No vote position available for member {member_id} and vote {vote.id}"
+        )
+
+    return {
+        **serialize_base_vote(vote),
+        "position": position,
+    }
+
+
 class VoteDict(BaseVoteDict):
     procedure: ProcedureDict | None
     """Information about the legislative procedure to which this vote belongs"""
@@ -481,19 +505,20 @@ class FacetOptionDict(TypedDict):
     count: int
 
 
-class WithFacetsDict(TypedDict):
+class QueryResponseWithFacetsDict(QueryResponseDict):
     facets: dict[str, list[FacetOptionDict]]
 
 
 # Using standard inheritance instead of generics as generics are a little
 # difficult to represent in OpenAPI specs/JSONSchema
-class VotesQueryResponseDict(QueryResponseDict):
+class VotesQueryResponseDict(QueryResponseWithFacetsDict):
     results: list[BaseVoteDict]
     """Votes"""
 
 
-class VotesQueryResponseWithFacetsDict(VotesQueryResponseDict, WithFacetsDict):
-    pass
+class MemberVotesQueryResponseDict(QueryResponseWithFacetsDict):
+    results: list[BaseVoteWithMemberPositionDict]
+    """Votes"""
 
 
 class PlenarySessionsQueryResponseDict(QueryResponseDict):

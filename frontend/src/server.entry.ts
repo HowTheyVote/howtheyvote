@@ -10,6 +10,10 @@ import {
   ShowAmendmentVotesPage,
   loader as showAmendmentVotesLoader,
 } from "./pages/ShowAmendmentVotesPage";
+import {
+  ShowMemberPage,
+  loader as showMemberLoader,
+} from "./pages/ShowMemberPage";
 import { ShowVotePage, loader as showVoteLoader } from "./pages/ShowVotePage";
 import {
   VoteSharepicPage,
@@ -34,6 +38,7 @@ app.registerPage(
   showAmendmentVotesLoader,
 );
 app.registerPage("/votes/:id/sharepic", VoteSharepicPage, voteSharepicLoader);
+app.registerPage("/members/:id", ShowMemberPage, showMemberLoader);
 app.registerPage(["/developers", "/developers/*"], DevelopersPage);
 app.registerPage("/imprint", ImprintPage);
 app.registerPage("/about", AboutPage, aboutLoader);

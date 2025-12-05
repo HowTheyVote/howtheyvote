@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app
 from flask.typing import ResponseReturnValue
 
+from .members_api import bp as members_api
 from .openapi_spec import spec
 from .sessions_api import bp as sessions_bp
 from .static_api import bp as static_bp
@@ -13,6 +14,7 @@ bp.register_blueprint(static_bp)
 bp.register_blueprint(votes_bp)
 bp.register_blueprint(sessions_bp)
 bp.register_blueprint(stats_bp)
+bp.register_blueprint(members_api)
 
 
 @bp.route("/")

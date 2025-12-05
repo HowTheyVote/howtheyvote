@@ -76,7 +76,7 @@ export const HomePage: Page<HomePageData> = ({ data }) => {
               Find out how Members of the European Parliament vote.
             </h1>
 
-            <SearchForm style="dark" />
+            <SearchForm action="/votes" size="lg" style="dark" />
 
             <div class="home-page__hint">
               Try <a href="/votes?q=Ukraine">Ukraine</a>,{" "}

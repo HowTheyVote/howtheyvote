@@ -204,10 +204,10 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
 function Copyright({ vote }: { vote: Vote }) {
   let copyright = (
     <>
-      {"MEP photos: © European Union 2019 · "}
+      {`MEP photos: © European Union 2019-${new Date().getFullYear()} · `}
       <a
         rel="noopener noreferrer"
-        href="https://www.europarl.europa.eu/meps/en/directory/9"
+        href="https://www.europarl.europa.eu/meps/en/directory"
       >
         Source: EP
       </a>

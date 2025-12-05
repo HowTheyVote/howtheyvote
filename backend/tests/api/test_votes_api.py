@@ -21,7 +21,7 @@ from howtheyvote.store import index_search
 
 
 @pytest.fixture()
-def records(db_session):
+def records(db_session, search_index):
     john = Member(
         id=1,
         first_name="John",
@@ -65,11 +65,12 @@ def records(db_session):
         timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
         order=1,
         title="Should we have pizza for lunch?",
-        description="Am 123",
+        description="Résolution (ensemble du texte)",
         amendment_number=1,
         amendment_subject="$",
         amendment_authors=[AmendmentAuthorOriginalText()],
         procedure_reference="1234/2025(COD)",
+        is_main=True,
         member_votes=[
             MemberVote(
                 web_id=1,
@@ -87,9 +88,10 @@ def records(db_session):
 
     db_session.add_all([john, jane, vote])
     db_session.commit()
+    index_search(Vote, [vote])
 
 
-def test_votes_api_index(db_session, api):
+def test_votes_api_index(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -116,6 +118,7 @@ def test_votes_api_index(db_session, api):
 
     db_session.add_all([one, two, amendment])
     db_session.commit()
+    index_search(Vote, [one, two])
 
     res = api.get("/api/votes")
     assert res.json["total"]
@@ -155,7 +158,7 @@ def test_votes_api_index(db_session, api):
     assert res.json["results"][0]["display_title"] == "Vote One"
 
 
-def test_votes_api_index_empty_title(db_session, api):
+def test_votes_api_index_empty_title(db_session, search_index, api):
     empty_title = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -178,6 +181,7 @@ def test_votes_api_index_empty_title(db_session, api):
 
     db_session.add_all([empty_title, non_empty_vote_title, non_empty_procedure_title])
     db_session.commit()
+    index_search(Vote, [empty_title, non_empty_vote_title, non_empty_procedure_title])
 
     res = api.get("/api/votes")
     assert len(res.json["results"]) == 2
@@ -185,7 +189,7 @@ def test_votes_api_index_empty_title(db_session, api):
     assert res.json["results"][1]["display_title"] == "Vote title"
 
 
-def test_votes_api_index_sort(db_session, api):
+def test_votes_api_index_sort(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -206,6 +210,7 @@ def test_votes_api_index_sort(db_session, api):
 
     db_session.add_all([one, two])
     db_session.commit()
+    index_search(Vote, [one, two])
 
     # By default, results are sorted by timestamp in descending order
     res = api.get("/api/votes")
@@ -248,7 +253,7 @@ def test_votes_api_index_sort(db_session, api):
     assert res.json["total"] == 2
 
 
-def test_votes_api_index_filters(db_session, api):
+def test_votes_api_index_filters(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -275,6 +280,7 @@ def test_votes_api_index_filters(db_session, api):
 
     db_session.add_all([one, two, three])
     db_session.commit()
+    index_search(Vote, [one, two, three])
 
     res = api.get("/api/votes", query_string={"geo_areas": "DEU"})
     assert res.json["total"] == 1
@@ -301,7 +307,7 @@ def test_votes_api_index_filters(db_session, api):
     assert res.json["total"] == 3
 
 
-def test_votes_api_search(db_session, search_index, api):
+def test_votes_api_index_search(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -355,7 +361,7 @@ def test_votes_api_search(db_session, search_index, api):
     assert res.json["total"] == 2
 
 
-def test_votes_api_search_references(db_session, search_index, api):
+def test_votes_api_index_search_references(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 9, 0, 0),
@@ -400,7 +406,7 @@ def test_votes_api_search_references(db_session, search_index, api):
     assert res.json["total"] == 0
 
 
-def test_votes_api_search_press_release(db_session, search_index, api):
+def test_votes_api_index_search_press_release(db_session, search_index, api):
     vote = Vote(
         id=178285,
         timestamp=datetime.datetime(2025, 1, 1, 0, 0, 0),
@@ -423,125 +429,7 @@ def test_votes_api_search_press_release(db_session, search_index, api):
     assert res.json["results"][0]["id"] == 178285
 
 
-def test_votes_api_search_sort(db_session, search_index, api):
-    one = Vote(
-        id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
-        title="Vote One",
-        reference="A9-0043/2024",
-        procedure_reference="2022/0362(NLE)",
-        is_main=True,
-    )
-
-    two = Vote(
-        id=2,
-        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
-        title="Vote Two",
-        reference="A9-0282/2023",
-        procedure_reference="2022/2148(INI)",
-        is_main=True,
-    )
-
-    db_session.add_all([one, two])
-    db_session.commit()
-    index_search(Vote, [one, two])
-
-    # If all results are equally relevant, results are sorted by timestamp in descending order
-    res = api.get("/api/votes/search", query_string={"q": "vote"})
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 2
-    assert res.json["results"][1]["id"] == 1
-
-    # By default, results are sorted by relevance
-    res = api.get("/api/votes/search", query_string={"q": "vote one"})
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 1
-    assert res.json["results"][1]["id"] == 2
-
-    # Sorting can be controlled via query params
-    res = api.get(
-        "/api/votes/search",
-        query_string={
-            "q": "vote",
-            "sort_by": "date",
-            "sort_order": "asc",
-        },
-    )
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 1
-    assert res.json["results"][1]["id"] == 2
-
-    res = api.get(
-        "/api/votes/search",
-        query_string={
-            "q": "vote",
-            "sort_by": "date",
-            "sort_order": "desc",
-        },
-    )
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 2
-    assert res.json["results"][1]["id"] == 1
-
-
-def test_votes_api_search_filters(db_session, search_index, api):
-    one = Vote(
-        id=1,
-        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
-        title="Vote One",
-        geo_areas=[Country["DEU"]],
-        is_main=True,
-    )
-
-    two = Vote(
-        id=2,
-        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
-        title="Vote Two",
-        geo_areas=[Country["FRA"]],
-        is_main=True,
-    )
-
-    three = Vote(
-        id=3,
-        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
-        title="Vote Three",
-        geo_areas=[Country["ITA"]],
-        is_main=True,
-    )
-
-    db_session.add_all([one, two, three])
-    db_session.commit()
-    index_search(Vote, [one, two, three])
-
-    res = api.get("/api/votes/search", query_string={"geo_areas": "DEU"})
-    assert res.json["total"] == 1
-    assert res.json["results"][0]["id"] == 1
-
-    res = api.get("/api/votes/search", query_string={"geo_areas": ["DEU", "ITA"]})
-    assert res.json["total"] == 2
-    assert res.json["results"][0]["id"] == 1
-    assert res.json["results"][1]["id"] == 3
-
-    res = api.get("/api/votes/search", query_string={"date": "2024-01-01"})
-    assert res.json["total"] == 1
-    assert res.json["results"][0]["id"] == 1
-
-    res = api.get("/api/votes/search", query_string={"date[gte]": "2024-02-01"})
-    assert res.json["total"] == 1
-    assert res.json["results"][0]["id"] == 2
-
-    res = api.get(
-        "/api/votes/search",
-        query_string={"geo_areas": "DEU", "date[gte]": "2024-02-01"},
-    )
-    assert res.json["total"] == 0
-
-    # Ignores invalid filter values
-    res = api.get("/api/votes/search", query_string={"geo_areas": "FOO"})
-    assert res.json["total"] == 3
-
-
-def test_votes_api_search_facets(db_session, search_index, api):
+def test_votes_api_index_facets(db_session, search_index, api):
     one = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -633,7 +521,7 @@ def test_votes_api_search_facets(db_session, search_index, api):
     }
 
 
-def test_votes_api_search_special_chars(db_session, search_index, api):
+def test_votes_api_index_search_special_chars(db_session, search_index, api):
     vote = Vote(
         id=1,
         timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
@@ -656,6 +544,57 @@ def test_votes_api_search_special_chars(db_session, search_index, api):
     assert res.json["results"][0]["id"] == 1
 
 
+def test_votes_api_member_votes_index(records, api):
+    res = api.get("/api/members/1/votes")
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][0]["position"] == "FOR"
+
+    res = api.get("/api/members/2/votes")
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][0]["position"] == "AGAINST"
+
+
+def test_votes_api_member_votes_index_filter(db_session, search_index, api):
+    member = Member(
+        id=1,
+        first_name="John",
+        last_name="Doe",
+        country=Country["FRA"],
+        terms=[9],
+    )
+
+    vote_1 = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        is_main=True,
+        title="Vote 1",
+        member_votes=[
+            MemberVote(web_id=member.id, position=VotePosition.FOR),
+        ],
+    )
+
+    vote_2 = Vote(
+        id=2,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        is_main=True,
+        title="Vote 2",
+        member_votes=[],
+    )
+
+    db_session.add_all([member, vote_1, vote_2])
+    db_session.commit()
+    index_search(Vote, [vote_1, vote_2])
+
+    res = api.get("/api/members/1/votes")
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][0]["display_title"] == "Vote 1"
+    assert res.json["results"][0]["position"] == "FOR"
+
+
 def test_votes_api_show(records, db_session, api):
     fragment = Fragment(
         model="Vote",
@@ -674,11 +613,11 @@ def test_votes_api_show(records, db_session, api):
 
     expected = {
         "id": 1,
-        "is_main": False,
+        "is_main": True,
         "display_title": "Should we have pizza for lunch?",
         "timestamp": "2023-01-01T00:00:00",
         "reference": None,
-        "description": "Am 123",
+        "description": "Résolution (ensemble du texte)",
         "amendment_subject": "$",
         "amendment_number": "1",
         "amendment_authors": [
@@ -695,7 +634,7 @@ def test_votes_api_show(records, db_session, api):
             "stage": None,
         },
         "facts": None,
-        "sharepic_url": None,
+        "sharepic_url": "/api/static/votes/sharepic-1.png",
         "stats": {
             "total": {
                 "FOR": 1,

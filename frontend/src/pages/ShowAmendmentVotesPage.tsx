@@ -1,10 +1,11 @@
 import { getVote, type Vote } from "../api";
 import AmendmentHeader from "../components/AmendmentHeader";
-import AmendmentVoteCards from "../components/AmendmentVoteCards";
+import AmendmentVoteCard from "../components/AmendmentVoteCard";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Callout from "../components/Callout";
 import Stack from "../components/Stack";
+import VoteCards from "../components/VoteCards";
 import Wrapper from "../components/Wrapper";
 import { HTTPException } from "../lib/http";
 import type { Loader, Page, Request } from "../lib/server";
@@ -43,7 +44,11 @@ export const ShowAmendmentVotesPage: Page<Vote> = ({ data }) => {
           </Wrapper>
           <Wrapper>
             <div className="px">
-              <AmendmentVoteCards votes={data.related} />
+              <VoteCards votes={data.related}>
+                {({ vote }: { vote: (typeof data.related)[number] }) => (
+                  <AmendmentVoteCard vote={vote} />
+                )}
+              </VoteCards>
             </div>
           </Wrapper>
         </Stack>

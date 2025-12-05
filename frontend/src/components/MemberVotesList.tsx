@@ -39,6 +39,7 @@ function Item({ member, position }: ItemProps) {
       key={member.id}
       title={`${member.first_name} ${member.last_name}`}
       subtitle={subtitle}
+      link={`/members/${member.id}`}
       avatar={member.thumb_url && <Avatar url={member.thumb_url} />}
       thumb={<Thumb position={position} style="circle" />}
     />
