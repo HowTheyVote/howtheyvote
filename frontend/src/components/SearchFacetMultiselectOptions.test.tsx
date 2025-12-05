@@ -142,4 +142,92 @@ describe("SearchFacetMultiselectOptions", () => {
     await userEvent.click(screen.getByRole("button", { name: "Show 95 more" }));
     screen.getByRole("checkbox", { name: /Option 50/, checked: true });
   });
+
+  it("has search input if there are many options", async () => {
+    const { rerender } = render(
+      <SearchFacetMultiselectOptions
+        field="foo"
+        options={[
+          {
+            value: "CONT",
+            label: "Budgetary Control",
+            short_label: "CONT",
+            count: 1,
+          },
+          {
+            value: "ENVI",
+            label: "Environment, Climate and Food Safety",
+            short_label: "ENVI",
+            count: 2,
+          },
+          {
+            value: "LIBE",
+            label: "Civil Liberties, Justice and Home Affairs",
+            short_label: "LIBE",
+            count: 3,
+          },
+        ]}
+      />,
+    );
+
+    assert.strictEqual(screen.queryByRole("searchbox"), null);
+
+    rerender(
+      <SearchFacetMultiselectOptions
+        field="foo"
+        options={[
+          {
+            value: "CONT",
+            label: "Budgetary Control",
+            short_label: "CONT",
+            count: 1,
+          },
+          {
+            value: "ENVI",
+            label: "Environment, Climate and Food Safety",
+            short_label: "ENVI",
+            count: 2,
+          },
+          {
+            value: "LIBE",
+            label: "Civil Liberties, Justice and Home Affairs",
+            short_label: "LIBE",
+            count: 3,
+          },
+          {
+            value: "ECON",
+            label: "Economic and Monetary Affairs",
+            short_label: "ECON",
+            count: 4,
+          },
+          {
+            value: "AFET",
+            label: "Foreign Affairs",
+            short_label: "AFET",
+            count: 5,
+          },
+          { value: "BUDG", label: "Budgets", short_label: "BUDG", count: 6 },
+        ]}
+      />,
+    );
+
+    const search = screen.getByRole("searchbox", { name: "Search options" });
+
+    await userEvent.type(search, "budget");
+    assert.strictEqual(screen.getAllByRole("checkbox").length, 2);
+    screen.getByRole("checkbox", { name: "Budgets (BUDG) (6 results)" });
+    screen.getByRole("checkbox", {
+      name: "Budgetary Control (CONT) (1 results)",
+    });
+
+    await userEvent.clear(search);
+    await userEvent.type(search, "afet");
+    assert.strictEqual(screen.getAllByRole("checkbox").length, 2);
+    screen.getByRole("checkbox", {
+      name: "Foreign Affairs (AFET) (5 results)",
+    });
+    screen.getByRole("checkbox", {
+      name: "Environment, Climate and Food Safety (ENVI) (2 results)",
+    });
+  });
 });

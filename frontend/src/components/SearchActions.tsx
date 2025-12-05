@@ -1,28 +1,24 @@
 import { useState } from "preact/hooks";
 import type { FacetOption } from "../api";
+import { SearchQuery } from "../lib/search";
 import Button from "./Button";
+import Icon from "./Icon";
+import SearchFacetDateTag from "./SearchFacetDateTag";
+import SearchFacetMultiselectTags from "./SearchFacetMultiselectTags";
 import SearchFiltersDialog from "./SearchFiltersDialog";
 import SortSelect from "./SortSelect";
 
 import "./SearchActions.css";
-import Icon from "./Icon";
 
 type SearchActionsProps = {
+  url: string;
   total: number;
-  query: string;
   facets: Record<string, FacetOption[]>;
-  filters: Record<string, string[]>;
-  sort: string;
 };
 
-function SearchActions({
-  total,
-  query,
-  facets,
-  filters,
-  sort,
-}: SearchActionsProps) {
+function SearchActions({ url, total, facets }: SearchActionsProps) {
   const [isFiltersDialogOpen, setIsFiltersDialogOpen] = useState(false);
+  const searchQuery = SearchQuery.fromUrl(new URL(url));
 
   return (
     <div class="search-actions">
@@ -39,16 +35,36 @@ function SearchActions({
         <SearchFiltersDialog
           open={isFiltersDialogOpen}
           onOpenChange={setIsFiltersDialogOpen}
-          query={query}
-          sort={sort}
           facets={facets}
-          filters={filters}
+          searchQuery={searchQuery}
         />
       </div>
       <label class="search-actions__sort">
         {"Sort by: "}
-        <SortSelect value={sort} />
+        <SortSelect searchQuery={searchQuery} />
       </label>
+      <ul class="search-actions__facet-tags" aria-label="Active filters">
+        <SearchFacetDateTag
+          searchQuery={searchQuery}
+          id="date[gte]"
+          prefix="From"
+        />
+        <SearchFacetDateTag
+          searchQuery={searchQuery}
+          id="date[lte]"
+          prefix="Until"
+        />
+        <SearchFacetMultiselectTags
+          searchQuery={searchQuery}
+          id="geo_areas"
+          options={facets.geo_areas}
+        />
+        <SearchFacetMultiselectTags
+          searchQuery={searchQuery}
+          id="responsible_committees"
+          options={facets.responsible_committees}
+        />
+      </ul>
     </div>
   );
 }

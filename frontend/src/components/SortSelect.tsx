@@ -1,23 +1,25 @@
+import type { SearchQuery } from "../lib/search";
 import Select from "./Select";
 
 type SortSelectProps = {
-  value?: string;
+  searchQuery: SearchQuery;
 };
 
-export default function SortSelect({ value }: SortSelectProps) {
+export default function SortSelect({ searchQuery }: SortSelectProps) {
+  // Always navigate to first page after changing sort order
+  searchQuery = searchQuery.setPage(1);
+
   return (
     <Select
-      value={value}
+      value={searchQuery.sort}
       options={{
         relevance: "Relevance",
         newest: "Newest first",
         oldest: "Oldest first",
       }}
       onChange={(event) => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const value = event.currentTarget.value;
-        searchParams.set("sort", value);
-        window.location.search = searchParams.toString();
+        const url = searchQuery.setSort(event.currentTarget.value).toUrl();
+        window.location.href = url;
       }}
     />
   );

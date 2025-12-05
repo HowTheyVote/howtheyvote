@@ -1,9 +1,11 @@
 .search-actions {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
   align-items: center;
   font-size: var(--text-sm);
-  gap: var(--space);
+  column-gap: var(--space);
+  row-gap: var(--space-xs);
   color: var(--color-text-light);
 }
 
@@ -17,6 +19,18 @@
 
 .search-actions__toggle {
   color: inherit;
+}
+
+.search-actions__facet-tags {
+  display: flex;
+  width: 100%;
+  gap: var(--space-xxs);
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.search-actions__facet-tags:empty {
+  display: none;
 }
 
 @media screen and (min-width: 720px) {

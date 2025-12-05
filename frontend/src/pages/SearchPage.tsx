@@ -8,11 +8,12 @@ import SearchForm from "../components/SearchForm";
 import Stack from "../components/Stack";
 import VoteCards from "../components/VoteCards";
 import Wrapper from "../components/Wrapper";
-import { allQueryValues, firstQueryValue, redirect } from "../lib/http";
+import { PUBLIC_URL } from "../config";
+import { redirect } from "../lib/http";
 import { Island } from "../lib/islands";
 import { getLogger } from "../lib/logging";
+import { SearchQuery } from "../lib/search";
 import type { Loader, Page, Request } from "../lib/server";
-import { oneOf } from "../lib/validation";
 
 const log = getLogger();
 
@@ -22,93 +23,47 @@ const SORT_PARAMS = {
   oldest: { sort_by: "date", sort_order: "asc" },
 } as const;
 
-const FILTER_FIELDS = [
-  "geo_areas",
-  "responsible_committees",
-  "date[gte]",
-  "date[lte]",
-] as const;
-
-type SortOptions = "relevance" | "newest" | "oldest";
-
 type SearchPageData = VotesQueryResponseWithFacets & {
-  query: string;
-  sort: SortOptions;
-  filters: Record<string, string[]>;
+  searchQuery: SearchQuery;
 };
 
 export const loader: Loader<SearchPageData> = async (request: Request) => {
-  const q = firstQueryValue(request.query, "q") || "";
-
-  const page = Number.parseInt(
-    firstQueryValue(request.query, "page") || "1",
-    10,
-  );
-
-  const sort = oneOf(
-    firstQueryValue(request.query, "sort") || "",
-    ["relevance", "newest", "oldest"] as const,
-    "relevance",
-  );
-
-  const filters = Object.fromEntries(
-    FILTER_FIELDS.map((field) => [
-      field,
-      allQueryValues(request.query, field),
-    ]).filter(([_, values]) => values.length > 0),
-  );
+  const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
   const { data } = await searchVotes({
     query: {
-      q,
-      page,
+      q: searchQuery.q,
+      page: searchQuery.page,
       facets: ["geo_areas", "responsible_committees"],
-      ...filters,
-      ...SORT_PARAMS[sort],
+      ...searchQuery.filters,
+      ...SORT_PARAMS[searchQuery.sort],
     },
   });
 
-  if (!request.isBot && q) {
+  if (!request.isBot && searchQuery.q) {
     log.info({
       msg: "Handling search request",
       // Apply some basic normalization to make log aggregation easier
-      query: q.toLowerCase().replace(/\s+/, " "),
+      query: searchQuery.q.toLowerCase().replace(/\s+/, " "),
     });
   }
 
+  // This is a shortcut for power users. If a user searches for a resolution/report reference,
+  // and there is only a single (main) vote for that reference, we redirect to that vote.
   if (
     data.results.length === 1 &&
-    data.results[0].reference === request.query.q
+    data.results[0].reference === searchQuery.q
   ) {
     redirect(`/votes/${data.results[0].id}`);
   }
 
-  return { ...data, query: q, sort, filters };
+  return { ...data, searchQuery };
 };
 
-function pageUrl(data: SearchPageData, page: number): string {
-  const params = new URLSearchParams();
+export const SearchPage: Page<SearchPageData> = ({ data, request }) => {
+  const url = new URL(request.url, PUBLIC_URL);
+  const { searchQuery } = data;
 
-  if (data.query !== "") {
-    params.set("q", data.query);
-  }
-
-  for (const [field, values] of Object.entries(data.filters)) {
-    for (const value of values) {
-      params.append(field, value);
-    }
-  }
-
-  params.set("sort", data.sort);
-
-  if (page > 1) {
-    params.set("page", page.toString());
-  }
-
-  return `/votes?${params.toString()}`;
-}
-
-export const SearchPage: Page<SearchPageData> = ({ data }) => {
   return (
     <App title={"All Votes"}>
       <BaseLayout>
@@ -116,31 +71,37 @@ export const SearchPage: Page<SearchPageData> = ({ data }) => {
           <Hero
             title="All Votes"
             text="Explore recent votes or search our database by subject."
-            action={<SearchForm style="elevated" value={data.query} />}
+            action={<SearchForm style="elevated" value={searchQuery.q} />}
           />
           <div class="px">
             <Wrapper className="search-page">
               <Stack space="lg">
                 <Island>
                   <SearchActions
+                    // Pass URL as string because all island props need to be JSON serializable
+                    url={url.toString()}
                     total={data.total}
-                    query={data.query}
                     facets={data.facets}
-                    filters={data.filters}
-                    sort={data.sort}
                   />
                 </Island>
 
                 <VoteCards
                   groupByDate={
-                    !data.query && Object.keys(data.filters).length === 0
+                    !searchQuery.q &&
+                    Object.keys(searchQuery.filters).length === 0
                   }
                   votes={data.results}
                 />
 
                 <Pagination
-                  next={data.has_next && pageUrl(data, data.page + 1)}
-                  prev={data.has_prev && pageUrl(data, data.page - 1)}
+                  next={
+                    data.has_next &&
+                    searchQuery.setPage(searchQuery.page + 1).toUrl()
+                  }
+                  prev={
+                    data.has_prev &&
+                    searchQuery.setPage(searchQuery.page - 1).toUrl()
+                  }
                 />
               </Stack>
             </Wrapper>

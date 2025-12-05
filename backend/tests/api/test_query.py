@@ -311,16 +311,19 @@ def test_search_query_handle_facets():
         {
             "value": "DEU",
             "label": "Germany",
+            "short_label": None,
             "count": 2,
         },
         {
             "value": "FRA",
             "label": "France",
+            "short_label": None,
             "count": 1,
         },
         {
             "value": "ITA",
             "label": "Italy",
+            "short_label": None,
             "count": 1,
         },
     ]
@@ -339,16 +342,19 @@ def test_search_query_handle_facets_filters():
             {
                 "value": "DEU",
                 "label": "Germany",
+                "short_label": None,
                 "count": 2,
             },
             {
                 "value": "FRA",
                 "label": "France",
+                "short_label": None,
                 "count": 1,
             },
             {
                 "value": "ITA",
                 "label": "Italy",
+                "short_label": None,
                 "count": 1,
             },
         ],
@@ -356,6 +362,7 @@ def test_search_query_handle_facets_filters():
             {
                 "value": "AFCO",
                 "label": "Constitutional Affairs",
+                "short_label": "AFCO",
                 "count": 1,
             },
         ],
@@ -373,11 +380,13 @@ def test_search_query_handle_facets_filters():
             {
                 "value": "DEU",
                 "label": "Germany",
+                "short_label": None,
                 "count": 1,
             },
             {
                 "value": "FRA",
                 "label": "France",
+                "short_label": None,
                 "count": 1,
             },
         ],
@@ -385,11 +394,13 @@ def test_search_query_handle_facets_filters():
             {
                 "value": "AFCO",
                 "label": "Constitutional Affairs",
+                "short_label": "AFCO",
                 "count": 1,
             },
             {
                 "value": "IMCO",
                 "label": "Internal Market and Consumer Protection",
+                "short_label": "IMCO",
                 "count": 1,
             },
         ],
@@ -410,16 +421,19 @@ def test_search_query_handle_facets_selected():
             {
                 "value": "DEU",
                 "label": "Germany",
+                "short_label": None,
                 "count": 1,
             },
             {
                 "value": "FRA",
                 "label": "France",
+                "short_label": None,
                 "count": 1,
             },
             {
                 "value": "ITA",
                 "label": "Italy",
+                "short_label": None,
                 "count": 0,
             },
         ],
@@ -427,11 +441,13 @@ def test_search_query_handle_facets_selected():
             {
                 "value": "IMCO",
                 "label": "Internal Market and Consumer Protection",
+                "short_label": "IMCO",
                 "count": 1,
             },
             {
                 "value": "AFCO",
                 "label": "Constitutional Affairs",
+                "short_label": "AFCO",
                 "count": 0,
             },
         ],
@@ -450,16 +466,19 @@ def test_search_query_handle_facets_selected():
             {
                 "value": "DEU",
                 "label": "Germany",
+                "short_label": None,
                 "count": 1,
             },
             {
                 "value": "FRA",
                 "label": "France",
+                "short_label": None,
                 "count": 1,
             },
             {
                 "value": "ITA",
                 "label": "Italy",
+                "short_label": None,
                 "count": 0,
             },
         ],
@@ -467,11 +486,13 @@ def test_search_query_handle_facets_selected():
             {
                 "value": "IMCO",
                 "label": "Internal Market and Consumer Protection",
+                "short_label": "IMCO",
                 "count": 1,
             },
             {
                 "value": "AFCO",
                 "label": "Constitutional Affairs",
+                "short_label": "AFCO",
                 "count": 0,
             },
         ],
