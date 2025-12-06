@@ -45,12 +45,13 @@ class OEILSummaryPipeline(BasePipeline):
         log.info("Scrapping OEIL summaries")
 
         for vote in votes:
-            if not vote.reference:
+            if not vote.reference and not vote.procedure_reference:
                 continue
             try:
                 scraper = OEILSummaryIDScraper(
                     vote_id=vote.id,
                     reference=vote.reference,
+                    procedure_reference=vote.procedure_reference,
                     day_of_vote=vote.date,
                 )
                 writer.add(scraper.run())

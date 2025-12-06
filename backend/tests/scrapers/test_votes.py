@@ -667,7 +667,8 @@ def test_oeil_summary_id_scraper_run(responses):
     scraper = OEILSummaryIDScraper(
         vote_id=127974,
         day_of_vote=datetime.date(2021, 2, 11),
-        reference="2021/2540(RSP)",
+        reference="A9-0115/2021",
+        procedure_reference="2021/2540(RSP)",
     )
     fragment = scraper.run()
     assert fragment.group_key == 127974
@@ -683,7 +684,8 @@ def test_oeil_summary_id_scraper_run_no_summary(responses):
     scraper = OEILSummaryIDScraper(
         vote_id=131503,
         day_of_vote=datetime.date(2021, 5, 19),
-        reference="2020/2042(INI)",
+        reference="A9-0115/2021",
+        procedure_reference="2020/2042(INI)",
     )
     assert scraper.run() is None
 

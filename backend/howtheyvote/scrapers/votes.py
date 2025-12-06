@@ -925,17 +925,18 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
         self,
         vote_id: int,
         day_of_vote: date,
-        reference: str,
+        reference: str | None,
+        procedure_reference: str | None,
         request_cache: RequestCache | None = None,
     ):
         super().__init__(request_cache=request_cache)
         self.day_of_vote = day_of_vote
         self.vote_id = vote_id
         self.reference = reference
+        self.procedure_reference = procedure_reference
 
     def _url(self) -> str:
-        ref = f"?reference={self.reference}"
-        return f"{self.BASE_URL}{ref}"
+        return f"{self.BASE_URL}?reference={self.procedure_reference or self.reference}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Fragment:
         sections = doc.select(".es_product-section")
