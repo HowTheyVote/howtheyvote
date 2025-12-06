@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import type { Country, Group, Member, MemberVote } from "../api";
+import type { BaseMember, Country, Group, MemberVote } from "../api";
 import { normalize } from "../lib/normalization";
 import Avatar from "./Avatar";
 import Button from "./Button";
@@ -21,7 +21,7 @@ type MemberVotesListProps = {
 };
 
 type ItemProps = {
-  member: Member;
+  member: BaseMember;
   position: MemberVote["position"];
 };
 

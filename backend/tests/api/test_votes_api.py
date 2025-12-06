@@ -706,7 +706,6 @@ def test_votes_api_show(records, db_session, api):
                     "id": 1,
                     "first_name": "John",
                     "last_name": "Doe",
-                    "terms": [9],
                     "country": {
                         "code": "FRA",
                         "iso_alpha_2": "FR",
@@ -719,10 +718,6 @@ def test_votes_api_show(records, db_session, api):
                     },
                     "photo_url": "/api/static/members/1.jpg",
                     "thumb_url": "/api/static/members/1-104.jpg",
-                    "date_of_birth": None,
-                    "email": None,
-                    "facebook": None,
-                    "twitter": None,
                 },
             },
             {
@@ -731,7 +726,6 @@ def test_votes_api_show(records, db_session, api):
                     "id": 2,
                     "first_name": "Jane",
                     "last_name": "Smith",
-                    "terms": [9],
                     "country": {
                         "code": "DEU",
                         "iso_alpha_2": "DE",
@@ -744,10 +738,6 @@ def test_votes_api_show(records, db_session, api):
                     },
                     "photo_url": "/api/static/members/2.jpg",
                     "thumb_url": "/api/static/members/2-104.jpg",
-                    "date_of_birth": None,
-                    "email": None,
-                    "facebook": None,
-                    "twitter": None,
                 },
             },
         ],

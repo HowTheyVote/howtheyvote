@@ -5,6 +5,7 @@ from .. import config
 from .openapi_helpers import get_schema, normalize_schema_name
 from .serializers import (
     AmendmentAuthorDict,
+    BaseMemberDict,
     BaseVoteDict,
     BaseVoteWithMemberPositionDict,
     CommitteeDict,
@@ -54,6 +55,7 @@ spec = APISpec(
 
 schema_classes = [
     AmendmentAuthorDict,
+    BaseMemberDict,
     MemberDict,
     GroupDict,
     CountryDict,

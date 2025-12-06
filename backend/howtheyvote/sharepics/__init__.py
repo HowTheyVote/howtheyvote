@@ -11,7 +11,13 @@ log = get_logger(__name__)
 
 def generate_vote_sharepic(vote_id: int) -> bytes:
     """Generate a share picture for the given vote."""
-    url = urljoin(config.FRONTEND_PRIVATE_URL, f"/votes/{vote_id}/sharepic")
+    url = urljoin(config.CADDY_PRIVATE_URL, f"/votes/{vote_id}/sharepic")
+    return capture_screenshot(url)
+
+
+def generate_member_sharepic(member_id: int) -> bytes:
+    """Generate a share picture for the given MEP."""
+    url = urljoin(config.CADDY_PRIVATE_URL, f"/members/{member_id}/sharepic")
     return capture_screenshot(url)
 
 

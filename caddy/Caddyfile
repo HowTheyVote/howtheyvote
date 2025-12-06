@@ -2,7 +2,7 @@
     email mail@howtheyvote.eu
 }
 
-{$CADDY_SITE_ADDRESS} {
+(main) {
     reverse_proxy /api backend:5000
     reverse_proxy /api/* backend:5000
     reverse_proxy /* frontend:8000
@@ -32,12 +32,6 @@
         -Server
         -X-Powered-By
     }
-
-    @nonlocal {
-        not host localhost
-    }
-
-    header @nonlocal Strict-Transport-Security "max-age=31536000;"
 
     # A previous version of HowTheyVote.eu used auto-incrementing integers as vote IDs.
     # In the current version, we have started using the IDs assigned by the European
@@ -82,6 +76,17 @@
 
     # Nicer URL for the general feedback form
     redir /feedback https://tally.so/r/w740y2
+}
+
+{$CADDY_SITE_ADDRESS} {
+    import main
+    header Strict-Transport-Security "max-age=31536000;"
+}
+
+# This is the host name used for internal connections via the Docker network.
+# For internal requests, we allow HTTP connections.
+http://caddy:80 {
+    import main
 }
 
 # Allow loading extra configuration by placing additional files in the `caddy` directory.
