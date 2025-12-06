@@ -9,7 +9,7 @@ from .member import (
     deserialize_group_membership,
     serialize_group_membership,
 )
-from .oeil import OEILSubject, OEILSubjectType, OEILSummary, deserialize_summary_section_vote
+from .oeil import OEILSubject, OEILSubjectType, OEILSummary
 from .press_release import PressRelease
 from .session import PlenarySession, PlenarySessionLocation, PlenarySessionStatus
 from .vote import (
@@ -81,5 +81,4 @@ __all__ = [
     "deserialize_member_vote",
     "serialize_amendment_author",
     "deserialize_amendment_author",
-    "deserialize_summary_section_vote",
 ]

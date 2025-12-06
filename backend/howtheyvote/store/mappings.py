@@ -12,7 +12,6 @@ from ..models import (
     deserialize_amendment_author,
     deserialize_group_membership,
     deserialize_member_vote,
-    deserialize_summary_section_vote,
 )
 from ..models.eurovoc import EurovocConcept
 from ..models.oeil import OEILSubject, OEILSummary
@@ -128,5 +127,5 @@ def map_press_release(record: CompositeRecord) -> PressRelease:
 def map_summary(record: CompositeRecord) -> OEILSummary:
     return OEILSummary(
         id=record.group_key,
-        content=record.chain("content", type=deserialize_summary_section_vote),
+        content=record.get("content"),
     )

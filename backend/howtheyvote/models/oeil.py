@@ -1,5 +1,4 @@
 import dataclasses
-from typing import Any, Literal
 
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
@@ -8,7 +7,6 @@ from sqlalchemy.types import TypeDecorator
 
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
 from .common import BaseWithId
-from .types import ListType
 
 
 class OEILSubjectMeta(type):
@@ -70,54 +68,8 @@ class OEILSubjectType(TypeDecorator[OEILSubject]):
         return oeil_subjects.get(value)
 
 
-@dataclasses.dataclass
-class OEILSummarySection:
-    type: Literal["Heading", "Paragraph"]
-    content: str
-
-
-def serialize_summary_section_vote(
-    section: OEILSummarySection | None,
-) -> dict[str, Any] | None:
-    if section is None:
-        return None
-
-    return {
-        "type": section.type,
-        "content": section.content,
-    }
-
-
-def deserialize_summary_section_vote(
-    section: dict[str, Any] | None,
-) -> OEILSummarySection | None:
-    if section is None:
-        return None
-
-    return OEILSummarySection(
-        type=section["type"],
-        content=section["content"],
-    )
-
-
-class SAOEILSummarySectionType(TypeDecorator[OEILSummarySection]):
-    impl = sa.JSON
-
-    def process_bind_param(
-        self, value: OEILSummarySection | None, dialect: Dialect
-    ) -> dict[str, Any] | None:
-        return serialize_summary_section_vote(value)
-
-    def process_result_value(
-        self, value: dict[str, Any] | None, dialect: Dialect
-    ) -> OEILSummarySection | None:
-        return deserialize_summary_section_vote(value)
-
-
 class OEILSummary(BaseWithId):
     __tablename__ = "summaries"
 
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
-    content: Mapped[list[OEILSummarySection]] = mapped_column(
-        ListType(SAOEILSummarySectionType())
-    )
+    content: Mapped[str] = mapped_column(sa.Unicode)

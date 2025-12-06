@@ -1,3 +1,4 @@
+import html
 import re
 from collections.abc import Iterator
 from datetime import date, datetime
@@ -996,9 +997,8 @@ class OEILSummaryScraper(BeautifulSoupScraper):
         if not text:
             raise ScrapingError
 
-        items = text.select(".MsoNormal")
-
-        content = [self._format_paragraph(item) for item in items]
+        items = text.select("p.MsoNormal")
+        content = "".join([self._normalize_paragraph(item) for item in items])
 
         return self._fragment(
             model=OEILSummary,
@@ -1007,17 +1007,13 @@ class OEILSummaryScraper(BeautifulSoupScraper):
             data={"content": content},
         )
 
-    def _format_paragraph(self, paragraph: Tag) -> dict[str, str]:
-        text = paragraph.text.strip().replace("\n", " ")
-
+    def _normalize_paragraph(self, paragraph: Tag) -> str:
+        text = html.escape(paragraph.get_text(strip=True).replace("\n", " "))
         style = paragraph.get("style")
-
-        if not style:
-            return {"type": "paragraph", "content": text}
 
         # Headings aren't marked up using appropriate HTML tags.
         # Instead, they are simply styled using inline CSS.
-        if "font-weight" in style and "bold" in style:
-            return {"type": "heading", "content": text}
+        if style and "font-weight" in style and "bold" in style:
+            return f"<h2>{text}</h2>"
 
-        return {"type": "paragraph", "content": text}
+        return f"<p>{text}</p>"
