@@ -93,8 +93,7 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
 function MetaTags({ member }: { member: Member }) {
   const altText = `Lorem ipsum`;
   const title = `${member.first_name} ${member.last_name} ・ Member of the European Parliament`;
-  const description =
-    "Find out how the Members of the European Parliament vote.";
+  const description = "Find out how they vote in the European Parliament.";
 
   return (
     <>

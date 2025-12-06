@@ -33,7 +33,7 @@ export default function MemberSharepic({ member }: MemberSharepicProps) {
             {member.first_name} {member.last_name}
           </h1>
           <p class="member-sharepic__subtitle">
-            Find out how Members of the European Parliament vote.
+            Find out how they vote in the European Parliament.
           </p>
         </div>
       </div>
