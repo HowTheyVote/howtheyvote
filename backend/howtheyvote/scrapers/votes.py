@@ -938,42 +938,37 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
     def _url(self) -> str:
         return f"{self.BASE_URL}?reference={self.procedure_reference or self.reference}"
 
-    def _extract_data(self, doc: BeautifulSoup) -> Fragment:
-        sections = doc.select(".es_product-section")
-        summary_id = None
-        for section in sections:
-            # TODO: Assuming it is the third section all the time, which is likely,
-            # this can be significantly simplified.
-            heading = section.select_one("h2.es_title-h2")
-            if not heading or heading.get_text(strip=True) != "Key events":
-                continue
-            for row in section.select("tr"):
-                row_text = row.get_text()
-                if "Decision by Parliament" not in row_text:
-                    continue
-                if "Summary" not in row_text:
-                    continue
-                if self.day_of_vote.strftime("%d/%m/%Y") not in row_text:
-                    continue
+    def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
+        section = doc.select_one('.es_product-section:has(h2:-soup-contains("Key events"))')
 
-                links = row.select("a")
-                for link in links:
-                    href: str = link["href"]  # type: ignore
-                    if "/oeil/en/document-summary?id=" in href:
-                        if summary_id is not None:
-                            raise ScrapingError(
-                                "Multiple summaries available for the same day."
-                            )
-                        summary_id_match = re.search(r"[?&]id=(\d+)", href)
-                        summary_id = summary_id_match.group(1) if summary_id_match else None
-        if summary_id is None:
+        if not section:
+            return None
+
+        links = section.select(
+            "tr"
+            + f':has(td:-soup-contains("{self.day_of_vote.strftime("%d/%m/%Y")}"))'
+            + ':has(td:-soup-contains("Decision by Parliament")) '
+            + 'a:-soup-contains("Summary")'
+        )
+
+        if not links:
+            return None
+
+        if len(links) > 1:
+            raise ScrapingError("Multiple summaries available for the same day.")
+
+        regex = re.escape("/oeil/en/document-summary?id=") + r"(\d+)"
+        href = cast(str, links[0]["href"])
+        match = re.search(regex, href)
+
+        if not match:
             return None
 
         return self._fragment(
             model=Vote,
             source_id=self.vote_id,
             group_key=self.vote_id,
-            data={"oeil_summary_id": summary_id},
+            data={"oeil_summary_id": match.group(1)},
         )
 
 
