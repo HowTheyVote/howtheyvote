@@ -967,7 +967,7 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
                         summary_id_match = re.search(r"[?&]id=(\d+)", href)
                         summary_id = summary_id_match.group(1) if summary_id_match else None
         if summary_id is None:
-            raise ScrapingError("No summary found.")
+            return None
 
         return self._fragment(
             model=Vote,
