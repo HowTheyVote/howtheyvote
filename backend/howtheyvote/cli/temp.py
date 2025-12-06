@@ -9,6 +9,7 @@ from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
 from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
+from ..pipelines import OEILSummaryPipeline
 from ..query import member_active_at
 from ..scrapers import (
     DocumentScraper,
@@ -224,6 +225,22 @@ def vot_lists() -> None:
                 pass
 
             writer.flush()
+
+
+@temp.command()
+def oeil_summaries() -> None:
+    """Scrape all OEIL summaries, don't override."""
+
+    query = select(PlenarySession)
+    results = Session.execute(query).scalars()
+
+    for session in results:
+        delta = session.end_date - session.start_date
+
+        for i in range(delta.days + 1):
+            date = session.start_date + datetime.timedelta(days=i)
+            pipeline = OEILSummaryPipeline(date=date)
+            pipeline.run()
 
 
 @temp.command()
