@@ -91,7 +91,6 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
 };
 
 function MetaTags({ member }: { member: Member }) {
-  const altText = `Lorem ipsum`;
   const title = `${member.first_name} ${member.last_name} ・ Member of the European Parliament`;
   const description = "Find out how they vote in the European Parliament.";
 
@@ -102,7 +101,6 @@ function MetaTags({ member }: { member: Member }) {
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={member.sharepic_url} />
-      <meta property="og:image:alt" content={altText} />
     </>
   );
 }
