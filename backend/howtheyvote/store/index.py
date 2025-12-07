@@ -149,6 +149,11 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
             generator.index_text(text, 1, field_to_prefix("press_release"))
             generator.increase_termpos()
 
+    if vote.oeil_summary:
+        text = html_to_plaintext(vote.oeil_summary.content)
+        generator.index_text(text, 1, field_to_prefix("oeil_summary"))
+        generator.increase_termpos()
+
     # Index EuroVoc concept labels for full-text search
     for concept in vote.eurovoc_concepts:
         for term in set([concept.label, *concept.alt_labels]):

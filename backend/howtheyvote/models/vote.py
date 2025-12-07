@@ -20,7 +20,7 @@ from .oeil_subject import OEILSubject, OEILSubjectType
 from .types import ListType
 
 if TYPE_CHECKING:
-    from ..models import PressRelease
+    from ..models import OEILSummary, PressRelease
 
 
 class VoteResult(Enum):
@@ -313,7 +313,8 @@ class Vote(BaseWithId):
     )
     press_release_id: Mapped[str | None] = mapped_column(ForeignKey("press_releases.id"))
     press_release: Mapped["PressRelease | None"] = relationship(back_populates="votes")
-    oeil_summary_id: Mapped[int | None] = mapped_column(sa.Integer)
+    oeil_summary_id: Mapped[int | None] = mapped_column(ForeignKey("oeil_summaries.id"))
+    oeil_summary: Mapped["OEILSummary | None"] = relationship(back_populates="votes")
 
     @hybrid_property
     def date(self) -> datetime.date:
