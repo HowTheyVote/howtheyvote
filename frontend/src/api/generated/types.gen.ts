@@ -68,7 +68,7 @@ export type BaseVote = {
      * Information regarding the authors of an amendment.
      * This field is only available for votes starting in 2024
      */
-    amendment_authors: Array<AmendmentAuthor>;
+    amendment_authors?: Array<AmendmentAuthor>;
     /**
      * Countries or territories related to this vote
      */
@@ -79,7 +79,7 @@ export type BaseVote = {
      */
     eurovoc_concepts: Array<EurovocConcept>;
     /**
-     * Subjects as listed for the vote’s procedure in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en).
+     * Subjects as listed for the vote’s procedure in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en).
      */
     oeil_subjects: Array<OEILSubject>;
     /**
@@ -249,7 +249,7 @@ export type MemberVote = {
 export type position = 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
 
 /**
- * A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+ * A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
  */
 export type OEILSubject = {
     /**
@@ -304,15 +304,15 @@ export type PlenarySessionsQueryResponse = QueryResponse & {
  */
 export type Procedure = {
     /**
-     * Title of the legislative procedure as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+     * Title of the legislative procedure as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
      */
     title?: string;
     /**
-     * Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+     * Procedure type as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
      */
     type: 'COD' | 'CNS' | 'APP' | 'BUD' | 'DEC' | 'BUI' | 'NLE' | 'INL' | 'INI' | 'RSP' | 'REG' | 'IMM' | 'RSO' | 'INS' | 'ACI' | 'DEA' | 'RPS' | 'AVC' | 'SYN' | 'DCE' | 'COS';
     /**
-     * Procedure reference as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+     * Procedure reference as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
      */
     reference: string;
     /**
@@ -323,7 +323,7 @@ export type Procedure = {
 };
 
 /**
- * Procedure type as listed in the [Legislative Observatory](https://oeil.secure.europarl.europa.eu/oeil/en)
+ * Procedure type as listed in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
  */
 export type type2 = 'COD' | 'CNS' | 'APP' | 'BUD' | 'DEC' | 'BUI' | 'NLE' | 'INL' | 'INI' | 'RSP' | 'REG' | 'IMM' | 'RSO' | 'INS' | 'ACI' | 'DEA' | 'RPS' | 'AVC' | 'SYN' | 'DCE' | 'COS';
 
@@ -393,7 +393,7 @@ export type RelatedVote = {
      * Information regarding the authors of an amendment.
      * This field is only available for votes starting in 2024
      */
-    amendment_authors: Array<AmendmentAuthor>;
+    amendment_authors?: Array<AmendmentAuthor>;
     /**
      * Vote result. This field is only available for votes starting in 2024.
      */
