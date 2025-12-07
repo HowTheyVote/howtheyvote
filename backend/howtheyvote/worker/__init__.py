@@ -134,7 +134,14 @@ def members_handler() -> PipelineResult:
 
 def summaries_handler() -> PipelineResult:
     """Fetches all potentially available OEIL Summaries of the last four weeks."""
-    pipeline = OEILSummaryPipeline()
+    end_date = datetime.date.today()
+    start_date = end_date - datetime.timedelta(weeks=4)
+
+    pipeline = OEILSummaryPipeline(
+        start_date=start_date,
+        end_date=end_date,
+    )
+
     return pipeline.run()
 
 

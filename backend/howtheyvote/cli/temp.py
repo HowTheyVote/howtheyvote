@@ -235,12 +235,11 @@ def oeil_summaries() -> None:
     results = Session.execute(query).scalars()
 
     for session in results:
-        delta = session.end_date - session.start_date
-
-        for i in range(delta.days + 1):
-            date = session.start_date + datetime.timedelta(days=i)
-            pipeline = OEILSummaryPipeline(date=date)
-            pipeline.run()
+        pipeline = OEILSummaryPipeline(
+            start_date=session.start_date,
+            end_date=session.end_date,
+        )
+        pipeline.run()
 
 
 @temp.command()
