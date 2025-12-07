@@ -17,8 +17,8 @@
   overflow: hidden;
   text-wrap: balance;
 
-  font-family: var(--font-family-condensed);
   font-weight: 600;
+  font-stretch: 85%;
 
   /* We need `overflow:  hidden` to truncate the title after
      * 3 lines. However, this also cuts off descenders of letters

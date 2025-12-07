@@ -7,7 +7,7 @@
 .cc-logo figcaption {
   font-size: 0.75em;
   line-height: 1;
-  font-family: var(--font-family-condensed);
+  font-stretch: 85%;
   font-weight: 600;
 }
 

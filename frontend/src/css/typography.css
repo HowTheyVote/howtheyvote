@@ -19,7 +19,6 @@
 
 .alpha,
 .prose h1 {
-  font-family: var(--font-family-heading);
   font-size: var(--text-xxl);
   text-wrap: balance;
 }

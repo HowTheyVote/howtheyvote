@@ -1,0 +1,5 @@
+U+0020-007F # Basic Latin
+U+00A0-00FF # Latin Supplement
+U+0100-017F # Latin Extended-A
+U+0180-024F # Latin Extended-B
+U+0300-036F # Combining Diacritical Marks
