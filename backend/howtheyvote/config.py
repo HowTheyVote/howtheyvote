@@ -6,6 +6,7 @@ ENV = env.get("HTV_ENV", "prod")
 PUBLIC_URL = env.get("HTV_BACKEND_PUBLIC_URL", "")
 FRONTEND_PUBLIC_URL = env.get("HTV_FRONTEND_PUBLIC_URL", "")
 FRONTEND_PRIVATE_URL = env.get("HTV_FRONTEND_PRIVATE_URL", "")
+CADDY_PRIVATE_URL = env.get("HTV_CADDY_PRIVATE_URL", "")
 
 # Database
 DATABASE_URI = env.get(

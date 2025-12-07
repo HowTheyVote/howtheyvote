@@ -68,6 +68,7 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
         "Member of the European Parliament",
         "Votes",
       ]}
+      head={<MetaTags member={data.member} />}
     >
       <BaseLayout footer={footer}>
         <Stack>
@@ -88,3 +89,18 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
     </App>
   );
 };
+
+function MetaTags({ member }: { member: Member }) {
+  const title = `${member.first_name} ${member.last_name} ・ Member of the European Parliament`;
+  const description = "Find out how they vote in the European Parliament.";
+
+  return (
+    <>
+      <meta name="description" content={description} />
+      <meta property="og:site_name" content="HowTheyVote.eu" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={member.sharepic_url} />
+    </>
+  );
+}

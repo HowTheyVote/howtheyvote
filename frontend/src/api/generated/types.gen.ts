@@ -22,6 +22,38 @@ export type AmendmentAuthor = {
  */
 export type type = 'GROUP' | 'COMMITTEE' | 'ORIGINAL_TEXT' | 'MEMBERS' | 'ORALLY' | 'RAPPORTEUR';
 
+/**
+ * Member of the European Parliament (MEP)
+ */
+export type BaseMember = {
+    /**
+     * MEP ID. This is the same ID that the European Parliament uses on its website at
+     * https://europarl.europa.eu/meps.
+     */
+    id: number;
+    /**
+     * First name
+     */
+    first_name: string;
+    /**
+     * Last name
+     */
+    last_name: string;
+    country: Country;
+    /**
+     * The MEP’s political group at the time of the vote
+     */
+    group?: Group;
+    /**
+     * URL to the MEP’s official portrait photo
+     */
+    photo_url: string;
+    /**
+     * URL to a smaller, optimized variant of the official portrait photo
+     */
+    thumb_url: string;
+};
+
 export type BaseVote = {
     /**
      * ID as published in the official roll-call vote results
@@ -196,23 +228,7 @@ export type Link = {
     url: string;
 };
 
-/**
- * Member of the European Parliament (MEP)
- */
-export type Member = {
-    /**
-     * MEP ID. This is the same ID that the European Parliament uses on its website at
-     * https://europarl.europa.eu/meps.
-     */
-    id: number;
-    /**
-     * First name
-     */
-    first_name: string;
-    /**
-     * Last name
-     */
-    last_name: string;
+export type Member = BaseMember & {
     /**
      * Date of birth
      */
@@ -221,19 +237,10 @@ export type Member = {
      * List of parliamentary terms
      */
     terms: Array<(number)>;
-    country: Country;
     /**
-     * The MEP’s political group at the time of the vote
+     * URL to a share picture for the MEP
      */
-    group?: Group;
-    /**
-     * URL to the MEP’s official portrait photo
-     */
-    photo_url: string;
-    /**
-     * URL to a smaller, optimized variant of the official portrait photo
-     */
-    thumb_url: string;
+    sharepic_url: string;
     /**
      * Official email address
      */
@@ -249,7 +256,7 @@ export type Member = {
 };
 
 export type MemberVote = {
-    member: Member;
+    member: BaseMember;
     position: 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
 };
 

@@ -70,6 +70,7 @@ def test_members_api_show(api, db_session):
         },
         "photo_url": "/api/static/members/1.jpg",
         "thumb_url": "/api/static/members/1-104.jpg",
+        "sharepic_url": "/api/static/members/sharepic-1.png",
         "email": None,
         "facebook": None,
         "twitter": None,

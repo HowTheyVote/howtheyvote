@@ -107,3 +107,7 @@ class Member(BaseWithId):
 
     def photo_url(self, size: str | int | None = None) -> str:
         return url_for("api.static_api.member_photo", member_id=self.id, size=size)
+
+    @property
+    def sharepic_url(self) -> str:
+        return url_for("api.static_api.member_sharepic", member_id=self.id)
