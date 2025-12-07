@@ -17,6 +17,7 @@
   flex-shrink: 0;
   align-self: center;
   aspect-ratio: 4 / 5;
+  object-fit: cover;
 
   padding: 2.5px;
   background: #fff;
