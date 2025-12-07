@@ -18,11 +18,11 @@ depends_on = None
 
 def upgrade() -> None:
     op.create_table(
-        "summaries",
+        "oeil_summaries",
         sa.Column("id", sa.Integer(), primary_key=True),
         sa.Column("content", sa.JSON(), nullable=True),
     )
 
 
 def downgrade() -> None:
-    op.drop_table("summaries")
+    op.drop_table("oeil_summaries")

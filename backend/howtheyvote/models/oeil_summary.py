@@ -5,7 +5,7 @@ from .common import BaseWithId
 
 
 class OEILSummary(BaseWithId):
-    __tablename__ = "summaries"
+    __tablename__ = "oeil_summaries"
 
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
     content: Mapped[str] = mapped_column(sa.Unicode)
