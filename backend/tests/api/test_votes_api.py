@@ -12,6 +12,7 @@ from howtheyvote.models import (
     Member,
     MemberVote,
     OEILSubject,
+    OEILSummary,
     PressRelease,
     Vote,
     VotePosition,
@@ -425,6 +426,29 @@ def test_votes_api_index_search_press_release(db_session, search_index, api):
     index_search(Vote, [vote])
 
     res = api.get("/api/votes/search", query_string={"q": "aluminium"})
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 178285
+
+
+def test_votes_api_search_oeil_summary(db_session, search_index, api):
+    vote = Vote(
+        id=178285,
+        timestamp=datetime.datetime(2025, 1, 1, 0, 0, 0),
+        title="Carbon Border Adjustment Mechanism: simplification and strengthening",
+        oeil_summary_id=1842750,
+        is_main=True,
+    )
+
+    summary = OEILSummary(
+        id=1842750,
+        content="<p> The European Parliament adopted by 617 votes to 18, with 19 abstentions, a legislative resolution on the proposal for a regulation of the European Parliament and of the Council amending Regulation (EU) 2023/956 as regards simplifying and strengthening the carbon border adjustment mechanism (CBAM).</p>",
+    )
+
+    db_session.add_all([vote, summary])
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    res = api.get("/api/votes/search", query_string={"q": "(EU) 2023/956"})
     assert res.json["total"] == 1
     assert res.json["results"][0]["id"] == 178285
 

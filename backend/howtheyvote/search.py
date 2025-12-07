@@ -34,6 +34,7 @@ SEARCH_FIELDS = [
     "eurovoc_concept_labels",
     "rapporteur",
     "press_release",
+    "oeil_summary",
 ]
 
 
@@ -51,6 +52,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "procedure_reference": "XPR",
     "press_release": "XPRR",
     "member_id": "XM",
+    "oeil_summary": "XS",
 }
 
 
