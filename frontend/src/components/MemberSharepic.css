@@ -13,9 +13,7 @@
     rgba(0, 0, 0, 0.2)
   );
   background-size: cover;
-
   color: #fff;
-  text-wrap: balance;
 }
 
 .member-sharepic__photo {
@@ -58,14 +56,12 @@
 }
 
 .member-sharepic__title {
-  margin-block-end: var(--space-xs);
   color: #fff;
   font-size: var(--text-xxl);
 }
 
 .member-sharepic__subtitle {
   color: rgba(255, 255, 255, 0.9);
-  margin-block-end: var(--space-xs);
 }
 
 .member-sharepic strong {

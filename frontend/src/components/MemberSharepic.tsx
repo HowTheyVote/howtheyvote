@@ -1,5 +1,6 @@
 import type { Member } from "../api";
 import Sharepic from "./Sharepic";
+import Stack from "./Stack";
 import Thumb from "./Thumb";
 
 import "./MemberSharepic.css";
@@ -25,17 +26,17 @@ export default function MemberSharepic({ member }: MemberSharepicProps) {
             position="AGAINST"
           />
         </div>
-        <div>
-          <p style="margin-bottom: 0.5rem">
-            <strong>HowTheyVote.eu</strong>
+        <Stack space="xxs">
+          <p>
+            <strong>
+              {member.country.label}・{member.group?.short_label}
+            </strong>
           </p>
           <h1 class="beta member-sharepic__title">
             {member.first_name} {member.last_name}
           </h1>
-          <p class="member-sharepic__subtitle">
-            Find out how they vote in the European Parliament.
-          </p>
-        </div>
+          <p>Find out how they vote in the European Parliament.</p>
+        </Stack>
       </div>
     </Sharepic>
   );
