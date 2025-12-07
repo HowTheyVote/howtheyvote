@@ -919,7 +919,7 @@ class EurlexDocumentScraper(BeautifulSoupScraper):
 
 
 class OEILSummaryIDScraper(BeautifulSoupScraper):
-    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file"
+    BASE_URL = "https://oeil.europarl.europa.eu/oeil/en/procedure-file"
 
     def __init__(
         self,
@@ -973,7 +973,7 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
 
 
 class OEILSummaryScraper(BeautifulSoupScraper):
-    BASE_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/document-summary"
+    BASE_URL = "https://oeil.europarl.europa.eu/oeil/en/document-summary"
 
     def __init__(
         self,

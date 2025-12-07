@@ -660,7 +660,7 @@ def test_document_scraper(responses):
 
 def test_oeil_summary_id_scraper_run(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2021/2540(RSP)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2021/2540(RSP)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2021-2540-rsp.html"),
     )
 
@@ -677,7 +677,7 @@ def test_oeil_summary_id_scraper_run(responses):
 
 def test_oeil_summary_id_scraper_run_no_summary(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2020/2042(INI)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2020/2042(INI)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2021-2540-rsp.html"),
     )
 
@@ -692,7 +692,7 @@ def test_oeil_summary_id_scraper_run_no_summary(responses):
 
 def test_oeil_summary_scraper(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/document-summary?id=1651118",
+        "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1651118",
         body=load_fixture("scrapers/data/votes/oeil-document-summary_1651118.html"),
     )
 
@@ -706,7 +706,7 @@ def test_oeil_summary_scraper(responses):
 
 def test_oeil_summary_scraper_headings(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/document-summary?id=1864147",
+        "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1864147",
         body=load_fixture("scrapers/data/votes/oeil-document-summary_1864147.html"),
     )
 
