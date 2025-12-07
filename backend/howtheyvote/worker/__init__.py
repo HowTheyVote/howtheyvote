@@ -248,11 +248,11 @@ def get_worker() -> Worker:
         tz=config.TIMEZONE,
     )
 
-    # Sun at 04:00
+    # Sat 0:00 UTC, so that we might already include VOT lists of session this week
     worker.schedule(
         export_handler,
-        weekdays={Weekday.SUN},
-        hours={4},
+        weekdays={Weekday.SAT},
+        hours={0},
         # While the schedules for other pipelines follow real-life events in Brussels/
         # Strasbourg time, this isn’t the case for the export so we can just use UTC
         # for simplicity.
