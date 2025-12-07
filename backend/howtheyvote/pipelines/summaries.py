@@ -2,7 +2,7 @@ import datetime as dt
 from collections.abc import Iterator
 from datetime import datetime, timedelta
 
-from sqlalchemy import distinct, func, select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..db import Session
@@ -62,25 +62,13 @@ class OEILSummaryPipeline(BasePipeline):
         self._vote_ids = writer.get_touched()
 
     def _scrape_summaries(self) -> None:
-        already_scraped_summaries = select(OEILSummary.id).scalar_subquery()
-
-        query = select(distinct(Vote.oeil_summary_id)).where(Vote.oeil_summary_id.is_not(None))
-
-        if self.date:
-            query = query.where(func.date(Vote.timestamp) == self.date)
-
-        if not self.force:
-            query = query.where(~Vote.oeil_summary_id.in_(already_scraped_summaries))
-
-        result = Session.execute(query).scalars().all()
-
         writer = BulkWriter()
 
-        for summary_id in result:
-            if summary_id is None:
+        for vote in self._votes():
+            if not vote.oeil_summary_id:
                 continue
             try:
-                scraper = OEILSummaryScraper(summary_id=summary_id)
+                scraper = OEILSummaryScraper(summary_id=vote.oeil_summary_id)
                 writer.add(scraper.run())
             except ScrapingError:
                 pass
