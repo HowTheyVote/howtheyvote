@@ -97,6 +97,12 @@ export type BaseVote = {
  */
 export type result = 'ADOPTED' | 'REJECTED' | 'LAPSED' | 'WITHDRAWN';
 
+export type BaseVoteWithMemberPosition = BaseVote & {
+    position: 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
+};
+
+export type position = 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
+
 /**
  * Committee of the European Parliament
  */
@@ -247,7 +253,12 @@ export type MemberVote = {
     position: 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
 };
 
-export type position = 'FOR' | 'AGAINST' | 'ABSTENTION' | 'DID_NOT_VOTE';
+export type MemberVotesQueryResponse = QueryResponseWithFacets & {
+    /**
+     * Votes
+     */
+    results: Array<BaseVoteWithMemberPosition>;
+};
 
 /**
  * A subject as used for classification of procedures in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
@@ -356,6 +367,12 @@ export type QueryResponse = {
      * Whether there is a next page of results
      */
     has_next: boolean;
+};
+
+export type QueryResponseWithFacets = QueryResponse & {
+    facets: {
+        [key: string]: Array<FacetOption>;
+    };
 };
 
 export type RelatedVote = {
@@ -475,14 +492,12 @@ export type VotePositionCounts = {
     DID_NOT_VOTE: number;
 };
 
-export type VotesQueryResponse = QueryResponse & {
+export type VotesQueryResponse = QueryResponseWithFacets & {
     /**
      * Votes
      */
     results: Array<BaseVote>;
 };
-
-export type VotesQueryResponseWithFacets = VotesQueryResponse & WithFacets;
 
 export type VoteStats = {
     /**
@@ -509,68 +524,7 @@ export type VoteStatsByGroup = {
     stats: VotePositionCounts;
 };
 
-export type WithFacets = {
-    facets: {
-        [key: string]: Array<FacetOption>;
-    };
-};
-
 export type GetVotesData = {
-    query?: {
-        /**
-         * Filter votes by date and return only votes that were cast on the given
-         * date.
-         *
-         */
-        date?: string;
-        /**
-         * Filter votes by date and return only votes that were cast on or after the
-         * given date.
-         *
-         */
-        'date[gte]'?: string;
-        /**
-         * Filter votes by date and return only votes that were cast on or before the
-         * given date.
-         *
-         */
-        'date[lte]'?: string;
-        /**
-         * Filter votes by geographic area. Valid values are 3-letter country codes
-         * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
-         *
-         */
-        geo_areas?: Array<(string)>;
-        /**
-         * Results page
-         */
-        page?: number;
-        /**
-         * Number of results per page
-         */
-        page_size?: number;
-        /**
-         * Filter votes by responsible committees. Valid values are 4-letter
-         * committee codes.
-         *
-         */
-        responsible_committees?: Array<(string)>;
-        /**
-         * Sort results by this field. Omit to sort by relevance.
-         */
-        sort_by?: 'date';
-        /**
-         * Sort results in ascending or descending order
-         */
-        sort_order?: 'asc' | 'desc';
-    };
-};
-
-export type GetVotesResponse = (VotesQueryResponse);
-
-export type GetVotesError = unknown;
-
-export type SearchVotesData = {
     query?: {
         /**
          * Filter votes by date and return only votes that were cast on the given
@@ -630,9 +584,73 @@ export type SearchVotesData = {
     };
 };
 
-export type SearchVotesResponse = (VotesQueryResponseWithFacets);
+export type GetVotesResponse = (VotesQueryResponse);
 
-export type SearchVotesError = unknown;
+export type GetVotesError = unknown;
+
+export type GetMemberVotesData = {
+    query?: {
+        /**
+         * Filter votes by date and return only votes that were cast on the given
+         * date.
+         *
+         */
+        date?: string;
+        /**
+         * Filter votes by date and return only votes that were cast on or after the
+         * given date.
+         *
+         */
+        'date[gte]'?: string;
+        /**
+         * Filter votes by date and return only votes that were cast on or before the
+         * given date.
+         *
+         */
+        'date[lte]'?: string;
+        /**
+         * Return facet options for the given fields. Can be set multiple times.
+         *
+         */
+        facets?: Array<('geo_areas' | 'responsible_committees')>;
+        /**
+         * Filter votes by geographic area. Valid values are 3-letter country codes
+         * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
+         *
+         */
+        geo_areas?: Array<(string)>;
+        /**
+         * Results page
+         */
+        page?: number;
+        /**
+         * Number of results per page
+         */
+        page_size?: number;
+        /**
+         * Search query
+         */
+        q?: string;
+        /**
+         * Filter votes by responsible committees. Valid values are 4-letter
+         * committee codes.
+         *
+         */
+        responsible_committees?: Array<(string)>;
+        /**
+         * Sort results by this field. Omit to sort by relevance.
+         */
+        sort_by?: 'date';
+        /**
+         * Sort results in ascending or descending order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+};
+
+export type GetMemberVotesResponse = (MemberVotesQueryResponse);
+
+export type GetMemberVotesError = unknown;
 
 export type GetVoteData = {
     path: {
@@ -675,3 +693,13 @@ export type GetSessionsError = unknown;
 export type GetStatsResponse = ((Statistics));
 
 export type GetStatsError = unknown;
+
+export type GetMemberData = {
+    path: {
+        member_id: string;
+    };
+};
+
+export type GetMemberResponse = (Member);
+
+export type GetMemberError = unknown;

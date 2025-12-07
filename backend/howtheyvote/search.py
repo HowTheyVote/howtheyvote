@@ -50,6 +50,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "reference": "XR",
     "procedure_reference": "XPR",
     "press_release": "XPRR",
+    "member_id": "XM",
 }
 
 
@@ -76,6 +77,17 @@ class StringType(Type[str]):
 
     def get_label(self, value: str) -> str:
         return value
+
+
+class IntegerType(Type[int]):
+    def serialize_value(self, value: int) -> str:
+        return str(value)
+
+    def deserialize_value(self, value: str) -> int:
+        return int(value)
+
+    def get_label(self, value: int) -> str:
+        return str(value)
 
 
 class DateType(Type[date]):
@@ -120,6 +132,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "responsible_committees": CommitteeType(),
     "reference": StringType(),
     "procedure_reference": StringType(),
+    "member_id": IntegerType(),
 }
 
 

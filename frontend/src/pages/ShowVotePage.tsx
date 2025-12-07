@@ -2,6 +2,7 @@ import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Callout from "../components/Callout";
+import CopyrightLink from "../components/CopyrightLink";
 import DatawrapperLink from "../components/DatawrapperLink";
 import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
@@ -203,15 +204,12 @@ export const ShowVotePage: Page<Vote> = ({ data }) => {
 
 function Copyright({ vote }: { vote: Vote }) {
   let copyright = (
-    <>
-      {"MEP photos: © European Union 2019 · "}
-      <a
-        rel="noopener noreferrer"
-        href="https://www.europarl.europa.eu/meps/en/directory/9"
-      >
-        Source: EP
-      </a>
-    </>
+    <CopyrightLink
+      content="MEP photos"
+      sourceUrl="https://www.europarl.europa.eu/meps/en/directory"
+      startYear={2019}
+      endYear={new Date().getFullYear()}
+    />
   );
 
   if (vote.facts) {
@@ -219,15 +217,11 @@ function Copyright({ vote }: { vote: Vote }) {
       <>
         {copyright}
         <br />
-        {"Summary: © European Union "}
-        {new Date(vote.timestamp).getFullYear()}
-        {" · "}
-        <a
-          rel="noopener noreferrer"
-          href="https://www.europarl.europa.eu/news/en"
-        >
-          Source: EP
-        </a>
+        <CopyrightLink
+          content="Summary"
+          sourceUrl="https://www.europarl.europa.eu/news/en"
+          year={new Date(vote.timestamp).getFullYear()}
+        />
       </>
     );
   }

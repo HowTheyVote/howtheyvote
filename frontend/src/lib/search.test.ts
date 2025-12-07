@@ -70,6 +70,17 @@ describe("SearchQuery", () => {
     assert.deepStrictEqual(searchQuery.getFilter("responsible_committees"), []);
   });
 
+  it("can check if it has active filters", () => {
+    let searchQuery = new SearchQuery("/votes");
+    assert.strictEqual(searchQuery.hasFilters(), false);
+
+    searchQuery = searchQuery.addFilter("geo_areas", "DEU");
+    assert.strictEqual(searchQuery.hasFilters(), true);
+
+    searchQuery = searchQuery.withoutFilter("geo_areas", "DEU");
+    assert.strictEqual(searchQuery.hasFilters(), false);
+  });
+
   it("can remove filter values", () => {
     const searchQuery = new SearchQuery("/votes")
       .addFilter("geo_areas", "DEU")

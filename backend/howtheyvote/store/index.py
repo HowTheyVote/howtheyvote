@@ -212,6 +212,11 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
         ),
     )
 
+    # Index MEP IDs as boolean terms so we can filter votes for display on MEP profile pages
+    for member_vote in vote.member_votes:
+        term = boolean_term("member_id", member_vote.web_id)
+        doc.add_boolean_term(term)
+
     return doc
 
 
