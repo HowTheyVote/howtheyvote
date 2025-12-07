@@ -429,7 +429,7 @@ def test_vot_list_scraper_multiple_amendment_authors_space(responses):
 
 def test_procedure_scraper(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
@@ -443,7 +443,7 @@ def test_procedure_scraper(responses):
         source_name="ProcedureScraper",
         source_id=162214,
         group_key=162214,
-        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
+        source_url="https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         data={
             "procedure_reference": "2023/2019(INI)",
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
@@ -458,14 +458,14 @@ def test_procedure_scraper(responses):
 
 def test_procedure_scraper_fallback_document_reference(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=A9-0335/2023",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=A9-0335/2023",
         status=301,
         headers={
-            "Location": "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)"
+            "Location": "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)"
         },
     )
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2023-2019-ini.html"),
     )
 
@@ -479,7 +479,7 @@ def test_procedure_scraper_fallback_document_reference(responses):
         source_name="ProcedureScraper",
         source_id=162214,
         group_key=162214,
-        source_url="https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
+        source_url="https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2023/2019(INI)",
         data={
             "procedure_reference": "2023/2019(INI)",
             "procedure_title": "Implementation of the 2018 Geoblocking Regulation in the Digital Single Market",
@@ -494,7 +494,7 @@ def test_procedure_scraper_fallback_document_reference(responses):
 
 def test_procedure_scraper_geo_areas(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2852(RSP)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2852(RSP)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022-2852-rsp.html"),
     )
 
@@ -507,7 +507,7 @@ def test_procedure_scraper_geo_areas(responses):
 
 def test_procedure_scraper_geo_areas_fuzzy(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2201(INI)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2022/2201(INI)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022-2201-ini.html"),
     )
 
@@ -520,7 +520,7 @@ def test_procedure_scraper_geo_areas_fuzzy(responses):
 
 def test_procedure_scraper_multiple_responsible_committees(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2024/0258(COD)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2024/0258(COD)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2024-0258-cod.html"),
     )
 

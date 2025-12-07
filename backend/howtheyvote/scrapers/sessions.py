@@ -89,6 +89,7 @@ class ODPSessionScraper(BeautifulSoupScraper):
     ):
         super().__init__(start_date=date, request_cache=request_cache)
         self.start_date = start_date
+        self.REQUEST_TIMEOUT = 120
 
     def _url(self) -> str:
         return f"{self.BASE_URL}/MTG-PL-{self.start_date.isoformat()}"

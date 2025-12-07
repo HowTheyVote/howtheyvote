@@ -486,7 +486,7 @@ def load_oeil_subjects(file: TextIO) -> None:
     to a CSV file with the columns "Code", "Parent", "Description", then run this command
     to load it into HowTheyVote.
 
-    [^1]: https://oeil.secure.europarl.europa.eu/oeil/en/find-out-more#widget5
+    [^1]: https://oeil.europarl.europa.eu/oeil/en/find-out-more#widget5
     """
     subjects = DataclassContainer(
         dataclass=OEILSubject,
