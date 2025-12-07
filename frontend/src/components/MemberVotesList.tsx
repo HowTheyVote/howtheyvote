@@ -141,7 +141,6 @@ function filterMemberVotes(
   return memberVotes.filter(({ member, position }) => {
     const fullName = `${member.first_name} ${member.last_name}`;
 
-    query = query.trim().replaceAll(/\s+/g, " ");
     if (!normalize(fullName).includes(normalize(query))) {
       return false;
     }

@@ -1,3 +1,7 @@
+.search-facet-multiselect-options__search {
+  margin-block-end: var(--space-xxs);
+}
+
 .search-facet-multiselect-options__option {
   display: flex;
   align-items: center;

@@ -63,6 +63,9 @@ class Type[T](ABC):
     @abstractmethod
     def get_label(self, value: T) -> str: ...
 
+    def get_short_label(self, value: T) -> str | None:
+        return None
+
 
 class StringType(Type[str]):
     def serialize_value(self, value: str) -> str:
@@ -106,6 +109,9 @@ class CommitteeType(Type[Committee]):
 
     def get_label(self, value: Committee) -> str:
         return value.label
+
+    def get_short_label(self, value: Committee) -> str | None:
+        return value.abbreviation
 
 
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {

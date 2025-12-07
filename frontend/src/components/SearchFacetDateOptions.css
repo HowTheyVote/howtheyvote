@@ -1,13 +1,9 @@
 .search-facet-date-options {
-  display: flex;
+  display: grid;
   width: 100%;
   gap: var(--space-xs);
-}
-
-.search-facet-date-options__date {
-  display: flex;
-  flex-direction: column;
-  width: 50%;
+  grid-template-areas: "from to" "quick-select quick-select";
+  grid-template-columns: 1fr 1fr;
 }
 
 .search-facet-date-options__input {
@@ -21,4 +17,11 @@
 .search-facet-date-options__label {
   margin-block-end: var(--space-xxs);
   font-size: var(--text-xs);
+}
+
+.search-facet-date-options__quick-select {
+  display: flex;
+  width: 100%;
+  grid-area: quick-select;
+  gap: var(--space-xxs);
 }

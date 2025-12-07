@@ -153,6 +153,7 @@ export type EurovocConcept = {
 export type FacetOption = {
     value: string;
     label: string;
+    short_label?: string;
     count: number;
 };
 

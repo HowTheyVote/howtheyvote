@@ -54,3 +54,16 @@ export function formatNumber(number?: number): string | null {
 
   return number.toLocaleString("en-US");
 }
+
+export function isValidDate(date: Date) {
+  // https://stackoverflow.com/a/38182068
+  return !Number.isNaN(date.getTime());
+}
+
+export function toISODateString(date: Date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
