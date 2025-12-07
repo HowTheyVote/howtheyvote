@@ -3,11 +3,11 @@ from .members import MembersPipeline
 from .press import PressPipeline
 from .rcv_list import RCVListPipeline
 from .sessions import SessionsPipeline
-from .summaries import OEILSummaryPipeline
+from .summaries import OEILSummariesPipeline
 from .vot_list import VOTListPipeline
 
 __all__ = [
-    "OEILSummaryPipeline",
+    "OEILSummariesPipeline",
     "PipelineResult",
     "RCVListPipeline",
     "VOTListPipeline",

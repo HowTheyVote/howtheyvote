@@ -10,7 +10,7 @@ from ..store import Aggregator, BulkWriter, index_records, map_summary, map_vote
 from .common import BasePipeline
 
 
-class OEILSummaryPipeline(BasePipeline):
+class OEILSummariesPipeline(BasePipeline):
     def __init__(
         self,
         start_date: dt.date,

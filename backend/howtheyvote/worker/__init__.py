@@ -13,7 +13,7 @@ from ..files import file_path
 from ..models import PipelineRun, PipelineStatus, PlenarySession
 from ..pipelines import (
     MembersPipeline,
-    OEILSummaryPipeline,
+    OEILSummariesPipeline,
     PipelineResult,
     PressPipeline,
     RCVListPipeline,
@@ -137,7 +137,7 @@ def summaries_handler() -> PipelineResult:
     end_date = datetime.date.today()
     start_date = end_date - datetime.timedelta(weeks=4)
 
-    pipeline = OEILSummaryPipeline(
+    pipeline = OEILSummariesPipeline(
         start_date=start_date,
         end_date=end_date,
     )
@@ -189,7 +189,7 @@ def get_worker() -> Worker:
     # Mon at 07:00
     worker.schedule_pipeline(
         summaries_handler,
-        name=OEILSummaryPipeline.__name__,
+        name=OEILSummariesPipeline.__name__,
         weekdays={Weekday.MON},
         hours={7},
         tz=config.TIMEZONE,

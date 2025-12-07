@@ -9,7 +9,7 @@ from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
 from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
-from ..pipelines import OEILSummaryPipeline
+from ..pipelines import OEILSummariesPipeline
 from ..query import member_active_at
 from ..scrapers import (
     DocumentScraper,
@@ -235,7 +235,7 @@ def oeil_summaries() -> None:
     results = Session.execute(query).scalars()
 
     for session in results:
-        pipeline = OEILSummaryPipeline(
+        pipeline = OEILSummariesPipeline(
             start_date=session.start_date,
             end_date=session.end_date,
         )

@@ -8,7 +8,7 @@ from ..db import Session
 from ..models import PlenarySession
 from ..pipelines import (
     MembersPipeline,
-    OEILSummaryPipeline,
+    OEILSummariesPipeline,
     PressPipeline,
     RCVListPipeline,
     SessionsPipeline,
@@ -153,7 +153,7 @@ def oeil_summaries(
     if not start_date or not end_date:
         raise click.UsageError("Provide either --date or --start-date and --end-date.")
 
-    pipeline = OEILSummaryPipeline(
+    pipeline = OEILSummariesPipeline(
         start_date=start_date.date(),
         end_date=end_date.date(),
         force=True,
