@@ -7,6 +7,7 @@ import {
 } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
+import CopyrightLink from "../components/CopyrightLink";
 import Footer from "../components/Footer";
 import MemberHeader from "../components/MemberHeader";
 import SearchForm from "../components/SearchForm";
@@ -50,15 +51,12 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
   const searchQuery = SearchQuery.fromUrl(url);
 
   const copyright = (
-    <>
-      {`MEP photos: © European Union 2019-${new Date().getFullYear()} · `}
-      <a
-        rel="noopener noreferrer"
-        href="https://www.europarl.europa.eu/meps/en/directory"
-      >
-        Source: EP
-      </a>
-    </>
+    <CopyrightLink
+      content="MEP photo"
+      sourceUrl="https://www.europarl.europa.eu/meps/en/directory"
+      startYear={2019}
+      endYear={new Date().getFullYear()}
+    />
   );
 
   const footer = <Footer copyright={copyright} />;
