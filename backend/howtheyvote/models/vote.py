@@ -16,7 +16,7 @@ from .common import BaseWithId
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
-from .oeil import OEILSubject, OEILSubjectType
+from .oeil_subject import OEILSubject, OEILSubjectType
 from .types import ListType
 
 if TYPE_CHECKING:

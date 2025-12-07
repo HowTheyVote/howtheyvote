@@ -3,7 +3,10 @@ import datetime
 from ..models import (
     Committee,
     Country,
+    EurovocConcept,
     Member,
+    OEILSubject,
+    OEILSummary,
     PlenarySession,
     PressRelease,
     ProcedureStage,
@@ -13,8 +16,6 @@ from ..models import (
     deserialize_group_membership,
     deserialize_member_vote,
 )
-from ..models.eurovoc import EurovocConcept
-from ..models.oeil import OEILSubject, OEILSummary
 from .aggregator import CompositeRecord
 
 

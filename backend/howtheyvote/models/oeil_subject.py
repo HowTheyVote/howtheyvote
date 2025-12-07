@@ -2,11 +2,9 @@ import dataclasses
 
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
-from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
 
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
-from .common import BaseWithId
 
 
 class OEILSubjectMeta(type):
@@ -66,10 +64,3 @@ class OEILSubjectType(TypeDecorator[OEILSubject]):
             return None
 
         return oeil_subjects.get(value)
-
-
-class OEILSummary(BaseWithId):
-    __tablename__ = "summaries"
-
-    id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
-    content: Mapped[str] = mapped_column(sa.Unicode)

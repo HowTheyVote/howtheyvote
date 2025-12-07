@@ -9,7 +9,8 @@ from .member import (
     deserialize_group_membership,
     serialize_group_membership,
 )
-from .oeil import OEILSubject, OEILSubjectType, OEILSummary
+from .oeil_subject import OEILSubject, OEILSubjectType
+from .oeil_summary import OEILSummary
 from .press_release import PressRelease
 from .session import PlenarySession, PlenarySessionLocation, PlenarySessionStatus
 from .vote import (
