@@ -16,7 +16,7 @@ from .common import BaseWithId
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
-from .oeil import OEILSubject, OEILSubjectType
+from .oeil_subject import OEILSubject, OEILSubjectType
 from .types import ListType
 
 if TYPE_CHECKING:
@@ -313,6 +313,7 @@ class Vote(BaseWithId):
     )
     press_release_id: Mapped[str | None] = mapped_column(ForeignKey("press_releases.id"))
     press_release: Mapped["PressRelease | None"] = relationship(back_populates="votes")
+    oeil_summary_id: Mapped[int | None] = mapped_column(sa.Integer)
 
     @hybrid_property
     def date(self) -> datetime.date:

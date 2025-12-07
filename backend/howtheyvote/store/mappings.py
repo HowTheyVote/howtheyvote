@@ -3,7 +3,10 @@ import datetime
 from ..models import (
     Committee,
     Country,
+    EurovocConcept,
     Member,
+    OEILSubject,
+    OEILSummary,
     PlenarySession,
     PressRelease,
     ProcedureStage,
@@ -13,8 +16,6 @@ from ..models import (
     deserialize_group_membership,
     deserialize_member_vote,
 )
-from ..models.eurovoc import EurovocConcept
-from ..models.oeil import OEILSubject
 from .aggregator import CompositeRecord
 
 
@@ -106,6 +107,7 @@ def map_vote(record: CompositeRecord) -> Vote:
             unique=True,
         ),
         press_release_id=record.get("press_release"),
+        oeil_summary_id=record.get("oeil_summary_id"),
     )
 
 
@@ -120,4 +122,11 @@ def map_press_release(record: CompositeRecord) -> PressRelease:
         facts=record.get("facts"),
         text=record.get("text"),
         position_counts=record.get("position_counts"),
+    )
+
+
+def map_summary(record: CompositeRecord) -> OEILSummary:
+    return OEILSummary(
+        id=record.group_key,
+        content=record.get("content"),
     )

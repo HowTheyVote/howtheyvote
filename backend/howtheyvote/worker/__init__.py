@@ -13,6 +13,7 @@ from ..files import file_path
 from ..models import PipelineRun, PipelineStatus, PlenarySession
 from ..pipelines import (
     MembersPipeline,
+    OEILSummariesPipeline,
     PipelineResult,
     PressPipeline,
     RCVListPipeline,
@@ -131,6 +132,19 @@ def members_handler() -> PipelineResult:
     return pipeline.run()
 
 
+def summaries_handler() -> PipelineResult:
+    """Fetches all potentially available OEIL Summaries of the last four weeks."""
+    end_date = datetime.date.today()
+    start_date = end_date - datetime.timedelta(weeks=4)
+
+    pipeline = OEILSummariesPipeline(
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+    return pipeline.run()
+
+
 EXPORT_LAST_RUN = Gauge(
     "htv_export_last_run_timestamp_seconds",
     "Timestamp when the CSV export was generated the last time",
@@ -169,6 +183,15 @@ def get_worker() -> Worker:
         name=MembersPipeline.__name__,
         weekdays={Weekday.MON},
         hours={5},
+        tz=config.TIMEZONE,
+    )
+
+    # Mon at 07:00
+    worker.schedule_pipeline(
+        summaries_handler,
+        name=OEILSummariesPipeline.__name__,
+        weekdays={Weekday.MON},
+        hours={7},
         tz=config.TIMEZONE,
     )
 

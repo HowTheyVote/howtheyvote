@@ -8,6 +8,7 @@ from ..db import Session
 from ..models import PlenarySession
 from ..pipelines import (
     MembersPipeline,
+    OEILSummariesPipeline,
     PressPipeline,
     RCVListPipeline,
     SessionsPipeline,
@@ -128,4 +129,34 @@ def sessions(term: int) -> None:
     """Run the sessions pipeline for a given term. This scrapes plenary session dates
     and locations."""
     pipeline = SessionsPipeline(term=term)
+    pipeline.run()
+
+
+@pipeline.command()
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False)
+@click.option("--start-date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False)
+@click.option("--end-date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False)
+def oeil_summaries(
+    date: datetime.datetime | None = None,
+    start_date: datetime.datetime | None = None,
+    end_date: datetime.datetime | None = None,
+) -> None:
+    """Scrape all OEIL summaries for texts voted on in the given timeframe.
+    Does not take into account any existing summaries or IDs."""
+    if date and (start_date or end_date):
+        raise click.UsageError("Provide either --date or --start-date and --end-date.")
+
+    if date:
+        start_date = date
+        end_date = date
+
+    if not start_date or not end_date:
+        raise click.UsageError("Provide either --date or --start-date and --end-date.")
+
+    pipeline = OEILSummariesPipeline(
+        start_date=start_date.date(),
+        end_date=end_date.date(),
+        force=True,
+    )
+
     pipeline.run()
