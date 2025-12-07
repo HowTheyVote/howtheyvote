@@ -533,7 +533,7 @@ def test_procedure_scraper_multiple_responsible_committees(responses):
 
 def test_procedure_scraper_apostrophization(responses):
     responses.get(
-        "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference=2022/0377(NLE)",
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2022/0377(NLE)",
         body=load_fixture("scrapers/data/votes/oeil-procedure-file_2022_0377-nle.html"),
     )
 
