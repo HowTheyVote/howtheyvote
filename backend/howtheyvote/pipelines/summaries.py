@@ -3,15 +3,12 @@ from collections.abc import Iterator
 from datetime import datetime, timedelta
 
 from sqlalchemy import func, select
-from structlog import get_logger
 
 from ..db import Session
 from ..models import OEILSummary, Vote
 from ..scrapers import OEILSummaryIDScraper, OEILSummaryScraper, ScrapingError
 from ..store import Aggregator, BulkWriter, index_records, map_summary, map_vote
 from .common import BasePipeline
-
-log = get_logger(__name__)
 
 
 class OEILSummaryPipeline(BasePipeline):
@@ -42,7 +39,7 @@ class OEILSummaryPipeline(BasePipeline):
 
         writer = BulkWriter()
 
-        log.info("Scrapping OEIL summaries")
+        self._log.info("Scrapping OEIL summary IDs")
 
         for vote in votes:
             if not vote.reference and not vote.procedure_reference:
@@ -56,12 +53,19 @@ class OEILSummaryPipeline(BasePipeline):
                 )
                 writer.add(scraper.run())
             except ScrapingError:
-                pass
+                self._log.exception(
+                    "Failed scraping OEIL summary ID",
+                    vote_id=vote.id,
+                    reference=vote.reference,
+                    procedure_reference=vote.procedure_reference,
+                    day_of_vote=vote.date,
+                )
 
         writer.flush()
         self._vote_ids = writer.get_touched()
 
     def _scrape_summaries(self) -> None:
+        self._log.info("Scraping OEIL summaries")
         writer = BulkWriter()
 
         for vote in self._votes():
@@ -71,7 +75,10 @@ class OEILSummaryPipeline(BasePipeline):
                 scraper = OEILSummaryScraper(summary_id=vote.oeil_summary_id)
                 writer.add(scraper.run())
             except ScrapingError:
-                pass
+                self._log.exception(
+                    "Failed scraping OEIL summary",
+                    oeil_summary_id=vote.oeil_summary_id,
+                )
 
         writer.flush()
         self._summary_ids = writer.get_touched()
@@ -85,9 +92,9 @@ class OEILSummaryPipeline(BasePipeline):
         return aggregator.mapped_records(map_func=map_vote, group_keys=self._vote_ids)
 
     def _index_votes(self) -> None:
-        log.info("Indexing votes")
+        self._log.info("Indexing votes")
         index_records(Vote, self._votes())
 
     def _index_summaries(self) -> None:
-        log.info("Indexing summaries")
+        self._log.info("Indexing summaries")
         index_records(OEILSummary, self._summaries())
