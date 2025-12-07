@@ -29,7 +29,7 @@ export default function MemberSharepic({ member }: MemberSharepicProps) {
         <Stack space="xxs">
           <p>
             <strong>
-              {member.country.label}・{member.group?.short_label}
+              {member.country.label} · {member.group?.short_label}
             </strong>
           </p>
           <h1 class="beta member-sharepic__title">
