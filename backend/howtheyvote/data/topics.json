@@ -1,0 +1,232 @@
+[
+  {
+    "code": "climate-and-environment",
+    "label": "Climate and environment",
+    "parent_code": null
+  },
+  {
+    "code": "animal-welfare",
+    "label": "Animal welfare",
+    "parent_code": "climate-and-environment"
+  },
+  {
+    "code": "biodiversity",
+    "label": "Biodiversity",
+    "parent_code": "climate-and-environment"
+  },
+  {
+    "code": "circular-economy",
+    "label": "Circular Economy",
+    "parent_code": "climate-and-environment"
+  },
+  {
+    "code": "climate-change",
+    "label": "Climate change",
+    "parent_code": "climate-and-environment"
+  },
+  {
+    "code": "consumer-rights",
+    "label": "Consumer rights",
+    "parent_code": null
+  },
+  {
+    "code": "consumer-protection",
+    "label": "Consumer protection",
+    "parent_code": "consumer-rights"
+  },
+  {
+    "code": "travel",
+    "label": "Travel",
+    "parent_code": "consumer-rights"
+  },
+  {
+    "code": "digital",
+    "label": "Digital",
+    "parent_code": null
+  },
+  {
+    "code": "artificial-intelligence",
+    "label": "Artificial Intelligence",
+    "parent_code": "digital"
+  },
+  {
+    "code": "big-data",
+    "label": "Big Data",
+    "parent_code": "digital"
+  },
+  {
+    "code": "online-safety",
+    "label": "Online safety",
+    "parent_code": "digital"
+  },
+  {
+    "code": "disinformation",
+    "label": "Disinformation",
+    "parent_code": null
+  },
+  {
+    "code": "economy-and-budget",
+    "label": "Economy and budget",
+    "parent_code": null
+  },
+  {
+    "code": "eu-budget",
+    "label": "EU budget",
+    "parent_code": "economy-and-budget"
+  },
+  {
+    "code": "taxation",
+    "label": "Taxation",
+    "parent_code": "economy-and-budget"
+  },
+  {
+    "code": "education-youth-and-culture",
+    "label": "Education, youth and culture",
+    "parent_code": null
+  },
+  {
+    "code": "energy",
+    "label": "Energy",
+    "parent_code": null
+  },
+  {
+    "code": "eu-values",
+    "label": "EU values",
+    "parent_code": null
+  },
+  {
+    "code": "european-elections",
+    "label": "European Elections",
+    "parent_code": null
+  },
+  {
+    "code": "food-and-agriculture",
+    "label": "Food and agriculture",
+    "parent_code": null
+  },
+  {
+    "code": "foreign-affairs",
+    "label": "Foreign affairs",
+    "parent_code": null
+  },
+  {
+    "code": "enlargement",
+    "label": "Enlargement",
+    "parent_code": "foreign-affairs"
+  },
+  {
+    "code": "international-trade",
+    "label": "International trade",
+    "parent_code": "foreign-affairs"
+  },
+  {
+    "code": "ukraine",
+    "label": "Ukraine",
+    "parent_code": "foreign-affairs"
+  },
+  {
+    "code": "future-of-europe",
+    "label": "Future of Europe",
+    "parent_code": null
+  },
+  {
+    "code": "conference-on-the-future-of-europe",
+    "label": "Conference on the future of Europe",
+    "parent_code": "future-of-europe"
+  },
+  {
+    "code": "state-of-the-eu-debates",
+    "label": "State of the EU debates",
+    "parent_code": "future-of-europe"
+  },
+  {
+    "code": "this-is-europe-debates",
+    "label": "This is Europe debates",
+    "parent_code": "future-of-europe"
+  },
+  {
+    "code": "gender-equality",
+    "label": "Gender equality",
+    "parent_code": null
+  },
+  {
+    "code": "health",
+    "label": "Health",
+    "parent_code": null
+  },
+  {
+    "code": "covid-19",
+    "label": "Covid-19",
+    "parent_code": "health"
+  },
+  {
+    "code": "medicines",
+    "label": "Medicines",
+    "parent_code": "health"
+  },
+  {
+    "code": "how-the-eu-works",
+    "label": "How the EU works",
+    "parent_code": null
+  },
+  {
+    "code": "explainer-videos",
+    "label": "Explainer videos",
+    "parent_code": "how-the-eu-works"
+  },
+  {
+    "code": "how-parliament-is-run",
+    "label": "How Parliament is run",
+    "parent_code": "how-the-eu-works"
+  },
+  {
+    "code": "scrutinising-the-commission",
+    "label": "Scrutinising the Commission",
+    "parent_code": "how-the-eu-works"
+  },
+  {
+    "code": "lux-film-award",
+    "label": "LUX film award",
+    "parent_code": null
+  },
+  {
+    "code": "migration",
+    "label": "Migration",
+    "parent_code": null
+  },
+  {
+    "code": "sakharov-price",
+    "label": "Sakharov price",
+    "parent_code": null
+  },
+  {
+    "code": "social-protection",
+    "label": "Social protection",
+    "parent_code": null
+  },
+  {
+    "code": "unemployment",
+    "label": "Unemployment",
+    "parent_code": "social-protection"
+  },
+  {
+    "code": "workers-rights",
+    "label": "Worker’s rights",
+    "parent_code": "social-protection"
+  },
+  {
+    "code": "terrorism-and-security",
+    "label": "Terrorism and security",
+    "parent_code": null
+  },
+  {
+    "code": "border-controls",
+    "label": "Border controls",
+    "parent_code": "terrorism-and-security"
+  },
+  {
+    "code": "fighting-terrorism",
+    "label": "Fighting terrorism",
+    "parent_code": "terrorism-and-security"
+  }
+]

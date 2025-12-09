@@ -5,7 +5,7 @@ from collections.abc import Iterable, Iterator
 from unidecode import unidecode
 
 from ..helpers import make_key
-from ..models import Fragment, PressRelease, Vote
+from ..models import Fragment, PressRelease, Topic, Vote
 from ..vote_stats import count_vote_positions
 
 
@@ -247,3 +247,22 @@ class PressReleaseAnalyzer:
             return set()
 
         return self._releases_by_date_position_counts[key]
+
+
+class TopicsAnalyzer:
+    def __init__(self, vote: Vote):
+        self.vote = vote
+
+    def run(self) -> Fragment | None:
+        # TODO
+        topics = [
+            Topic["biodiversity"],
+        ]
+
+        return Fragment(
+            model="Vote",
+            source_id=self.vote.id,
+            source_name=type(self).__name__,
+            group_key=self.vote.id,
+            data={"topics": [topic.code for topic in topics]},
+        )
