@@ -17,7 +17,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country
+from .models import BaseWithId, Committee, Country, Topic
 
 log = get_logger(__name__)
 
@@ -35,6 +35,7 @@ SEARCH_FIELDS = [
     "rapporteur",
     "press_release",
     "oeil_summary",
+    "topics"
 ]
 
 
@@ -53,6 +54,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "press_release": "XPRR",
     "member_id": "XM",
     "oeil_summary": "XS",
+    "topics": "XT"
 }
 
 
@@ -127,6 +129,16 @@ class CommitteeType(Type[Committee]):
     def get_short_label(self, value: Committee) -> str | None:
         return value.abbreviation
 
+class TopicType(Type[Topic]):
+    def serialize_value(self, value: Topic) -> str:
+        return value.code
+
+    def deserialize_value(self, value: str) -> Topic:
+        return Topic[value]
+
+    def get_label(self, value: Topic) -> str:
+        return value.label
+
 
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "date": DateType(),
@@ -135,6 +147,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "reference": StringType(),
     "procedure_reference": StringType(),
     "member_id": IntegerType(),
+    "topics": TopicType(),
 }
 
 
