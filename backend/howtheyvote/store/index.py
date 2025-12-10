@@ -169,6 +169,10 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     if vote.rapporteur:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
+    for topic in vote.topics:
+        generator.index_text(topic.label, 1, field_to_prefix("topics"))
+        generator.increase_termpos()
+
     # Store date in slot for ranking and range filters
     date = serialize_sortable_value(vote.date)
     doc.add_value(field_to_slot("date"), date)
