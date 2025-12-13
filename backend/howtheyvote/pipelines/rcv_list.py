@@ -1,6 +1,7 @@
 import datetime
 from collections.abc import Iterator
 
+import sentry_sdk
 from cachetools import LRUCache
 from sqlalchemy import select
 from structlog import get_logger
@@ -136,12 +137,13 @@ class RCVListPipeline(BasePipeline):
 
             try:
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 log.exception(
                     "Failed scraping document",
                     vote_id=vote.id,
                     reference=vote.reference,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
@@ -165,12 +167,16 @@ class RCVListPipeline(BasePipeline):
 
             try:
                 writer.add(scraper.run())
-            except ScrapingError:
+            except NoWorkingUrlError:
+                # This is expected, as EUR-Lex doesn’t have information for all documents
+                pass
+            except ScrapingError as err:
                 log.exception(
                     "Failed scraping EUR-Lex document",
                     vote_id=vote.id,
                     procedure_reference=vote.reference,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
@@ -195,12 +201,13 @@ class RCVListPipeline(BasePipeline):
 
             try:
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 log.exception(
                     "Failed scraping procedure",
                     vote_id=vote.id,
                     procedure_reference=vote.procedure_reference,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
@@ -224,12 +231,16 @@ class RCVListPipeline(BasePipeline):
 
             try:
                 writer.add(scraper.run())
-            except ScrapingError:
+            except NoWorkingUrlError:
+                # This is expected, as EUR-Lex doesn’t have information for all procedures
+                pass
+            except ScrapingError as err:
                 log.exception(
                     "Failed scraping EUR-Lex procedure",
                     vote_id=vote.id,
                     procedure_reference=vote.procedure_reference,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 

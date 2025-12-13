@@ -1,5 +1,6 @@
 from collections.abc import Iterator
 
+import sentry_sdk
 from structlog import get_logger
 
 from ..models import PlenarySession
@@ -48,11 +49,12 @@ class SessionsPipeline(BasePipeline):
             try:
                 scraper = ODPSessionScraper(start_date=plenary_session.start_date)
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 log.exception(
                     "Failed scraping location of plenary session",
                     session_id=plenary_session.id,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 

@@ -1,6 +1,7 @@
 import datetime
 from collections.abc import Iterator
 
+import sentry_sdk
 from sqlalchemy import func, select
 from structlog import get_logger
 
@@ -111,12 +112,13 @@ class PressPipeline(BasePipeline):
             try:
                 scraper = PressReleaseScraper(release_id=release_id)
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 log.exception(
                     "Failed scraping press release contents",
                     release_id=release_id,
                     date=self.date,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
