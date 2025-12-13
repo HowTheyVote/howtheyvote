@@ -1,6 +1,7 @@
 import datetime as dt
 from collections.abc import Iterator
 
+import sentry_sdk
 from sqlalchemy import and_, func, select
 
 from ..db import Session
@@ -56,7 +57,7 @@ class OEILSummariesPipeline(BasePipeline):
                     day_of_vote=vote.date,
                 )
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 self._log.exception(
                     "Failed scraping OEIL summary ID",
                     vote_id=vote.id,
@@ -64,6 +65,7 @@ class OEILSummariesPipeline(BasePipeline):
                     procedure_reference=vote.procedure_reference,
                     day_of_vote=vote.date,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
         self._vote_ids = writer.get_touched()
@@ -78,11 +80,12 @@ class OEILSummariesPipeline(BasePipeline):
             try:
                 scraper = OEILSummaryScraper(summary_id=vote.oeil_summary_id)
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 self._log.exception(
                     "Failed scraping OEIL summary",
                     oeil_summary_id=vote.oeil_summary_id,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
         self._summary_ids = writer.get_touched()

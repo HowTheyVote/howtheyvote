@@ -1,6 +1,7 @@
 import time
 from collections.abc import Iterator
 
+import sentry_sdk
 from structlog import get_logger
 
 from .. import config
@@ -58,10 +59,13 @@ class MembersPipeline(BasePipeline):
             try:
                 scraper = MemberGroupsScraper(web_id=member.id, term=self.term)
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 log.exception(
-                    "Failed scraping member groups", member_id=member.id, term=self.term
+                    "Failed scraping member groups",
+                    member_id=member.id,
+                    term=self.term,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
@@ -74,10 +78,13 @@ class MembersPipeline(BasePipeline):
             try:
                 scraper = MemberInfoScraper(web_id=member.id)
                 writer.add(scraper.run())
-            except ScrapingError:
+            except ScrapingError as err:
                 log.exception(
-                    "Failed scraping member info", member_id=member.id, term=self.term
+                    "Failed scraping member info",
+                    member_id=member.id,
+                    term=self.term,
                 )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
@@ -89,8 +96,9 @@ class MembersPipeline(BasePipeline):
 
             try:
                 path = download_file(url, member_photo_path(member.id))
-            except Exception:
-                log.exception("Failed download member photo.", member_id=member.id)
+            except Exception as err:
+                log.exception("Failed downloading member photo.", member_id=member.id)
+                sentry_sdk.capture_exception(err)
                 continue
 
             if not path:
@@ -111,8 +119,9 @@ class MembersPipeline(BasePipeline):
                 path = member_sharepic_path(member.id)
                 ensure_parent(path)
                 path.write_bytes(image)
-            except Exception:
+            except Exception as err:
                 log.exception("Failed generating member sharepic.", member=member.id)
+                sentry_sdk.capture_exception(err)
 
     def _index_members(self) -> None:
         log.info("Indexing members", term=self.term)
