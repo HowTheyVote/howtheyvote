@@ -27,6 +27,7 @@ from ..models import (
     Fragment,
     Member,
     PressRelease,
+    Topic,
     Vote,
 )
 from ..query import fragments_for_records
@@ -201,6 +202,7 @@ def index() -> Response:
                         enum:
                             - geo_areas
                             - responsible_committees
+                            - topics
         responses:
             '200':
                 description: Ok
@@ -324,6 +326,7 @@ def member_votes_index(member_id: int) -> Response:
                         enum:
                             - geo_areas
                             - responsible_committees
+                            - topics
         responses:
             '200':
                 description: Ok
@@ -515,10 +518,13 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     committees = request.args.getlist("responsible_committees", type=_as_committee)
     query = query.filter("responsible_committees", "in", committees)
 
+    topics = request.args.getlist("topics", type=_as_topic)
+    query = query.filter("topics", "in", topics)
+
     # Facets
     facets = request.args.getlist(
         "facets",
-        type=one_of("geo_areas", "responsible_committees"),
+        type=one_of("geo_areas", "responsible_committees", "topics"),
     )
 
     for field in facets:
@@ -537,6 +543,13 @@ def _as_country(code: str) -> Country:
 def _as_committee(code: str) -> Committee:
     try:
         return Committee[code]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_topic(code: str) -> Topic:
+    try:
+        return Topic[code]
     except KeyError as exc:
         raise ValueError() from exc
 

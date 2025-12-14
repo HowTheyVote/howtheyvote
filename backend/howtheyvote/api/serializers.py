@@ -84,15 +84,21 @@ def serialize_country(country: Country) -> CountryDict:
         "label": country.label,
     }
 
+
 class TopicDict(TypedDict):
     code: Annotated[str, "climate-change"]
+    """Unique identifier of the topic"""
+
     label: Annotated[str, "Climate change"]
+    """Readable name of the topic"""
+
+    parent_code: Annotated[str | None, "climate-and-environment"]
+    """In the case of second-level topic, the code of the upper hierarchy."""
+
 
 def serialize_topic(topic: Topic) -> TopicDict:
-    return {
-        "code": topic.code,
-        "label": topic.label
-    }
+    return {"code": topic.code, "label": topic.label, "parent_code": topic.parent_code}
+
 
 class CommitteeDict(TypedDict):
     """Committee of the European Parliament"""
@@ -386,6 +392,7 @@ class BaseVoteDict(TypedDict):
     """Countries or territories related to this vote"""
 
     topics: list[TopicDict]
+    """Topics this vote is concerned with"""
 
     eurovoc_concepts: list[EurovocConceptDict]
     """Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus

@@ -60,6 +60,14 @@ function SearchFiltersDialog({
               end={searchQuery.getFilter("date[lte]")[0]}
             />
           </SearchFacet>
+          <SearchFacet label="Topics">
+            <SearchFacetMultiselectOptions
+              field="topics"
+              options={facets.topics}
+              selected={searchQuery.getFilter("topics")}
+              searchLabel="Filter topics"
+            />
+          </SearchFacet>
           <SearchFacet label="Country">
             <SearchFacetMultiselectOptions
               field="geo_areas"

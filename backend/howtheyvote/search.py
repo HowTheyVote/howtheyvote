@@ -35,7 +35,7 @@ SEARCH_FIELDS = [
     "rapporteur",
     "press_release",
     "oeil_summary",
-    "topics"
+    "topics",
 ]
 
 
@@ -54,7 +54,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "press_release": "XPRR",
     "member_id": "XM",
     "oeil_summary": "XS",
-    "topics": "XT"
+    "topics": "XT",
 }
 
 
@@ -129,6 +129,7 @@ class CommitteeType(Type[Committee]):
     def get_short_label(self, value: Committee) -> str | None:
         return value.abbreviation
 
+
 class TopicType(Type[Topic]):
     def serialize_value(self, value: Topic) -> str:
         return value.code
@@ -168,6 +169,7 @@ FIELD_TO_SLOT_MAPPING = {
     "has_press_release": 1,
     "geo_areas": 2,
     "responsible_committees": 3,
+    "topics": 4,
 }
 
 # Some document fields are more important than others. The following factors are applied

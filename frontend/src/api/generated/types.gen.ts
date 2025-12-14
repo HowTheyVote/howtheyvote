@@ -106,6 +106,10 @@ export type BaseVote = {
      */
     geo_areas: Array<Country>;
     /**
+     * Topics this vote is concerned with
+     */
+    topics: Array<Topic>;
+    /**
      * Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus
      * that are related to this vote
      */
@@ -459,6 +463,21 @@ export type Statistics = {
     last_update_date: string;
 };
 
+export type Topic = {
+    /**
+     * Unique identifier of the topic
+     */
+    code: string;
+    /**
+     * Readable name of the topic
+     */
+    label: string;
+    /**
+     * In the case of second-level topic, the code of the upper hierarchy.
+     */
+    parent_code?: string;
+};
+
 export type Vote = BaseVote & {
     /**
      * Information about the legislative procedure to which this vote belongs
@@ -555,7 +574,7 @@ export type GetVotesData = {
          * Return facet options for the given fields. Can be set multiple times.
          *
          */
-        facets?: Array<('geo_areas' | 'responsible_committees')>;
+        facets?: Array<('geo_areas' | 'responsible_committees' | 'topics')>;
         /**
          * Filter votes by geographic area. Valid values are 3-letter country codes
          * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
@@ -619,7 +638,7 @@ export type GetMemberVotesData = {
          * Return facet options for the given fields. Can be set multiple times.
          *
          */
-        facets?: Array<('geo_areas' | 'responsible_committees')>;
+        facets?: Array<('geo_areas' | 'responsible_committees' | 'topics')>;
         /**
          * Filter votes by geographic area. Valid values are 3-letter country codes
          * [as assigned by the Publications Office of the European Union](https://op.europa.eu/en/web/eu-vocabularies/countries-and-territories).
