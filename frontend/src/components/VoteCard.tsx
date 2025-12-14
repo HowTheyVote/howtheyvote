@@ -22,6 +22,11 @@ export default function VoteCard({ vote, thumb }: VoteCardProps) {
             vote.geo_areas.map((area) => (
               <Tag key={area.code}>{area.label}</Tag>
             ))}
+          {vote.topics.length > 0 &&
+            vote.topics.map((topic) => (
+              <Tag key={topic.code}>{topic.label}</Tag>
+            ))}
+
           {formatDate(new Date(vote.timestamp))}
         </div>
       </div>
