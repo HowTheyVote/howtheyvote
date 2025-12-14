@@ -15,6 +15,7 @@ from ..models import (
     PlenarySessionStatus,
     ProcedureStage,
     ProcedureType,
+    Topic,
     Vote,
     VotePosition,
     VoteResult,
@@ -83,6 +84,15 @@ def serialize_country(country: Country) -> CountryDict:
         "label": country.label,
     }
 
+class TopicDict(TypedDict):
+    code: Annotated[str, "climate-change"]
+    label: Annotated[str, "Climate change"]
+
+def serialize_topic(topic: Topic) -> TopicDict:
+    return {
+        "code": topic.code,
+        "label": topic.label
+    }
 
 class CommitteeDict(TypedDict):
     """Committee of the European Parliament"""
@@ -375,6 +385,8 @@ class BaseVoteDict(TypedDict):
     geo_areas: list[CountryDict]
     """Countries or territories related to this vote"""
 
+    topics: list[TopicDict]
+
     eurovoc_concepts: list[EurovocConceptDict]
     """Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus
     that are related to this vote"""
@@ -391,6 +403,7 @@ class BaseVoteDict(TypedDict):
 
 def serialize_base_vote(vote: Vote) -> BaseVoteDict:
     geo_areas = [serialize_country(geo_area) for geo_area in vote.geo_areas]
+    topics = [serialize_topic(topic) for topic in vote.topics]
     eurovoc_concepts = [serialize_eurovoc_concept(ec) for ec in vote.eurovoc_concepts]
     oeil_subjects = [serialize_oeil_subject(os) for os in vote.oeil_subjects]
     responsible_committees = [
@@ -415,6 +428,7 @@ def serialize_base_vote(vote: Vote) -> BaseVoteDict:
         "geo_areas": geo_areas,
         "eurovoc_concepts": eurovoc_concepts,
         "oeil_subjects": oeil_subjects,
+        "topics": topics,
         "responsible_committees": responsible_committees,
         "result": vote.result,
     }
