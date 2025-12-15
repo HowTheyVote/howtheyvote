@@ -92,12 +92,9 @@ class TopicDict(TypedDict):
     label: Annotated[str, "Climate change"]
     """Readable name of the topic"""
 
-    parent_code: Annotated[str | None, "climate-and-environment"]
-    """In the case of second-level topic, the code of the upper hierarchy."""
-
 
 def serialize_topic(topic: Topic) -> TopicDict:
-    return {"code": topic.code, "label": topic.label, "parent_code": topic.parent_code}
+    return {"code": topic.code, "label": topic.label}
 
 
 class CommitteeDict(TypedDict):
