@@ -250,55 +250,55 @@ class PressReleaseAnalyzer:
 
 
 class TopicsAnalyzer:
+    subject_to_topic = {
+        "2.60": Topic["economy-and-budget"],
+        "2.70": Topic["taxation"],
+        "3.10": Topic["food-and-agriculture"],
+        "3.15": Topic["food-and-agriculture"],
+        "3.30.25": Topic["digital"],
+        "3.40": Topic["economy-and-budget"],
+        "3.60": Topic["energy"],
+        "3.70": Topic["climate-and-environment"],
+        "3.70.03": Topic["climate-change"],
+        "3.70.01": Topic["biodiversity"],
+        "4.10": Topic["social-protection"],
+        "4.15": Topic["workers-rights"],
+        "4.20": Topic["health"],
+        "4.40": Topic["education-youth-and-culture"],
+        "4.45": Topic["education-youth-and-culture"],
+        "4.50": Topic["travel"],
+        "4.60": Topic["consumer-protection"],
+        "5.03": Topic["economy-and-budget"],
+        "5.05": Topic["economy-and-budget"],
+        "5.10": Topic["economy-and-budget"],
+        "5.20": Topic["economy-and-budget"],
+        "6.30": Topic["foreign-affairs"],
+        "6.40": Topic["foreign-affairs"],
+        "6.50": Topic["foreign-affairs"],
+        "7.10.02": Topic["migration"],
+        "7.10.04": Topic["migration"],
+        "7.10.06": Topic["migration"],
+        "7.10.08": Topic["migration"],
+        "8.20": Topic["enlargement"],
+        "8.70": Topic["economy-and-budget"],
+    }
+
     def __init__(self, vote: Vote):
         self.vote = vote
 
     def run(self) -> Fragment | None:
-        if self.vote.oeil_subjects == []:
+        if not self.vote.oeil_subjects:
             return None
 
         topics = []
 
         oeil_subjects = " ".join([subject.code for subject in self.vote.oeil_subjects])
 
-        subject_to_topic = {
-            "2.60": Topic["economy-and-budget"],
-            "2.70": Topic["taxation"],
-            "3.10": Topic["food-and-agriculture"],
-            "3.15": Topic["food-and-agriculture"],
-            "3.30.25": Topic["digital"],
-            "3.40": Topic["economy-and-budget"],
-            "3.60": Topic["energy"],
-            "3.70": Topic["climate-and-environment"],
-            "3.70.03": Topic["climate-change"],
-            "3.70.01": Topic["biodiversity"],
-            "4.10": Topic["social-protection"],
-            "4.15": Topic["workers-rights"],
-            "4.20": Topic["health"],
-            "4.40": Topic["education-youth-and-culture"],
-            "4.45": Topic["education-youth-and-culture"],
-            "4.50": Topic["travel"],
-            "4.60": Topic["consumer-protection"],
-            "5.03": Topic["economy-and-budget"],
-            "5.05": Topic["economy-and-budget"],
-            "5.10": Topic["economy-and-budget"],
-            "5.20": Topic["economy-and-budget"],
-            "6.30": Topic["foreign-affairs"],
-            "6.40": Topic["foreign-affairs"],
-            "6.50": Topic["foreign-affairs"],
-            "7.10.02": Topic["migration"],
-            "7.10.04": Topic["migration"],
-            "7.10.06": Topic["migration"],
-            "7.10.08": Topic["migration"],
-            "8.20": Topic["enlargement"],
-            "8.70": Topic["economy-and-budget"],
-        }
-
-        for subject, topic in subject_to_topic.items():
+        for subject, topic in TopicsAnalyzer.subject_to_topic.items():
             if subject in oeil_subjects:
                 topics.append(topic)
 
-        if topics == []:
+        if not topics:
             return None
 
         return Fragment(
