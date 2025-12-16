@@ -51,6 +51,7 @@ build-client:
 		--loader:.png=file \
 		--loader:.svg=file \
 		--public-path=/dist \
+		--sourcemap \
 		--outfile=dist/client.entry.js \
 		--minify \
 		--keep-names \
