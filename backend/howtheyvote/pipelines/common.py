@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Any
 
+import sentry_sdk
 from prometheus_client import Counter
 from requests import Response
 from structlog import get_logger
@@ -97,8 +98,9 @@ def generate_vote_sharepics(votes: Iterable[Vote]) -> None:
             path.write_bytes(image)
             SHAREPICS_GENERATED.labels(status="success").inc()
             success_count += 1
-        except Exception:
+        except Exception as err:
             log.exception("Failed generating vote sharepic.", vote_id=vote.id)
+            sentry_sdk.capture_exception(err)
             SHAREPICS_GENERATED.labels(status="error").inc()
             failure_count += 1
 
