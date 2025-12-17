@@ -200,6 +200,7 @@ class MemberGroupsScraper(BeautifulSoupScraper):
             "Co-treasurer",
             "Member",
             "First Vice-Chair/Member of the Bureau",
+            "Treasurer/Vice-Chair/Member of the Bureau",
         ]
 
         for pos in positions:
