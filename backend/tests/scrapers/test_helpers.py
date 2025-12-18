@@ -14,8 +14,8 @@ from howtheyvote.models import (
 )
 from howtheyvote.scrapers.common import ScrapingError
 from howtheyvote.scrapers.helpers import (
-    apostrophize,
     fill_missing_by_reference,
+    fix_spelling_edge_cases,
     normalize_name,
     normalize_whitespace,
     parse_amendment_authors,
@@ -25,9 +25,15 @@ from howtheyvote.scrapers.helpers import (
 )
 
 
-def test_apostrophize():
-    assert apostrophize("Russia´s") == "Russia’s"
-    assert apostrophize("Tést") == "Tést"
+def test_title_misspelling_correction():
+    assert fix_spelling_edge_cases("Russia´s") == "Russia’s"
+    assert fix_spelling_edge_cases("Tést") == "Tést"
+    assert (
+        fix_spelling_edge_cases(
+            "European High Performance Computing Joint Undertaking (EuroHPC)"
+        )
+        == "European High Performance Computing Joint Undertaking (EuroHPC)"
+    )
 
 
 def test_parse_full_name():

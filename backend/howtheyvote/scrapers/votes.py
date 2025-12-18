@@ -28,8 +28,8 @@ from ..models import (
 )
 from .common import BeautifulSoupScraper, NoWorkingUrlError, RequestCache, ScrapingError
 from .helpers import (
-    apostrophize,
     fill_missing_by_reference,
+    fix_spelling_edge_cases,
     normalize_name,
     normalize_whitespace,
     parse_amendment_authors,
@@ -689,7 +689,7 @@ class ProcedureScraper(BeautifulSoupScraper):
         for prefix in self.TITLE_PREFIXES:
             normalized_title = normalized_title.removeprefix(prefix).strip()
         normalized_title = normalized_title[:1].upper() + normalized_title[1:]
-        return apostrophize(normalized_title)
+        return fix_spelling_edge_cases(normalized_title)
 
     def _geo_areas(self, doc: BeautifulSoup) -> list[str]:
         # The website unfortunately doesn't use semantic markup, so we have
