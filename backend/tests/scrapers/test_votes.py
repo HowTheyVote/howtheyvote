@@ -552,6 +552,22 @@ def test_procedure_scraper_apostrophization(responses):
     )
 
 
+def test_procedure_scraper_non_breaking_spaces(responses):
+    responses.get(
+        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2025/0229(NLE)",
+        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2025_0229-nle.html"),
+    )
+
+    scraper = ProcedureScraper(
+        vote_id=182462, procedure_reference="2025/0229(NLE)", reference=None
+    )
+    fragment = scraper.run()
+    assert (
+        fragment.data["procedure_title"]
+        == "European High Performance Computing Joint Undertaking (EuroHPC)"
+    )
+
+
 def test_eurlex_procedure_scraper_eurovoc_concepts(responses):
     responses.get(
         "https://eur-lex.europa.eu/procedure/EN/2021_106",
