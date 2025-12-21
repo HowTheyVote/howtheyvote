@@ -86,6 +86,9 @@ def serialize_country(country: Country) -> CountryDict:
 
 
 class TopicDict(TypedDict):
+    """A topic (policy area) a vote is concerned with.
+    Expect topics and their names to change in the future as we improve this feature."""
+
     code: Annotated[str, "climate-change"]
     """Unique identifier of the topic"""
 
@@ -389,7 +392,8 @@ class BaseVoteDict(TypedDict):
     """Countries or territories related to this vote"""
 
     topics: list[TopicDict]
-    """Topics this vote is concerned with"""
+    """Topics this vote is concerned with.
+    These are work-in-progress. Do not rely on them being stable at the moment."""
 
     eurovoc_concepts: list[EurovocConceptDict]
     """Concepts from the [EuroVoc](https://eur-lex.europa.eu/browse/eurovoc.html) thesaurus

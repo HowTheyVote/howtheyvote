@@ -106,7 +106,8 @@ export type BaseVote = {
      */
     geo_areas: Array<Country>;
     /**
-     * Topics this vote is concerned with
+     * Topics this vote is concerned with.
+     * These are work-in-progress. Do not rely on them being stable at the moment.
      */
     topics: Array<Topic>;
     /**
@@ -463,6 +464,9 @@ export type Statistics = {
     last_update_date: string;
 };
 
+/**
+ * A topic (policy area) a vote is concerned with. Expect topics and their names to change in the future as we improve this feature.
+ */
 export type Topic = {
     /**
      * Unique identifier of the topic
@@ -472,10 +476,6 @@ export type Topic = {
      * Readable name of the topic
      */
     label: string;
-    /**
-     * In the case of second-level topic, the code of the upper hierarchy.
-     */
-    parent_code?: string;
 };
 
 export type Vote = BaseVote & {
