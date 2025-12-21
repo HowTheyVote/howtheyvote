@@ -76,7 +76,7 @@ def test_run(responses, db_session, member, mocker):
     assert votes[0].title is None
     assert (
         votes[0].procedure_title
-        == "EP\xa0Rules of Procedure: training on preventing conflict and harassment in the workplace and on good office management"
+        == "EP Rules of Procedure: training on preventing conflict and harassment in the workplace and on good office management"
     )
     assert votes[0].reference == "A9-0163/2024"
     assert votes[0].procedure_reference == "2024/2006(REG)"
