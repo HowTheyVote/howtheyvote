@@ -6,6 +6,7 @@ import "./VoteResultChart.css";
 
 type VoteResultChartProps = {
   stats: VotePositionCounts;
+  includeNoShows?: boolean;
   style?: "slim";
 };
 
@@ -66,14 +67,18 @@ function Summary({ stats }: SummaryProps) {
 export default function VoteResultChart({
   stats,
   style,
+  includeNoShows,
 }: VoteResultChartProps) {
-  const total = stats.FOR + stats.AGAINST + stats.ABSTENTION;
+  let total = stats.FOR + stats.AGAINST + stats.ABSTENTION;
+  if (includeNoShows) total += stats.DID_NOT_VOTE;
   return (
     <figure className={bem("vote-result-chart", style)}>
       <div class="vote-result-chart__bars" aria-hidden="true">
         <Bar position="FOR" value={stats.FOR} total={total} />
         <Bar position="AGAINST" value={stats.AGAINST} total={total} />
         <Bar position="ABSTENTION" value={stats.ABSTENTION} total={total} />
+        { includeNoShows &&         <Bar position="DID_NOT_VOTE" value={stats.DID_NOT_VOTE} total={total} />
+}
       </div>
       <figcaption class={style === "slim" ? "visually-hidden" : undefined}>
         <Summary stats={stats} />
