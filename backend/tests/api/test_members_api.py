@@ -56,6 +56,7 @@ def test_members_api_show(api, db_session):
         "id": 1,
         "first_name": "John",
         "last_name": "Doe",
+        "full_name": "John Doe",
         "terms": [9],
         "date_of_birth": None,
         "country": {
