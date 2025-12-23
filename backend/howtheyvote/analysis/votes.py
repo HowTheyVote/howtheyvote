@@ -298,13 +298,15 @@ class TopicsAnalyzer:
         if not self.vote.oeil_subjects:
             return None
 
+        oeil_subjects = set()
+        for subject in self.vote.oeil_subjects:
+            oeil_subjects.add(subject)
+            oeil_subjects.update(subject.parents)
+
         topics = []
-
-        oeil_subjects = " ".join([subject.code for subject in self.vote.oeil_subjects])
-
-        for subject, topic in TopicsAnalyzer.subject_to_topic.items():
-            if subject in oeil_subjects:
-                topics.append(topic)
+        for subject in oeil_subjects:
+            if subject.code in TopicsAnalyzer.subject_to_topic:
+                topics.append(TopicsAnalyzer.subject_to_topic[subject.code])
 
         if not topics:
             return None

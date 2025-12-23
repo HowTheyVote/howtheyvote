@@ -40,6 +40,16 @@ class OEILSubject(DeserializableDataclass, metaclass=OEILSubjectMeta):
 
         return OEILSubject[self.parent_code]
 
+    @property
+    def parents(self) -> set["OEILSubject"]:
+        parents = set()
+
+        if self.parent:
+            parents.add(self.parent)
+            parents.update(self.parent.parents)
+
+        return parents
+
 
 oeil_subjects = DataclassContainer(
     dataclass=OEILSubject,
