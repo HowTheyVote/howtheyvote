@@ -20,8 +20,7 @@ const memberVotes = [
   {
     member: {
       id: 1,
-      first_name: "Max",
-      last_name: "MUSTERMANN",
+      full_name: "Max MUSTERMANN",
       terms: [9],
       country,
       group,
@@ -31,8 +30,7 @@ const memberVotes = [
   {
     member: {
       id: 2,
-      first_name: "Beate",
-      last_name: "BEISPIEL",
+      full_name: "Beate BEISPIEL",
       terms: [9],
       country,
       group,
@@ -42,8 +40,7 @@ const memberVotes = [
   {
     member: {
       id: 3,
-      first_name: "Noël",
-      last_name: "TOULEMONDE",
+      full_name: "Noël TOULEMONDE",
       terms: [9],
       country,
       group,
@@ -141,8 +138,8 @@ describe("MemberVotesList", () => {
     const memberVotes = [...Array(20).keys()].map((i) => ({
       member: {
         id: i,
-        first_name: "Member",
-        last_name: `${i + 1}`,
+        full_name: `Member ${i + 1}`,
+
         country,
         group,
       } as Member,
@@ -177,8 +174,7 @@ describe("MemberVotesList", () => {
       {
         member: {
           id: 1,
-          first_name: "Max",
-          last_name: "MUSTERMANN",
+          full_name: "Max MUSTERMANN",
           country,
           group: {
             code: "EPP",
@@ -190,8 +186,7 @@ describe("MemberVotesList", () => {
       {
         member: {
           id: 2,
-          first_name: "Beate",
-          last_name: "BEISPIEL",
+          full_name: "Beate BEISPIEL",
           country,
           group: {
             code: "SD",
@@ -230,8 +225,7 @@ describe("MemberVotesList", () => {
       {
         member: {
           id: 1,
-          first_name: "Max",
-          last_name: "MUSTERMANN",
+          full_name: "Max MUSTERMANN",
           group,
           country: {
             code: "DEU",
@@ -243,8 +237,7 @@ describe("MemberVotesList", () => {
       {
         member: {
           id: 2,
-          first_name: "Noël",
-          last_name: "TOULEMONDE",
+          full_name: "Noël TOULEMONDE",
           group,
           country: {
             code: "FRA",
@@ -283,8 +276,7 @@ describe("MemberVotesList", () => {
       {
         member: {
           id: 1,
-          first_name: "Max",
-          last_name: "MUSTERMANN",
+          full_name: "Max MUSTERMANN",
           group,
           country,
         } as Member,
@@ -293,8 +285,7 @@ describe("MemberVotesList", () => {
       {
         member: {
           id: 2,
-          first_name: "Beate",
-          last_name: "BEISPIEL",
+          full_name: "Beate BEISPIEL",
           group,
           country,
         } as Member,

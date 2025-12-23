@@ -152,6 +152,9 @@ class BaseMemberDict(TypedDict):
     last_name: Annotated[str, "METSOLA"]
     """Last name"""
 
+    full_name: Annotated[str, "Roberta METSOLA"]
+    """First and last name"""
+
     country: CountryDict
 
     group: GroupDict | None
@@ -177,6 +180,7 @@ def serialize_base_member(
         "id": member.id,
         "first_name": member.first_name,
         "last_name": member.last_name,
+        "full_name": member.full_name,
         "country": serialize_country(member.country),
         "group": serialize_group(group) if group else None,
         "photo_url": member.photo_url(),

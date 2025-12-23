@@ -32,9 +32,7 @@ export default function MemberSharepic({ member }: MemberSharepicProps) {
               {member.country.label} · {member.group?.short_label}
             </strong>
           </p>
-          <h1 class="beta member-sharepic__title">
-            {member.first_name} {member.last_name}
-          </h1>
+          <h1 class="beta member-sharepic__title">{member.full_name}</h1>
           <p>Find out how they vote in the European Parliament.</p>
         </Stack>
       </div>

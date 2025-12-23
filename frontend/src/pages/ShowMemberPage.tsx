@@ -64,7 +64,7 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
   return (
     <App
       title={[
-        `${data.member.first_name} ${data.member.last_name}`,
+        `${data.member.full_name}`,
         "Member of the European Parliament",
         "Votes",
       ]}
@@ -91,7 +91,7 @@ export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
 };
 
 function MetaTags({ member }: { member: Member }) {
-  const title = `${member.first_name} ${member.last_name} ・ Member of the European Parliament`;
+  const title = `${member.full_name} ・ Member of the European Parliament`;
   const description = "Find out how they vote in the European Parliament.";
 
   return (

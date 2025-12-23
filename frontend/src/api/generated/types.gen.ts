@@ -39,6 +39,10 @@ export type BaseMember = {
      * Last name
      */
     last_name: string;
+    /**
+     * First and last name
+     */
+    full_name: string;
     country: Country;
     /**
      * The MEP’s political group at the time of the vote

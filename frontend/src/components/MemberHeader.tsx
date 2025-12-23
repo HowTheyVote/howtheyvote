@@ -18,7 +18,7 @@ export default function MemberHeader({ member, size }: MemberHeaderProps) {
           <h1
             class={`member-header__title ${size === "lg" ? "alpha" : "beta"}`}
           >
-            {member.first_name} {member.last_name}
+            {member.full_name}
           </h1>
           <p>
             {member.country.label}

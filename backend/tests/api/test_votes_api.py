@@ -730,6 +730,7 @@ def test_votes_api_show(records, db_session, api):
                     "id": 1,
                     "first_name": "John",
                     "last_name": "Doe",
+                    "full_name": "John Doe",
                     "country": {
                         "code": "FRA",
                         "iso_alpha_2": "FR",
@@ -750,6 +751,7 @@ def test_votes_api_show(records, db_session, api):
                     "id": 2,
                     "first_name": "Jane",
                     "last_name": "Smith",
+                    "full_name": "Jane Smith",
                     "country": {
                         "code": "DEU",
                         "iso_alpha_2": "DE",
