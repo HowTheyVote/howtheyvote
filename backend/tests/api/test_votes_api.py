@@ -774,6 +774,7 @@ def test_votes_api_show(records, db_session, api):
                 "label": "Customs union, tax and duty-free, Community transit",
             },
         ],
+        "topics": [],
         "responsible_committees": [
             {
                 "code": "IMCO",

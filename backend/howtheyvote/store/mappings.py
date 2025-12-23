@@ -10,6 +10,7 @@ from ..models import (
     PlenarySession,
     PressRelease,
     ProcedureStage,
+    Topic,
     Vote,
     VoteResult,
     deserialize_amendment_author,
@@ -99,6 +100,11 @@ def map_vote(record: CompositeRecord) -> Vote:
         oeil_subjects=record.chain(
             key="oeil_subjects",
             type=lambda x: OEILSubject[x],
+            unique=True,
+        ),
+        topics=record.chain(
+            key="topics",
+            type=lambda x: Topic[x],
             unique=True,
         ),
         responsible_committees=record.chain(

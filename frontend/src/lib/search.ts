@@ -3,13 +3,18 @@ export type SortOrder = (typeof SORT_ORDERS)[0];
 export const DEFAULT_SORT_ORDER: SortOrder = "relevance";
 
 export const FILTERS = [
+  "topics",
   "geo_areas",
   "responsible_committees",
   "date[lte]",
   "date[gte]",
 ] as const;
 
-export const FACETS = ["geo_areas", "responsible_committees"] as const;
+export const FACETS = [
+  "geo_areas",
+  "responsible_committees",
+  "topics",
+] as const;
 
 export const SORT_PARAMS = {
   relevance: {},

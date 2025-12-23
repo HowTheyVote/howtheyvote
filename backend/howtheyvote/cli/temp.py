@@ -5,7 +5,7 @@ from cachetools import LRUCache
 from sqlalchemy import func, or_, select
 from structlog import get_logger
 
-from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
+from ..analysis import PressReleaseAnalyzer, TopicsAnalyzer, VotePositionCountsAnalyzer
 from ..db import Session
 from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
@@ -240,6 +240,19 @@ def oeil_summaries() -> None:
             end_date=session.end_date,
         )
         pipeline.run()
+
+
+@temp.command()
+def topics() -> None:
+    """Add topics to votes."""
+    query = select(Vote)
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            writer.add(TopicsAnalyzer(vote).run())
+        writer.flush()
 
 
 @temp.command()

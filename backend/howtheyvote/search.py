@@ -17,7 +17,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country
+from .models import BaseWithId, Committee, Country, Topic
 
 log = get_logger(__name__)
 
@@ -35,6 +35,7 @@ SEARCH_FIELDS = [
     "rapporteur",
     "press_release",
     "oeil_summary",
+    "topics",
 ]
 
 
@@ -53,6 +54,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "press_release": "XPRR",
     "member_id": "XM",
     "oeil_summary": "XS",
+    "topics": "XT",
 }
 
 
@@ -128,6 +130,17 @@ class CommitteeType(Type[Committee]):
         return value.abbreviation
 
 
+class TopicType(Type[Topic]):
+    def serialize_value(self, value: Topic) -> str:
+        return value.code
+
+    def deserialize_value(self, value: str) -> Topic:
+        return Topic[value]
+
+    def get_label(self, value: Topic) -> str:
+        return value.label
+
+
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "date": DateType(),
     "geo_areas": CountryType(),
@@ -135,6 +148,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "reference": StringType(),
     "procedure_reference": StringType(),
     "member_id": IntegerType(),
+    "topics": TopicType(),
 }
 
 
@@ -155,6 +169,7 @@ FIELD_TO_SLOT_MAPPING = {
     "has_press_release": 1,
     "geo_areas": 2,
     "responsible_committees": 3,
+    "topics": 4,
 }
 
 # Some document fields are more important than others. The following factors are applied

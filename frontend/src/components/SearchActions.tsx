@@ -56,6 +56,11 @@ function SearchActions({ url, total, facets }: SearchActionsProps) {
         />
         <SearchFacetMultiselectTags
           searchQuery={searchQuery}
+          id="topics"
+          options={facets.topics}
+        />
+        <SearchFacetMultiselectTags
+          searchQuery={searchQuery}
           id="geo_areas"
           options={facets.geo_areas}
         />

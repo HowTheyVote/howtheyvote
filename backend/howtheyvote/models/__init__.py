@@ -13,6 +13,7 @@ from .oeil_subject import OEILSubject, OEILSubjectType
 from .oeil_summary import OEILSummary
 from .press_release import PressRelease
 from .session import PlenarySession, PlenarySessionLocation, PlenarySessionStatus
+from .topic import Topic, TopicType
 from .vote import (
     AmendmentAuthor,
     AmendmentAuthorCommittee,
@@ -50,6 +51,8 @@ __all__ = [
     "EurovocConceptType",
     "OEILSubject",
     "OEILSubjectType",
+    "Topic",
+    "TopicType",
     "OEILSummary",
     "Committee",
     "CommitteeType",

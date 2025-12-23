@@ -5,7 +5,7 @@ from collections.abc import Iterable, Iterator
 from unidecode import unidecode
 
 from ..helpers import make_key
-from ..models import Fragment, PressRelease, Vote
+from ..models import Fragment, PressRelease, Topic, Vote
 from ..vote_stats import count_vote_positions
 
 
@@ -247,3 +247,74 @@ class PressReleaseAnalyzer:
             return set()
 
         return self._releases_by_date_position_counts[key]
+
+
+class TopicsAnalyzer:
+    subject_to_topic = {
+        "2.60": Topic["economy-and-budget"],
+        "2.70": Topic["taxation"],
+        "3.10": Topic["food-and-agriculture"],
+        "3.15": Topic["food-and-agriculture"],
+        "3.30.25": Topic["digital"],
+        "3.40": Topic["economy-and-budget"],
+        "3.60": Topic["energy"],
+        "3.70": Topic["climate-and-environment"],
+        "3.70.03": Topic["climate-change"],
+        "3.70.01": Topic["biodiversity"],
+        "4.10.04": Topic["gender-equality"],
+        "4.10.05": Topic["social-protection"],
+        "4.10.09": Topic["gender-equality"],
+        "4.10.10": Topic["social-protection"],
+        "4.15": Topic["workers-rights"],
+        "4.20": Topic["health"],
+        "4.40": Topic["education-youth-and-culture"],
+        "4.45": Topic["education-youth-and-culture"],
+        "4.50": Topic["travel"],
+        "4.60": Topic["consumer-protection"],
+        "5.03": Topic["economy-and-budget"],
+        "5.05": Topic["economy-and-budget"],
+        "5.10": Topic["economy-and-budget"],
+        "5.20": Topic["economy-and-budget"],
+        "6.20.01": Topic["international-trade"],
+        "6.20.02": Topic["international-trade"],
+        "6.20.03": Topic["international-trade"],
+        "6.20.04": Topic["international-trade"],
+        "6.20.05": Topic["international-trade"],
+        "6.30": Topic["foreign-affairs"],
+        "6.40": Topic["foreign-affairs"],
+        "6.50": Topic["foreign-affairs"],
+        "7.10.02": Topic["migration"],
+        "7.10.04": Topic["migration"],
+        "7.10.06": Topic["migration"],
+        "7.10.08": Topic["migration"],
+        "8.20": Topic["enlargement"],
+        "8.70": Topic["economy-and-budget"],
+    }
+
+    def __init__(self, vote: Vote):
+        self.vote = vote
+
+    def run(self) -> Fragment | None:
+        if not self.vote.oeil_subjects:
+            return None
+
+        oeil_subjects = set()
+        for subject in self.vote.oeil_subjects:
+            oeil_subjects.add(subject)
+            oeil_subjects.update(subject.parents)
+
+        topics = []
+        for subject in oeil_subjects:
+            if subject.code in TopicsAnalyzer.subject_to_topic:
+                topics.append(TopicsAnalyzer.subject_to_topic[subject.code])
+
+        if not topics:
+            return None
+
+        return Fragment(
+            model="Vote",
+            source_id=self.vote.id,
+            source_name=type(self).__name__,
+            group_key=self.vote.id,
+            data={"topics": [topic.code for topic in list(set(topics))]},
+        )

@@ -169,6 +169,10 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
     if vote.rapporteur:
         generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
 
+    for topic in vote.topics:
+        generator.index_text(topic.label, 1, field_to_prefix("topics"))
+        generator.increase_termpos()
+
     # Store date in slot for ranking and range filters
     date = serialize_sortable_value(vote.date)
     doc.add_value(field_to_slot("date"), date)
@@ -198,6 +202,9 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
         term = boolean_term("responsible_committees", committee)
         doc.add_boolean_term(term)
 
+    for topic in vote.topics:
+        term = boolean_term("topics", topic)
+        doc.add_boolean_term(term)
     # Store categorical values in slots to compute facets. Slots can only store a single
     # value, so we have to serialize the list first.
     # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html
@@ -215,6 +222,10 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
                 for committee in vote.responsible_committees
             ]
         ),
+    )
+    doc.add_value(
+        field_to_slot("topics"),
+        serialize_list([serialize_value("topics", topic) for topic in vote.topics]),
     )
 
     # Index MEP IDs as boolean terms so we can filter votes for display on MEP profile pages
