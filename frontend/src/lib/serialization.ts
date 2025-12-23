@@ -6,8 +6,6 @@ export type SerializedMemberVotes = {
       number,
       string,
       string,
-      string,
-      string,
       Group["code"] | undefined,
       Country["code"],
       MemberVote["position"],
@@ -29,8 +27,6 @@ export function serializeMemberVotes(
   for (const { member, position } of memberVotes) {
     serialized.items.push([
       member.id,
-      member.first_name,
-      member.last_name,
       member.full_name,
       member.thumb_url,
       member?.group?.code,
@@ -56,16 +52,7 @@ export function deserializeMemberVotes({
   const deserialized: Array<MemberVote> = [];
 
   for (const item of items) {
-    const [
-      id,
-      first_name,
-      last_name,
-      full_name,
-      thumb_url,
-      group_code,
-      country_code,
-      position,
-    ] = item;
+    const [id, full_name, thumb_url, group_code, country_code, position] = item;
 
     const group = group_code ? groups[group_code] : undefined;
     const country = countries[country_code] as Country;
@@ -73,8 +60,6 @@ export function deserializeMemberVotes({
     deserialized.push({
       member: {
         id,
-        first_name,
-        last_name,
         full_name,
         thumb_url,
         group,
