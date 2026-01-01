@@ -11,7 +11,7 @@ export const loader: Loader<Member> = async (request: Request) => {
 
 export const MemberSharepicPage: Page<Member> = ({ data }) => {
   return (
-    <App title={[`${data.first_name} ${data.last_name}`, "Share picture"]}>
+    <App title={[`${data.full_name}`, "Share picture"]}>
       <MemberSharepic member={data} />
     </App>
   );

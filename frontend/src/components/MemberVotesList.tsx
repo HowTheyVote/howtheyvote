@@ -37,7 +37,7 @@ function Item({ member, position }: ItemProps) {
   return (
     <ListItem
       key={member.id}
-      title={`${member.first_name} ${member.last_name}`}
+      title={`${member.full_name}`}
       subtitle={subtitle}
       link={`/members/${member.id}`}
       avatar={member.thumb_url && <Avatar url={member.thumb_url} />}
@@ -140,9 +140,7 @@ function filterMemberVotes(
   { query, selectedGroup, selectedCountry, selectedPosition }: FilterConfig,
 ) {
   return memberVotes.filter(({ member, position }) => {
-    const fullName = `${member.first_name} ${member.last_name}`;
-
-    if (!normalize(fullName).includes(normalize(query))) {
+    if (!normalize(member.full_name).includes(normalize(query))) {
       return false;
     }
 

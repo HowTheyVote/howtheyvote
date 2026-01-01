@@ -111,3 +111,7 @@ class Member(BaseWithId):
     @property
     def sharepic_url(self) -> str:
         return url_for("api.static_api.member_sharepic", member_id=self.id)
+
+    @property
+    def full_name(self) -> str:
+        return self.first_name + " " + self.last_name
