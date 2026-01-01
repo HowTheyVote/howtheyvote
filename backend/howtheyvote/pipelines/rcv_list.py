@@ -8,6 +8,7 @@ from structlog import get_logger
 
 from ..analysis import (
     MainVoteAnalyzer,
+    TopicsAnalyzer,
     VoteGroupsAnalyzer,
 )
 from ..db import Session
@@ -64,6 +65,7 @@ class RCVListPipeline(BasePipeline):
         self._scrape_procedures()
         self._scrape_eurlex_procedures()
         self._analyze_main_votes()
+        self._analyze_topics()
         self._index_votes()
 
         # Share pictures have to be generated after the votes are indexed. Otherwise,
@@ -258,6 +260,16 @@ class RCVListPipeline(BasePipeline):
 
         writer.flush()
         self._main_vote_ids = writer.get_touched()
+
+    def _analyze_topics(self) -> None:
+        log.info("Running topics analyzer", date=self.date, term=self.term)
+        writer = BulkWriter()
+
+        for vote in self._votes():
+            analyzer = TopicsAnalyzer(vote=vote)
+            writer.add(analyzer.run())
+
+        writer.flush()
 
     def _analyze_vote_groups(self) -> None:
         log.info("Running vote groups analysis", date=self.date, term=self.term)

@@ -18,10 +18,15 @@ export default function VoteCard({ vote, thumb }: VoteCardProps) {
           <a href={`/votes/${vote.id}`}>{vote.display_title}</a>
         </h2>
         <div class="vote-card__meta">
+          {vote.topics.length > 0 &&
+            vote.topics.map((topic) => (
+              <Tag key={topic.code}>{topic.label}</Tag>
+            ))}
           {vote.geo_areas.length > 0 &&
             vote.geo_areas.map((area) => (
               <Tag key={area.code}>{area.label}</Tag>
             ))}
+
           {formatDate(new Date(vote.timestamp))}
         </div>
       </div>

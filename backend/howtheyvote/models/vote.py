@@ -17,6 +17,7 @@ from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
 from .oeil_subject import OEILSubject, OEILSubjectType
+from .topic import Topic, TopicType
 from .types import ListType
 
 if TYPE_CHECKING:
@@ -305,6 +306,10 @@ class Vote(BaseWithId):
     )
     oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(
         ListType(OEILSubjectType()),
+        default=[],
+    )
+    topics: Mapped[list[Topic]] = mapped_column(
+        ListType(TopicType()),
         default=[],
     )
     responsible_committees: Mapped[list[Committee]] = mapped_column(
