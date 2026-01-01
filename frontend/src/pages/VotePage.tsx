@@ -33,7 +33,7 @@ export const loader: Loader<Vote> = async (request: Request) => {
   return data;
 };
 
-export const ShowVotePage: Page<Vote> = ({ data }) => {
+export const VotePage: Page<Vote> = ({ data }) => {
   const footer = <Footer copyright={<Copyright vote={data} />} />;
   const errorReportFormUrl = getErrorReportFormUrl("INCORRECT_RESULT", {
     voteId: data.id,

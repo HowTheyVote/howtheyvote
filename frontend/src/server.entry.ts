@@ -2,23 +2,20 @@ import sirv from "sirv";
 import { redirect } from "./lib/http";
 import { App, isBot, logRequests, noMatchHandler, onError } from "./lib/server";
 import { AboutPage, loader as aboutLoader } from "./pages/AboutPage";
+import {
+  AmendmentVotesPage,
+  loader as amendmentVotesLoader,
+} from "./pages/AmendmentVotesPage";
 import { DevelopersPage } from "./pages/DevelopersPage";
 import { HomePage, loader as homeLoader } from "./pages/HomePage";
 import { ImprintPage } from "./pages/ImprintPage";
+import { MemberPage, loader as memberLoader } from "./pages/MemberPage";
 import {
   MemberSharepicPage,
   loader as memberSharepicLoader,
 } from "./pages/MemberSharepicPage";
 import { SearchPage, loader as searchLoader } from "./pages/SearchPage";
-import {
-  ShowAmendmentVotesPage,
-  loader as showAmendmentVotesLoader,
-} from "./pages/ShowAmendmentVotesPage";
-import {
-  ShowMemberPage,
-  loader as showMemberLoader,
-} from "./pages/ShowMemberPage";
-import { ShowVotePage, loader as showVoteLoader } from "./pages/ShowVotePage";
+import { VotePage, loader as voteLoader } from "./pages/VotePage";
 import {
   VoteSharepicPage,
   loader as voteSharepicLoader,
@@ -35,14 +32,14 @@ app.use(logRequests);
 
 app.registerPage("/", HomePage, homeLoader);
 app.registerPage("/votes", SearchPage, searchLoader);
-app.registerPage("/votes/:id", ShowVotePage, showVoteLoader);
+app.registerPage("/votes/:id", VotePage, voteLoader);
 app.registerPage(
   "/votes/:id/amendments",
-  ShowAmendmentVotesPage,
-  showAmendmentVotesLoader,
+  AmendmentVotesPage,
+  amendmentVotesLoader,
 );
 app.registerPage("/votes/:id/sharepic", VoteSharepicPage, voteSharepicLoader);
-app.registerPage("/members/:id", ShowMemberPage, showMemberLoader);
+app.registerPage("/members/:id", MemberPage, memberLoader);
 app.registerPage(
   "/members/:id/sharepic",
   MemberSharepicPage,
