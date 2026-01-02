@@ -345,8 +345,5 @@ class Vote(BaseWithId):
         return self.title or self.procedure_title
 
     @property
-    def sharepic_url(self) -> str | None:
-        if not self.is_main:
-            return None
-
+    def sharepic_url(self) -> str:
         return url_for("api.static_api.vote_sharepic", vote_id=self.id)

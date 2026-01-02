@@ -85,10 +85,6 @@ def generate_vote_sharepics(votes: Iterable[Vote]) -> None:
     success_count = 0
 
     for vote in votes:
-        if not vote.is_main:
-            log.info("Skipping sharepic generation because vote is not main.", vote_id=vote.id)
-            continue
-
         log.info("Generating vote sharepic.", vote_id=vote.id)
 
         try:

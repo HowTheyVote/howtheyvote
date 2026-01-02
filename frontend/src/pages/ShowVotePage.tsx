@@ -234,7 +234,7 @@ function MetaTags({ vote }: { vote: Vote }) {
   const stats = vote.stats.total;
   const total = stats.FOR + stats.AGAINST + stats.ABSTENTION;
 
-  const altText = `A barchart visualizing the result of a European Parliament vote. The vote took place on ${date}, and is titled “${vote.display_title}”. The chart has three bars representing the ${stats.FOR} MEPs who voted in favor, the ${stats.AGAINST} MEPs who voted against, and the ${stats.ABSTENTION} MEPs who abstained. A total of ${total} MEPs participated in the vote and ${stats.DID_NOT_VOTE} did not vote.`;
+  const altText = `A barchart visualizing the result of a European Parliament vote. The vote took place on ${date}, and is titled “${vote.display_title + (vote.description ? ` - ${vote.description}` : "")}”. The chart has three bars representing the ${stats.FOR} MEPs who voted in favor, the ${stats.AGAINST} MEPs who voted against, and the ${stats.ABSTENTION} MEPs who abstained. A total of ${total} MEPs participated in the vote and ${stats.DID_NOT_VOTE} did not vote.`;
   const title = `Vote results: ${vote.display_title}`;
   const description =
     "Find out how the Members of the European Parliament voted.";
@@ -242,18 +242,15 @@ function MetaTags({ vote }: { vote: Vote }) {
   return (
     <>
       {!vote.is_main && <meta name="robots" content="noindex" />}
-      {vote.sharepic_url && (
-        <>
-          <meta name="description" content={description} />
-          <meta property="og:site_name" content="HowTheyVote.eu" />
-          <meta property="og:type" content="article" />
-          <meta property="og:title" content={title} />
-          <meta property="og:description" content={description} />
-          <meta property="og:image" content={vote.sharepic_url} />
-          <meta property="og:image:alt" content={altText} />
-          <meta property="article:published_time" content={vote.timestamp} />
-        </>
-      )}
+
+      <meta name="description" content={description} />
+      <meta property="og:site_name" content="HowTheyVote.eu" />
+      <meta property="og:type" content="article" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={vote.sharepic_url} />
+      <meta property="og:image:alt" content={altText} />
+      <meta property="article:published_time" content={vote.timestamp} />
     </>
   );
 }
