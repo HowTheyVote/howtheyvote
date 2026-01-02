@@ -5,6 +5,7 @@ from io import StringIO
 from typing import Any
 
 from flask import Blueprint, Request, Response, abort, jsonify, redirect, request, url_for
+from flask.typing import ResponseReturnValue
 from sqlalchemy import select
 from structlog import get_logger
 
@@ -92,7 +93,7 @@ SOURCE_INFO = {
 
 @bp.route("/votes/search")
 @bp.route("/votes")
-def index() -> Response:
+def index() -> ResponseReturnValue:
     """
     Get votes
     ---
@@ -217,7 +218,7 @@ def index() -> Response:
 
 
 @bp.route("/members/<int:member_id>/votes")
-def member_votes_index(member_id: int) -> Response:
+def member_votes_index(member_id: int) -> ResponseReturnValue:
     """
     ---
     get:
@@ -342,7 +343,7 @@ def member_votes_index(member_id: int) -> Response:
 
 
 @bp.route("/votes/<int:vote_id>")
-def show(vote_id: int) -> Response:
+def show(vote_id: int) -> ResponseReturnValue:
     """
     ---
     get:
@@ -422,7 +423,7 @@ def show(vote_id: int) -> Response:
 
 
 @bp.route("/votes/<int:vote_id>.csv")
-def show_csv_meps_legacy(vote_id: int) -> Response:
+def show_csv_meps_legacy(vote_id: int) -> ResponseReturnValue:
     return redirect(
         url_for("bp.show_csv_meps", vote_id=vote_id),
         code=301,
@@ -430,7 +431,7 @@ def show_csv_meps_legacy(vote_id: int) -> Response:
 
 
 @bp.route("/votes/<int:vote_id>/members.csv")
-def show_csv_meps(vote_id: int) -> Response:
+def show_csv_meps(vote_id: int) -> ResponseReturnValue:
     """
     ---
     get:
@@ -500,7 +501,7 @@ def _format_group_row(group_stat: VoteStatsByGroupDict) -> dict[str, Any]:
 
 
 @bp.route("/votes/<int:vote_id>/groups.csv")
-def show_csv_groups(vote_id: int) -> Response:
+def show_csv_groups(vote_id: int) -> ResponseReturnValue:
     """
     ---
     get:
@@ -567,7 +568,7 @@ def _format_country_row(group_stat: VoteStatsByCountryDict) -> dict[str, Any]:
 
 
 @bp.route("/votes/<int:vote_id>/countries.csv")
-def show_csv_countries(vote_id: int) -> Response:
+def show_csv_countries(vote_id: int) -> ResponseReturnValue:
     """
     ---
     get:

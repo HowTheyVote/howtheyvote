@@ -1,7 +1,7 @@
 import datetime
 
 from flask import Blueprint, jsonify, request
-from flask.typing import ResponseValue
+from flask.typing import ResponseReturnValue
 
 from ..models import PlenarySession
 from .query import DatabaseQuery, Order
@@ -15,7 +15,7 @@ bp = Blueprint("sessions_api", __name__)
 
 
 @bp.route("/sessions")
-def index() -> ResponseValue:
+def index() -> ResponseReturnValue:
     """
     ---
     get:
