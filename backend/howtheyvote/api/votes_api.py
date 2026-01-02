@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from datetime import date
 from io import StringIO
 
-from flask import Blueprint, Request, Response, abort, jsonify, request
+from flask import Blueprint, Request, Response, abort, jsonify, redirect, request, url_for
 from sqlalchemy import select
 from structlog import get_logger
 
@@ -421,7 +421,15 @@ def show(vote_id: int) -> Response:
 
 
 @bp.route("/votes/<int:vote_id>.csv")
-def show_csv(vote_id: int) -> Response:
+def show_csv_meps_legacy(vote_id: int) -> Response:
+    return redirect(
+        url_for("bp.show_csv_meps", vote_id=vote_id),
+        code=301,
+    )
+
+
+@bp.route("/votes/<int:vote_id>/members.csv")
+def show_csv_meps(vote_id: int) -> Response:
     """
     ---
     get:

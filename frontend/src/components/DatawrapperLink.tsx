@@ -97,7 +97,7 @@ function getPresetConfig(
   config.last_edit_step = "2";
 
   // Load CSV data from our website
-  config.external_data = `https://howtheyvote.eu/api/votes/${voteId}.csv`;
+  config.external_data = `https://howtheyvote.eu/api/votes/${voteId}/members.csv`;
 
   // For some reason, Datawrapper requires that `data` is set even if `external_data` is
   // provided. Has to be a valid JSON string.

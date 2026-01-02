@@ -805,7 +805,7 @@ def test_votes_api_show(records, db_session, api):
 
 
 def test_votes_api_csv(records, api):
-    res = api.get("/api/votes/1.csv")
+    res = api.get("/api/votes/1/members.csv")
     assert res.headers["Content-Type"] == "text/csv"
 
     expected = (
