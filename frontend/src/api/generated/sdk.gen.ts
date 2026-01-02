@@ -59,8 +59,8 @@ export const getVoteCsvmeps = <ThrowOnError extends boolean = true>(options: Opt
 };
 
 /**
- * Get vote as CSV
- * Get voting behavior of groups as CSV.
+ * Get vote as CSV (Groups)
+ * Get voting behavior among groups as CSV.
  *
  */
 export const getVoteCsvGroups = <ThrowOnError extends boolean = true>(options: OptionsLegacyParser<GetVoteCsvGroupsData, ThrowOnError>) => {
@@ -71,8 +71,8 @@ export const getVoteCsvGroups = <ThrowOnError extends boolean = true>(options: O
 };
 
 /**
- * Get vote as CSV
- * Get voting behaviour of countries as CSV.
+ * Get vote as CSV (Countries)
+ * Get voting behavior among countries as CSV.
  *
  */
 export const getVoteCsvCountries = <ThrowOnError extends boolean = true>(options: OptionsLegacyParser<GetVoteCsvCountriesData, ThrowOnError>) => {

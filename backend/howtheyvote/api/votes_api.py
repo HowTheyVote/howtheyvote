@@ -4,7 +4,7 @@ from datetime import date
 from io import StringIO
 from typing import Any
 
-from flask import Blueprint, Request, Response, abort, jsonify, redirect, request, url_for
+from flask import Blueprint, Request, Response, abort, jsonify, request
 from flask.typing import ResponseReturnValue
 from sqlalchemy import select
 from structlog import get_logger
@@ -423,13 +423,6 @@ def show(vote_id: int) -> ResponseReturnValue:
 
 
 @bp.route("/votes/<int:vote_id>.csv")
-def show_csv_meps_legacy(vote_id: int) -> ResponseReturnValue:
-    return redirect(
-        url_for("bp.show_csv_meps", vote_id=vote_id),
-        code=301,
-    )
-
-
 @bp.route("/votes/<int:vote_id>/members.csv")
 def show_csv_meps(vote_id: int) -> ResponseReturnValue:
     """
@@ -506,11 +499,11 @@ def show_csv_groups(vote_id: int) -> ResponseReturnValue:
     ---
     get:
         operationId: getVoteCSVGroups
-        summary: Get vote as CSV
+        summary: Get vote as CSV (Groups)
         tags:
             - Votes
         description: |
-            Get voting behavior of groups as CSV.
+            Get voting behavior among groups as CSV.
         parameters:
             -
                 in: path
@@ -573,11 +566,11 @@ def show_csv_countries(vote_id: int) -> ResponseReturnValue:
     ---
     get:
         operationId: getVoteCSVCountries
-        summary: Get vote as CSV
+        summary: Get vote as CSV (Countries)
         tags:
             - Votes
         description: |
-            Get voting behaviour of countries as CSV.
+            Get voting behavior among countries as CSV.
         parameters:
             -
                 in: path
