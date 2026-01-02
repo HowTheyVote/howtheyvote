@@ -2,6 +2,7 @@ import csv
 from collections.abc import Iterable
 from datetime import date
 from io import StringIO
+from typing import Any
 
 from flask import Blueprint, Request, Response, abort, jsonify, redirect, request, url_for
 from sqlalchemy import select
@@ -433,7 +434,7 @@ def show_csv_meps(vote_id: int) -> Response:
     """
     ---
     get:
-        operationId: getVoteCSV
+        operationId: getVoteCSVMEPs
         summary: Get vote as CSV
         tags:
             - Votes
@@ -445,7 +446,7 @@ def show_csv_meps(vote_id: int) -> Response:
                 name: vote_id
                 required: true
                 schema:
-                    type: string
+                    type: int
     """
     vote = Session.get(Vote, vote_id)
 
@@ -478,6 +479,141 @@ def show_csv_meps(vote_id: int) -> Response:
         io.getvalue(),
         headers={
             "Content-Type": "text/csv",
+            "Content-Disposition": f'attachment; filename="{vote_id}_members.csv"',
+        },
+    )
+
+
+def _format_group_row(group_stat: VoteStatsByGroupDict) -> dict[str, Any]:
+    group = group_stat["group"]
+    stats = group_stat["stats"]
+
+    return {
+        "code": group["code"],
+        "label": group["label"],
+        "short_label": group["short_label"],
+        "count_for": stats["FOR"],
+        "count_against": stats["AGAINST"],
+        "count_abstentions": stats["ABSTENTION"],
+        "count_did_not_vote": stats["DID_NOT_VOTE"],
+    }
+
+
+@bp.route("/votes/<int:vote_id>/groups.csv")
+def show_csv_groups(vote_id: int) -> Response:
+    """
+    ---
+    get:
+        operationId: getVoteCSVGroups
+        summary: Get vote as CSV
+        tags:
+            - Votes
+        description: |
+            Get voting behavior of groups as CSV.
+        parameters:
+            -
+                in: path
+                name: vote_id
+                required: true
+                schema:
+                    type: int
+    """
+    vote = Session.get(Vote, vote_id)
+
+    if not vote:
+        return abort(404)
+
+    members = _load_members(vote)
+    members_by_id: MembersById = {m.id: m for m in members}
+    group_stats = _format_group_stats(vote, members_by_id)
+
+    fieldnames = [
+        "code",
+        "label",
+        "short_label",
+        "count_for",
+        "count_against",
+        "count_abstentions",
+        "count_did_not_vote",
+    ]
+
+    io = StringIO()
+    writer = csv.DictWriter(io, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(_format_group_row(gs) for gs in group_stats)
+
+    return Response(
+        io.getvalue(),
+        headers={
+            "Content-Type": "text/csv",
+            "Content-Disposition": f'attachment; filename="{vote_id}_groups.csv"',
+        },
+    )
+
+
+def _format_country_row(group_stat: VoteStatsByCountryDict) -> dict[str, Any]:
+    country = group_stat["country"]
+    stats = group_stat["stats"]
+
+    return {
+        "code": country["code"],
+        "label": country["label"],
+        "iso_alpha_2": country["iso_alpha_2"],
+        "count_for": stats["FOR"],
+        "count_against": stats["AGAINST"],
+        "count_abstentions": stats["ABSTENTION"],
+        "count_did_not_vote": stats["DID_NOT_VOTE"],
+    }
+
+
+@bp.route("/votes/<int:vote_id>/countries.csv")
+def show_csv_countries(vote_id: int) -> Response:
+    """
+    ---
+    get:
+        operationId: getVoteCSVCountries
+        summary: Get vote as CSV
+        tags:
+            - Votes
+        description: |
+            Get voting behaviour of countries as CSV.
+        parameters:
+            -
+                in: path
+                name: vote_id
+                required: true
+                schema:
+                    type: int
+    """
+    vote = Session.get(Vote, vote_id)
+
+    if not vote:
+        return abort(404)
+
+    members = _load_members(vote)
+    members_by_id: MembersById = {m.id: m for m in members}
+    country_stats = _format_country_stats(vote, members_by_id)
+
+    fieldnames = [
+        "code",
+        "label",
+        "iso_alpha_2",
+        "count_for",
+        "count_against",
+        "count_abstentions",
+        "count_did_not_vote",
+    ]
+
+    io = StringIO()
+    writer = csv.DictWriter(io, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(_format_country_row(cs) for cs in country_stats)
+
+    return Response(
+        io.getvalue(),
+        headers={
+            "Content-Type": "text/csv",
+            "Content-Disposition": f'attachment; filename="{vote_id}_countries.csv"',
         },
     )
 

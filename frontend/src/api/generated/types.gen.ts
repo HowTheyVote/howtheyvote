@@ -692,9 +692,21 @@ export type GetVoteResponse = (Vote);
 
 export type GetVoteError = unknown;
 
-export type GetVoteCsvData = {
+export type GetVoteCsvmepsData = {
     path: {
-        vote_id: string;
+        vote_id: number;
+    };
+};
+
+export type GetVoteCsvGroupsData = {
+    path: {
+        vote_id: number;
+    };
+};
+
+export type GetVoteCsvCountriesData = {
+    path: {
+        vote_id: number;
     };
 };
 
