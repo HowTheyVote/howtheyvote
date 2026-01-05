@@ -18,12 +18,12 @@ import { PUBLIC_URL } from "../config";
 import { FACETS, SearchQuery, SORT_PARAMS } from "../lib/search";
 import type { Loader, Page } from "../lib/server";
 
-type ShowMemberPageData = {
+type MemberPageData = {
   member: Member;
   votes: MemberVotesQueryResponse;
 };
 
-export const loader: Loader<ShowMemberPageData> = async (request: Request) => {
+export const loader: Loader<MemberPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
   const { data: member } = await getMember({
@@ -46,7 +46,7 @@ export const loader: Loader<ShowMemberPageData> = async (request: Request) => {
   return { member, votes };
 };
 
-export const ShowMemberPage: Page<ShowMemberPageData> = ({ data, request }) => {
+export const MemberPage: Page<MemberPageData> = ({ data, request }) => {
   const url = new URL(request.url, PUBLIC_URL);
   const searchQuery = SearchQuery.fromUrl(url);
 

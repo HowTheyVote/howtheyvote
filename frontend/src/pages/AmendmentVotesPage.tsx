@@ -26,7 +26,7 @@ export const loader: Loader<Vote> = async (request: Request) => {
   return data;
 };
 
-export const ShowAmendmentVotesPage: Page<Vote> = ({ data }) => {
+export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
   return (
     <App title={[data.display_title, "Amendments"]}>
       <BaseLayout>
