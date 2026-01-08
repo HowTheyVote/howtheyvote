@@ -33,7 +33,7 @@ def test_oeil_summary_id_scraper_run_no_summary(responses):
     responses.get(
         "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2020/2042(INI)",
         body=load_fixture(
-            "scrapers/data/oeil_summaries/oeil-procedure-file_2021-2540-rsp.html"
+            "scrapers/data/oeil_summaries/oeil-procedure-file_2020-2042-ini.html"
         ),
     )
 
