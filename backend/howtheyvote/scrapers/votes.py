@@ -1004,7 +1004,7 @@ class OEILSummaryScraper(BeautifulSoupScraper):
         )
 
     def _normalize_paragraph(self, paragraph: Tag) -> str:
-        text = html.escape(paragraph.get_text(strip=True).replace("\n", " "))
+        text = html.escape(paragraph.get_text(strip=True, separator=" ").replace("\n", " "))
         style = paragraph.get("style")
 
         # Headings aren't marked up using appropriate HTML tags.
