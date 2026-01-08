@@ -54,7 +54,6 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
                   href={getSummaryFeedbackFormUrl(
                     vote.summary.source_type,
                     vote.id,
-                    vote.summary.text,
                   )}
                 >
                   What do you think of this summary?

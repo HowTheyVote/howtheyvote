@@ -30,14 +30,12 @@ const SUMMARY_FEEDBACK_FORM_URL = "https://tally.so/r/Gx9Eze";
 export function getSummaryFeedbackFormUrl(
   type: Summary["source_type"],
   voteId: number,
-  text: string,
 ) {
   const url = new URL(SUMMARY_FEEDBACK_FORM_URL);
   const voteLink = new URL(`/votes/${voteId}`, PUBLIC_URL);
 
   url.searchParams.set("type", type);
   url.searchParams.set("link", voteLink.toString());
-  url.searchParams.set("text", encodeURIComponent(text));
 
   return url.toString();
 }
