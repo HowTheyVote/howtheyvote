@@ -4,7 +4,12 @@ import sentry_sdk
 from structlog import get_logger
 
 from ..models import PlenarySession
-from ..scrapers import CalendarSessionsScraper, ODPSessionScraper, ScrapingError
+from ..scrapers import (
+    CalendarSessionsScraper,
+    NoWorkingUrlError,
+    ODPSessionScraper,
+    ScrapingError,
+)
 from ..store import Aggregator, BulkWriter, index_records, map_plenary_session
 from .common import BasePipeline
 
@@ -49,6 +54,9 @@ class SessionsPipeline(BasePipeline):
             try:
                 scraper = ODPSessionScraper(start_date=plenary_session.start_date)
                 writer.add(scraper.run())
+            except NoWorkingUrlError:
+                # This source may be unavailable for sessions that are far in the future.
+                pass
             except ScrapingError as err:
                 log.exception(
                     "Failed scraping location of plenary session",
