@@ -468,6 +468,17 @@ export type Statistics = {
     last_update_date: string;
 };
 
+export type Summary = {
+    /**
+     * Text (HTML formatted)
+     */
+    text: string;
+    source_type: 'OEIL_SUMMARY' | 'PRESS_RELEASE';
+    source_url: string;
+};
+
+export type source_type = 'OEIL_SUMMARY' | 'PRESS_RELEASE';
+
 /**
  * A topic (policy area) a vote is concerned with. Expect topics and their names to change in the future as we improve this feature.
  */
@@ -488,14 +499,10 @@ export type Vote = BaseVote & {
      */
     procedure?: Procedure;
     /**
-     * Facts about the vote. Usually an HTML formatted list of 3-4 bullet points extracted
-     * from press releases published by the European Parliament.
+     * A short summary of the vote. This is usually extracted from a press release published
+     * by the European Parliament or the Legislative Observatory.
      */
-    facts?: string;
-    /**
-     * A short summary of the vote extracted from the Legislative Observatory.
-     */
-    summary?: string;
+    summary?: Summary;
     /**
      * URL to a share picture for this vote.
      */

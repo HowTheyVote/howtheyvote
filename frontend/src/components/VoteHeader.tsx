@@ -32,19 +32,12 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
               {vote.description && ` · ${vote.description}`}
             </strong>
           </p>
-          {vote.facts && (
-            <div
-              class="vote-header__facts"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: Vote facts are trusted HTML
-              dangerouslySetInnerHTML={{ __html: vote.facts }}
-            />
-          )}
-          {!vote.facts && vote.summary && (
-            <div>
+          {vote.summary && (
+            <>
               <div
                 class="vote-header__summary"
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: Summary is trusted HTML
-                dangerouslySetInnerHTML={{ __html: vote.summary }}
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: Vote summary is trusted HTML
+                dangerouslySetInnerHTML={{ __html: vote.summary.text }}
               />
               <p class="vote-header__feedback">
                 <a
@@ -52,15 +45,15 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
                   target="_blank"
                   class="text--sm text--light"
                   href={getSummaryFeedbackFormUrl(
-                    "OEIL",
+                    vote.summary.source_type,
                     vote.id,
-                    vote.summary,
+                    vote.summary.text,
                   )}
                 >
                   What do you think of this summary?
                 </a>
               </p>
-            </div>
+            </>
           )}
           <Island>
             <ShareButton

@@ -3,29 +3,21 @@
   background-color: var(--gray-lightest);
 }
 
-.vote-header__facts ul li {
+.vote-header__summary ul li {
   list-style-position: inside;
 }
 
-.vote-header__facts ul li + li {
+.vote-header__summary ul li + li {
   margin-block-start: var(--space-xxs);
 }
 
-.vote-header__summary {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 10;
-  overflow: hidden;
-}
-
 .vote-header__summary p + p {
-  margin-block-start: var(--space-xs);
+  margin-block-start: var(--space-xxs);
 }
 
 .vote-header__feedback {
   font-size: var(--text-sm);
   color: var(--color-text-light);
-  margin-block-start: var(--space-xs);
 }
 
 @media screen and (min-width: 520px) {

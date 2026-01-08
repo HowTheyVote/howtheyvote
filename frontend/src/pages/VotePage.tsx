@@ -212,14 +212,14 @@ function Copyright({ vote }: { vote: Vote }) {
     />
   );
 
-  if (vote.facts) {
+  if (vote.summary) {
     copyright = (
       <>
         {copyright}
         <br />
         <CopyrightLink
           content="Summary"
-          sourceUrl="https://www.europarl.europa.eu/news/en"
+          sourceUrl={vote.summary.source_url}
           year={new Date(vote.timestamp).getFullYear()}
         />
       </>

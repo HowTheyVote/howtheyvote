@@ -26,6 +26,7 @@ from .serializers import (
     RelatedVoteDict,
     SourceDict,
     Statistics,
+    SummaryDict,
     TopicDict,
     VoteDict,
     VotePositionCountsDict,
@@ -84,6 +85,7 @@ schema_classes = [
     MemberVotesQueryResponseDict,
     RelatedVoteDict,
     Statistics,
+    SummaryDict,
 ]
 
 

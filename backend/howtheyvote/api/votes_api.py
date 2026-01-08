@@ -22,6 +22,7 @@ from ..links import (
     doceo_document_url,
     doceo_texts_adopted_url,
     oeil_procedure_url,
+    oeil_summary_url,
     press_release_url,
 )
 from ..models import (
@@ -31,6 +32,7 @@ from ..models import (
     Member,
     OEILSummary,
     PressRelease,
+    SummaryType,
     Topic,
     Vote,
 )
@@ -44,6 +46,7 @@ from .serializers import (
     ProcedureDict,
     RelatedVoteDict,
     SourceDict,
+    SummaryDict,
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
@@ -402,8 +405,7 @@ def show(vote_id: int) -> ResponseReturnValue:
 
     related_votes = _format_related(_load_related(vote))
 
-    facts = vote.press_release.facts if vote.press_release else None
-    summary = _format_summary_snippet(vote.oeil_summary)
+    summary = _format_summary(vote.press_release, vote.oeil_summary)
 
     fragments = _load_fragments(vote, vote.press_release)
     sources = _format_sources(fragments)
@@ -413,7 +415,6 @@ def show(vote_id: int) -> ResponseReturnValue:
     data: VoteDict = {
         **base_vote,
         "procedure": procedure,
-        "facts": facts,
         "summary": summary,
         "sharepic_url": vote.sharepic_url,
         "stats": stats,
@@ -885,11 +886,25 @@ def _format_country_stats(
     ]
 
 
-def _format_summary_snippet(summary: OEILSummary | None) -> str | None:
-    if not summary:
-        return None
+def _format_summary(
+    press_release: PressRelease | None,
+    summary: OEILSummary | None,
+) -> SummaryDict | None:
+    if press_release:
+        return {
+            "text": press_release.facts,
+            "source_type": SummaryType.PRESS_RELEASE,
+            "source_url": press_release_url(press_release.id),
+        }
 
-    fragment = BeautifulSoup(summary.content)
-    snippet = "".join(f"<p>{p.get_text(strip=True)}</p>" for p in fragment.select("p")[:3])
+    if summary:
+        fragment = BeautifulSoup(summary.content)
+        snippet = "".join(f"<p>{p.get_text(strip=True)}</p>" for p in fragment.select("p")[:3])
 
-    return snippet
+        return {
+            "text": snippet,
+            "source_type": SummaryType.OEIL_SUMMARY,
+            "source_url": oeil_summary_url(summary.id),
+        }
+
+    return None

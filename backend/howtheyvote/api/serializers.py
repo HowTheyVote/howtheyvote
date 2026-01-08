@@ -15,6 +15,7 @@ from ..models import (
     PlenarySessionStatus,
     ProcedureStage,
     ProcedureType,
+    SummaryType,
     Topic,
     Vote,
     VotePosition,
@@ -470,16 +471,22 @@ def serialize_base_vote_with_member_position(
     }
 
 
+class SummaryDict(TypedDict):
+    text: str
+    """Text (HTML formatted)"""
+
+    source_type: SummaryType
+
+    source_url: str
+
+
 class VoteDict(BaseVoteDict):
     procedure: ProcedureDict | None
     """Information about the legislative procedure to which this vote belongs"""
 
-    facts: str | None
-    """Facts about the vote. Usually an HTML formatted list of 3-4 bullet points extracted
-    from press releases published by the European Parliament."""
-
-    summary: str | None
-    """A short summary of the vote extracted from the Legislative Observatory."""
+    summary: SummaryDict | None
+    """A short summary of the vote. This is usually extracted from a press release published
+    by the European Parliament or the Legislative Observatory."""
 
     sharepic_url: str | None
     """URL to a share picture for this vote."""

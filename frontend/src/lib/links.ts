@@ -1,3 +1,4 @@
+import type { Summary } from "../api";
 import { BACKEND_PUBLIC_URL, PUBLIC_URL } from "../config";
 
 type ErrorType = "MISSING" | "INCORRECT_RESULT" | "OTHER";
@@ -27,7 +28,7 @@ export function getErrorReportFormUrl(type?: ErrorType, data?: ErrorData) {
 const SUMMARY_FEEDBACK_FORM_URL = "https://tally.so/r/Gx9Eze";
 
 export function getSummaryFeedbackFormUrl(
-  type: "OEIL" | "PRESS_RELEASE",
+  type: Summary["source_type"],
   voteId: number,
   text: string,
 ) {

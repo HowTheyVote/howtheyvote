@@ -657,7 +657,6 @@ def test_votes_api_show(records, db_session, api):
             "reference": "1234/2025(COD)",
             "stage": None,
         },
-        "facts": None,
         "summary": None,
         "sharepic_url": "/api/static/votes/sharepic-1.png",
         "stats": {
@@ -803,6 +802,58 @@ def test_votes_api_show(records, db_session, api):
     }
 
     assert res.json == expected
+
+
+def test_votes_api_show_summary(api, db_session):
+    vote_1 = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+    )
+
+    vote_2 = Vote(
+        id=2,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+    )
+
+    vote_3 = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+        press_release_id="123abc",
+    )
+
+    oeil_summary = OEILSummary(
+        id=1,
+        content="<p>Lorem ipsum dolor sit amet</p>",
+    )
+
+    press_release = PressRelease(
+        id="123abc",
+        facts="<ul><li>Lorem</li><li>ipsum</li></ul>",
+    )
+
+    db_session.add_all([vote_1, vote_2, vote_3, oeil_summary, press_release])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["summary"] is None
+
+    res = api.get("/api/votes/2")
+    assert res.json["summary"]["text"] == "<p>Lorem ipsum dolor sit amet</p>"
+    assert res.json["summary"]["source_type"] == "OEIL_SUMMARY"
+    assert (
+        res.json["summary"]["source_url"]
+        == "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1"
+    )
+
+    res = api.get("/api/votes/3")
+    assert res.json["summary"]["text"] == "<ul><li>Lorem</li><li>ipsum</li></ul>"
+    assert res.json["summary"]["source_type"] == "PRESS_RELEASE"
+    assert (
+        res.json["summary"]["source_url"]
+        == "https://www.europarl.europa.eu/news/en/press-room/123abc"
+    )
 
 
 def test_votes_api_csv(records, api):
