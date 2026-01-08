@@ -911,6 +911,10 @@ def _format_country_stats(
     ]
 
 
+SUMMARY_MAX_CHARS = 750
+SUMMARY_MIN_PARAGRAPH_CHARS = 75
+
+
 def _format_summary(
     press_release: PressRelease | None,
     summary: OEILSummary | None,
@@ -924,7 +928,32 @@ def _format_summary(
 
     if summary:
         fragment = BeautifulSoup(summary.content)
-        snippet = "".join(f"<p>{p.get_text(strip=True)}</p>" for p in fragment.select("p")[:3])
+        snippet = ""
+        chars = 0
+
+        for paragraph in fragment.select("p"):
+            text = paragraph.get_text(strip=True)
+            remaining_chars = SUMMARY_MAX_CHARS - chars
+
+            if remaining_chars < len(text):
+                # Find index of last space. This ensures that the total length of the text is
+                # below the maximum number of characters without cutting of in the middle of
+                # a word.
+                index = text.rfind(" ", 0, remaining_chars)
+                text = text[:index].strip().removesuffix(".")
+                snippet += f"<p>{text}…</p>"
+                break
+
+            if remaining_chars < len(text) + SUMMARY_MIN_PARAGRAPH_CHARS:
+                # After adding the current paragraph, the next paragraph would be very short,
+                # and short paragraphs look weird, so let’s just end the snippet after this
+                # paragraph.
+                text = text.removesuffix(".")
+                snippet += f"<p>{text}…</p>"
+                break
+
+            snippet += f"<p>{text}</p>"
+            chars += len(text)
 
         return {
             "text": snippet,
