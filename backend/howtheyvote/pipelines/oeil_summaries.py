@@ -7,7 +7,7 @@ from sqlalchemy import and_, func, select
 from ..db import Session
 from ..models import OEILSummary, Vote
 from ..scrapers import OEILSummaryIDScraper, OEILSummaryScraper, ScrapingError
-from ..store import Aggregator, BulkWriter, index_records, map_summary, map_vote
+from ..store import Aggregator, BulkWriter, index_records, map_summary
 from .common import BasePipeline
 
 
@@ -22,10 +22,10 @@ class OEILSummariesPipeline(BasePipeline):
         self.start_date = start_date
         self.end_date = end_date
         self.force = force
+        self._summary_ids: set[str] = set()
 
     def _run(self) -> None:
         self._scrape_summary_ids()
-        self._index_votes()
         self._scrape_summaries()
         self._index_summaries()
 
@@ -51,7 +51,6 @@ class OEILSummariesPipeline(BasePipeline):
                 continue
             try:
                 scraper = OEILSummaryIDScraper(
-                    vote_id=vote.id,
                     reference=vote.reference,
                     procedure_reference=vote.procedure_reference,
                     day_of_vote=vote.date,
@@ -68,39 +67,28 @@ class OEILSummariesPipeline(BasePipeline):
                 sentry_sdk.capture_exception(err)
 
         writer.flush()
-        self._vote_ids = writer.get_touched()
+        self._summary_ids = writer.get_touched()
 
     def _scrape_summaries(self) -> None:
         self._log.info("Scraping OEIL summaries")
         writer = BulkWriter()
 
-        for vote in self._votes():
-            if not vote.oeil_summary_id:
-                continue
+        for summary in self._summaries():
             try:
-                scraper = OEILSummaryScraper(summary_id=vote.oeil_summary_id)
+                scraper = OEILSummaryScraper(summary_id=summary.id)
                 writer.add(scraper.run())
             except ScrapingError as err:
                 self._log.exception(
                     "Failed scraping OEIL summary",
-                    oeil_summary_id=vote.oeil_summary_id,
+                    oeil_summary_id=summary.id,
                 )
                 sentry_sdk.capture_exception(err)
 
         writer.flush()
-        self._summary_ids = writer.get_touched()
 
     def _summaries(self) -> Iterator[OEILSummary]:
         aggregator = Aggregator(OEILSummary)
         return aggregator.mapped_records(map_func=map_summary, group_keys=self._summary_ids)
-
-    def _votes(self) -> Iterator[Vote]:
-        aggregator = Aggregator(Vote)
-        return aggregator.mapped_records(map_func=map_vote, group_keys=self._vote_ids)
-
-    def _index_votes(self) -> None:
-        self._log.info("Indexing votes")
-        index_records(Vote, self._votes())
 
     def _index_summaries(self) -> None:
         self._log.info("Indexing summaries")

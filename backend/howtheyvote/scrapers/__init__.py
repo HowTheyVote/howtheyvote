@@ -1,5 +1,9 @@
 from .common import NoWorkingUrlError, RequestCache, ScrapingError
 from .members import MemberGroupsScraper, MemberInfoScraper, MembersScraper
+from .oeil_summaries import (
+    OEILSummaryIDScraper,
+    OEILSummaryScraper,
+)
 from .press_releases import (
     PressReleaseScraper,
     PressReleasesIndexScraper,
@@ -10,8 +14,6 @@ from .votes import (
     DocumentScraper,
     EurlexDocumentScraper,
     EurlexProcedureScraper,
-    OEILSummaryIDScraper,
-    OEILSummaryScraper,
     ProcedureScraper,
     RCVListEnglishScraper,
     RCVListScraper,
