@@ -131,6 +131,13 @@ class RCVListPipeline(BasePipeline):
                 )
                 continue
 
+            if vote.reference.startswith("C"):
+                log.info(
+                    "Skipping document scraper as reference is commission document reference",
+                    vote_id=vote.id,
+                )
+                continue
+
             scraper = DocumentScraper(
                 vote_id=vote.id,
                 reference=vote.reference,
@@ -139,6 +146,8 @@ class RCVListPipeline(BasePipeline):
 
             try:
                 writer.add(scraper.run())
+            except NoWorkingUrlError:
+                pass
             except ScrapingError as err:
                 log.exception(
                     "Failed scraping document",
