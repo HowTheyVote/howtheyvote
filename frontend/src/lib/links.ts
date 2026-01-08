@@ -30,7 +30,7 @@ export function getDownloadUrl(voteId: number, format: DataFormat): string {
   const url = new URL(`/api/votes/${voteId}`, BACKEND_PUBLIC_URL);
 
   if (format === "csv") {
-    return `${url.toString()}.csv`;
+    return `${url.toString()}/members.csv`;
   }
 
   return url.toString();
