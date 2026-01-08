@@ -814,6 +814,15 @@ def _format_links(vote: Vote) -> list[LinkDict]:
             }
         )
 
+    if vote.oeil_summary_id:
+        links.append(
+            {
+                "title": "Summary",
+                "description": "The summary provides an overview of the adopted text.",
+                "url": oeil_summary_url(vote.oeil_summary_id),
+            }
+        )
+
     if vote.reference:
         links.append(
             {
