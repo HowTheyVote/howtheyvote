@@ -84,6 +84,9 @@ SOURCE_INFO = {
     "PressReleaseScraper": {
         "name": "Press release",
     },
+    "OEILSummaryScraper": {
+        "name": "Vote summary",
+    },
     "EurlexProcedureScraper": {
         "name": "Procedure file (EUR-Lex)",
     },
@@ -407,7 +410,7 @@ def show(vote_id: int) -> ResponseReturnValue:
 
     summary = _format_summary(vote.press_release, vote.oeil_summary)
 
-    fragments = _load_fragments(vote, vote.press_release)
+    fragments = _load_fragments(vote, vote.press_release, vote.oeil_summary)
     sources = _format_sources(fragments)
 
     links = _format_links(vote)
@@ -722,8 +725,21 @@ def _serialize_member_votes_query(
     }
 
 
-def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[Fragment]:
-    stmt = select(Fragment).where(fragments_for_records([vote, press_release]))
+def _load_fragments(
+    vote: Vote,
+    press_release: PressRelease | None,
+    oeil_summary: OEILSummary | None,
+) -> Iterable[Fragment]:
+    stmt = select(Fragment).where(
+        fragments_for_records(
+            [
+                vote,
+                press_release,
+                oeil_summary,
+            ]
+        )
+    )
+
     return Session.execute(stmt).scalars()
 
 
