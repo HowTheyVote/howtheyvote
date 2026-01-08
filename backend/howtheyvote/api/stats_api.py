@@ -2,7 +2,7 @@ import datetime
 from typing import cast
 
 from flask import Blueprint, jsonify
-from flask.typing import ResponseValue
+from flask.typing import ResponseReturnValue
 from sqlalchemy import func, select
 
 from ..db import Session
@@ -13,7 +13,7 @@ bp = Blueprint("stats_api", __name__)
 
 
 @bp.route("/stats")
-def index() -> ResponseValue:
+def index() -> ResponseReturnValue:
     """
     ---
     get:

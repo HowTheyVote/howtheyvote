@@ -1,6 +1,7 @@
 import datetime
 
-from flask import Blueprint, Response, abort, jsonify
+from flask import Blueprint, abort, jsonify
+from flask.typing import ResponseReturnValue
 
 from ..db import Session
 from ..models import Member
@@ -10,7 +11,7 @@ bp = Blueprint("members_api", __name__)
 
 
 @bp.route("/members/<int:member_id>")
-def show(member_id: int) -> Response:
+def show(member_id: int) -> ResponseReturnValue:
     """
     ---
     get:
