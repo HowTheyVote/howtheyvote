@@ -43,7 +43,14 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
                 <a
                   rel="noreferrer noopener"
                   target="_blank"
-                  class="text--sm text--light"
+                  href={vote.summary.source_url}
+                >
+                  Read more
+                </a>
+                {"・"}
+                <a
+                  rel="noreferrer noopener"
+                  target="_blank"
                   href={getSummaryFeedbackFormUrl(
                     vote.summary.source_type,
                     vote.id,
