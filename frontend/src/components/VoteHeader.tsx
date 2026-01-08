@@ -2,9 +2,11 @@ import type { Vote } from "../api";
 import { PUBLIC_URL } from "../config";
 import { formatDate } from "../lib/dates";
 import { Island } from "../lib/islands";
+import { getSummaryFeedbackFormUrl } from "../lib/links";
 import ShareButton from "./ShareButton";
 import Stack from "./Stack";
 import Wrapper from "./Wrapper";
+
 import "./VoteHeader.css";
 
 type VoteHeaderProps = {
@@ -36,6 +38,29 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
               // biome-ignore lint/security/noDangerouslySetInnerHtml: Vote facts are trusted HTML
               dangerouslySetInnerHTML={{ __html: vote.facts }}
             />
+          )}
+          {!vote.facts && vote.summary && (
+            <div>
+              <div
+                class="vote-header__summary"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: Summary is trusted HTML
+                dangerouslySetInnerHTML={{ __html: vote.summary }}
+              />
+              <p class="vote-header__feedback">
+                <a
+                  rel="noreferrer noopener"
+                  target="_blank"
+                  class="text--sm text--light"
+                  href={getSummaryFeedbackFormUrl(
+                    "OEIL",
+                    vote.id,
+                    vote.summary,
+                  )}
+                >
+                  What do you think of this summary?
+                </a>
+              </p>
+            </div>
           )}
           <Island>
             <ShareButton

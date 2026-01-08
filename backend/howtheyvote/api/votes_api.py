@@ -4,6 +4,7 @@ from datetime import date
 from io import StringIO
 from typing import Any
 
+from bs4 import BeautifulSoup
 from flask import Blueprint, Request, Response, abort, jsonify, request
 from flask.typing import ResponseReturnValue
 from sqlalchemy import select
@@ -28,6 +29,7 @@ from ..models import (
     Country,
     Fragment,
     Member,
+    OEILSummary,
     PressRelease,
     Topic,
     Vote,
@@ -401,6 +403,7 @@ def show(vote_id: int) -> ResponseReturnValue:
     related_votes = _format_related(_load_related(vote))
 
     facts = vote.press_release.facts if vote.press_release else None
+    summary = _format_summary_snippet(vote.oeil_summary)
 
     fragments = _load_fragments(vote, vote.press_release)
     sources = _format_sources(fragments)
@@ -411,6 +414,7 @@ def show(vote_id: int) -> ResponseReturnValue:
         **base_vote,
         "procedure": procedure,
         "facts": facts,
+        "summary": summary,
         "sharepic_url": vote.sharepic_url,
         "stats": stats,
         "member_votes": member_votes,
@@ -879,3 +883,13 @@ def _format_country_stats(
         for country, stats in country_stats.items()
         if country is not None
     ]
+
+
+def _format_summary_snippet(summary: OEILSummary | None) -> str | None:
+    if not summary:
+        return None
+
+    fragment = BeautifulSoup(summary.content)
+    snippet = "".join(f"<p>{p.get_text(strip=True)}</p>" for p in fragment.select("p")[:3])
+
+    return snippet

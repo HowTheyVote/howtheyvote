@@ -11,6 +11,23 @@
   margin-block-start: var(--space-xxs);
 }
 
+.vote-header__summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  overflow: hidden;
+}
+
+.vote-header__summary p + p {
+  margin-block-start: var(--space-xs);
+}
+
+.vote-header__feedback {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  margin-block-start: var(--space-xs);
+}
+
 @media screen and (min-width: 520px) {
   .vote-header__facts ul li {
     list-style-position: outside;

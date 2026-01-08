@@ -658,6 +658,7 @@ def test_votes_api_show(records, db_session, api):
             "stage": None,
         },
         "facts": None,
+        "summary": None,
         "sharepic_url": "/api/static/votes/sharepic-1.png",
         "stats": {
             "total": {

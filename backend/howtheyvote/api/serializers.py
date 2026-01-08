@@ -478,6 +478,9 @@ class VoteDict(BaseVoteDict):
     """Facts about the vote. Usually an HTML formatted list of 3-4 bullet points extracted
     from press releases published by the European Parliament."""
 
+    summary: str | None
+    """A short summary of the vote extracted from the Legislative Observatory."""
+
     sharepic_url: str | None
     """URL to a share picture for this vote."""
 

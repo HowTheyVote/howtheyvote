@@ -493,6 +493,10 @@ export type Vote = BaseVote & {
      */
     facts?: string;
     /**
+     * A short summary of the vote extracted from the Legislative Observatory.
+     */
+    summary?: string;
+    /**
      * URL to a share picture for this vote.
      */
     sharepic_url?: string;
