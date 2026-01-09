@@ -134,6 +134,8 @@ def map_press_release(record: CompositeRecord) -> PressRelease:
 def map_summary(record: CompositeRecord) -> OEILSummary:
     return OEILSummary(
         id=record.group_key,
+        date=record.get("date", type=datetime.date.fromisoformat),
+        procedure_reference=record.get("procedure_reference"),
         content=record.get("content"),
         position_counts=record.get("position_counts"),
     )

@@ -25,7 +25,11 @@ def test_oeil_summary_id_scraper_run(responses):
     fragments = list(scraper.run())
     assert fragments[0].model == "OEILSummary"
     assert fragments[0].group_key == 1651118
-    assert fragments[0].data == {"id": 1651118}
+    assert fragments[0].data == {
+        "id": 1651118,
+        "date": datetime.date(2021, 2, 11),
+        "procedure_reference": "2021/2540(RSP)",
+    }
 
 
 def test_oeil_summary_id_scraper_run_no_summary(responses):

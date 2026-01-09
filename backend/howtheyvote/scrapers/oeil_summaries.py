@@ -56,7 +56,11 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
                 model=OEILSummary,
                 source_id=summary_id,
                 group_key=summary_id,
-                data={"id": summary_id},
+                data={
+                    "id": summary_id,
+                    "date": self.day_of_vote,
+                    "procedure_reference": self.procedure_reference,
+                },
             )
 
 
