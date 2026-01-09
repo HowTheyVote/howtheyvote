@@ -4,6 +4,7 @@ from collections.abc import Iterator
 import sentry_sdk
 from sqlalchemy import and_, func, select
 
+from ..analysis import OEILSummaryVotePositionCountsAnalyzer
 from ..db import Session
 from ..models import OEILSummary, Vote
 from ..scrapers import OEILSummaryIDScraper, OEILSummaryScraper, ScrapingError
@@ -27,6 +28,7 @@ class OEILSummariesPipeline(BasePipeline):
     def _run(self) -> None:
         self._scrape_summary_ids()
         self._scrape_summaries()
+        self._analyze_vote_position_counts()
         self._index_summaries()
 
     def _scrape_summary_ids(self) -> None:
@@ -83,6 +85,19 @@ class OEILSummariesPipeline(BasePipeline):
                     oeil_summary_id=summary.id,
                 )
                 sentry_sdk.capture_exception(err)
+
+        writer.flush()
+
+    def _analyze_vote_position_counts(self) -> None:
+        self._log.info("Analyzing vote position counts")
+        writer = BulkWriter()
+
+        for summary in self._summaries():
+            analyzer = OEILSummaryVotePositionCountsAnalyzer(
+                summary_id=summary.id,
+                text=summary.content,
+            )
+            writer.add(analyzer.run())
 
         writer.flush()
 

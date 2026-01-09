@@ -135,4 +135,5 @@ def map_summary(record: CompositeRecord) -> OEILSummary:
     return OEILSummary(
         id=record.group_key,
         content=record.get("content"),
+        position_counts=record.get("position_counts"),
     )
