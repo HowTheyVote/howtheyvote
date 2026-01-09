@@ -4,11 +4,11 @@ from collections.abc import Iterator
 import sentry_sdk
 from sqlalchemy import and_, func, select
 
-from ..analysis import OEILSummaryVotePositionCountsAnalyzer
+from ..analysis import OEILSummaryAnalyzer, OEILSummaryVotePositionCountsAnalyzer
 from ..db import Session
 from ..models import OEILSummary, Vote
 from ..scrapers import OEILSummaryIDScraper, OEILSummaryScraper, ScrapingError
-from ..store import Aggregator, BulkWriter, index_records, map_summary
+from ..store import Aggregator, BulkWriter, index_records, map_summary, map_vote
 from .common import BasePipeline
 
 
@@ -24,12 +24,15 @@ class OEILSummariesPipeline(BasePipeline):
         self.end_date = end_date
         self.force = force
         self._summary_ids: set[str] = set()
+        self._vote_ids: set[str] = set()
 
     def _run(self) -> None:
         self._scrape_summary_ids()
         self._scrape_summaries()
         self._analyze_vote_position_counts()
+        self._match_oeil_summaries()
         self._index_summaries()
+        self._index_votes()
 
     def _scrape_summary_ids(self) -> None:
         query = select(Vote).where(
@@ -37,6 +40,7 @@ class OEILSummariesPipeline(BasePipeline):
                 Vote.is_main == True,  #  noqa: E712
                 func.date(Vote.timestamp) >= self.start_date,
                 func.date(Vote.timestamp) <= self.end_date,
+                Vote.procedure_reference != None,  #  noqa: E711
             ),
         )
 
@@ -99,6 +103,24 @@ class OEILSummariesPipeline(BasePipeline):
 
         writer.flush()
 
+    def _match_oeil_summaries(self) -> None:
+        query = select(Vote).where(
+            and_(
+                Vote.is_main == True,  #  noqa: E712
+                func.date(Vote.timestamp) >= self.start_date,
+                func.date(Vote.timestamp) <= self.end_date,
+                Vote.procedure_reference != None,  #  noqa: E711
+            ),
+        )
+
+        votes = Session.execute(query).scalars()
+
+        writer = BulkWriter()
+        analyzer = OEILSummaryAnalyzer(votes, self._summaries())
+        writer.add(analyzer.run())
+        writer.flush()
+        self._vote_ids = writer.get_touched()
+
     def _summaries(self) -> Iterator[OEILSummary]:
         aggregator = Aggregator(OEILSummary)
         return aggregator.mapped_records(map_func=map_summary, group_keys=self._summary_ids)
@@ -106,3 +128,11 @@ class OEILSummariesPipeline(BasePipeline):
     def _index_summaries(self) -> None:
         self._log.info("Indexing summaries")
         index_records(OEILSummary, self._summaries())
+
+    def _votes(self) -> Iterator[Vote]:
+        aggregator = Aggregator(Vote)
+        return aggregator.mapped_records(map_func=map_vote, group_keys=self._vote_ids)
+
+    def _index_votes(self) -> None:
+        self._log.info("Indexing votes")
+        index_records(Vote, self._votes())
