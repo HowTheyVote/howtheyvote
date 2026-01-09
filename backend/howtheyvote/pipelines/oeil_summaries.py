@@ -49,11 +49,10 @@ class OEILSummariesPipeline(BasePipeline):
         writer = BulkWriter()
 
         for vote in votes:
-            if not vote.reference and not vote.procedure_reference:
+            if not vote.procedure_reference:
                 continue
             try:
                 scraper = OEILSummaryIDScraper(
-                    reference=vote.reference,
                     procedure_reference=vote.procedure_reference,
                     day_of_vote=vote.date,
                 )
@@ -62,7 +61,6 @@ class OEILSummariesPipeline(BasePipeline):
                 self._log.exception(
                     "Failed scraping OEIL summary ID",
                     vote_id=vote.id,
-                    reference=vote.reference,
                     procedure_reference=vote.procedure_reference,
                     day_of_vote=vote.date,
                 )

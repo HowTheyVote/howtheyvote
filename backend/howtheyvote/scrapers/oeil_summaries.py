@@ -16,17 +16,15 @@ class OEILSummaryIDScraper(BeautifulSoupScraper):
     def __init__(
         self,
         day_of_vote: date,
-        reference: str | None,
         procedure_reference: str | None,
         request_cache: RequestCache | None = None,
     ):
         super().__init__(request_cache=request_cache)
         self.day_of_vote = day_of_vote
-        self.reference = reference
         self.procedure_reference = procedure_reference
 
     def _url(self) -> str:
-        return f"{self.BASE_URL}?reference={self.procedure_reference or self.reference}"
+        return f"{self.BASE_URL}?reference={self.procedure_reference}"
 
     def _extract_data(self, doc: BeautifulSoup) -> Iterator[Fragment]:
         section = doc.select_one('.es_product-section:has(h2:-soup-contains("Key events"))')

@@ -20,7 +20,6 @@ def test_oeil_summary_id_scraper_run(responses):
 
     scraper = OEILSummaryIDScraper(
         day_of_vote=datetime.date(2021, 2, 11),
-        reference="A9-0115/2021",
         procedure_reference="2021/2540(RSP)",
     )
     fragments = list(scraper.run())
@@ -39,7 +38,6 @@ def test_oeil_summary_id_scraper_run_no_summary(responses):
 
     scraper = OEILSummaryIDScraper(
         day_of_vote=datetime.date(2021, 5, 19),
-        reference="A9-0115/2021",
         procedure_reference="2020/2042(INI)",
     )
     assert list(scraper.run()) == []
