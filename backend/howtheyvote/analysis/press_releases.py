@@ -2,7 +2,7 @@ from ..models import Fragment
 from .helpers import extract_vote_results
 
 
-class VotePositionCountsAnalyzer:
+class PressReleaseVotePositionCountsAnalyzer:
     """Extracts mentioned vote position counts from press release text."""
 
     def __init__(self, release_id: str, text: str):

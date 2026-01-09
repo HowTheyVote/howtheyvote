@@ -5,7 +5,7 @@ import sentry_sdk
 from sqlalchemy import func, select
 from structlog import get_logger
 
-from ..analysis import PressReleaseAnalyzer, VotePositionCountsAnalyzer
+from ..analysis import PressReleaseAnalyzer, PressReleaseVotePositionCountsAnalyzer
 from ..db import Session
 from ..models import PlenarySession, PressRelease, Vote
 from ..query import session_is_current_at
@@ -131,7 +131,7 @@ class PressPipeline(BasePipeline):
                 release_id=press_release.id,
                 date=self.date,
             )
-            analyzer = VotePositionCountsAnalyzer(
+            analyzer = PressReleaseVotePositionCountsAnalyzer(
                 release_id=press_release.id,
                 text=press_release.text,
             )

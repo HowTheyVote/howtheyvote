@@ -5,7 +5,11 @@ from cachetools import LRUCache
 from sqlalchemy import func, or_, select
 from structlog import get_logger
 
-from ..analysis import PressReleaseAnalyzer, TopicsAnalyzer, VotePositionCountsAnalyzer
+from ..analysis import (
+    PressReleaseAnalyzer,
+    PressReleaseVotePositionCountsAnalyzer,
+    TopicsAnalyzer,
+)
 from ..db import Session
 from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
@@ -307,7 +311,7 @@ def press_releases() -> None:
             )
         )
         for release in releases:
-            writer.add(VotePositionCountsAnalyzer(release.id, release.text).run())
+            writer.add(PressReleaseVotePositionCountsAnalyzer(release.id, release.text).run())
         writer.flush()
 
         # Index press releases
