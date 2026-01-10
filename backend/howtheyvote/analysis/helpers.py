@@ -30,7 +30,8 @@ def parse_int(text: str) -> int:
     return int(text)
 
 
-VOTE_RESULT_REGEX = re.compile(
+# Example: The text was adopted by 400 votes in favour, 63 against with 81 abstentions.
+VOTE_RESULT_REGEX_1 = re.compile(
     NUMBER_REGEX
     + r"\s(?:votes?|MEPs? voted)\s(?:in\sfavou?r|for),\s"
     + NUMBER_REGEX
@@ -40,19 +41,21 @@ VOTE_RESULT_REGEX = re.compile(
     flags=re.I,
 )
 
-VOTE_RESULT_REGEX_ADOPTED = re.compile(
-    r"adopted\swith\s"
+# Example: The European Parliament decided by 345 votes to 284, with 8 abstentions, to
+# refuse to grant discharge…
+VOTE_RESULT_REGEX_2 = re.compile(
+    r"(?:with|by)\s"
     + NUMBER_REGEX
-    + r"\svotes\sto\s"
+    + r"(?:\svotes)?\sto\s"
     + NUMBER_REGEX
-    + r"\sand\s"
+    + r"(?:\sagainst)?,?\s(?:and\s|with\s)?"
     + NUMBER_REGEX
-    + r"\sabstentions"
+    + r"\sabstentions?"
 )
 
 
 def extract_vote_results(text: str) -> list[VotePositionCounts]:
-    matches = VOTE_RESULT_REGEX.finditer(text)
+    matches = VOTE_RESULT_REGEX_1.finditer(text)
     results: list[VotePositionCounts] = []
 
     for match in matches:
@@ -68,7 +71,7 @@ def extract_vote_results(text: str) -> list[VotePositionCounts]:
         except ValueError:
             continue
 
-    matches = VOTE_RESULT_REGEX_ADOPTED.finditer(text)
+    matches = VOTE_RESULT_REGEX_2.finditer(text)
     for match in matches:
         try:
             results.append(
