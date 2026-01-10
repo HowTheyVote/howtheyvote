@@ -1,7 +1,18 @@
 import datetime
 
-from howtheyvote.analysis.votes import MainVoteAnalyzer, PressReleaseAnalyzer
-from howtheyvote.models import Fragment, MemberVote, PressRelease, Vote, VotePosition
+from howtheyvote.analysis.votes import (
+    MainVoteAnalyzer,
+    OEILSummaryAnalyzer,
+    PressReleaseAnalyzer,
+)
+from howtheyvote.models import (
+    Fragment,
+    MemberVote,
+    OEILSummary,
+    PressRelease,
+    Vote,
+    VotePosition,
+)
 
 from ..helpers import record_to_dict
 
@@ -386,3 +397,200 @@ def test_press_release_analyzer_by_reference_prefer():
 
     assert len(fragments) == 1
     assert record_to_dict(fragments[0]) == record_to_dict(expected)
+
+
+def test_oeil_summary_analyzer():
+    summaries = [
+        OEILSummary(
+            id="1739466",
+            date=datetime.date(2023, 3, 30),
+            procedure_reference="2022/0099(COD)",
+            position_counts=[
+                {"FOR": 426, "AGAINST": 109, "ABSTENTION": 52, "DID_NOT_VOTE": 0},
+            ],
+        ),
+        OEILSummary(
+            id="1772308",
+            date=datetime.date(2024, 1, 16),
+            procedure_reference="2022/0099(COD)",
+            position_counts=[
+                {"FOR": 457, "AGAINST": 92, "ABSTENTION": 32, "DID_NOT_VOTE": 0},
+            ],
+        ),
+    ]
+
+    votes = [
+        Vote(
+            id="162974",
+            is_main=True,
+            timestamp=datetime.datetime(2024, 1, 16, 0, 0, 0),
+            procedure_reference="2022/0099(COD)",
+            member_votes=_make_member_votes(457, 92, 32),
+        ),
+        Vote(
+            id="153971",
+            is_main=True,
+            timestamp=datetime.datetime(2023, 3, 30, 0, 0, 0),
+            procedure_reference="2022/0099(COD)",
+            member_votes=_make_member_votes(426, 109, 52),
+        ),
+    ]
+
+    analyzer = OEILSummaryAnalyzer(votes, summaries)
+    fragments = list(analyzer.run())
+
+    expected = [
+        Fragment(
+            model="Vote",
+            source_id="162974:1772308",
+            source_name="OEILSummaryAnalyzer",
+            group_key="162974",
+            data={"oeil_summary_id": "1772308"},
+        ),
+        Fragment(
+            model="Vote",
+            source_id="153971:1739466",
+            source_name="OEILSummaryAnalyzer",
+            group_key="153971",
+            data={"oeil_summary_id": "1739466"},
+        ),
+    ]
+
+    assert len(fragments) == 2
+    assert record_to_dict(fragments[0]) == record_to_dict(expected[0])
+    assert record_to_dict(fragments[1]) == record_to_dict(expected[1])
+
+
+def test_oeil_summary_analyzer_no_position_counts():
+    summaries = [
+        OEILSummary(
+            id="123",
+            date=datetime.date(2026, 1, 1),
+            procedure_reference="2026/1234(COD)",
+            position_counts=None,
+        )
+    ]
+
+    votes = [
+        Vote(
+            id="123456",
+            is_main=False,
+            timestamp=datetime.datetime(2026, 1, 1, 0, 0, 0),
+            procedure_reference="2026/1234(COD)",
+            member_votes=_make_member_votes(1, 2, 3),
+        )
+    ]
+
+    analyzer = OEILSummaryAnalyzer(votes, summaries)
+    fragments = list(analyzer.run())
+    assert len(fragments) == 0
+
+
+def test_oeil_summary_no_main_vote():
+    summaries = [
+        OEILSummary(
+            id="123",
+            date=datetime.date(2026, 1, 1),
+            procedure_reference="2026/1234(COD)",
+            position_counts=[
+                {"FOR": 1, "AGAINST": 2, "ABSTENTION": 3, "DID_NOT_VOTE": 0},
+            ],
+        )
+    ]
+
+    votes = [
+        Vote(
+            id="123456",
+            is_main=False,
+            timestamp=datetime.datetime(2026, 1, 1, 0, 0, 0),
+            procedure_reference="2026/1234(COD)",
+            member_votes=_make_member_votes(1, 2, 3),
+        )
+    ]
+
+    analyzer = OEILSummaryAnalyzer(votes, summaries)
+    fragments = list(analyzer.run())
+    assert len(fragments) == 0
+
+
+def test_oeil_summary_analyzer_multiple_votes_mentioned_in_summary():
+    summaries = [
+        OEILSummary(
+            id="1720854",
+            date=datetime.date(2021, 10, 18),
+            procedure_reference="2021/2146(DEC)",
+            position_counts=[
+                {"FOR": 345, "AGAINST": 284, "ABSTENTION": 8, "DID_NOT_VOTE": 0},
+                {"FOR": 467, "AGAINST": 136, "ABSTENTION": 15, "DID_NOT_VOTE": 0},
+            ],
+        )
+    ]
+
+    votes = [
+        Vote(
+            id="149084",
+            is_main=True,
+            timestamp=datetime.datetime(2021, 10, 18, 0, 0, 0),
+            procedure_reference="2021/2146(DEC)",
+            description="Propositions de décision",
+            member_votes=_make_member_votes(345, 284, 8),
+        ),
+        Vote(
+            id="148972",
+            is_main=True,
+            timestamp=datetime.datetime(2021, 10, 18, 0, 0, 0),
+            procedure_reference="2021/2146(DEC)",
+            description="Proposition de résolution (ensemble du texte)",
+            member_votes=_make_member_votes(467, 136, 15),
+        ),
+    ]
+
+    analyzer = OEILSummaryAnalyzer(votes, summaries)
+    fragments = list(analyzer.run())
+    assert len(fragments) == 0
+
+
+def test_oeil_summary_analyzer_multiple_votes_only_one_mentioned():
+    summaries = [
+        OEILSummary(
+            id="1880954",
+            date=datetime.date(2025, 12, 17),
+            procedure_reference="2025/3007(RSP)",
+            position_counts=[
+                {"FOR": 358, "AGAINST": 202, "ABSTENTION": 79, "DID_NOT_VOTE": 0},
+            ],
+        )
+    ]
+
+    votes = [
+        Vote(
+            id="182713",
+            is_main=True,
+            timestamp=datetime.datetime(2025, 12, 17, 0, 0, 0),
+            procedure_reference="2025/3007(RSP)",
+            member_votes=_make_member_votes(241, 356, 48),
+        ),
+        Vote(
+            id="182767",
+            is_main=True,
+            timestamp=datetime.datetime(2025, 12, 17, 0, 0, 0),
+            procedure_reference="2025/3007(RSP)",
+            member_votes=_make_member_votes(358, 202, 79),
+        ),
+    ]
+
+    analyzer = OEILSummaryAnalyzer(votes, summaries)
+    fragments = list(analyzer.run())
+
+    expected = (
+        Fragment(
+            model="Vote",
+            source_id="182767:1880954",
+            source_name="OEILSummaryAnalyzer",
+            group_key="182767",
+            data={"oeil_summary_id": "1880954"},
+        ),
+    )
+
+    assert len(fragments) == 1
+    assert record_to_dict(fragments[0]) == record_to_dict(expected[0])

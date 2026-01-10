@@ -1,7 +1,6 @@
 import datetime
 
 import pytest
-from bs4 import BeautifulSoup
 
 from howtheyvote.models import (
     AmendmentAuthorType,
@@ -16,8 +15,6 @@ from howtheyvote.scrapers.votes import (
     DocumentScraper,
     EurlexDocumentScraper,
     EurlexProcedureScraper,
-    OEILSummaryIDScraper,
-    OEILSummaryScraper,
     ProcedureScraper,
     RCVListScraper,
     VOTListScraper,
@@ -672,74 +669,3 @@ def test_document_scraper(responses):
         "procedure_reference": "2025/2691(RSP)",
         "texts_adopted_reference": "P10_TA(2025)0096",
     }
-
-
-def test_oeil_summary_id_scraper_run(responses):
-    responses.get(
-        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2021/2540(RSP)",
-        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2021-2540-rsp.html"),
-    )
-
-    scraper = OEILSummaryIDScraper(
-        vote_id=127974,
-        day_of_vote=datetime.date(2021, 2, 11),
-        reference="A9-0115/2021",
-        procedure_reference="2021/2540(RSP)",
-    )
-    fragment = scraper.run()
-    assert fragment.group_key == 127974
-    assert fragment.data == {"oeil_summary_id": "1651118"}
-
-
-def test_oeil_summary_id_scraper_run_no_summary(responses):
-    responses.get(
-        "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2020/2042(INI)",
-        body=load_fixture("scrapers/data/votes/oeil-procedure-file_2021-2540-rsp.html"),
-    )
-
-    scraper = OEILSummaryIDScraper(
-        vote_id=131503,
-        day_of_vote=datetime.date(2021, 5, 19),
-        reference="A9-0115/2021",
-        procedure_reference="2020/2042(INI)",
-    )
-    assert scraper.run() is None
-
-
-def test_oeil_summary_scraper(responses):
-    responses.get(
-        "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1651118",
-        body=load_fixture("scrapers/data/votes/oeil-document-summary_1651118.html"),
-    )
-
-    scraper = OEILSummaryScraper(summary_id=1651118)
-    fragment = scraper.run()
-    assert fragment.group_key == 1651118
-    assert fragment.data["content"].startswith(
-        "<p>The European Parliament adopted by 667 votes to 1, with 27 abstentions, a resolution on the situation in Myanmar.</p>"
-    )
-
-
-def test_oeil_summary_scraper_headings(responses):
-    responses.get(
-        "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1864147",
-        body=load_fixture("scrapers/data/votes/oeil-document-summary_1864147.html"),
-    )
-
-    scraper = OEILSummaryScraper(summary_id=1864147)
-    fragment = scraper.run()
-    assert fragment.group_key == 1864147
-
-    doc = BeautifulSoup(fragment.data["content"])
-    headings = [heading.get_text() for heading in doc.select("h2")]
-    assert headings == [
-        "Significant presence",
-        "Structure of a BEFIT group",
-        "Calculation of the preliminary tax result",
-        "Limitation of royalties, entertainment costs",
-        "Controlled foreign companies",
-        "Accelerated depreciation rules",
-        "Tax incentives",
-        "Transitional allocation rule",
-        "One-stop shop",
-    ]

@@ -5,7 +5,7 @@ from collections.abc import Iterable, Iterator
 from unidecode import unidecode
 
 from ..helpers import make_key
-from ..models import Fragment, OEILSubject, PressRelease, Topic, Vote
+from ..models import Fragment, OEILSubject, OEILSummary, PressRelease, Topic, Vote
 from ..vote_stats import count_vote_positions
 
 
@@ -248,6 +248,58 @@ class PressReleaseAnalyzer:
             return set()
 
         return self._releases_by_date_position_counts[key]
+
+
+class OEILSummaryAnalyzer:
+    def __init__(self, votes: Iterable[Vote], summaries: Iterable[OEILSummary]):
+        self.votes = votes
+        self.summaries = summaries
+        self._build_summaries_index()
+
+    def run(self) -> Iterator[Fragment]:
+        for vote in self.votes:
+            if not vote.is_main or not vote.procedure_reference:
+                continue
+
+            counts = count_vote_positions(vote.member_votes)
+
+            key = (
+                vote.timestamp.date(),
+                vote.procedure_reference,
+                (counts["FOR"], counts["AGAINST"], counts["ABSTENTION"]),
+            )
+
+            for summary_id in self._summaries_index[key]:
+                yield Fragment(
+                    model="Vote",
+                    source_id=f"{vote.id}:{summary_id}",
+                    source_name=type(self).__name__,
+                    group_key=vote.id,
+                    data={"oeil_summary_id": summary_id},
+                )
+
+    def _build_summaries_index(self) -> None:
+        # Map (date, procedure reference, position counts) to summary IDs
+        self._summaries_index: dict[
+            tuple[datetime.date, str, tuple[int, int, int]],
+            set[int],
+        ] = defaultdict(set)
+
+        for summary in self.summaries:
+            if not summary.position_counts or len(summary.position_counts) != 1:
+                # We consider only summaries that are about exactly one vote, but this
+                # vote mentions the results of more than one vote.
+                continue
+
+            counts = summary.position_counts[0]
+
+            key = (
+                summary.date,
+                summary.procedure_reference,
+                (counts["FOR"], counts["AGAINST"], counts["ABSTENTION"]),
+            )
+
+            self._summaries_index[key].add(summary.id)
 
 
 class TopicsAnalyzer:

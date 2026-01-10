@@ -1,18 +1,18 @@
-from howtheyvote.analysis.press_releases import VotePositionCountsAnalyzer
+from howtheyvote.analysis.press_releases import PressReleaseVotePositionCountsAnalyzer
 from howtheyvote.models import Fragment
 
 from ..helpers import record_to_dict
 
 
 def test_vote_position_counts_analyzer():
-    analyzer = VotePositionCountsAnalyzer(
+    analyzer = PressReleaseVotePositionCountsAnalyzer(
         release_id="20250204IPR26689",
         text="The text was adopted by 400 votes in favour, 63 against with 81 abstentions.",
     )
     expected = Fragment(
         model="PressRelease",
         source_id="20250204IPR26689",
-        source_name="VotePositionCountsAnalyzer",
+        source_name="PressReleaseVotePositionCountsAnalyzer",
         group_key="20250204IPR26689",
         data={
             "position_counts": [
@@ -29,14 +29,14 @@ def test_vote_position_counts_analyzer():
 
 
 def test_vote_position_counts_analyzer_multiple_counts():
-    analyzer = VotePositionCountsAnalyzer(
+    analyzer = PressReleaseVotePositionCountsAnalyzer(
         release_id="20190711IPR56828",
         text="The text was adopted with 458 votes in favour, 80 against and 89 abstentions. The text was adopted with 330 votes in favour, 252 against and 55 abstentions",
     )
     expected = Fragment(
         model="PressRelease",
         source_id="20190711IPR56828",
-        source_name="VotePositionCountsAnalyzer",
+        source_name="PressReleaseVotePositionCountsAnalyzer",
         group_key="20190711IPR56828",
         data={
             "position_counts": [
@@ -59,7 +59,7 @@ def test_vote_position_counts_analyzer_multiple_counts():
 
 
 def test_vote_position_counts_analyzer_no_text():
-    analyzer = VotePositionCountsAnalyzer(
+    analyzer = PressReleaseVotePositionCountsAnalyzer(
         release_id="20250219IPR26999",
         text=None,
     )
@@ -67,7 +67,7 @@ def test_vote_position_counts_analyzer_no_text():
 
 
 def test_vote_position_counts_analyzer_no_counts():
-    analyzer = VotePositionCountsAnalyzer(
+    analyzer = PressReleaseVotePositionCountsAnalyzer(
         release_id="20250219IPR26999",
         text="EU and Ukrainian flags will be flown at the European Parliament’s three sites from Sunday 23 February to Tuesday 25 February, marking three years since Russia’s invasion.",
     )
