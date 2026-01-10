@@ -30,6 +30,7 @@ def parse_int(text: str) -> int:
     return int(text)
 
 
+# Example: The text was adopted by 400 votes in favour, 63 against with 81 abstentions.
 VOTE_RESULT_REGEX_1 = re.compile(
     NUMBER_REGEX
     + r"\s(?:votes?|MEPs? voted)\s(?:in\sfavou?r|for),\s"
@@ -40,6 +41,8 @@ VOTE_RESULT_REGEX_1 = re.compile(
     flags=re.I,
 )
 
+# Example: The European Parliament decided by 345 votes to 284, with 8 abstentions, to
+# refuse to grant discharge…
 VOTE_RESULT_REGEX_2 = re.compile(
     r"(?:with|by)\s"
     + NUMBER_REGEX
