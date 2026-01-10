@@ -32,7 +32,6 @@ from ..models import (
     Member,
     OEILSummary,
     PressRelease,
-    SnippetType,
     Topic,
     Vote,
 )
@@ -46,6 +45,7 @@ from .serializers import (
     ProcedureDict,
     RelatedVoteDict,
     SnippetDict,
+    SnippetSourceType,
     SourceDict,
     VoteDict,
     VotePositionCountsDict,
@@ -920,7 +920,7 @@ def _format_snippet(
     if press_release and press_release.facts:
         return {
             "text": press_release.facts,
-            "source_type": SnippetType.PRESS_RELEASE,
+            "source_type": SnippetSourceType.PRESS_RELEASE,
             "source_url": press_release_url(press_release.id),
         }
 
@@ -955,7 +955,7 @@ def _format_snippet(
 
         return {
             "text": snippet,
-            "source_type": SnippetType.OEIL_SUMMARY,
+            "source_type": SnippetSourceType.OEIL_SUMMARY,
             "source_url": oeil_summary_url(summary.id),
         }
 

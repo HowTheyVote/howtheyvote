@@ -159,11 +159,6 @@ AMENDMENT_AUTHOR_TYPE_TO_CLASS: dict[AmendmentAuthorType, type[AmendmentAuthor]]
 }
 
 
-class SnippetType(Enum):
-    OEIL_SUMMARY = "OEIL_SUMMARY"
-    PRESS_RELEASE = "PRESS_RELEASE"
-
-
 def serialize_amendment_author(author: AmendmentAuthor | None) -> dict[str, Any] | None:
     if not author:
         return None
