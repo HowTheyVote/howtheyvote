@@ -856,6 +856,38 @@ def test_votes_api_show_summary(api, db_session):
     )
 
 
+def test_votes_api_show_summary_press_release_no_facts(api, db_session):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        press_release_id="123abc",
+    )
+
+    press_release = PressRelease(id="123abc", facts=None)
+
+    db_session.add_all([vote, press_release])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["summary"] is None
+
+
+def test_votes_api_show_summary_oeil_summary_no_contents(api, db_session):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+    )
+
+    oeil_summary = OEILSummary(id=1, content=None)
+
+    db_session.add_all([vote, oeil_summary])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["summary"] is None
+
+
 def test_votes_api_show_summary_truncate(api, db_session):
     vote = Vote(
         id=1,

@@ -919,14 +919,14 @@ def _format_summary(
     press_release: PressRelease | None,
     summary: OEILSummary | None,
 ) -> SummaryDict | None:
-    if press_release:
+    if press_release and press_release.facts:
         return {
             "text": press_release.facts,
             "source_type": SummaryType.PRESS_RELEASE,
             "source_url": press_release_url(press_release.id),
         }
 
-    if summary:
+    if summary and summary.content:
         fragment = BeautifulSoup(summary.content)
         snippet = ""
         chars = 0
