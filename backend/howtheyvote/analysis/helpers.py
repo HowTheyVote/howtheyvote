@@ -30,7 +30,7 @@ def parse_int(text: str) -> int:
     return int(text)
 
 
-VOTE_RESULT_REGEX = re.compile(
+VOTE_RESULT_REGEX_1 = re.compile(
     NUMBER_REGEX
     + r"\s(?:votes?|MEPs? voted)\s(?:in\sfavou?r|for),\s"
     + NUMBER_REGEX
@@ -40,7 +40,7 @@ VOTE_RESULT_REGEX = re.compile(
     flags=re.I,
 )
 
-VOTE_RESULT_REGEX_ADOPTED = re.compile(
+VOTE_RESULT_REGEX_2 = re.compile(
     r"(?:with|by)\s"
     + NUMBER_REGEX
     + r"(?:\svotes)?\sto\s"
@@ -52,7 +52,7 @@ VOTE_RESULT_REGEX_ADOPTED = re.compile(
 
 
 def extract_vote_results(text: str) -> list[VotePositionCounts]:
-    matches = VOTE_RESULT_REGEX.finditer(text)
+    matches = VOTE_RESULT_REGEX_1.finditer(text)
     results: list[VotePositionCounts] = []
 
     for match in matches:
@@ -68,7 +68,7 @@ def extract_vote_results(text: str) -> list[VotePositionCounts]:
         except ValueError:
             continue
 
-    matches = VOTE_RESULT_REGEX_ADOPTED.finditer(text)
+    matches = VOTE_RESULT_REGEX_2.finditer(text)
     for match in matches:
         try:
             results.append(
