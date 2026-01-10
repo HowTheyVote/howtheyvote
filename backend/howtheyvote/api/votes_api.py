@@ -818,7 +818,7 @@ def _format_links(vote: Vote) -> list[LinkDict]:
         links.append(
             {
                 "title": "Summary",
-                "description": "The summary provides an overview of the adopted text.",
+                "description": "Summary published in the Legislative Observatory. Summaries contain more information about the subject of the vote. Compared to press releases, they are usually more detailed, but can also contain more technical language.",  #  noqa: E501
                 "url": oeil_summary_url(vote.oeil_summary_id),
             }
         )
