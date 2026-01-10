@@ -77,6 +77,7 @@ class MainVoteAnalyzer:
             "resolution",
             "proposals for decision",
             "proposition de decision",
+            "propositions de decision",
             "proposal for a decision",
             "proposal for a decision (as a whole)",
             "proposition de decision (ensemble du texte)",
