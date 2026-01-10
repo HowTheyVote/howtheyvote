@@ -212,14 +212,14 @@ function Copyright({ vote }: { vote: Vote }) {
     />
   );
 
-  if (vote.summary) {
+  if (vote.snippet) {
     copyright = (
       <>
         {copyright}
         <br />
         <CopyrightLink
           content="Summary"
-          sourceUrl={vote.summary.source_url}
+          sourceUrl={vote.snippet.source_url}
           year={new Date(vote.timestamp).getFullYear()}
         />
       </>

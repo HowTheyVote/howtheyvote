@@ -32,7 +32,7 @@ from ..models import (
     Member,
     OEILSummary,
     PressRelease,
-    SummaryType,
+    SnippetType,
     Topic,
     Vote,
 )
@@ -45,8 +45,8 @@ from .serializers import (
     MemberVotesQueryResponseDict,
     ProcedureDict,
     RelatedVoteDict,
+    SnippetDict,
     SourceDict,
-    SummaryDict,
     VoteDict,
     VotePositionCountsDict,
     VotesQueryResponseDict,
@@ -405,10 +405,8 @@ def show(vote_id: int) -> ResponseReturnValue:
     }
 
     member_votes = _format_member_votes(vote, members_by_id)
-
     related_votes = _format_related(_load_related(vote))
-
-    summary = _format_summary(vote.press_release, vote.oeil_summary)
+    snippet = _format_snippet(vote.press_release, vote.oeil_summary)
 
     fragments = _load_fragments(vote, vote.press_release, vote.oeil_summary)
     sources = _format_sources(fragments)
@@ -418,7 +416,7 @@ def show(vote_id: int) -> ResponseReturnValue:
     data: VoteDict = {
         **base_vote,
         "procedure": procedure,
-        "summary": summary,
+        "snippet": snippet,
         "sharepic_url": vote.sharepic_url,
         "stats": stats,
         "member_votes": member_votes,
@@ -911,18 +909,18 @@ def _format_country_stats(
     ]
 
 
-SUMMARY_MAX_CHARS = 750
-SUMMARY_MIN_PARAGRAPH_CHARS = 75
+SNIPPET_MAX_CHARS = 750
+SNIPPET_MIN_PARAGRAPH_CHARS = 75
 
 
-def _format_summary(
+def _format_snippet(
     press_release: PressRelease | None,
     summary: OEILSummary | None,
-) -> SummaryDict | None:
+) -> SnippetDict | None:
     if press_release and press_release.facts:
         return {
             "text": press_release.facts,
-            "source_type": SummaryType.PRESS_RELEASE,
+            "source_type": SnippetType.PRESS_RELEASE,
             "source_url": press_release_url(press_release.id),
         }
 
@@ -933,7 +931,7 @@ def _format_summary(
 
         for paragraph in fragment.select("p"):
             text = paragraph.get_text(strip=True)
-            remaining_chars = SUMMARY_MAX_CHARS - chars
+            remaining_chars = SNIPPET_MAX_CHARS - chars
 
             if remaining_chars < len(text):
                 # Find index of last space. This ensures that the total length of the text is
@@ -944,7 +942,7 @@ def _format_summary(
                 snippet += f"<p>{text}…</p>"
                 break
 
-            if remaining_chars < len(text) + SUMMARY_MIN_PARAGRAPH_CHARS:
+            if remaining_chars < len(text) + SNIPPET_MIN_PARAGRAPH_CHARS:
                 # After adding the current paragraph, the next paragraph would be very short,
                 # and short paragraphs look weird, so let’s just end the snippet after this
                 # paragraph.
@@ -957,7 +955,7 @@ def _format_summary(
 
         return {
             "text": snippet,
-            "source_type": SummaryType.OEIL_SUMMARY,
+            "source_type": SnippetType.OEIL_SUMMARY,
             "source_url": oeil_summary_url(summary.id),
         }
 

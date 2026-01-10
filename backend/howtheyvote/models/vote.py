@@ -159,7 +159,7 @@ AMENDMENT_AUTHOR_TYPE_TO_CLASS: dict[AmendmentAuthorType, type[AmendmentAuthor]]
 }
 
 
-class SummaryType(Enum):
+class SnippetType(Enum):
     OEIL_SUMMARY = "OEIL_SUMMARY"
     PRESS_RELEASE = "PRESS_RELEASE"
 

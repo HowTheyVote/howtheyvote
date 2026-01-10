@@ -2,7 +2,7 @@ import type { Vote } from "../api";
 import { PUBLIC_URL } from "../config";
 import { formatDate } from "../lib/dates";
 import { Island } from "../lib/islands";
-import { getSummaryFeedbackFormUrl } from "../lib/links";
+import { getSnippetFeedbackFormUrl } from "../lib/links";
 import ShareButton from "./ShareButton";
 import Stack from "./Stack";
 import Wrapper from "./Wrapper";
@@ -32,18 +32,18 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
               {vote.description && ` · ${vote.description}`}
             </strong>
           </p>
-          {vote.summary && (
+          {vote.snippet && (
             <>
               <div
                 class="vote-header__summary"
                 // biome-ignore lint/security/noDangerouslySetInnerHtml: Vote summary is trusted HTML
-                dangerouslySetInnerHTML={{ __html: vote.summary.text }}
+                dangerouslySetInnerHTML={{ __html: vote.snippet.text }}
               />
               <p class="vote-header__feedback">
                 <a
                   rel="noreferrer noopener"
                   target="_blank"
-                  href={vote.summary.source_url}
+                  href={vote.snippet.source_url}
                 >
                   Read more
                 </a>
@@ -51,8 +51,8 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
                 <a
                   rel="noreferrer noopener"
                   target="_blank"
-                  href={getSummaryFeedbackFormUrl(
-                    vote.summary.source_type,
+                  href={getSnippetFeedbackFormUrl(
+                    vote.snippet.source_type,
                     vote.id,
                   )}
                 >

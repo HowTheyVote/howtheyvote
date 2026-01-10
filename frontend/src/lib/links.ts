@@ -1,4 +1,4 @@
-import type { Summary } from "../api";
+import type { Snippet } from "../api";
 import { BACKEND_PUBLIC_URL, PUBLIC_URL } from "../config";
 
 type ErrorType = "MISSING" | "INCORRECT_RESULT" | "OTHER";
@@ -25,13 +25,13 @@ export function getErrorReportFormUrl(type?: ErrorType, data?: ErrorData) {
   return url.toString();
 }
 
-const SUMMARY_FEEDBACK_FORM_URL = "https://tally.so/r/Gx9Eze";
+const SNIPPET_FEEDBACK_FORM_URL = "https://tally.so/r/Gx9Eze";
 
-export function getSummaryFeedbackFormUrl(
-  type: Summary["source_type"],
+export function getSnippetFeedbackFormUrl(
+  type: Snippet["source_type"],
   voteId: number,
 ) {
-  const url = new URL(SUMMARY_FEEDBACK_FORM_URL);
+  const url = new URL(SNIPPET_FEEDBACK_FORM_URL);
   const voteLink = new URL(`/votes/${voteId}`, PUBLIC_URL);
 
   url.searchParams.set("type", type);
