@@ -657,7 +657,7 @@ def test_votes_api_show(records, db_session, api):
             "reference": "1234/2025(COD)",
             "stage": None,
         },
-        "facts": None,
+        "snippet": None,
         "sharepic_url": "/api/static/votes/sharepic-1.png",
         "stats": {
             "total": {
@@ -802,6 +802,111 @@ def test_votes_api_show(records, db_session, api):
     }
 
     assert res.json == expected
+
+
+def test_votes_api_show_snippet(api, db_session):
+    vote_1 = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+    )
+
+    vote_2 = Vote(
+        id=2,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+    )
+
+    vote_3 = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+        press_release_id="123abc",
+    )
+
+    oeil_summary = OEILSummary(
+        id=1,
+        content="<p>Lorem ipsum dolor sit amet</p>",
+    )
+
+    press_release = PressRelease(
+        id="123abc",
+        facts="<ul><li>Lorem</li><li>ipsum</li></ul>",
+    )
+
+    db_session.add_all([vote_1, vote_2, vote_3, oeil_summary, press_release])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["snippet"] is None
+
+    res = api.get("/api/votes/2")
+    assert res.json["snippet"]["text"] == "<p>Lorem ipsum dolor sit amet</p>"
+    assert res.json["snippet"]["source_type"] == "OEIL_SUMMARY"
+    assert (
+        res.json["snippet"]["source_url"]
+        == "https://oeil.europarl.europa.eu/oeil/en/document-summary?id=1"
+    )
+
+    res = api.get("/api/votes/3")
+    assert res.json["snippet"]["text"] == "<ul><li>Lorem</li><li>ipsum</li></ul>"
+    assert res.json["snippet"]["source_type"] == "PRESS_RELEASE"
+    assert (
+        res.json["snippet"]["source_url"]
+        == "https://www.europarl.europa.eu/news/en/press-room/123abc"
+    )
+
+
+def test_votes_api_show_snippet_press_release_no_facts(api, db_session):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        press_release_id="123abc",
+    )
+
+    press_release = PressRelease(id="123abc", facts=None)
+
+    db_session.add_all([vote, press_release])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["snippet"] is None
+
+
+def test_votes_api_show_snippet_oeil_summary_no_contents(api, db_session):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+    )
+
+    oeil_summary = OEILSummary(id=1, content=None)
+
+    db_session.add_all([vote, oeil_summary])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["snippet"] is None
+
+
+def test_votes_api_show_snippet_truncate(api, db_session):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        oeil_summary_id=1,
+    )
+
+    oeil_summary = OEILSummary(
+        id=1,
+        content="<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p><p>Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.</p><p>Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum.</p>",
+    )
+
+    db_session.add_all([vote, oeil_summary])
+    db_session.commit()
+
+    res = api.get("/api/votes/1")
+    assert res.json["snippet"]["text"] == (
+        "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p><p>Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus.</p><p>Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet…</p>"
+    )
 
 
 def test_votes_api_csv(records, api):

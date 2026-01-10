@@ -2,9 +2,11 @@ import type { Vote } from "../api";
 import { PUBLIC_URL } from "../config";
 import { formatDate } from "../lib/dates";
 import { Island } from "../lib/islands";
+import { getSnippetFeedbackFormUrl } from "../lib/links";
 import ShareButton from "./ShareButton";
 import Stack from "./Stack";
 import Wrapper from "./Wrapper";
+
 import "./VoteHeader.css";
 
 type VoteHeaderProps = {
@@ -30,12 +32,34 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
               {vote.description && ` · ${vote.description}`}
             </strong>
           </p>
-          {vote.facts && (
-            <div
-              class="vote-header__facts"
-              // biome-ignore lint/security/noDangerouslySetInnerHtml: Vote facts are trusted HTML
-              dangerouslySetInnerHTML={{ __html: vote.facts }}
-            />
+          {vote.snippet && (
+            <>
+              <div
+                class="vote-header__summary"
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: Vote summary is trusted HTML
+                dangerouslySetInnerHTML={{ __html: vote.snippet.text }}
+              />
+              <p class="vote-header__feedback">
+                <a
+                  rel="noreferrer noopener"
+                  target="_blank"
+                  href={vote.snippet.source_url}
+                >
+                  Read more
+                </a>
+                {"・"}
+                <a
+                  rel="noreferrer noopener"
+                  target="_blank"
+                  href={getSnippetFeedbackFormUrl(
+                    vote.snippet.source_type,
+                    vote.id,
+                  )}
+                >
+                  What do you think of this summary?
+                </a>
+              </p>
+            </>
           )}
           <Island>
             <ShareButton

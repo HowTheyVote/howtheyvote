@@ -1,4 +1,5 @@
 import datetime
+from enum import Enum
 from typing import Annotated, TypedDict
 
 from ..models import (
@@ -470,13 +471,27 @@ def serialize_base_vote_with_member_position(
     }
 
 
+class SnippetSourceType(Enum):
+    OEIL_SUMMARY = "OEIL_SUMMARY"
+    PRESS_RELEASE = "PRESS_RELEASE"
+
+
+class SnippetDict(TypedDict):
+    text: str
+    """Text (HTML formatted)"""
+
+    source_type: SnippetSourceType
+
+    source_url: str
+
+
 class VoteDict(BaseVoteDict):
     procedure: ProcedureDict | None
     """Information about the legislative procedure to which this vote belongs"""
 
-    facts: str | None
-    """Facts about the vote. Usually an HTML formatted list of 3-4 bullet points extracted
-    from press releases published by the European Parliament."""
+    snippet: SnippetDict | None
+    """A short snippet with information about the vote. This is usually extracted
+    from a European Parliament press release or the Legislative Observatory."""
 
     sharepic_url: str | None
     """URL to a share picture for this vote."""

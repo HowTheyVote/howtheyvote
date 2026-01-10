@@ -4,6 +4,7 @@ from datetime import date
 from io import StringIO
 from typing import Any
 
+from bs4 import BeautifulSoup
 from flask import Blueprint, Request, Response, abort, jsonify, request
 from flask.typing import ResponseReturnValue
 from sqlalchemy import select
@@ -21,6 +22,7 @@ from ..links import (
     doceo_document_url,
     doceo_texts_adopted_url,
     oeil_procedure_url,
+    oeil_summary_url,
     press_release_url,
 )
 from ..models import (
@@ -28,6 +30,7 @@ from ..models import (
     Country,
     Fragment,
     Member,
+    OEILSummary,
     PressRelease,
     Topic,
     Vote,
@@ -41,6 +44,8 @@ from .serializers import (
     MemberVotesQueryResponseDict,
     ProcedureDict,
     RelatedVoteDict,
+    SnippetDict,
+    SnippetSourceType,
     SourceDict,
     VoteDict,
     VotePositionCountsDict,
@@ -78,6 +83,9 @@ SOURCE_INFO = {
     },
     "PressReleaseScraper": {
         "name": "Press release",
+    },
+    "OEILSummaryScraper": {
+        "name": "Vote summary (Legislative Observatory)",
     },
     "EurlexProcedureScraper": {
         "name": "Procedure file (EUR-Lex)",
@@ -397,12 +405,10 @@ def show(vote_id: int) -> ResponseReturnValue:
     }
 
     member_votes = _format_member_votes(vote, members_by_id)
-
     related_votes = _format_related(_load_related(vote))
+    snippet = _format_snippet(vote.press_release, vote.oeil_summary)
 
-    facts = vote.press_release.facts if vote.press_release else None
-
-    fragments = _load_fragments(vote, vote.press_release)
+    fragments = _load_fragments(vote, vote.press_release, vote.oeil_summary)
     sources = _format_sources(fragments)
 
     links = _format_links(vote)
@@ -410,7 +416,7 @@ def show(vote_id: int) -> ResponseReturnValue:
     data: VoteDict = {
         **base_vote,
         "procedure": procedure,
-        "facts": facts,
+        "snippet": snippet,
         "sharepic_url": vote.sharepic_url,
         "stats": stats,
         "member_votes": member_votes,
@@ -717,8 +723,21 @@ def _serialize_member_votes_query(
     }
 
 
-def _load_fragments(vote: Vote, press_release: PressRelease | None) -> Iterable[Fragment]:
-    stmt = select(Fragment).where(fragments_for_records([vote, press_release]))
+def _load_fragments(
+    vote: Vote,
+    press_release: PressRelease | None,
+    oeil_summary: OEILSummary | None,
+) -> Iterable[Fragment]:
+    stmt = select(Fragment).where(
+        fragments_for_records(
+            [
+                vote,
+                press_release,
+                oeil_summary,
+            ]
+        )
+    )
+
     return Session.execute(stmt).scalars()
 
 
@@ -790,6 +809,15 @@ def _format_links(vote: Vote) -> list[LinkDict]:
                 "title": "Press release",
                 "description": "Press release published by the European Parliament’s Press Service. Press releases often contain more information about the subject of the vote and next steps.",  #  noqa: E501
                 "url": press_release_url(vote.press_release_id),
+            }
+        )
+
+    if vote.oeil_summary_id:
+        links.append(
+            {
+                "title": "Summary",
+                "description": "Summary published in the Legislative Observatory. Summaries contain more information about the subject of the vote. Compared to press releases, they are usually more detailed, but can also contain more technical language.",  #  noqa: E501
+                "url": oeil_summary_url(vote.oeil_summary_id),
             }
         )
 
@@ -879,3 +907,56 @@ def _format_country_stats(
         for country, stats in country_stats.items()
         if country is not None
     ]
+
+
+SNIPPET_MAX_CHARS = 750
+SNIPPET_MIN_PARAGRAPH_CHARS = 75
+
+
+def _format_snippet(
+    press_release: PressRelease | None,
+    summary: OEILSummary | None,
+) -> SnippetDict | None:
+    if press_release and press_release.facts:
+        return {
+            "text": press_release.facts,
+            "source_type": SnippetSourceType.PRESS_RELEASE,
+            "source_url": press_release_url(press_release.id),
+        }
+
+    if summary and summary.content:
+        fragment = BeautifulSoup(summary.content)
+        snippet = ""
+        chars = 0
+
+        for paragraph in fragment.select("p"):
+            text = paragraph.get_text(strip=True)
+            remaining_chars = SNIPPET_MAX_CHARS - chars
+
+            if remaining_chars < len(text):
+                # Find index of last space. This ensures that the total length of the text is
+                # below the maximum number of characters without cutting of in the middle of
+                # a word.
+                index = text.rfind(" ", 0, remaining_chars)
+                text = text[:index].strip().removesuffix(".")
+                snippet += f"<p>{text}…</p>"
+                break
+
+            if remaining_chars < len(text) + SNIPPET_MIN_PARAGRAPH_CHARS:
+                # After adding the current paragraph, the next paragraph would be very short,
+                # and short paragraphs look weird, so let’s just end the snippet after this
+                # paragraph.
+                text = text.removesuffix(".")
+                snippet += f"<p>{text}…</p>"
+                break
+
+            snippet += f"<p>{text}</p>"
+            chars += len(text)
+
+        return {
+            "text": snippet,
+            "source_type": SnippetSourceType.OEIL_SUMMARY,
+            "source_url": oeil_summary_url(summary.id),
+        }
+
+    return None

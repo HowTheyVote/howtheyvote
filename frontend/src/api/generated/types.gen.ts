@@ -434,6 +434,17 @@ export type RelatedVote = {
     result?: 'ADOPTED' | 'REJECTED' | 'LAPSED' | 'WITHDRAWN';
 };
 
+export type Snippet = {
+    /**
+     * Text (HTML formatted)
+     */
+    text: string;
+    source_type: 'OEIL_SUMMARY' | 'PRESS_RELEASE';
+    source_url: string;
+};
+
+export type source_type = 'OEIL_SUMMARY' | 'PRESS_RELEASE';
+
 export type Source = {
     /**
      * Source name
@@ -488,10 +499,10 @@ export type Vote = BaseVote & {
      */
     procedure?: Procedure;
     /**
-     * Facts about the vote. Usually an HTML formatted list of 3-4 bullet points extracted
-     * from press releases published by the European Parliament.
+     * A short snippet with information about the vote. This is usually extracted
+     * from a European Parliament press release or the Legislative Observatory.
      */
-    facts?: string;
+    snippet?: Snippet;
     /**
      * URL to a share picture for this vote.
      */
