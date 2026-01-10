@@ -85,7 +85,7 @@ SOURCE_INFO = {
         "name": "Press release",
     },
     "OEILSummaryScraper": {
-        "name": "Vote summary",
+        "name": "Vote summary (Legislative Observatory)",
     },
     "EurlexProcedureScraper": {
         "name": "Procedure file (EUR-Lex)",
