@@ -485,8 +485,8 @@ class VoteDict(BaseVoteDict):
     """Information about the legislative procedure to which this vote belongs"""
 
     summary: SummaryDict | None
-    """A short summary of the vote. This is usually extracted from a press release published
-    by the European Parliament or the Legislative Observatory."""
+    """A short summary of the vote. This is usually extracted from a European Parliament
+    press release or the Legislative Observatory."""
 
     sharepic_url: str | None
     """URL to a share picture for this vote."""
