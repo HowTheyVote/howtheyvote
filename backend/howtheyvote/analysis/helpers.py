@@ -43,11 +43,11 @@ VOTE_RESULT_REGEX = re.compile(
 VOTE_RESULT_REGEX_ADOPTED = re.compile(
     r"(?:with|by)\s"
     + NUMBER_REGEX
-    + r"\svotes\sto\s"
+    + r"(?:\svotes)?\sto\s"
     + NUMBER_REGEX
-    + r",?\s(?:and|with)\s"
+    + r"(?:\sagainst)?,?\s(?:and\s|with\s)?"
     + NUMBER_REGEX
-    + r"\sabstentions"
+    + r"\sabstentions?"
 )
 
 

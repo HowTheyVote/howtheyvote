@@ -55,3 +55,21 @@ def test_extract_vote_results():
         "adopted by 477 votes to 7, with 69 abstentions, a resolution"
     )
     assert actual == expected
+
+    expected = [{"FOR": 513, "AGAINST": 18, "ABSTENTION": 87, "DID_NOT_VOTE": 0}]
+    actual = extract_vote_results("adopted by 513 to 18, with 87 abstentions, a resolution")
+    assert actual == expected
+
+    expected = [{"FOR": 593, "AGAINST": 34, "ABSTENTION": 38, "DID_NOT_VOTE": 0}]
+    actual = extract_vote_results(
+        "adopted by 593 votes to 34 against, 38 abstentions, a resolution"
+    )
+    assert actual == expected
+
+    expected = [{"FOR": 688, "AGAINST": 8, "ABSTENTION": 1, "DID_NOT_VOTE": 0}]
+    actual = extract_vote_results("adopted by 688 votes to 8, with 1 abstention, a resolution")
+    assert actual == expected
+
+    expected = [{"FOR": 340, "AGAINST": 100, "ABSTENTION": 245, "DID_NOT_VOTE": 0}]
+    actual = extract_vote_results("adopted by 340 votes to 100, 245 abstentions, a resolution")
+    assert actual == expected
