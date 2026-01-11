@@ -26,6 +26,11 @@ def oeil_procedure_url(reference: str) -> str:
     return url
 
 
+def oeil_summary_url(summary_id: int) -> str:
+    base_url = "https://oeil.europarl.europa.eu/oeil/en/document-summary"
+    return f"{base_url}?id={summary_id}"
+
+
 def press_release_url(press_release_id: str) -> str:
     base_url = "https://www.europarl.europa.eu/news/en/press-room"
     url = f"{base_url}/{press_release_id}"

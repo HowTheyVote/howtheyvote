@@ -24,6 +24,7 @@ from .serializers import (
     QueryResponseDict,
     QueryResponseWithFacetsDict,
     RelatedVoteDict,
+    SnippetDict,
     SourceDict,
     Statistics,
     TopicDict,
@@ -84,6 +85,7 @@ schema_classes = [
     MemberVotesQueryResponseDict,
     RelatedVoteDict,
     Statistics,
+    SnippetDict,
 ]
 
 
