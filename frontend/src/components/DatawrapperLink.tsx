@@ -265,7 +265,7 @@ function getPresetConfig(
   config.description =
     `${formatDate(timestamp)} · ` +
     (reference && `${reference} · `) +
-    (description && `${description} · `) +
+    (description && `${description}</br>`) +
     `<b style="border-bottom: 2px solid ${GREEN};">${stats.FOR} votes in favor</b>, ` +
     `<b style="border-bottom:2px solid ${RED};">${stats.AGAINST} votes against</b>, ` +
     `<b style="border-bottom:2px solid ${BLUE};">${stats.ABSTENTION} abstentions</b>.`;
