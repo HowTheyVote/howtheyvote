@@ -1,7 +1,10 @@
 import type { ComponentChildren } from "preact";
 import type { MouseEventHandler } from "preact/compat";
-import type { VotePositionCounts } from "../api";
+import type { Vote, VotePositionCounts } from "../api";
+import List from "../components/List";
+import ListItem from "../components/ListItem";
 import { formatDate } from "../lib/dates";
+import { Island } from "../lib/islands";
 
 type EmbedType = "members" | "groups" | "countries";
 
@@ -63,6 +66,71 @@ function DatawrapperLink({
     <a href="#" onClick={onClick}>
       {children}
     </a>
+  );
+}
+
+function DataWrapperLinkList({ vote }: { vote: Vote }) {
+  return (
+    <List space="xxs">
+      <ListItem
+        title={
+          <Island>
+            <DatawrapperLink
+              type="members"
+              voteId={vote.id}
+              title={vote.display_title || vote.id.toString()}
+              timestamp={vote.timestamp}
+              reference={vote.reference}
+              description={vote.description}
+              stats={vote.stats.total}
+            >
+              Individual votes
+            </DatawrapperLink>
+          </Island>
+        }
+        subtitle={"A searchable table containing each individual MEPs vote."}
+      />
+      <ListItem
+        title={
+          <Island>
+            <DatawrapperLink
+              type="groups"
+              voteId={vote.id}
+              title={vote.display_title || vote.id.toString()}
+              timestamp={vote.timestamp}
+              reference={vote.reference}
+              description={vote.description}
+              stats={vote.stats.total}
+            >
+              Votes by groups
+            </DatawrapperLink>
+          </Island>
+        }
+        subtitle={
+          "An interactive barchart showing how members of each group voted."
+        }
+      />
+      <ListItem
+        title={
+          <Island>
+            <DatawrapperLink
+              type="countries"
+              voteId={vote.id}
+              title={vote.display_title || vote.id.toString()}
+              timestamp={vote.timestamp}
+              reference={vote.reference}
+              description={vote.description}
+              stats={vote.stats.total}
+            >
+              Votes by countries
+            </DatawrapperLink>
+          </Island>
+        }
+        subtitle={
+          "An interactive barchart showing how MEPs from the different member states voted."
+        }
+      />
+    </List>
   );
 }
 
@@ -288,3 +356,4 @@ function getPresetConfig(
 }
 
 export default DatawrapperLink;
+export { DataWrapperLinkList };
