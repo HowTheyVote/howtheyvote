@@ -3,6 +3,7 @@ from collections.abc import Iterator
 
 from structlog import get_logger
 
+from ..analysis import VoteGroupsAnalyzer
 from ..models import Vote
 from ..scrapers import NoWorkingUrlError, VOTListScraper
 from ..store import Aggregator, BulkWriter, index_records, map_vote
@@ -20,6 +21,7 @@ class VOTListPipeline(BasePipeline):
 
     def _run(self) -> None:
         self._scrape_vot_list()
+        self._analyze_vote_groups()
         self._index_votes()
 
         generate_vote_sharepics(self._votes())
@@ -38,6 +40,13 @@ class VOTListPipeline(BasePipeline):
         writer.flush()
 
         self._vote_ids = writer.get_touched()
+
+    def _analyze_vote_groups(self) -> None:
+        self._log.info("Running vote groups analysis")
+        writer = BulkWriter()
+        analyzer = VoteGroupsAnalyzer(date=self.date, votes=self._votes())
+        writer.add(analyzer.run())
+        writer.flush()
 
     def _index_votes(self) -> None:
         self._log.info("Indexing votes")
