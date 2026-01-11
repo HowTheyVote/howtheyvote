@@ -32,25 +32,27 @@ export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
       <BaseLayout>
         <Stack space="lg">
           <AmendmentHeader vote={data} />
-          <Wrapper>
-            <Callout>
-              <p>
-                Before voting on a text, MEPs might propose changes or vote on
-                individual parts of the text. These votes take place before the
-                final vote. View the result of the{" "}
-                <a href={`/votes/${data.id}`}>final vote</a>.
-              </p>
-            </Callout>
-          </Wrapper>
-          <Wrapper>
-            <div className="px">
+          <div class="px">
+            <Wrapper>
+              <Callout>
+                <p>
+                  Before voting on a text, MEPs might propose changes or vote on
+                  individual parts of the text. These votes take place before
+                  the final vote. View the result of the{" "}
+                  <a href={`/votes/${data.id}`}>final vote</a>.
+                </p>
+              </Callout>
+            </Wrapper>
+          </div>
+          <div class="px">
+            <Wrapper>
               <VoteCards votes={data.related}>
                 {({ vote }: { vote: (typeof data.related)[number] }) => (
                   <AmendmentVoteCard vote={vote} />
                 )}
               </VoteCards>
-            </div>
-          </Wrapper>
+            </Wrapper>
+          </div>
         </Stack>
       </BaseLayout>
     </App>
