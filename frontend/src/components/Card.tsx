@@ -16,7 +16,7 @@ export default function Card({ title, link, meta, thumb }: CardProps) {
         <h2 class="card__title">
           <a href={link}>{title}</a>
         </h2>
-        <div class="card__meta">{meta}</div>
+        {meta && <div class="card__meta">{meta}</div>}
       </div>
       {thumb && <div class="card__thumb">{thumb}</div>}
     </article>

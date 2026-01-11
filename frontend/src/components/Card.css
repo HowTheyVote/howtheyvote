@@ -35,7 +35,6 @@
   font-size: var(--text);
   font-weight: 500;
   margin-block-start: calc(-0.125 * var(--space));
-  margin-block-end: var(--space-xxs);
 }
 
 .card__title a {
@@ -64,6 +63,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xxs);
+  margin-block-start: var(--space-xxs);
   color: var(--color-text-light);
   font-size: var(--text-sm);
 }
