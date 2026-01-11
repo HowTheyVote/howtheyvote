@@ -3,7 +3,10 @@ import type { MouseEventHandler } from "preact/compat";
 import type { VotePositionCounts } from "../api";
 import { formatDate } from "../lib/dates";
 
+type EmbedType = "members" | "groups" | "countries";
+
 type DatawrapperLinkProps = {
+  type: EmbedType;
   voteId: number;
   title: string;
   timestamp: string;
@@ -14,6 +17,7 @@ type DatawrapperLinkProps = {
 };
 
 function DatawrapperLink({
+  type,
   voteId,
   title,
   timestamp,
@@ -26,6 +30,7 @@ function DatawrapperLink({
     event.preventDefault();
 
     const config = getPresetConfig(
+      type,
       voteId,
       title,
       timestamp,
@@ -66,42 +71,51 @@ const RED = "rgb(199, 30, 29)";
 const BLUE = "rgb(29, 129, 162)";
 const GRAY = "rgb(114, 114, 114)";
 
-function getPresetConfig(
+function populateConfigForGroups(
+  config: Record<string, string>,
   voteId: number,
-  title: string,
-  timestamp: string,
-  stats: VotePositionCounts,
-  reference?: string,
-  description?: string,
 ) {
-  // More information about Datawrapper visualization presets:
-  // https://developer.datawrapper.de/docs/let-others-create-datawrapper-visualizations-from-presets
-  // https://static.dwcdn.net/presets.html
-  const config: Record<string, string> = {};
+  config.type = "d3-bars-stacked";
+  // Load CSV data from our website
+  config.external_data = `https://howtheyvote.eu/api/votes/${voteId}/groups.csv`;
 
+  const metadata: Record<string, object> = {};
+
+  metadata.visualize = {
+    "stack-show-absolute": true,
+    "color-by-column": true,
+    "color-category": {
+      map: {
+        count_for: GREEN,
+        count_against: RED,
+        count_abstentions: BLUE,
+        count_did_not_vote: GRAY,
+      },
+      categoryLabels: {
+        count_for: "In Favor",
+        count_against: "Against",
+        count_abstentions: "Abstention",
+        count_did_not_vote: "Did not vote",
+      },
+    },
+  };
+
+  metadata.axes = {
+    labels: "short_label",
+  };
+
+  config.metadata = JSON.stringify(metadata);
+}
+
+function populateConfigForMembers(
+  config: Record<string, string>,
+  voteId: number,
+) {
   config.type = "tables";
-
-  config.title = title;
-  config.description =
-    `${formatDate(timestamp)} · ` +
-    (reference && `${reference} · `) +
-    (description && `${description} · `) +
-    `<b style="border-bottom: 2px solid ${GREEN};">${stats.FOR} votes in favor</b>, ` +
-    `<b style="border-bottom:2px solid ${RED};">${stats.AGAINST} votes against</b>, ` +
-    `<b style="border-bottom:2px solid ${BLUE};">${stats.ABSTENTION} abstentions</b>.`;
-  config.notes = `MEP photos © European Union ${new Date().getFullYear()}`;
-  config.source_name = "HowTheyVote.eu (Open Database License)";
-  config.source_url = `https://howtheyvote.eu/votes/${voteId}`;
-
-  // Skip "Upload" and "Describe" steps in Datawrapper UI
-  config.last_edit_step = "2";
-
   // Load CSV data from our website
   config.external_data = `https://howtheyvote.eu/api/votes/${voteId}/members.csv`;
 
-  // For some reason, Datawrapper requires that `data` is set even if `external_data` is
-  // provided. Has to be a valid JSON string.
-  config.data = "{}";
+  config.notes = `MEP photos © European Union ${new Date().getFullYear()}`;
 
   const metadata: Record<string, object> = {};
 
@@ -195,6 +209,43 @@ function getPresetConfig(
   };
 
   config.metadata = JSON.stringify(metadata);
+}
+
+function getPresetConfig(
+  type: EmbedType,
+  voteId: number,
+  title: string,
+  timestamp: string,
+  stats: VotePositionCounts,
+  reference?: string,
+  description?: string,
+) {
+  // More information about Datawrapper visualization presets:
+  // https://developer.datawrapper.de/docs/let-others-create-datawrapper-visualizations-from-presets
+  // https://static.dwcdn.net/presets.html
+  const config: Record<string, string> = {};
+
+  config.title = title;
+  config.description =
+    `${formatDate(timestamp)} · ` +
+    (reference && `${reference} · `) +
+    (description && `${description} · `) +
+    `<b style="border-bottom: 2px solid ${GREEN};">${stats.FOR} votes in favor</b>, ` +
+    `<b style="border-bottom:2px solid ${RED};">${stats.AGAINST} votes against</b>, ` +
+    `<b style="border-bottom:2px solid ${BLUE};">${stats.ABSTENTION} abstentions</b>.`;
+
+  config.source_url = `https://howtheyvote.eu/votes/${voteId}`;
+  config.source_name = "HowTheyVote.eu (Open Database License)";
+
+  // Skip "Upload" and "Describe" steps in Datawrapper UI
+  config.last_edit_step = "2";
+
+  // For some reason, Datawrapper requires that `data` is set even if `external_data` is
+  // provided. Has to be a valid JSON string.
+  config.data = "{}";
+
+  if (type === "members") populateConfigForMembers(config, voteId);
+  if (type === "groups") populateConfigForGroups(config, voteId);
 
   return config;
 }
