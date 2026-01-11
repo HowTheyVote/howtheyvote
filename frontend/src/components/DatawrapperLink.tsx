@@ -107,6 +107,42 @@ function populateConfigForGroups(
   config.metadata = JSON.stringify(metadata);
 }
 
+function populateConfigForCountries(
+  config: Record<string, string>,
+  voteId: number,
+) {
+  config.type = "d3-bars-stacked";
+  // Load CSV data from our website
+  config.external_data = `https://howtheyvote.eu/api/votes/${voteId}/countries.csv`;
+
+  const metadata: Record<string, object> = {};
+
+  metadata.visualize = {
+    "stack-show-absolute": true,
+    "color-by-column": true,
+    "color-category": {
+      map: {
+        count_for: GREEN,
+        count_against: RED,
+        count_abstentions: BLUE,
+        count_did_not_vote: GRAY,
+      },
+      categoryLabels: {
+        count_for: "In Favor",
+        count_against: "Against",
+        count_abstentions: "Abstention",
+        count_did_not_vote: "Did not vote",
+      },
+    },
+  };
+
+  metadata.axes = {
+    labels: "label",
+  };
+
+  config.metadata = JSON.stringify(metadata);
+}
+
 function populateConfigForMembers(
   config: Record<string, string>,
   voteId: number,
@@ -246,6 +282,7 @@ function getPresetConfig(
 
   if (type === "members") populateConfigForMembers(config, voteId);
   if (type === "groups") populateConfigForGroups(config, voteId);
+  if (type === "countries") populateConfigForCountries(config, voteId);
 
   return config;
 }
