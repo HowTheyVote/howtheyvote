@@ -11,6 +11,7 @@ from ..analysis import (
     TopicsAnalyzer,
 )
 from ..db import Session
+from ..feed import VotesFeed
 from ..files import vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
 from ..pipelines import OEILSummariesPipeline
@@ -330,3 +331,8 @@ def press_releases() -> None:
         )
         writer.add(PressReleaseAnalyzer(votes, releases).run())
         writer.flush()
+
+
+@temp.command()
+def feed() -> None:
+    VotesFeed.create()
