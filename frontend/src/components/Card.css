@@ -1,4 +1,4 @@
-.vote-card {
+.card {
   position: relative;
   display: flex;
   width: 100%;
@@ -12,22 +12,22 @@
   box-shadow: var(--shadow);
 }
 
-.vote-card:focus-within {
+.card:focus-within {
   outline: var(--focus-outline);
   outline-offset: -1px;
 }
 
-.vote-card__thumb {
+.card__thumb {
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-.vote-card__text {
+.card__text {
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.vote-card__title {
+.card__title {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -38,19 +38,19 @@
   margin-block-end: var(--space-xxs);
 }
 
-.vote-card__title a {
+.card__title a {
   text-decoration: none;
 }
 
-.vote-card__title a:hover {
+.card__title a:hover {
   text-decoration: underline;
 }
 
-.vote-card__title a:focus-visible {
+.card__title a:focus-visible {
   outline: none;
 }
 
-.vote-card__title a::before {
+.card__title a::before {
   content: "";
   position: absolute;
   top: 0;
@@ -60,7 +60,7 @@
   height: 100%;
 }
 
-.vote-card__meta {
+.card__meta {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xxs);
