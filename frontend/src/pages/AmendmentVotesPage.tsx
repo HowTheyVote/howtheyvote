@@ -31,18 +31,16 @@ export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
     <App title={[data.display_title, "Amendments"]}>
       <BaseLayout>
         <Stack space="lg">
-          <AmendmentHeader vote={data} />
-          <div class="px">
-            <Wrapper>
-              <Callout>
-                <p>
-                  Before voting on a text, MEPs might propose changes or vote on
-                  individual parts of the text. These votes take place before
-                  the final vote. View the result of the{" "}
-                  <a href={`/votes/${data.id}`}>final vote</a>.
-                </p>
-              </Callout>
-            </Wrapper>
+          <div>
+            <AmendmentHeader vote={data} />
+            <Callout>
+              <p>
+                Before voting on a text, MEPs might propose changes or vote on
+                individual parts of the text. These votes take place before the
+                final vote. View the result of the{" "}
+                <a href={`/votes/${data.id}`}>final vote</a>.
+              </p>
+            </Callout>
           </div>
           <div class="px">
             <Wrapper>

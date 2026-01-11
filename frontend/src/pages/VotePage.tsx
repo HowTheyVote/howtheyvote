@@ -68,24 +68,20 @@ export const VotePage: Page<Vote> = ({ data }) => {
           <PageNavItem href="#sources">Sources</PageNavItem>
           <PageNavItem href="#errors">Report an error</PageNavItem>
         </PageNav>
+        {!data.is_main && (
+          <Callout>
+            <p>
+              This is a vote on an amendment! View the result of the{" "}
+              <a href={`/votes/${main_vote?.id}`}>final vote</a>.
+            </p>
+          </Callout>
+        )}
         <Stack space="lg">
           <div id="result" className="px mt--lg">
             <Wrapper>
-              <Stack space="sm">
-                {!data.is_main && (
-                  <Callout>
-                    <p>
-                      This is a vote on an amendment! View the result of the{" "}
-                      <a href={`/votes/${main_vote?.id}`}>final vote</a>.
-                    </p>
-                  </Callout>
-                )}
-
-                {data.stats && <VoteResultChart stats={data.stats.total} />}
-              </Stack>
+              {data.stats && <VoteResultChart stats={data.stats.total} />}
             </Wrapper>
           </div>
-
           <div className="px">
             <Wrapper>
               {data.member_votes && data.stats && (
