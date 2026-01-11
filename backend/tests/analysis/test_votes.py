@@ -4,6 +4,7 @@ from howtheyvote.analysis.votes import (
     MainVoteAnalyzer,
     OEILSummaryAnalyzer,
     PressReleaseAnalyzer,
+    VoteGroupsAnalyzer,
 )
 from howtheyvote.models import (
     Fragment,
@@ -15,6 +16,74 @@ from howtheyvote.models import (
 )
 
 from ..helpers import record_to_dict
+
+
+def test_vote_group_analyzer_title():
+    votes = [
+        Vote(
+            id=1,
+            timestamp=datetime.date(2026, 1, 1),
+            title="Lorem ipsum dolor sit amet",
+            description="Am 1",
+        ),
+        Vote(
+            id=2,
+            timestamp=datetime.date(2026, 1, 1),
+            title="Lorem ipsum dolor sit amet",
+            description="Proposition de résolution",
+        ),
+        Vote(
+            id=3,
+            timestamp=datetime.date(2026, 1, 1),
+            title="Aenean commodo ligula eget dolor",
+            description="Proposition de résolution",
+        ),
+    ]
+
+    analyzer = VoteGroupsAnalyzer(
+        date=datetime.date(2026, 1, 1),
+        votes=votes,
+    )
+    fragments = list(analyzer.run())
+
+    assert len(fragments) == 3
+    assert fragments[0].data["group_key"] == fragments[1].data["group_key"]
+    assert fragments[0].data["group_key"] != fragments[2].data["group_key"]
+    assert fragments[1].data["group_key"] != fragments[2].data["group_key"]
+
+
+def test_vote_group_analyzer_dlv_title():
+    votes = [
+        Vote(
+            id=1,
+            timestamp=datetime.date(2026, 1, 1),
+            dlv_title="Lorem ipsum dolor sit amet",
+            description="Am 1",
+        ),
+        Vote(
+            id=2,
+            timestamp=datetime.date(2026, 1, 1),
+            dlv_title="Lorem ipsum dolor sit amet",
+            description="Proposition de résolution",
+        ),
+        Vote(
+            id=3,
+            timestamp=datetime.date(2026, 1, 1),
+            dlv_title="Aenean commodo ligula eget dolor",
+            description="Proposition de résolution",
+        ),
+    ]
+
+    analyzer = VoteGroupsAnalyzer(
+        date=datetime.date(2026, 1, 1),
+        votes=votes,
+    )
+    fragments = list(analyzer.run())
+
+    assert len(fragments) == 3
+    assert fragments[0].data["group_key"] == fragments[1].data["group_key"]
+    assert fragments[0].data["group_key"] != fragments[2].data["group_key"]
+    assert fragments[1].data["group_key"] != fragments[2].data["group_key"]
 
 
 def test_main_vote_analyzer_description():
