@@ -88,7 +88,7 @@ function DataWrapperLinkList({ vote }: { vote: Vote }) {
             </DatawrapperLink>
           </Island>
         }
-        subtitle={"A searchable table containing each individual MEPs vote."}
+        subtitle={"A searchable table showing how each individual MEP voted."}
       />
       <ListItem
         title={
@@ -106,9 +106,7 @@ function DataWrapperLinkList({ vote }: { vote: Vote }) {
             </DatawrapperLink>
           </Island>
         }
-        subtitle={
-          "An interactive barchart showing how members of each group voted."
-        }
+        subtitle={"A bar chart showing how MEPs of each political group voted."}
       />
       <ListItem
         title={
@@ -127,7 +125,7 @@ function DataWrapperLinkList({ vote }: { vote: Vote }) {
           </Island>
         }
         subtitle={
-          "An interactive barchart showing how MEPs from the different member states voted."
+          "A bar chart showing how MEPs from different countries voted."
         }
       />
     </List>
