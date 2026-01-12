@@ -1,18 +1,31 @@
 import type { JSX } from "preact";
-import type { MemberVote } from "../api";
+import type { MemberVote, Vote } from "../api";
 import { bem } from "../lib/bem";
 import Icon from "./Icon";
 
 import "./Thumb.css";
 
 type ThumbProps = JSX.HTMLAttributes<HTMLDivElement> & {
-  position: MemberVote["position"];
   style?: "circle";
-};
+} & (
+    | {
+        position: MemberVote["position"];
+        result?: never;
+      }
+    | {
+        result: NonNullable<Vote["result"]>;
+        position?: never;
+      }
+  );
 
-export default function Thumb({ position, style, className }: ThumbProps) {
-  const modifier = position.toLowerCase().replaceAll("_", "-");
-  const label = position.toLowerCase().replaceAll("_", " ");
+export default function Thumb({
+  position,
+  result,
+  style,
+  className,
+}: ThumbProps) {
+  const modifier = (position || result).toLowerCase().replaceAll("_", "-");
+  const label = (position || result).toLowerCase().replaceAll("_", " ");
 
   return (
     <span

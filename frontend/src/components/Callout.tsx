@@ -1,22 +1,16 @@
 import type { ComponentChildren } from "preact";
+import Wrapper from "./Wrapper";
 
 import "./Callout.css";
 
 type CalloutProps = {
-  title?: string;
   children?: ComponentChildren;
-  className?: string;
 };
 
-export default function Disclosure({
-  title,
-  children,
-  className,
-}: CalloutProps) {
+export default function Callout({ children }: CalloutProps) {
   return (
-    <div className={`callout ${className || ""}`}>
-      {title && <p>{title}</p>}
-      {children}
+    <div class="callout px">
+      <Wrapper>{children}</Wrapper>
     </div>
   );
 }

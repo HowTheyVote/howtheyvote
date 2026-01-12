@@ -31,8 +31,8 @@ export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
     <App title={[data.display_title, "Amendments"]}>
       <BaseLayout>
         <Stack space="lg">
-          <AmendmentHeader vote={data} />
-          <Wrapper>
+          <div>
+            <AmendmentHeader vote={data} />
             <Callout>
               <p>
                 Before voting on a text, MEPs might propose changes or vote on
@@ -41,16 +41,16 @@ export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
                 <a href={`/votes/${data.id}`}>final vote</a>.
               </p>
             </Callout>
-          </Wrapper>
-          <Wrapper>
-            <div className="px">
+          </div>
+          <div class="px">
+            <Wrapper>
               <VoteCards votes={data.related}>
                 {({ vote }: { vote: (typeof data.related)[number] }) => (
                   <AmendmentVoteCard vote={vote} />
                 )}
               </VoteCards>
-            </div>
-          </Wrapper>
+            </Wrapper>
+          </div>
         </Stack>
       </BaseLayout>
     </App>
