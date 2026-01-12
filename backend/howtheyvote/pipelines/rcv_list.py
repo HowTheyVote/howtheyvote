@@ -66,6 +66,7 @@ class RCVListPipeline(BasePipeline):
         self._scrape_eurlex_procedures()
         self._analyze_main_votes()
         self._analyze_topics()
+        self._analyze_vote_groups()
         self._index_votes()
 
         # Share pictures have to be generated after the votes are indexed. Otherwise,

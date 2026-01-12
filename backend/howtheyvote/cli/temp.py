@@ -9,6 +9,7 @@ from ..analysis import (
     PressReleaseAnalyzer,
     PressReleaseVotePositionCountsAnalyzer,
     TopicsAnalyzer,
+    VoteGroupsAnalyzer,
 )
 from ..db import Session
 from ..files import vote_sharepic_path
@@ -257,6 +258,26 @@ def topics() -> None:
         for vote in partition:
             writer.add(TopicsAnalyzer(vote).run())
         writer.flush()
+
+
+@temp.command()
+def vote_groups() -> None:
+    query = select(PlenarySession)
+    query = query.where(PlenarySession.start_date <= datetime.datetime.now())
+    results = Session.execute(query).scalars()
+
+    writer = BulkWriter()
+
+    for session in results:
+        delta = session.end_date - session.start_date
+
+        for i in range(delta.days + 1):
+            date = session.start_date + datetime.timedelta(days=i)
+            votes = Session.execute(
+                select(Vote).where(func.date(Vote.timestamp) == date)
+            ).scalars()
+            writer.add(VoteGroupsAnalyzer(date, votes).run())
+            writer.flush()
 
 
 @temp.command()
