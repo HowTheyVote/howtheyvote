@@ -3,9 +3,10 @@ from collections.abc import Iterable
 from datetime import date
 from io import StringIO
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
-from flask import Blueprint, Request, Response, abort, jsonify, request
+from flask import Blueprint, Request, Response, abort, jsonify, render_template, request
 from flask.typing import ResponseReturnValue
 from sqlalchemy import select
 from structlog import get_logger
@@ -15,6 +16,7 @@ from ..helpers import (
     PROCEDURE_REFERENCE_REGEX,
     REFERENCE_REGEX,
     flatten_dict,
+    frontend_url,
     parse_procedure_reference,
     subset_dict,
 )
@@ -223,6 +225,65 @@ def index() -> ResponseReturnValue:
     """
     query = _query_from_request(request)
     return jsonify(_serialize_votes_query(query))
+
+
+def _itemize_vote(vote: Vote) -> dict[str, Any]:
+    id = frontend_url(f"/votes/{vote.id}")
+    title = vote.display_title
+    pub_date = vote.timestamp.replace(tzinfo=ZoneInfo("Europe/Brussels")).isoformat()
+    position_counts = count_vote_positions(vote.member_votes)
+    content = (
+        f'On {vote.date.strftime("%A, %B %-d, %Y")}, Parliament voted on "'
+        f'{vote.display_title}" ({vote.description}). {position_counts["FOR"]}'  # noqa: E501
+        f" MEPs voted in favor, {position_counts['AGAINST']} against,"
+        f" and {position_counts['ABSTENTION']} abstained."
+    )
+    if vote.result is not None:
+        content = content + f" The vote was {vote.result.value}."
+
+    return {
+        "id": id,
+        "title": title,
+        "content": content,
+        "link": id,
+        "published": pub_date,
+    }
+
+
+@bp.route("votes/feed")
+def votes_feed() -> ResponseReturnValue:
+    """
+    ---
+    get:
+        operationId: getVotesFeed
+        summary: Get Votes as ATOM Feed
+        tags:
+            - Votes
+        description: |
+            Get the last 200 votes available on howtheyvote.eu as ATOM feed.
+    """
+    query = (
+        select(Vote).where(Vote.is_main.is_(True)).order_by(Vote.timestamp.desc()).limit(200)
+    )
+    votes = Session.execute(query).scalars()
+
+    items = [_itemize_vote(vote) for vote in votes]
+    xml = render_template(
+        "atom.xml",
+        feed={
+            "icon_url": frontend_url("/static/touch-icon-180px.png"),
+            "updated": max(item["published"] for item in items),
+        },
+        items=items,
+    )
+
+    return Response(
+        xml,
+        headers={
+            "Content-Type": "text/xml;charset=UTF-8",
+            "Cache-Control": "public, max-age=300",
+        },
+    )
 
 
 @bp.route("/members/<int:member_id>/votes")

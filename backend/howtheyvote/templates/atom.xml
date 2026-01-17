@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link href="https://howtheyvote/api/votes/feed" rel="self" type="application/rss+xml" />
+  <id>https://howtheyvote.eu/</id>
+  <title>HowTheyVote.eu - Roll-Call Votes in the European Parliament</title>
+  <updated>{{ feed.updated }}</updated>
+  <author>
+    <name>HowTheyVote.eu Team</name>
+    <email>mail@howtheyvote.eu</email>
+  </author>
+  <icon>{{ feed.icon_url }}</icon>
+  <rights>
+    The HowTheyVote.eu database is licensed under the ODbL.
+  </rights>
+  <subtitle>
+    The European Union is one of
+    the largest democracies in the world.The European Parliament, with its 720 members from the EU’s
+    27 member states, represents just over 440 million Europeans. Although the Parliament publishes
+    information such as agendas, minutes, and vote results on its website, it can be quite difficult
+    to find out what MEPs voted on or how a particular vote turned out. HowTheyVote.eu compiles voting
+    data from various official sources and allows anyone to search for votes and view the results.
+    This feed provides the 200 newest votes in our database.
+  </subtitle>
+  {% for item in items %}
+    <entry>
+      <id>{{ item.id }}</id>
+      <title>{{ item.title }}</title>
+      <content>{{ item.content }} </content>
+      <link href="{{ item.link }}"/>
+      <published>{{ item.published }}</published>
+    </entry>
+  {% endfor %}
+</feed>

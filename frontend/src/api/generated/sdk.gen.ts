@@ -21,6 +21,17 @@ export const getVotes = <ThrowOnError extends boolean = true>(options?: OptionsL
 };
 
 /**
+ * Get Votes as ATOM Feed
+ * Get the last 200 votes available on howtheyvote.eu as ATOM feed.
+ */
+export const getVotesFeed = <ThrowOnError extends boolean = true>(options?: OptionsLegacyParser<unknown, ThrowOnError>) => {
+    return (options?.client ?? client).get<void, unknown, ThrowOnError>({
+        ...options,
+        url: '/api/votes/feed'
+    });
+};
+
+/**
  * List member’s votes
  * Get a list of roll-call votes along with the member’s vote position. You can
  * optionally provide a search query and filters.
