@@ -7,9 +7,10 @@ import "../css/utils.css";
 import "../css/variables.css";
 
 import faviconUrl from "../images/favicon-32px.png";
-import touchIconUrl from "../images/touch-icon-180px.png";
 
 import { assetUrl } from "../lib/caching";
+
+const touchIconUrl = "/static/touch-icon-180px.png";
 
 type AppProps = {
   children: ComponentChildren;
@@ -55,6 +56,12 @@ export default function App({
         />
         <meta name="theme-color" content="var(--blue-darkest)" />
 
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          title="HowTheyVote.eu - Roll-Call Votes in the European Parliament"
+          href="/api/votes/feed"
+        />
         {head}
       </head>
       <body>
