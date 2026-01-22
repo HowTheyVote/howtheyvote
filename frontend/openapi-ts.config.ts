@@ -9,6 +9,7 @@ export default defineConfig({
     {
       name: "@hey-api/client-fetch",
       throwOnError: true,
+      baseUrl: false,
     },
   ],
 });
