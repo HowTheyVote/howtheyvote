@@ -1,6 +1,6 @@
 import { BACKEND_PRIVATE_URL } from "../config";
 import { HTTPException } from "../lib/http";
-import { client } from "./generated/sdk.gen";
+import { client } from "./generated/client.gen";
 
 client.setConfig({
   baseUrl: BACKEND_PRIVATE_URL,
