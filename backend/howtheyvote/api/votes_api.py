@@ -238,6 +238,10 @@ def member_votes_index(member_id: int) -> ResponseReturnValue:
             Get a list of roll-call votes along with the member’s vote position. You can
             optionally provide a search query and filters.
         parameters:
+            -   in: path
+                name: member_id
+                schema:
+                    type: string
             -
                 in: query
                 name: q
