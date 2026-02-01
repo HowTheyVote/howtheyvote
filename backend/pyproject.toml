@@ -36,22 +36,22 @@ packages = [
 htv = "howtheyvote.cli:cli"
 
 [tool.poetry.group.dev.dependencies]
-coverage = "^7.11"
-pytest = "^8.4.2"
+coverage = "^7.13"
+pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
-mypy = "^1.18.2"
-ruff = "^0.14.3"
+mypy = "^1.19.1"
+ruff = "^0.14.14"
 types-pillow = "^10.2.0.20240822"
-types-requests = "^2.32.4.20250913"
+types-requests = "^2.32.4.20260107"
 types-beautifulsoup4 = "^4.12.0.20250516"
 types-cachetools = "^6.2.0.20251022"
-setuptools = "^80.9.0"
+setuptools = "^80.10.2"
 pytest-env = "^1.2.0"
 responses = "^0.25.8"
-time-machine = "^2.19.0"
+time-machine = "^3.2.0"
 types-tabulate = "^0.9.0.20241207"
 pytest-mock = "^3.15.1"
-types-pytz = "^2025.2.0.20250809"
+types-pytz = "^2025.2.0.20251108"
 
 [tool.ruff]
 line-length = 95
