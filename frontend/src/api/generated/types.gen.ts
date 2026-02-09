@@ -605,6 +605,13 @@ export type GetVotesResponses = {
 
 export type GetVotesResponse = GetVotesResponses[keyof GetVotesResponses];
 
+export type GetVotesFeedData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/votes/feed.xml';
+};
+
 export type GetMemberVotesData = {
     body?: never;
     path: {
