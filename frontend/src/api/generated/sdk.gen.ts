@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetMemberData, GetMemberResponses, GetMemberVotesData, GetMemberVotesResponses, GetSessionsData, GetSessionsResponses, GetStatsData, GetStatsResponses, GetVoteCsvCountriesData, GetVoteCsvGroupsData, GetVoteCsvmepsData, GetVoteData, GetVoteResponses, GetVotesData, GetVotesResponses } from './types.gen';
+import type { GetMemberData, GetMemberResponses, GetMemberVotesData, GetMemberVotesResponses, GetSessionsData, GetSessionsResponses, GetStatsData, GetStatsResponses, GetVoteCsvCountriesData, GetVoteCsvGroupsData, GetVoteCsvmepsData, GetVoteData, GetVoteResponses, GetVotesData, GetVotesFeedData, GetVotesResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -29,14 +29,10 @@ export const getVotes = <ThrowOnError extends boolean = true>(options?: Options<
 
 /**
  * Get Votes as Atom Feed
+ *
  * Get the last 200 votes available on howtheyvote.eu as Atom feed.
  */
-export const getVotesFeed = <ThrowOnError extends boolean = true>(options?: OptionsLegacyParser<unknown, ThrowOnError>) => {
-    return (options?.client ?? client).get<void, unknown, ThrowOnError>({
-        ...options,
-        url: '/api/votes/feed.xml'
-    });
-};
+export const getVotesFeed = <ThrowOnError extends boolean = true>(options?: Options<GetVotesFeedData, ThrowOnError>) => (options?.client ?? client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/feed.xml', ...options });
 
 /**
  * List member’s votes
