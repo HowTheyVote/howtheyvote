@@ -60,7 +60,7 @@ export default function App({
           rel="alternate"
           type="application/atom+xml"
           title="HowTheyVote.eu - Roll-Call Votes in the European Parliament"
-          href="/api/votes/feed"
+          href="/api/votes/feed.xml"
         />
         {head}
       </head>

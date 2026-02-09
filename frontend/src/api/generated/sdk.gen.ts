@@ -21,13 +21,13 @@ export const getVotes = <ThrowOnError extends boolean = true>(options?: OptionsL
 };
 
 /**
- * Get Votes as ATOM Feed
- * Get the last 200 votes available on howtheyvote.eu as ATOM feed.
+ * Get Votes as Atom Feed
+ * Get the last 200 votes available on howtheyvote.eu as Atom feed.
  */
 export const getVotesFeed = <ThrowOnError extends boolean = true>(options?: OptionsLegacyParser<unknown, ThrowOnError>) => {
     return (options?.client ?? client).get<void, unknown, ThrowOnError>({
         ...options,
-        url: '/api/votes/feed'
+        url: '/api/votes/feed.xml'
     });
 };
 

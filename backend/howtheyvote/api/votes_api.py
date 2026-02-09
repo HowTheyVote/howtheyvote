@@ -11,6 +11,7 @@ from flask.typing import ResponseReturnValue
 from sqlalchemy import select
 from structlog import get_logger
 
+from .. import config
 from ..db import Session
 from ..helpers import (
     PROCEDURE_REFERENCE_REGEX,
@@ -230,7 +231,7 @@ def index() -> ResponseReturnValue:
 def _itemize_vote(vote: Vote) -> dict[str, Any]:
     id = frontend_url(f"/votes/{vote.id}")
     title = vote.display_title
-    pub_date = vote.timestamp.replace(tzinfo=ZoneInfo("Europe/Brussels")).isoformat()
+    pub_date = vote.timestamp.replace(tzinfo=ZoneInfo(config.TIMEZONE)).isoformat()
     position_counts = count_vote_positions(vote.member_votes)
     content = (
         f'On {vote.date.strftime("%A, %B %-d, %Y")}, Parliament voted on "'
@@ -250,17 +251,17 @@ def _itemize_vote(vote: Vote) -> dict[str, Any]:
     }
 
 
-@bp.route("votes/feed")
+@bp.route("votes/feed.xml")
 def votes_feed() -> ResponseReturnValue:
     """
     ---
     get:
         operationId: getVotesFeed
-        summary: Get Votes as ATOM Feed
+        summary: Get Votes as Atom Feed
         tags:
             - Votes
         description: |
-            Get the last 200 votes available on howtheyvote.eu as ATOM feed.
+            Get the last 200 votes available on howtheyvote.eu as Atom feed.
     """
     query = (
         select(Vote).where(Vote.is_main.is_(True)).order_by(Vote.timestamp.desc()).limit(200)
