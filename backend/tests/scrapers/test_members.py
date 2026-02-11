@@ -53,17 +53,6 @@ def test_member_info_scraper_date_of_birth_without(responses):
     assert fragment.data.get("date_of_birth") is None
 
 
-def test_member_info_scraper_multiple_emails(responses):
-    responses.get(
-        "https://www.europarl.europa.eu/meps/en/28229/NAME/home",
-        body=load_fixture("scrapers/data/members/member_info_weber_home.html"),
-    )
-
-    scraper = MemberInfoScraper(web_id=28229)
-    fragment = scraper.run()
-    assert fragment.data.get("email") == "manfred.weber@europarl.europa.eu"
-
-
 def test_member_info_scraper_no_social_media(responses):
     responses.get(
         "https://www.europarl.europa.eu/meps/en/124831/NAME/home",

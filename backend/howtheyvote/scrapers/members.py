@@ -113,7 +113,7 @@ class MemberInfoScraper(BeautifulSoupScraper):
         return address
 
     def _name(self, doc: BeautifulSoup) -> tuple[str | None, str | None]:
-        tag = doc.select_one("#presentationmep div.erpl_title-h1")
+        tag = doc.select_one("#presentationmep div.es_title-h1")
 
         if not tag:
             raise ScrapingError("Could not find element containing member name.")
@@ -131,7 +131,7 @@ class MemberInfoScraper(BeautifulSoupScraper):
         return datetime.strptime(raw, "%d-%m-%Y").date()
 
     def _country(self, doc: BeautifulSoup) -> str:
-        tag = doc.select_one("#presentationmep div.erpl_title-h3")
+        tag = doc.select_one("#presentationmep div.es_title-h3")
 
         if not tag:
             raise ScrapingError("Could not find element containing member country.")
@@ -217,7 +217,7 @@ class MemberGroupsScraper(BeautifulSoupScraper):
         strong = cast(Tag | None, tag.find("strong"))
 
         if not strong:
-            raise ScrapingError("Could not find elmenet containing date range.")
+            raise ScrapingError("Could not find element containing date range.")
 
         text = strong.text
 
