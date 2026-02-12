@@ -3,7 +3,7 @@ import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Callout from "../components/Callout";
 import CopyrightLink from "../components/CopyrightLink";
-import { DataWrapperLinkList } from "../components/DatawrapperLink";
+import DataWrapperLinkList from "../components/DatawrapperLinkList";
 import ExternalLinks from "../components/ExternalLinks";
 import Footer from "../components/Footer";
 import PageNav from "../components/PageNav";
@@ -149,7 +149,9 @@ export const VotePage: Page<Vote> = ({ data }) => {
                 Want to embed the results of this vote on your website? Use one
                 of our Datawrapper templates:
               </p>
-              <DataWrapperLinkList vote={data} />
+              <Island>
+                <DataWrapperLinkList vote={data} />
+              </Island>
             </Wrapper>
           </div>
           <div class="px">

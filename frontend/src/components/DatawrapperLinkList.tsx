@@ -1,10 +1,9 @@
 import type { ComponentChildren } from "preact";
 import type { MouseEventHandler } from "preact/compat";
 import type { Vote, VotePositionCounts } from "../api";
-import List from "../components/List";
-import ListItem from "../components/ListItem";
 import { formatDate } from "../lib/dates";
-import { Island } from "../lib/islands";
+import List from "./List";
+import ListItem from "./ListItem";
 
 type EmbedType = "members" | "groups" | "countries";
 
@@ -74,55 +73,49 @@ function DataWrapperLinkList({ vote }: { vote: Vote }) {
     <List space="xxs">
       <ListItem
         title={
-          <Island>
-            <DatawrapperLink
-              type="members"
-              voteId={vote.id}
-              title={vote.display_title || vote.id.toString()}
-              timestamp={vote.timestamp}
-              reference={vote.reference}
-              description={vote.description}
-              stats={vote.stats.total}
-            >
-              Individual votes
-            </DatawrapperLink>
-          </Island>
+          <DatawrapperLink
+            type="members"
+            voteId={vote.id}
+            title={vote.display_title || vote.id.toString()}
+            timestamp={vote.timestamp}
+            reference={vote.reference}
+            description={vote.description}
+            stats={vote.stats.total}
+          >
+            Individual votes
+          </DatawrapperLink>
         }
         subtitle={"A searchable table showing how each individual MEP voted."}
       />
       <ListItem
         title={
-          <Island>
-            <DatawrapperLink
-              type="groups"
-              voteId={vote.id}
-              title={vote.display_title || vote.id.toString()}
-              timestamp={vote.timestamp}
-              reference={vote.reference}
-              description={vote.description}
-              stats={vote.stats.total}
-            >
-              Votes by groups
-            </DatawrapperLink>
-          </Island>
+          <DatawrapperLink
+            type="groups"
+            voteId={vote.id}
+            title={vote.display_title || vote.id.toString()}
+            timestamp={vote.timestamp}
+            reference={vote.reference}
+            description={vote.description}
+            stats={vote.stats.total}
+          >
+            Votes by groups
+          </DatawrapperLink>
         }
         subtitle={"A bar chart showing how MEPs of each political group voted."}
       />
       <ListItem
         title={
-          <Island>
-            <DatawrapperLink
-              type="countries"
-              voteId={vote.id}
-              title={vote.display_title || vote.id.toString()}
-              timestamp={vote.timestamp}
-              reference={vote.reference}
-              description={vote.description}
-              stats={vote.stats.total}
-            >
-              Votes by countries
-            </DatawrapperLink>
-          </Island>
+          <DatawrapperLink
+            type="countries"
+            voteId={vote.id}
+            title={vote.display_title || vote.id.toString()}
+            timestamp={vote.timestamp}
+            reference={vote.reference}
+            description={vote.description}
+            stats={vote.stats.total}
+          >
+            Votes by countries
+          </DatawrapperLink>
         }
         subtitle={
           "A bar chart showing how MEPs from different countries voted."
@@ -353,5 +346,4 @@ function getPresetConfig(
   return config;
 }
 
-export default DatawrapperLink;
-export { DataWrapperLinkList };
+export default DataWrapperLinkList;
