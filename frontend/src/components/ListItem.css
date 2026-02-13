@@ -24,13 +24,3 @@
 .list-item__chart {
   margin: var(--space-xxs) 0;
 }
-
-.list-item a {
-  text-decoration: none;
-}
-
-.list-item a:hover,
-.list-item a:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 0.1em;
-}
