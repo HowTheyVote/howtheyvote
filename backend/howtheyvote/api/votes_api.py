@@ -16,6 +16,7 @@ from ..db import Session
 from ..helpers import (
     PROCEDURE_REFERENCE_REGEX,
     REFERENCE_REGEX,
+    backend_url,
     flatten_dict,
     frontend_url,
     parse_procedure_reference,
@@ -272,6 +273,7 @@ def votes_feed() -> ResponseReturnValue:
     xml = render_template(
         "atom.xml",
         feed={
+            "url": backend_url("api/votes/feed.xml"),
             "icon_url": frontend_url("/static/touch-icon-180px.png"),
             "updated": max(item["published"] for item in items),
         },
