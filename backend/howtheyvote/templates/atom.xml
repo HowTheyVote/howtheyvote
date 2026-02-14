@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <link href="https://howtheyvote/api/votes/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="{{ feed.url }}" rel="self" type="application/atom+xml" />
   <id>https://howtheyvote.eu/</id>
   <title>HowTheyVote.eu - Roll-Call Votes in the European Parliament</title>
   <updated>{{ feed.updated }}</updated>

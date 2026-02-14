@@ -120,6 +120,10 @@ def frontend_url(path: str) -> str:
     return urljoin(config.FRONTEND_PUBLIC_URL, path)
 
 
+def backend_url(path: str) -> str:
+    return urljoin(config.PUBLIC_URL, path)
+
+
 def flatten_dict(data: Mapping[Any, Any], key_prefix: str = "") -> dict[Any, Any]:
     # Using `Mapping` type due to https://github.com/python/mypy/issues/4976
 
