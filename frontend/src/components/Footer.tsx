@@ -39,6 +39,15 @@ export default function Footer({ style, copyright }: FooterProps) {
           </a>
         </li>
         <li>
+          <a
+            href="/api/votes/feed.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            RSS
+          </a>
+        </li>
+        <li>
           <a href="/about#license">License</a>
         </li>
         <li>
