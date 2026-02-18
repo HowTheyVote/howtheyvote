@@ -90,7 +90,7 @@ jobs:
         run: |
           pr_count=$(gh pr list --head=bot/update-json-data --state=open --json=id --jq=length)
 
-          if [[ "$count" -gt 0 ]]; then
+          if [[ "$pr_count" -gt 0 ]]; then
             echo "A pull request already exists. Skipping creation."
           else
             gh pr create \
