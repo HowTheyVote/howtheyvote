@@ -76,7 +76,18 @@ jobs:
             --form-string "url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             https://api.pushover.net/1/messages.json
 
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No changes detected."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
@@ -87,10 +98,11 @@ jobs:
           git push --force-with-lease origin bot/update-json-data
 
       - name: Open pull request
+        if: steps.changes.outputs.has_changes == 'true'
         run: |
           pr_count=$(gh pr list --head=bot/update-json-data --state=open --json=id --jq=length)
 
-          if [[ "$count" -gt 0 ]]; then
+          if [[ "$pr_count" -gt 0 ]]; then
             echo "A pull request already exists. Skipping creation."
           else
             gh pr create \
