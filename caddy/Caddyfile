@@ -76,6 +76,8 @@
 
     # Nicer URL for the general feedback form
     redir /feedback https://tally.so/r/w740y2
+
+    redir /tutorials https://github.com/howTheyVote/tutorials
 }
 
 {$CADDY_SITE_ADDRESS} {
