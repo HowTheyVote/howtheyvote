@@ -389,7 +389,7 @@ function FundingSection() {
         reference 1IS21818.
       </p>
       <p>
-        Throughout 2025, HowTheyVote.eu is supported by the{" "}
+        Throughout 2025, we received support from the{" "}
         <a href="https://www.miz-babelsberg.de">MIZ Babelsberg</a>.
       </p>
       <p>
