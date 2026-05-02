@@ -7,10 +7,10 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "@tinyhttp/app": "^2.4.0",
-    "isbot": "^5.1.35",
+    "isbot": "^5.1.39",
     "pino": "^10.3.1",
-    "preact": "^10.28.4",
-    "preact-render-to-string": "^6.6.6",
+    "preact": "^10.29.1",
+    "preact-render-to-string": "^6.6.7",
     "sirv": "^3.0.2"
   },
   "devDependencies": {
