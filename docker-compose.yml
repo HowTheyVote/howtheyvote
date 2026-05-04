@@ -98,6 +98,7 @@ services:
     image: "chromedp/headless-shell:145.0.7632.26"
     command:
       - "--disable-gpu"
+      - "--disable-software-rasterizer"
       - "--remote-allow-origins=*"
       - "--hide-scrollbars"
     networks:
