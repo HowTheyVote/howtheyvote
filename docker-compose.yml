@@ -105,3 +105,7 @@ services:
       - "chromium"
     expose:
       - "9222"
+    ulimits:
+      core:
+        hard: 0
+        soft: 0
