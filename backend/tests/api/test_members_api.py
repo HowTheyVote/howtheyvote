@@ -93,3 +93,20 @@ def test_members_api_show(api, db_session):
         "label": "European People’s Party",
         "short_label": "EPP",
     }
+
+
+def test_members_api_no_group_memberships(api, db_session):
+    member = Member(
+        id=124870,
+        first_name="Jeppe",
+        last_name="KOFOD",
+        country=Country["DNK"],
+        terms=[9],
+        group_memberships=[],
+    )
+
+    db_session.add(member)
+    db_session.commit()
+
+    res = api.get("/api/members/124870")
+    assert res.status_code == 404
