@@ -39,7 +39,7 @@ def show(member_id: int) -> ResponseReturnValue:
     member = Session.get(Member, member_id)
     today = datetime.date.today()
 
-    if not member:
+    if not member or not member.group_memberships:
         return abort(404)
 
     group = member.group_at(today) or member.group_memberships[-1].group
