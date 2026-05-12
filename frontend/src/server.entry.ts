@@ -1,3 +1,11 @@
+import * as Sentry from "@sentry/node";
+
+// Ensure to call this before requiring any other modules!
+Sentry.init({
+  sendDefaultPii: false,
+  tracesSampleRate: 0,
+});
+
 import sirv from "sirv";
 import { redirect } from "./lib/http";
 import {

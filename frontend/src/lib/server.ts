@@ -138,7 +138,8 @@ export const onError: ErrorHandler = (error, _, response) => {
   if (error instanceof HTTPException) {
     response.status(error.code);
   } else {
-    console.error(error);
+    log.error(error);
+    Sentry.captureException(error);
     response.status(500);
   }
 
