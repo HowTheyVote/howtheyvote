@@ -10,6 +10,8 @@ import {
 import { type FunctionComponent, h, type VNode } from "preact";
 import render from "preact-render-to-string";
 import { Sdk } from "../api";
+import { createClient } from "../api/generated/client";
+import { BACKEND_PRIVATE_URL } from "../config";
 import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
 import { requestIsBot } from "./bots";
@@ -50,6 +52,7 @@ export function logRequests(
       status: response.statusCode,
       path: request.path,
       is_bot: request.isBot,
+      trace_id: request.headers["x-trace-id"],
     });
   });
 
@@ -62,7 +65,22 @@ export function apiClient(
   _response: Response,
   next?: NextFunction,
 ) {
-  request.api = new Sdk();
+  const client = createClient({
+    baseUrl: BACKEND_PRIVATE_URL,
+    headers: {
+      "X-Trace-Id": request.headers["x-trace-id"],
+    },
+  });
+
+  client.interceptors.response.use((response) => {
+    if (response.status === 404) {
+      throw new HTTPException(404);
+    }
+
+    return response;
+  });
+
+  request.api = new Sdk({ client });
   next?.();
 }
 
