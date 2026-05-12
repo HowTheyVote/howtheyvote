@@ -9,6 +9,7 @@ import {
 
 import { type FunctionComponent, h, type VNode } from "preact";
 import render from "preact-render-to-string";
+import { Sdk } from "../api";
 import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
 import { requestIsBot } from "./bots";
@@ -18,6 +19,7 @@ const log = getLogger();
 
 export interface Request extends BaseRequest {
   isBot: boolean;
+  api: Sdk;
 }
 
 export type Loader<Data> = (request: Request) => Promise<Data>;
@@ -51,6 +53,16 @@ export function logRequests(
     });
   });
 
+  next?.();
+}
+
+// This middleware instantiates a new API client for each request
+export function apiClient(
+  request: Request,
+  _response: Response,
+  next?: NextFunction,
+) {
+  request.api = new Sdk();
   next?.();
 }
 

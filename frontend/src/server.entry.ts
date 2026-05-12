@@ -1,6 +1,13 @@
 import sirv from "sirv";
 import { redirect } from "./lib/http";
-import { App, isBot, logRequests, noMatchHandler, onError } from "./lib/server";
+import {
+  App,
+  apiClient,
+  isBot,
+  logRequests,
+  noMatchHandler,
+  onError,
+} from "./lib/server";
 import { AboutPage, loader as aboutLoader } from "./pages/AboutPage";
 import {
   AmendmentVotesPage,
@@ -29,6 +36,7 @@ app.use("dist/", distMiddleware);
 app.use("static/", staticMiddleware);
 app.use(isBot);
 app.use(logRequests);
+app.use(apiClient);
 
 app.registerPage("/", HomePage, homeLoader);
 app.registerPage("/votes", SearchPage, searchLoader);
