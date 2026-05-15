@@ -4,6 +4,7 @@ from collections.abc import MutableMapping
 from typing import Any
 
 import sentry_sdk
+import sentry_sdk.integrations.logging
 import structlog
 from sentry_sdk import logger as sentry_logger
 
