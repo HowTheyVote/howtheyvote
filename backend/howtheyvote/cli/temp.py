@@ -43,8 +43,7 @@ def temp() -> None:
 @temp.command()
 def sharepics() -> None:
     """Generate share pictures for all votes."""
-    query = select(Vote).where(Vote.is_main == True)  # noqa: E712
-    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    votes = Session.execute(select(Vote), execution_options={"yield_per": 500}).scalars()
 
     for vote in votes:
         try:
