@@ -15,6 +15,7 @@ import {
   logRequests,
   noMatchHandler,
   onError,
+  sentryTrace,
 } from "./lib/server";
 import { AboutPage, loader as aboutLoader } from "./pages/AboutPage";
 import {
@@ -37,6 +38,8 @@ import {
 } from "./pages/VoteSharepicPage";
 
 const app = new App({ onError, noMatchHandler });
+
+app.use(sentryTrace);
 
 const distMiddleware = sirv("dist");
 const staticMiddleware = sirv("static");
