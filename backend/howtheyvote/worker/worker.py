@@ -5,49 +5,17 @@ import time
 from collections.abc import Callable, Iterable
 from typing import Any
 
-import prometheus_client
 import sentry_sdk
-from prometheus_client import Counter, Gauge, Histogram
-from prometheus_client import start_http_server as start_metrics_server
 from schedule import Scheduler
 from sqlalchemy import func, select
 from structlog import get_logger
 
-from .. import config
 from ..db import Session
 from ..models import PipelineRun, PipelineStatus
 from ..pipelines import PipelineResult
 from ..pushover import send_notification
 
 log = get_logger(__name__)
-
-prometheus_client.REGISTRY.unregister(prometheus_client.GC_COLLECTOR)
-prometheus_client.REGISTRY.unregister(prometheus_client.PLATFORM_COLLECTOR)
-prometheus_client.REGISTRY.unregister(prometheus_client.PROCESS_COLLECTOR)
-
-PIPELINE_RUN_DURATION = Histogram(
-    "htv_worker_pipeline_run_duration_seconds",
-    "Duration of pipeline runs executed by the worker",
-    ["pipeline", "status"],
-)
-
-PIPELINE_RUNS = Counter(
-    "htv_worker_pipeline_runs_total",
-    "Total number of pipeline runs executed by the worker",
-    ["pipeline", "status"],
-)
-
-PIPELINE_NEXT_RUN = Gauge(
-    "htv_worker_pipeline_next_run_timestamp_seconds",
-    "Timestamp of the next scheduled run of the pipeline",
-    ["pipeline"],
-)
-
-PIPELINE_LAST_RUN = Gauge(
-    "htv_worker_pipeline_last_run_timestamp_seconds",
-    "Timestamp of the last run of the pipeline",
-    ["pipeline", "status"],
-)
 
 
 class SkipPipeline(Exception):  # noqa: N818
@@ -92,10 +60,6 @@ class Worker:
         """Start an endless loop executing scheduled pipelines."""
         log.info("Starting worker")
         self._stopped = False
-
-        # Expose Prometheus metrics
-        start_metrics_server(config.WORKER_PROMETHEUS_PORT)
-        log.info("Started Prometheus metrics server")
 
         signal.signal(signal.SIGTERM, self.stop)
 
@@ -214,10 +178,20 @@ class Worker:
             duration = time.time() - start_time
             finished_at = datetime.datetime.now(datetime.UTC)
 
-            labels = {"pipeline": name, "status": status.value}
-            PIPELINE_RUNS.labels(**labels).inc()
-            PIPELINE_LAST_RUN.labels(**labels).set(finished_at.timestamp())
-            PIPELINE_RUN_DURATION.labels(**labels).observe(duration)
+            attributes = {"pipeline": name, "status": status.value}
+            sentry_sdk.metrics.count("pipeline_runs", 1, attributes=attributes)
+            sentry_sdk.metrics.gauge(
+                "pipeline_last_run",
+                finished_at.timestamp(),
+                unit="seconds",
+                attributes=attributes,
+            )
+            sentry_sdk.metrics.distribution(
+                "pipeline_run_duration",
+                duration,
+                unit="seconds",
+                attributes=attributes,
+            )
 
             run = PipelineRun(
                 pipeline=name,
@@ -276,4 +250,9 @@ class Worker:
         for name in self._scheduled_pipelines:
             next_run = self._scheduler.get_next_run(name)
             next_run_ts = next_run.timestamp() if next_run else -1
-            PIPELINE_NEXT_RUN.labels(pipeline=name).set(next_run_ts)
+            sentry_sdk.metrics.gauge(
+                "pipeline_next_run",
+                next_run_ts,
+                unit="seconds",
+                attributes={"pipeline": name},
+            )

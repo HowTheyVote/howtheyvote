@@ -34,9 +34,6 @@ services:
     networks:
       - "default"
       - "chromium"
-    ports:
-      # Make Prometheus metrics available on host machine
-      - "5000:5000"
     volumes:
       - "./storage/database:/howtheyvote/database"
       - "./storage/files:/howtheyvote/files"
@@ -59,9 +56,6 @@ services:
     networks:
       - "default"
       - "chromium"
-    ports:
-      # Make Prometheus metrics available on host machine
-      - "3000:3000"
     volumes:
       - "./storage/database:/howtheyvote/database"
       - "./storage/files:/howtheyvote/files"

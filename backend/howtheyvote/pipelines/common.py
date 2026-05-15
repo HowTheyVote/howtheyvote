@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from typing import Any
 
 import sentry_sdk
-from prometheus_client import Counter
 from requests import Response
 from structlog import get_logger
 
@@ -16,12 +15,6 @@ from ..scrapers import ScrapingError
 from ..sharepics import generate_vote_sharepic
 
 log = get_logger(__name__)
-
-SHAREPICS_GENERATED = Counter(
-    "htv_sharepics_generated_total",
-    "Total number of generated sharepics",
-    ["status"],
-)
 
 
 @dataclass
@@ -92,12 +85,24 @@ def generate_vote_sharepics(votes: Iterable[Vote]) -> None:
             path = vote_sharepic_path(vote.id)
             ensure_parent(path)
             path.write_bytes(image)
-            SHAREPICS_GENERATED.labels(status="success").inc()
+            sentry_sdk.metrics.count(
+                "sharepics_generated",
+                1,
+                attributes={
+                    "status": "success",
+                },
+            )
             success_count += 1
         except Exception as err:
             log.exception("Failed generating vote sharepic.", vote_id=vote.id)
             sentry_sdk.capture_exception(err)
-            SHAREPICS_GENERATED.labels(status="error").inc()
+            sentry_sdk.metrics.count(
+                "sharepics_generated",
+                1,
+                attributes={
+                    "status": "error",
+                },
+            )
             failure_count += 1
 
     if failure_count > 0:
