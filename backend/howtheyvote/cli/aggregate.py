@@ -1,5 +1,4 @@
 from collections.abc import Collection
-from typing import TypeVar
 
 import click
 
@@ -21,12 +20,9 @@ def aggregate() -> None:
     pass
 
 
-RecordType = TypeVar("RecordType", bound=BaseWithId)
-
-
-def _aggregate(
-    model_cls: type[RecordType],
-    map_func: MapFunc[RecordType],
+def _aggregate[T: BaseWithId](
+    model_cls: type[T],
+    map_func: MapFunc[T],
     group_keys: Collection[str] | None,
     chunk_size: int | None = None,
 ) -> None:
