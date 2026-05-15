@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import type { Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
@@ -29,7 +30,17 @@ export const loader: Loader<Vote> = async (request: Request) => {
   });
 
   if (!request.isBot) {
-    log.info({ msg: "Handling vote request", vote_id: data.id });
+    log.info({
+      msg: "Handling vote request",
+      vote_id: data.id,
+    });
+
+    Sentry.metrics.count("vote_page_views", 1, {
+      attributes: {
+        vote_id: data.id,
+        title: data.display_title,
+      },
+    });
   }
 
   return data;

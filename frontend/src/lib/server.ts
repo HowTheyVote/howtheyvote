@@ -55,6 +55,14 @@ export function logRequests(
       is_bot: request.isBot,
       trace_id: request.headers["x-trace-id"],
     });
+
+    Sentry.metrics.count("requests_handled", 1, {
+      attributes: {
+        status: response.statusCode,
+        path: request.path,
+        is_bot: request.isBot,
+      },
+    });
   });
 
   next?.();

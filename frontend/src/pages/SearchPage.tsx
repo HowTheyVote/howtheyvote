@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import type { VotesQueryResponse } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
@@ -29,6 +30,12 @@ export const loader: Loader<SearchPageData> = async (request) => {
       msg: "Handling search request",
       query: normalizedQuery,
     });
+
+    Sentry.metrics.count("searches", 1, {
+      attributes: {
+        query: normalizedQuery,
+      },
+    });
   }
 
   const { data } = await request.api.getVotes({
@@ -43,10 +50,16 @@ export const loader: Loader<SearchPageData> = async (request) => {
     },
   });
 
-  if (data.results.length === 0) {
+  if (!request.isBot && data.results.length === 0) {
     log.info({
       msg: "Search without results",
       query: normalizedQuery,
+    });
+
+    Sentry.metrics.count("searches_no_results", 1, {
+      attributes: {
+        query: normalizedQuery,
+      },
     });
   }
 
