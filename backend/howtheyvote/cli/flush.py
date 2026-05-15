@@ -2,6 +2,7 @@ import datetime
 
 import click
 from sqlalchemy import delete, func, select
+from sqlalchemy.engine import CursorResult
 
 from ..db import Session
 from ..models import Fragment, Vote
@@ -51,4 +52,5 @@ def votes(
     result = Session.execute(delete(Fragment).where(*where))
     Session.commit()
 
+    assert isinstance(result, CursorResult)
     click.echo(f"Deleted {result.rowcount} fragments.")
