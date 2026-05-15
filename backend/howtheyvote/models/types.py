@@ -3,12 +3,15 @@ from typing import Any, TypeVar
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
 from sqlalchemy.sql import ColumnElement
-from sqlalchemy.types import TypeDecorator, TypeEngine
+from sqlalchemy.types import Concatenable, Indexable, TypeDecorator, TypeEngine
 
 ItemType = TypeVar("ItemType", bound=TypeEngine[Any])
 
 
-class ListTypeComparator(sa.JSON.Comparator[list[ItemType]]):
+class ListTypeComparator(
+    Indexable.Comparator[list[ItemType]],
+    Concatenable.Comparator[list[ItemType]],
+):
     type: "ListType[ItemType]"
 
     def contains(self, other: ItemType, **kwargs: Any) -> ColumnElement[bool]:
