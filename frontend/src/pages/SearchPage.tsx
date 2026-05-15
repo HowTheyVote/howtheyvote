@@ -21,6 +21,16 @@ type SearchPageData = VotesQueryResponse & {
 export const loader: Loader<SearchPageData> = async (request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
+  // Apply some basic normalization to make log aggregation easier
+  const normalizedQuery = searchQuery?.q?.toLowerCase().replace(/\s+/, " ");
+
+  if (!request.isBot && normalizedQuery) {
+    log.info({
+      msg: "Handling search request",
+      query: normalizedQuery,
+    });
+  }
+
   const { data } = await request.api.getVotes({
     query: {
       q: searchQuery.q,
@@ -33,11 +43,10 @@ export const loader: Loader<SearchPageData> = async (request) => {
     },
   });
 
-  if (!request.isBot && searchQuery.q) {
+  if (data.results.length === 0) {
     log.info({
-      msg: "Handling search request",
-      // Apply some basic normalization to make log aggregation easier
-      query: searchQuery.q.toLowerCase().replace(/\s+/, " "),
+      msg: "Search without results",
+      query: normalizedQuery,
     });
   }
 
