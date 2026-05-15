@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from typing import TypeVar, cast
+from typing import cast
 
 from bs4 import BeautifulSoup
 from sqlalchemy.dialects.sqlite import insert
@@ -23,12 +23,10 @@ from ..search import (
 
 log = get_logger(__name__)
 
-RecordType = TypeVar("RecordType", bound=BaseWithId)
 
-
-def index_records(
-    model_cls: type[RecordType],
-    records: Iterable[RecordType],
+def index_records[T: BaseWithId](
+    model_cls: type[T],
+    records: Iterable[T],
     chunk_size: int | None = None,
 ) -> None:
     """Writes aggregated records to the database and search backend."""
@@ -51,7 +49,10 @@ def index_records(
         index_search(model_cls, all_records)
 
 
-def index_db(model_cls: type[RecordType], records: Iterable[RecordType]) -> None:
+def index_db[T: BaseWithId](
+    model_cls: type[T],
+    records: Iterable[T],
+) -> None:
     values = []
 
     for record in records:
@@ -79,9 +80,9 @@ def index_db(model_cls: type[RecordType], records: Iterable[RecordType]) -> None
     Session.commit()
 
 
-def index_search(
-    model_cls: type[RecordType],
-    records: Iterable[RecordType],
+def index_search[T: BaseWithId](
+    model_cls: type[T],
+    records: Iterable[T],
 ) -> None:
     # At the moment, only votes are searchable
     if model_cls != Vote:
@@ -111,7 +112,7 @@ def index_search(
             index.replace_document(int(vote.id), doc)
 
 
-def _filter_records(records: Iterable[RecordType]) -> Iterable[RecordType]:  #  noqa: UP047
+def _filter_records[T: BaseWithId](records: Iterable[T]) -> Iterable[T]:
     # This is a bit hacky: If we’ve successfully scraped a VOT list for a given day,
     # but couldn’t scrape the RCV list for the same day, we’d end up indexing incomplete
     # vote records without the member votes
