@@ -2,7 +2,8 @@
     "compilerOptions": {
         "lib": ["es2022", "dom"],
         "target": "es2022",
-        "moduleResolution": "node",
+        "module": "esnext",
+        "moduleResolution": "bundler",
         "strict": true,
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
