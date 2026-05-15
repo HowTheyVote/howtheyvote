@@ -95,7 +95,7 @@ services:
       CADDY_SITE_ADDRESS: "${CADDY_SITE_ADDRESS}"
 
   chromium:
-    image: "chromedp/headless-shell:148.0.7778.56"
+    image: "chromedp/headless-shell:148.0.7778.97"
     command:
       - "--disable-gpu"
       - "--disable-software-rasterizer"
