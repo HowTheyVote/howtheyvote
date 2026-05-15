@@ -4,6 +4,8 @@ import * as Sentry from "@sentry/node";
 Sentry.init({
   sendDefaultPii: false,
   tracesSampleRate: 0,
+  enableLogs: true,
+  integrations: [Sentry.pinoIntegration()],
 });
 
 import sirv from "sirv";
