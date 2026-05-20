@@ -1,5 +1,4 @@
 import html
-import random
 import time
 from abc import ABC, abstractmethod
 from typing import Any
@@ -14,12 +13,6 @@ from .. import config
 from ..models import BaseWithId, Fragment
 
 log = get_logger(__name__)
-
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",  # noqa: E501
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15",  # noqa: E501
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0",  # noqa: E501
-]
 
 
 class ScrapingError(Exception):
@@ -56,25 +49,39 @@ def get_url(
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
 
-            if response.ok:
-                log.info(
-                    "URL request succeeded",
+            if not response.ok:
+                log.warning(
+                    "URL request failed",
                     url=url,
                     retry=retry,
                     max_retries=max_retries,
                     status=response.status_code,
                     took=response.elapsed.total_seconds(),
                 )
-                break
+                # Retry in case it's just a temporary issue
+                continue
 
-            log.warning(
-                "URL request failed",
+            if response.status_code == 202 and "we need to verify" in response.text.casefold():
+                log.error(
+                    "Encountered AWS WAF JavaScript challenge",
+                    url=url,
+                    retry=retry,
+                    max_retries=max_retries,
+                    status=response.status_code,
+                    took=response.elapsed.total_seconds(),
+                )
+                # Do not retry, we would just get the same challenge again
+                return None
+
+            log.info(
+                "URL request succeeded",
                 url=url,
                 retry=retry,
                 max_retries=max_retries,
                 status=response.status_code,
                 took=response.elapsed.total_seconds(),
             )
+            break
         except RequestException:
             log.warning(
                 "URL request failed",
@@ -161,8 +168,11 @@ class BaseScraper[T](ABC):
         return {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "accept-language": "en-us",
-            "user-agent": random.choice(USER_AGENTS),
+            "user-agent": self._user_agent(),
         }
+
+    def _user_agent(self) -> str:
+        return f"HowTheyVote.eu ({type(self).__name__}; mail@howtheyvote.eu)"
 
 
 class BeautifulSoupScraper(BaseScraper[BeautifulSoup]):
