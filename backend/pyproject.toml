@@ -25,6 +25,7 @@ dependencies = [
     "tabulate>=0.10.0",
     "werkzeug (>=3.1.8,<4.0.0)",
     "sentry-sdk[flask,sqlalchemy] (>=2.60.0,<3.0.0)",
+    "curl-cffi (>=0.15.0,<0.16.0)",
 ]
 
 [tool.poetry]

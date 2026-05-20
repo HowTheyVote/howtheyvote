@@ -43,8 +43,14 @@ class BasePipeline(ABC):
     last_run_checksum: str | None
     checksum: str | None
 
-    def __init__(self, last_run_checksum: str | None = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        last_run_checksum: str | None = None,
+        aws_waf_token: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         self.last_run_checksum = last_run_checksum
+        self.aws_waf_token = aws_waf_token
         self.checksum = None
         self._log = log.bind(pipeline=type(self).__name__, **kwargs)
 

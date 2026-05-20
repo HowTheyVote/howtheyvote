@@ -86,21 +86,23 @@ def all(
 @pipeline.command()
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
-def rcv_list(term: int, date: datetime.datetime) -> None:
+@click.option("--aws-waf-token")
+def rcv_list(term: int, date: datetime.datetime, aws_waf_token: str | None) -> None:
     """Run the RCV list pipeline for a given day. This scrapes the list of roll-call votes
     for the given day as well as additional sources for related legislative procedures or
     plenary documents."""
-    pipeline = RCVListPipeline(term=term, date=date.date())
+    pipeline = RCVListPipeline(term=term, date=date.date(), aws_waf_token=aws_waf_token)
     pipeline.run()
 
 
 @pipeline.command()
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
-def vot_list(term: int, date: datetime.datetime) -> None:
+@click.option("--aws-waf-token")
+def vot_list(term: int, date: datetime.datetime, aws_waf_token: str | None) -> None:
     """Run the VOT list pipeline for a given day. This scrapes the list of vote results
     for the given day."""
-    pipeline = VOTListPipeline(term=term, date=date.date())
+    pipeline = VOTListPipeline(term=term, date=date.date(), aws_waf_token=aws_waf_token)
     pipeline.run()
 
 

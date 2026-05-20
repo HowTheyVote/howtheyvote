@@ -3,9 +3,9 @@ import time
 from abc import ABC, abstractmethod
 from typing import Any
 
-import requests
 from bs4 import BeautifulSoup
 from cachetools import Cache
+from curl_cffi import requests
 from requests import RequestException, Response
 from structlog import get_logger
 
@@ -30,6 +30,7 @@ def get_url(
     url: str,
     headers: dict[str, str],
     request_cache: RequestCache | None = None,
+    aws_waf_token: str | None = None,
     max_retries: int = 0,
     timeout: int = config.REQUEST_TIMEOUT,
 ) -> requests.Response | None:
@@ -44,7 +45,10 @@ def get_url(
 
     for retry in range(0, max_retries + 1):
         try:
-            response = requests.get(url, headers=headers, timeout=timeout)
+            cookies = {"aws-waf-token": aws_waf_token} if aws_waf_token else None
+            response = requests.get(
+                url, headers=headers, timeout=timeout, cookies=cookies, impersonate="chrome"
+            )
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
@@ -61,7 +65,7 @@ def get_url(
                 # Retry in case it's just a temporary issue
                 continue
 
-            if response.status_code == 202 and "we need to verify" in response.text.casefold():
+            if response.headers.get("x-amzn-waf-action") == "challenge":
                 log.error(
                     "Encountered AWS WAF JavaScript challenge",
                     url=url,
@@ -69,6 +73,7 @@ def get_url(
                     max_retries=max_retries,
                     status=response.status_code,
                     took=response.elapsed.total_seconds(),
+                    aws_waf_token=aws_waf_token,
                 )
                 # Do not retry, we would just get the same challenge again
                 return None
@@ -101,8 +106,14 @@ class BaseScraper[T](ABC):
     REQUEST_MAX_RETRIES: int = 0
     REQUEST_TIMEOUT: int = config.REQUEST_TIMEOUT
 
-    def __init__(self, request_cache: RequestCache | None = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         self._request_cache = request_cache
+        self._aws_waf_token = aws_waf_token
         self._log = log.bind(scraper=type(self).__name__, **kwargs)
 
     def run(self) -> Any:
@@ -147,11 +158,12 @@ class BaseScraper[T](ABC):
             urls = [urls]
 
         for url in urls:
-            self._log.info("Loading source", url=url, user_agent=headers["user-agent"])
+            self._log.info("Loading source", url=url)
             response = get_url(
                 url=url,
                 headers=headers,
                 request_cache=self._request_cache,
+                aws_waf_token=self._aws_waf_token,
                 max_retries=self.REQUEST_MAX_RETRIES,
                 timeout=self.REQUEST_TIMEOUT,
             )
@@ -168,11 +180,7 @@ class BaseScraper[T](ABC):
         return {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "accept-language": "en-us",
-            "user-agent": self._user_agent(),
         }
-
-    def _user_agent(self) -> str:
-        return f"HowTheyVote.eu ({type(self).__name__}; mail@howtheyvote.eu)"
 
 
 class BeautifulSoupScraper(BaseScraper[BeautifulSoup]):

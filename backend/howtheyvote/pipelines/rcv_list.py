@@ -48,8 +48,14 @@ class RCVListPipeline(BasePipeline):
         term: int,
         date: datetime.date,
         last_run_checksum: str | None = None,
+        aws_waf_token: str | None = None,
     ):
-        super().__init__(term=term, date=date, last_run_checksum=last_run_checksum)
+        super().__init__(
+            term=term,
+            date=date,
+            last_run_checksum=last_run_checksum,
+            aws_waf_token=aws_waf_token,
+        )
         self.term = term
         self.date = date
         self.last_run_checksum = last_run_checksum
@@ -99,6 +105,7 @@ class RCVListPipeline(BasePipeline):
             term=self.term,
             date=self.date,
             active_members=active_members,
+            aws_waf_token=self.aws_waf_token,
         )
 
         try:
@@ -143,6 +150,7 @@ class RCVListPipeline(BasePipeline):
                 vote_id=vote.id,
                 reference=vote.reference,
                 request_cache=self._request_cache,
+                aws_waf_token=self.aws_waf_token,
             )
 
             try:
@@ -175,6 +183,7 @@ class RCVListPipeline(BasePipeline):
                 vote_id=vote.id,
                 reference=vote.reference,
                 request_cache=self._request_cache,
+                aws_waf_token=self.aws_waf_token,
             )
 
             try:
