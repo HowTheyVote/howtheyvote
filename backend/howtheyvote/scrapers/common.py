@@ -42,8 +42,8 @@ class BrowserTLSAdapter(HTTPAdapter):
         return super().proxy_manager_for(proxy, **proxy_kwargs)
 
 
-# Firefox 120+ cipher suite order
-# Note: Firefox puts CHACHA20 before AES in TLS 1.3 (unlike Chrome)
+# Firefox 147 cipher suite
+# See: https://github.com/lexiforest/curl-impersonate/blob/main/patches/curl.patch
 FIREFOX_CIPHERS = ":".join([
     "TLS_AES_128_GCM_SHA256",
     "TLS_CHACHA20_POLY1305_SHA256",
@@ -63,6 +63,22 @@ FIREFOX_CIPHERS = ":".join([
     "AES256-SHA",
     "AES128-SHA",
 ])
+
+# Firefox 147 default request headers
+# See: https://github.com/lexiforest/curl-impersonate/blob/main/patches/curl.patch
+FIREFOX_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Priority": "u=0, i",
+    "Te": "trailers"
+}
 
 
 def get_url(
@@ -96,7 +112,15 @@ def get_url(
             session.mount("https://", BrowserTLSAdapter(ctx))
 
             cookies = {"aws-waf-token": aws_waf_token} if aws_waf_token else None
-            response = session.get(url, headers=headers, timeout=timeout, cookies=cookies)
+            response = session.get(
+                url,
+                headers={
+                    **FIREFOX_HEADERS,
+                    **headers,
+                },
+                timeout=timeout,
+                cookies=cookies,
+            )
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
