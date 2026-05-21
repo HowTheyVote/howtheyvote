@@ -17,7 +17,7 @@ FILES_DIR = env.get("HTV_BACKEND_FILES_DIR", "/howtheyvote/files")
 
 # Request configuration
 REQUEST_TIMEOUT = 20
-REQUEST_SLEEP = 0.25
+REQUEST_SLEEP = 2.5
 
 # Misc
 CURRENT_TERM = 10
