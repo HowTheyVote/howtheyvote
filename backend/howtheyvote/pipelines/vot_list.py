@@ -16,10 +16,11 @@ log = get_logger(__name__)
 
 
 class VOTListPipeline(BasePipeline):
-    def __init__(self, term: int, date: datetime.date):
+    def __init__(self, term: int, date: datetime.date, aws_waf_token: str | None = None):
         super().__init__(term=term, date=date)
         self.term = term
         self.date = date
+        self.aws_waf_token = aws_waf_token
         self._vote_ids: set[str] = set()
 
     def _run(self) -> None:
@@ -31,7 +32,11 @@ class VOTListPipeline(BasePipeline):
 
     def _scrape_vot_list(self) -> None:
         self._log.info("Scraping VOT list")
-        scraper = VOTListScraper(term=self.term, date=self.date)
+        scraper = VOTListScraper(
+            term=self.term,
+            date=self.date,
+            aws_waf_token=self.aws_waf_token,
+        )
 
         try:
             fragments = list(scraper.run())
