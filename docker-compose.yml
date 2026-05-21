@@ -11,7 +11,7 @@ networks:
 
 services:
   frontend:
-    image: "ghcr.io/howtheyvote/howtheyvote-frontend:main"
+    image: "ghcr.io/howtheyvote/howtheyvote-frontend:${HTV_TAG:-main}"
     depends_on:
       - backend
     networks:
@@ -28,7 +28,7 @@ services:
       SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 
   backend:
-    image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
+    image: "ghcr.io/howtheyvote/howtheyvote-backend:${HTV_TAG:-main}"
     depends_on:
       - chromium
     networks:
@@ -49,7 +49,7 @@ services:
       SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 
   worker:
-    image: "ghcr.io/howtheyvote/howtheyvote-backend:main"
+    image: "ghcr.io/howtheyvote/howtheyvote-backend:${HTV_TAG:-main}"
     command: "htv worker"
     depends_on:
       - chromium
