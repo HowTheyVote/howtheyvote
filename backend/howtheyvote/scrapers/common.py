@@ -107,6 +107,8 @@ def get_url(
 
             # Firefox does not send a session ticket by default in private mode
             ctx.options |= ssl.OP_NO_TICKET
+            
+            ctx.set_alpn_protocols(["h2", "http/1.1"])
 
             session = requests.Session()
             session.mount("https://", BrowserTLSAdapter(ctx))
