@@ -56,25 +56,40 @@ def get_url(
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
 
-            if response.ok:
-                log.info(
-                    "URL request succeeded",
+            if not response.ok:
+                log.warning(
+                    "URL request failed",
                     url=url,
                     retry=retry,
                     max_retries=max_retries,
                     status=response.status_code,
                     took=response.elapsed.total_seconds(),
                 )
-                break
+                # Retry in case it's just a temporary issue
+                continue
 
-            log.warning(
-                "URL request failed",
+            if response.headers.get("x-amzn-waf-action") == "challenge":
+                log.error(
+                    "Encountered AWS WAF JavaScript challenge",
+                    url=url,
+                    retry=retry,
+                    max_retries=max_retries,
+                    status=response.status_code,
+                    took=response.elapsed.total_seconds(),
+                    aws_waf_token=aws_waf_token,
+                )
+                # Do not retry, we would just get the same challenge again
+                return None
+
+            log.info(
+                "URL request succeeded",
                 url=url,
                 retry=retry,
                 max_retries=max_retries,
                 status=response.status_code,
                 took=response.elapsed.total_seconds(),
             )
+            break
         except RequestException:
             log.warning(
                 "URL request failed",
