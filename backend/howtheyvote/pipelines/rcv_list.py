@@ -71,9 +71,9 @@ class RCVListPipeline(BasePipeline):
     def _run(self) -> None:
         self._scrape_rcv_list()
         self._scrape_documents()
-        self._scrape_eurlex_documents()
+        # self._scrape_eurlex_documents()
         self._scrape_procedures()
-        self._scrape_eurlex_procedures()
+        # self._scrape_eurlex_procedures()
         self._analyze_main_votes()
         self._analyze_topics()
         self._analyze_vote_groups()
