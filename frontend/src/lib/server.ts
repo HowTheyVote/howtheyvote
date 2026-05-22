@@ -81,8 +81,8 @@ export function apiClient(
     },
   });
 
-  client.interceptors.response.use((response) => {
-    if (response.status === 404) {
+  client.interceptors.error.use((_, response) => {
+    if (response?.status === 404) {
       throw new HTTPException(404);
     }
 
