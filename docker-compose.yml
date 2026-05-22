@@ -2,21 +2,11 @@ volumes:
   caddy_data: {}
   caddy_config: {}
 
-networks:
-  # This network is used to limit network access of the `chromium` service
-  # to just the `backend` and `frontend` services, disabling internet access.
-  chromium:
-    driver: bridge
-    internal: true
-
 services:
   frontend:
     image: "ghcr.io/howtheyvote/howtheyvote-frontend:${HTV_TAG:-main}"
     depends_on:
       - backend
-    networks:
-      - "default"
-      - "chromium"
     expose:
       - "8000"
     restart: "unless-stopped"
@@ -31,9 +21,6 @@ services:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:${HTV_TAG:-main}"
     depends_on:
       - chromium
-    networks:
-      - "default"
-      - "chromium"
     volumes:
       - "./storage/database:/howtheyvote/database"
       - "./storage/files:/howtheyvote/files"
@@ -53,9 +40,6 @@ services:
     command: "htv worker"
     depends_on:
       - chromium
-    networks:
-      - "default"
-      - "chromium"
     volumes:
       - "./storage/database:/howtheyvote/database"
       - "./storage/files:/howtheyvote/files"
@@ -80,9 +64,6 @@ services:
     depends_on:
       - backend
       - frontend
-    networks:
-      - "default"
-      - "chromium"
     ports:
       - "80:80"
       - "443:443"
@@ -97,8 +78,6 @@ services:
       - "--disable-software-rasterizer"
       - "--remote-allow-origins=*"
       - "--hide-scrollbars"
-    networks:
-      - "chromium"
     expose:
       - "9222"
     ulimits:
