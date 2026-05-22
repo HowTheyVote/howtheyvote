@@ -83,6 +83,10 @@
 {$CADDY_SITE_ADDRESS} {
     import main
     header Strict-Transport-Security "max-age=31536000;"
+
+    # Add trace ID to all external requests. Because this overrides any trace ID
+    # present in an external request, clients cannot inject arbitrary trace IDs.
+    request_header X-Trace-Id {http.request.uuid}
 }
 
 # This is the host name used for internal connections via the Docker network.

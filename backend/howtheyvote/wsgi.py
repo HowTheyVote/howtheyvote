@@ -2,17 +2,14 @@ from typing import Any
 
 from flask import Flask, Response, jsonify, request, request_started
 from flask.typing import ResponseReturnValue
-from prometheus_client import PLATFORM_COLLECTOR, CollectorRegistry, make_wsgi_app
 from structlog import get_logger
 from structlog.contextvars import bind_contextvars, clear_contextvars
 from werkzeug.exceptions import HTTPException
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .api import bp as api_bp
 from .db import Session
 from .json import JSONProvider
-from .metrics import DataCollector
 from .sentry import init_sentry
 
 log = get_logger(__name__)
@@ -46,19 +43,6 @@ def bind_request_details(_: Flask) -> None:
 
 request_started.connect(bind_request_details, app)
 
-
-# Prometheus metrics
-prometheus_registry = CollectorRegistry()
-prometheus_registry.register(PLATFORM_COLLECTOR)
-prometheus_registry.register(DataCollector())
-
-prometheus_app = make_wsgi_app(registry=prometheus_registry)
-app.wsgi_app = DispatcherMiddleware(  # type: ignore
-    app.wsgi_app,
-    {
-        "/metrics": prometheus_app,
-    },
-)
 
 # We run the application behind Caddy both in dev and production environments.
 # https://caddyserver.com/docs/caddyfile/directives/reverse_proxy#defaults

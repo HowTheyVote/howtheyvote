@@ -1,4 +1,5 @@
-import { getVotes, type VotesQueryResponse } from "../api";
+import * as Sentry from "@sentry/node";
+import type { VotesQueryResponse } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
@@ -10,7 +11,7 @@ import { PUBLIC_URL } from "../config";
 import { redirect } from "../lib/http";
 import { getLogger } from "../lib/logging";
 import { FACETS, SearchQuery, SORT_PARAMS } from "../lib/search";
-import type { Loader, Page, Request } from "../lib/server";
+import type { Loader, Page } from "../lib/server";
 
 const log = getLogger();
 
@@ -18,10 +19,26 @@ type SearchPageData = VotesQueryResponse & {
   searchQuery: SearchQuery;
 };
 
-export const loader: Loader<SearchPageData> = async (request: Request) => {
+export const loader: Loader<SearchPageData> = async (request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
-  const { data } = await getVotes({
+  // Apply some basic normalization to make log aggregation easier
+  const normalizedQuery = searchQuery?.q?.toLowerCase().replace(/\s+/, " ");
+
+  if (!request.isBot && normalizedQuery) {
+    log.info({
+      msg: "Handling search request",
+      query: normalizedQuery,
+    });
+
+    Sentry.metrics.count("searches", 1, {
+      attributes: {
+        query: normalizedQuery,
+      },
+    });
+  }
+
+  const { data } = await request.api.getVotes({
     query: {
       q: searchQuery.q,
       page: searchQuery.page,
@@ -33,11 +50,16 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
     },
   });
 
-  if (!request.isBot && searchQuery.q) {
+  if (!request.isBot && data.results.length === 0) {
     log.info({
-      msg: "Handling search request",
-      // Apply some basic normalization to make log aggregation easier
-      query: searchQuery.q.toLowerCase().replace(/\s+/, " "),
+      msg: "Search without results",
+      query: normalizedQuery,
+    });
+
+    Sentry.metrics.count("searches_no_results", 1, {
+      attributes: {
+        query: normalizedQuery,
+      },
     });
   }
 

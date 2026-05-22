@@ -1,4 +1,4 @@
-import { getVote, type Vote } from "../api";
+import type { Vote } from "../api";
 import AmendmentHeader from "../components/AmendmentHeader";
 import AmendmentVoteCard from "../components/AmendmentVoteCard";
 import App from "../components/App";
@@ -11,7 +11,9 @@ import { HTTPException } from "../lib/http";
 import type { Loader, Page, Request } from "../lib/server";
 
 export const loader: Loader<Vote> = async (request: Request) => {
-  const { data } = await getVote({ path: { vote_id: request.params.id } });
+  const { data } = await request.api.getVote({
+    path: { vote_id: request.params.id },
+  });
 
   // `/amendments` opened on non-main vote which cannot have amendments
   if (!data.is_main) throw new HTTPException(404);

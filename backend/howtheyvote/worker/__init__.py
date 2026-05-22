@@ -2,7 +2,7 @@ import datetime
 import time
 from collections.abc import Callable
 
-from prometheus_client import Gauge
+import sentry_sdk
 from sqlalchemy import func, or_, select
 from structlog import get_logger
 
@@ -145,17 +145,11 @@ def summaries_handler() -> PipelineResult:
     return pipeline.run()
 
 
-EXPORT_LAST_RUN = Gauge(
-    "htv_export_last_run_timestamp_seconds",
-    "Timestamp when the CSV export was generated the last time",
-)
-
-
 def export_handler() -> None:
     """Generate the CSV export."""
     archive_path = file_path("export/export")
     generate_export(archive_path)
-    EXPORT_LAST_RUN.set(time.time())
+    sentry_sdk.metrics.gauge("export_last_run", time.time(), unit="timestamp")
 
 
 def _is_session_day(date: datetime.date) -> bool:

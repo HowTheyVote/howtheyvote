@@ -1,10 +1,4 @@
-import type { Request } from "@tinyhttp/app";
-import {
-  getMember,
-  getMemberVotes,
-  type Member,
-  type MemberVotesQueryResponse,
-} from "../api";
+import type { Member, MemberVotesQueryResponse } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import CopyrightLink from "../components/CopyrightLink";
@@ -23,14 +17,14 @@ type MemberPageData = {
   votes: MemberVotesQueryResponse;
 };
 
-export const loader: Loader<MemberPageData> = async (request: Request) => {
+export const loader: Loader<MemberPageData> = async (request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
-  const { data: member } = await getMember({
+  const { data: member } = await request.api.getMember({
     path: { member_id: request.params.id },
   });
 
-  const { data: votes } = await getMemberVotes({
+  const { data: votes } = await request.api.getMemberVotes({
     path: {
       member_id: request.params.id,
     },

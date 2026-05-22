@@ -1,6 +1,24 @@
+import * as Sentry from "@sentry/node";
+
+// Ensure to call this before requiring any other modules!
+Sentry.init({
+  sendDefaultPii: false,
+  tracesSampleRate: 0,
+  enableLogs: true,
+  integrations: [Sentry.pinoIntegration()],
+});
+
 import sirv from "sirv";
 import { redirect } from "./lib/http";
-import { App, isBot, logRequests, noMatchHandler, onError } from "./lib/server";
+import {
+  App,
+  apiClient,
+  isBot,
+  logRequests,
+  noMatchHandler,
+  onError,
+  sentryTrace,
+} from "./lib/server";
 import { AboutPage, loader as aboutLoader } from "./pages/AboutPage";
 import {
   AmendmentVotesPage,
@@ -23,12 +41,15 @@ import {
 
 const app = new App({ onError, noMatchHandler });
 
+app.use(sentryTrace);
+
 const distMiddleware = sirv("dist");
 const staticMiddleware = sirv("static");
 app.use("dist/", distMiddleware);
 app.use("static/", staticMiddleware);
 app.use(isBot);
 app.use(logRequests);
+app.use(apiClient);
 
 app.registerPage("/", HomePage, homeLoader);
 app.registerPage("/votes", SearchPage, searchLoader);

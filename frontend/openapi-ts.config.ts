@@ -10,5 +10,11 @@ export default defineConfig({
       throwOnError: true,
       baseUrl: false,
     },
+    {
+      name: "@hey-api/sdk",
+      operations: {
+        strategy: "single",
+      },
+    },
   ],
 });
