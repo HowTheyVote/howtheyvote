@@ -86,34 +86,21 @@ def all(
 @pipeline.command()
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
-@click.option("--ep-aws-waf-token")
-@click.option("--eurlex-aws-waf-token")
-def rcv_list(
-    term: int,
-    date: datetime.datetime,
-    ep_aws_waf_token: str | None,
-    eurlex_aws_waf_token: str | None,
-) -> None:
+def rcv_list(term: int, date: datetime.datetime) -> None:
     """Run the RCV list pipeline for a given day. This scrapes the list of roll-call votes
     for the given day as well as additional sources for related legislative procedures or
     plenary documents."""
-    pipeline = RCVListPipeline(
-        term=term,
-        date=date.date(),
-        ep_aws_waf_token=ep_aws_waf_token,
-        eurlex_aws_waf_token=eurlex_aws_waf_token,
-    )
+    pipeline = RCVListPipeline(term=term, date=date.date())
     pipeline.run()
 
 
 @pipeline.command()
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
-@click.option("--aws-waf-token")
-def vot_list(term: int, date: datetime.datetime, aws_waf_token: str | None) -> None:
+def vot_list(term: int, date: datetime.datetime) -> None:
     """Run the VOT list pipeline for a given day. This scrapes the list of vote results
     for the given day."""
-    pipeline = VOTListPipeline(term=term, date=date.date(), aws_waf_token=aws_waf_token)
+    pipeline = VOTListPipeline(term=term, date=date.date())
     pipeline.run()
 
 

@@ -27,6 +27,7 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..store import Aggregator, BulkWriter, index_records, map_vote
+from ..waf import solve_ep_aws_waf_challenge
 from .common import (
     BasePipeline,
     DataUnavailable,
@@ -48,27 +49,27 @@ class RCVListPipeline(BasePipeline):
         term: int,
         date: datetime.date,
         last_run_checksum: str | None = None,
-        ep_aws_waf_token: str | None = None,
-        eurlex_aws_waf_token: str | None = None,
     ):
         super().__init__(
             term=term,
             date=date,
             last_run_checksum=last_run_checksum,
-            ep_aws_waf_token=ep_aws_waf_token,
-            eurlex_aws_waf_token=eurlex_aws_waf_token,
         )
         self.term = term
         self.date = date
         self.last_run_checksum = last_run_checksum
         self.checksum: str | None = None
-        self.ep_aws_waf_token = ep_aws_waf_token
-        self.eurlex_aws_waf_token = eurlex_aws_waf_token
         self._vote_ids: set[str] = set()
         self._main_vote_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
     def _run(self) -> None:
+        self.ep_aws_waf_token = solve_ep_aws_waf_challenge()
+
+        # Temporarily disable EUR-Lex scrapers
+        # self.eurlex_aws_waf_token = solve_eurlex_aws_waf_challenge()
+        self.eurlex_aws_waf_token = None
+
         self._scrape_rcv_list()
         self._scrape_documents()
         # self._scrape_eurlex_documents()

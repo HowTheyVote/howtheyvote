@@ -58,7 +58,11 @@ def member(db_session):
 
 
 @pytest.mark.always_mock_requests
-def test_run_source_not_available(responses, db_session):
+def test_run_source_not_available(responses, db_session, mocker):
+    mocker.patch(
+        "howtheyvote.pipelines.rcv_list.solve_ep_aws_waf_challenge",
+        return_value="123abc",
+    )
     pipe = RCVListPipeline(term=9, date=datetime.date(2024, 4, 10))
     result = pipe.run()
     assert result.status == PipelineStatus.DATA_UNAVAILABLE
@@ -79,7 +83,12 @@ def test_run(responses, db_session, member, plenary_session, mocker):
         body=load_fixture("pipelines/data/oeil_2024-2006-reg.html"),
     )
 
-    mock = mocker.patch("howtheyvote.pipelines.rcv_list.send_notification")
+    notifications_mock = mocker.patch("howtheyvote.pipelines.rcv_list.send_notification")
+
+    mocker.patch(
+        "howtheyvote.pipelines.rcv_list.solve_ep_aws_waf_challenge",
+        return_value="123abc",
+    )
 
     # Run the pipeline for the first time
     RCVListPipeline(term=9, date=datetime.date(2024, 4, 24)).run()
@@ -101,16 +110,21 @@ def test_run(responses, db_session, member, plenary_session, mocker):
     assert votes[0].member_votes == [MemberVote(web_id=197490, position=VotePosition.FOR)]
 
     # Push notification is sent after pipeline has completed successfully
-    assert mock.call_count == 1
-    assert mock.call_args.kwargs["title"] == "Scraped RCV list for Wed, Apr 24"
-    assert mock.call_args.kwargs["message"] == "1 votes (0 main votes)"
+    assert notifications_mock.call_count == 1
+    assert notifications_mock.call_args.kwargs["title"] == "Scraped RCV list for Wed, Apr 24"
+    assert notifications_mock.call_args.kwargs["message"] == "1 votes (0 main votes)"
 
 
 @pytest.mark.always_mock_requests
-def test_run_data_unchanged(responses, db_session, member, plenary_session):
+def test_run_data_unchanged(responses, db_session, member, plenary_session, mocker):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-RCV_FR.xml",
         body=load_fixture("pipelines/data/rcv-list_pv-9-2024-04-24-rcv-fr-noon.xml"),
+    )
+
+    mocker.patch(
+        "howtheyvote.pipelines.rcv_list.solve_ep_aws_waf_challenge",
+        return_value="123abc",
     )
 
     # Run the pipeline for the first time
