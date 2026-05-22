@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from typing import cast
 
+import sentry_sdk
 from structlog import get_logger
 
 from . import config
@@ -63,6 +64,22 @@ def solve_aws_waf_challenge(url: str) -> str:
                 aws_waf_token=cookie["value"],
                 domain=cookie["domain"],
             )
+            sentry_sdk.metrics.count(
+                "waf_challenges",
+                1,
+                attributes={
+                    "status": "success",
+                    "url": url,
+                },
+            )
             return cast(str, cookie["value"])
 
+    sentry_sdk.metrics.count(
+        "waf_challenges",
+        1,
+        attributes={
+            "status": "failure",
+            "url": url,
+        },
+    )
     raise WAFTokenError("Failed to obtain an AWS WAF token.")
