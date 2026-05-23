@@ -1,4 +1,4 @@
-import { isbot as userAgentIsBot } from "isbot";
+import { isbotMatch } from "isbot";
 
 const BOT_PATH_PREFIXES = [
   "/.env",
@@ -27,24 +27,35 @@ const BOT_PATH_SUFFXIES = [
   ".css",
 ];
 
-export function requestIsBot(path: string, userAgent?: string): boolean {
+export function requestIsBot(
+  path: string,
+  userAgent?: string,
+): {
+  result: boolean;
+  name?: string;
+} {
   // Detect certain bots based on user agent
-  if (userAgentIsBot(userAgent)) {
-    return true;
+  const match = isbotMatch(userAgent);
+
+  if (match) {
+    return {
+      result: true,
+      name: match,
+    };
   }
 
   // Detect bots based on common request patterns
   for (const prefix of BOT_PATH_PREFIXES) {
     if (path.startsWith(prefix)) {
-      return true;
+      return { result: true };
     }
   }
 
   for (const suffix of BOT_PATH_SUFFXIES) {
     if (path.endsWith(suffix)) {
-      return true;
+      return { result: true };
     }
   }
 
-  return false;
+  return { result: false };
 }
