@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/node";
+
 import { BACKEND_PRIVATE_URL } from "../config";
 import { HTTPException } from "../lib/http";
 import { client } from "./generated/client.gen";
@@ -12,6 +14,17 @@ client.interceptors.response.use((response) => {
   }
 
   return response;
+});
+
+client.interceptors.request.use((request) => {
+  const traceData = Sentry.getTraceData();
+
+  if (traceData["sentry-trace"] && traceData.baggage) {
+    request.headers.set("sentry-trace", traceData["sentry-trace"]);
+    request.headers.set("baggage", traceData.baggage);
+  }
+
+  return request;
 });
 
 export * from "./generated/sdk.gen";
