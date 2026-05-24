@@ -93,23 +93,6 @@ export function apiClient(
   next?.();
 }
 
-// This middleware passes the request trace ID to Sentry
-export function sentryTrace(
-  request: Request,
-  _response: Response,
-  next?: NextFunction,
-) {
-  Sentry.withScope((scope) => {
-    scope.setContext("trace", {
-      trace_id: request.headers["x-trace-id"],
-      // We don’t use spans, but `span_id` is required, so we use a placeholder
-      span_id: "0000000000000000",
-    });
-
-    next?.();
-  });
-}
-
 // The default VNode<{}> type mismatches when calling something like
 // renderVDom(h(MyPageComponent)) and I wasn't able to figure out why.
 // biome-ignore lint/suspicious/noExplicitAny: See above
