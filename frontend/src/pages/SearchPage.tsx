@@ -23,17 +23,20 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
   // Apply some basic normalization to make log aggregation easier
-  const normalizedQuery = searchQuery?.q?.toLowerCase().replace(/\s+/, " ");
+  const rawQuery = searchQuery?.q;
+  const normalizedQuery = rawQuery?.toLowerCase().replace(/\s+/, " ");
 
   if (!request.isBot && normalizedQuery) {
     log.info({
       msg: "Handling search request",
-      query: normalizedQuery,
+      normalizedQuery,
+      rawQuery,
     });
 
     Sentry.metrics.count("searches", 1, {
       attributes: {
-        query: normalizedQuery,
+        normalizedQuery,
+        rawQuery,
       },
     });
   }
@@ -53,12 +56,14 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
   if (!request.isBot && data.results.length === 0) {
     log.info({
       msg: "Search without results",
-      query: normalizedQuery,
+      normalizedQuery,
+      rawQuery,
     });
 
     Sentry.metrics.count("searches_no_results", 1, {
       attributes: {
-        query: normalizedQuery,
+        normalizedQuery,
+        rawQuery,
       },
     });
   }
