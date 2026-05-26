@@ -31,11 +31,14 @@ describe("requestIsBot", () => {
     ];
 
     for (const userAgent of allow) {
-      assert.strictEqual(requestIsBot("/", userAgent), false);
+      const isBot = requestIsBot("/", userAgent);
+      assert.strictEqual(isBot.result, false);
+      assert.strictEqual(isBot.name, undefined);
     }
 
     for (const userAgent of block) {
-      assert.strictEqual(requestIsBot("/", userAgent), true);
+      const isBot = requestIsBot("/", userAgent);
+      assert.strictEqual(isBot.result, true);
     }
   });
 
@@ -57,11 +60,15 @@ describe("requestIsBot", () => {
     ];
 
     for (const path of allow) {
-      assert.strictEqual(requestIsBot(path, ""), false);
+      const isBot = requestIsBot(path, "");
+      assert.strictEqual(isBot.result, false);
+      assert.strictEqual(isBot.name, undefined);
     }
 
     for (const path of block) {
-      assert.strictEqual(requestIsBot(path, ""), true);
+      const isBot = requestIsBot(path, "");
+      assert.strictEqual(isBot.result, true);
+      assert.strictEqual(isBot.name, undefined);
     }
   });
 });

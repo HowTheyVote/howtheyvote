@@ -31,7 +31,11 @@ import {
   loader as voteSharepicLoader,
 } from "./pages/VoteSharepicPage";
 
-const app = new App({ onError, noMatchHandler });
+const app = new App({
+  onError,
+  noMatchHandler,
+  settings: { enableReqRoute: true },
+});
 
 const distMiddleware = sirv("dist");
 const staticMiddleware = sirv("static");

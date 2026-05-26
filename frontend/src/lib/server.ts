@@ -1,3 +1,5 @@
+import { performance } from "node:perf_hooks";
+
 import * as Sentry from "@sentry/node";
 import {
   App as BaseApp,
@@ -19,6 +21,7 @@ const log = getLogger();
 
 export interface Request extends BaseRequest {
   isBot: boolean;
+  botName?: string;
 }
 
 export type Loader<Data> = (request: Request) => Promise<Data>;
@@ -33,7 +36,12 @@ export function isBot(
   _response: Response,
   next?: NextFunction,
 ) {
-  request.isBot = requestIsBot(request.path, request.headers["user-agent"]);
+  const { result, name } = requestIsBot(
+    request.path,
+    request.headers["user-agent"],
+  );
+  request.isBot = result;
+  request.botName = name;
   next?.();
 }
 
@@ -43,20 +51,33 @@ export function logRequests(
   response: Response,
   next?: NextFunction,
 ) {
+  const startTime = performance.now();
+
   response.on("finish", () => {
-    log.info({
-      msg: "Handled request",
+    const requestDuration = performance.now() - startTime;
+    const route =
+      request.route?.handler !== noMatchHandler ? request.route?.path : null;
+
+    const attributes = {
+      method: request.method,
       status: response.statusCode,
+      route,
       path: request.path,
+      query_string: new URL(request.url, "http://localhost").search.slice(1),
       is_bot: request.isBot,
+      bot_name: request.botName,
+    };
+
+    log.info({
+      ...attributes,
+      msg: "Handled request",
+      request_duration: Math.round(requestDuration),
     });
 
-    Sentry.metrics.count("requests_handled", 1, {
-      attributes: {
-        status: response.statusCode,
-        path: request.path,
-        is_bot: request.isBot,
-      },
+    Sentry.metrics.count("requests_handled", 1, { attributes });
+    Sentry.metrics.distribution("request_duration", requestDuration, {
+      attributes,
+      unit: "milliseconds",
     });
   });
 
