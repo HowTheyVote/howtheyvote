@@ -14,6 +14,8 @@ const BOT_PATH_PREFIXES = [
   "/wap",
   "/user",
   "/robots.txt",
+  "/cgi-bin",
+  "/ipfs",
 ];
 
 const BOT_PATH_SUFFXIES = [
