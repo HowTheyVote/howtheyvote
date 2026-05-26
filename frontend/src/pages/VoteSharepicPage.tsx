@@ -1,12 +1,11 @@
-import type { Vote } from "../api";
+import type { Request } from "@tinyhttp/app";
+import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import VoteSharepic from "../components/VoteSharepic";
 import type { Loader, Page } from "../lib/server";
 
-export const loader: Loader<Vote> = async (request) => {
-  const { data } = await request.api.getVote({
-    path: { vote_id: request.params.id },
-  });
+export const loader: Loader<Vote> = async (request: Request) => {
+  const { data } = await getVote({ path: { vote_id: request.params.id } });
   return data;
 };
 

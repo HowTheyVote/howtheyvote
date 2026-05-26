@@ -1,4 +1,4 @@
-import type { PlenarySession } from "../api";
+import { getSessions, type PlenarySession } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Footer from "../components/Footer";
@@ -23,8 +23,8 @@ type HomePageData = {
   lastSession?: PlenarySession;
 };
 
-export const loader: Loader<HomePageData> = async (request) => {
-  const { data: current } = await request.api.getSessions({
+export const loader: Loader<HomePageData> = async () => {
+  const { data: current } = await getSessions({
     query: {
       status: "current",
       page_size: 1,
@@ -32,7 +32,7 @@ export const loader: Loader<HomePageData> = async (request) => {
     },
   });
 
-  const { data: past } = await request.api.getSessions({
+  const { data: past } = await getSessions({
     query: {
       status: "past",
       page_size: 1,

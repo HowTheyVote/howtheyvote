@@ -1,4 +1,4 @@
-import type { Statistics } from "../api";
+import { getStats, type Statistics } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Disclosure from "../components/Disclosure";
@@ -14,8 +14,8 @@ import { formatDate, formatNumber } from "../lib/dates";
 import { getErrorReportFormUrl } from "../lib/links";
 import type { Loader, Page } from "../lib/server";
 
-export const loader: Loader<Statistics> = async (request) => {
-  const { data } = await request.api.getStats();
+export const loader: Loader<Statistics> = async () => {
+  const { data } = await getStats();
   return data;
 };
 

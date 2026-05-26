@@ -18,138 +18,78 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
-class HeyApiClient {
-    protected client: Client;
-    
-    constructor(args?: {
-        client?: Client;
-    }) {
-        this.client = args?.client ?? client;
-    }
-}
+/**
+ * List votes
+ *
+ * Get a list of roll-call votes. You can optionally provide a search query
+ * and filters.
+ *
+ */
+export const getVotes = <ThrowOnError extends boolean = true>(options?: Options<GetVotesData, ThrowOnError>) => (options?.client ?? client).get<GetVotesResponses, unknown, ThrowOnError>({ url: '/api/votes', ...options });
 
-class HeyApiRegistry<T> {
-    private readonly defaultKey = 'default';
-    
-    private readonly instances: Map<string, T> = new Map();
-    
-    get(key?: string): T {
-        const instance = this.instances.get(key ?? this.defaultKey);
-        if (!instance) {
-            throw new Error(`No SDK client found. Create one with "new Sdk()" to fix this error.`);
-        }
-        return instance;
-    }
-    
-    set(value: T, key?: string): void {
-        this.instances.set(key ?? this.defaultKey, value);
-    }
-}
+/**
+ * Get Votes as Atom Feed
+ *
+ * Get the last 200 votes available on howtheyvote.eu as Atom feed.
+ */
+export const getVotesFeed = <ThrowOnError extends boolean = true>(options?: Options<GetVotesFeedData, ThrowOnError>) => (options?.client ?? client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/feed.xml', ...options });
 
-export class Sdk extends HeyApiClient {
-    public static readonly __registry = new HeyApiRegistry<Sdk>();
-    
-    constructor(args?: {
-        client?: Client;
-        key?: string;
-    }) {
-        super(args);
-        Sdk.__registry.set(this, args?.key);
-    }
-    
-    /**
-     * List votes
-     *
-     * Get a list of roll-call votes. You can optionally provide a search query
-     * and filters.
-     *
-     */
-    public getVotes<ThrowOnError extends boolean = true>(options?: Options<GetVotesData, ThrowOnError>) {
-        return (options?.client ?? this.client).get<GetVotesResponses, unknown, ThrowOnError>({ url: '/api/votes', ...options });
-    }
-    
-    /**
-     * Get Votes as Atom Feed
-     *
-     * Get the last 200 votes available on howtheyvote.eu as Atom feed.
-     */
-    public getVotesFeed<ThrowOnError extends boolean = true>(options?: Options<GetVotesFeedData, ThrowOnError>) {
-        return (options?.client ?? this.client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/feed.xml', ...options });
-    }
-    
-    /**
-     * List member’s votes
-     *
-     * Get a list of roll-call votes along with the member’s vote position. You can
-     * optionally provide a search query and filters.
-     *
-     */
-    public getMemberVotes<ThrowOnError extends boolean = true>(options: Options<GetMemberVotesData, ThrowOnError>) {
-        return (options.client ?? this.client).get<GetMemberVotesResponses, unknown, ThrowOnError>({ url: '/api/members/{member_id}/votes', ...options });
-    }
-    
-    /**
-     * Get vote
-     *
-     * Get information about a vote. This includes metadata (e.g. vote title and
-     * timestamp), aggregated statistics, and the votes of individual MEPs.
-     *
-     */
-    public getVote<ThrowOnError extends boolean = true>(options: Options<GetVoteData, ThrowOnError>) {
-        return (options.client ?? this.client).get<GetVoteResponses, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}', ...options });
-    }
-    
-    /**
-     * Get vote as CSV
-     *
-     * Get votes of individual MEPs as CSV.
-     *
-     */
-    public getVoteCsvmeps<ThrowOnError extends boolean = true>(options: Options<GetVoteCsvmepsData, ThrowOnError>) {
-        return (options.client ?? this.client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}/members.csv', ...options });
-    }
-    
-    /**
-     * Get vote as CSV (Groups)
-     *
-     * Get voting behavior among groups as CSV.
-     *
-     */
-    public getVoteCsvGroups<ThrowOnError extends boolean = true>(options: Options<GetVoteCsvGroupsData, ThrowOnError>) {
-        return (options.client ?? this.client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}/groups.csv', ...options });
-    }
-    
-    /**
-     * Get vote as CSV (Countries)
-     *
-     * Get voting behavior among countries as CSV.
-     *
-     */
-    public getVoteCsvCountries<ThrowOnError extends boolean = true>(options: Options<GetVoteCsvCountriesData, ThrowOnError>) {
-        return (options.client ?? this.client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}/countries.csv', ...options });
-    }
-    
-    /**
-     * List sessions
-     */
-    public getSessions<ThrowOnError extends boolean = true>(options?: Options<GetSessionsData, ThrowOnError>) {
-        return (options?.client ?? this.client).get<GetSessionsResponses, unknown, ThrowOnError>({ url: '/api/sessions', ...options });
-    }
-    
-    /**
-     * List general stats
-     */
-    public getStats<ThrowOnError extends boolean = true>(options?: Options<GetStatsData, ThrowOnError>) {
-        return (options?.client ?? this.client).get<GetStatsResponses, unknown, ThrowOnError>({ url: '/api/stats', ...options });
-    }
-    
-    /**
-     * Get member
-     *
-     * Get information about an MEP.
-     *
-     */
-    public getMember<ThrowOnError extends boolean = true>(options: Options<GetMemberData, ThrowOnError>) {
-        return (options.client ?? this.client).get<GetMemberResponses, unknown, ThrowOnError>({ url: '/api/members/{member_id}', ...options });
-    }
-}
+/**
+ * List member’s votes
+ *
+ * Get a list of roll-call votes along with the member’s vote position. You can
+ * optionally provide a search query and filters.
+ *
+ */
+export const getMemberVotes = <ThrowOnError extends boolean = true>(options: Options<GetMemberVotesData, ThrowOnError>) => (options.client ?? client).get<GetMemberVotesResponses, unknown, ThrowOnError>({ url: '/api/members/{member_id}/votes', ...options });
+
+/**
+ * Get vote
+ *
+ * Get information about a vote. This includes metadata (e.g. vote title and
+ * timestamp), aggregated statistics, and the votes of individual MEPs.
+ *
+ */
+export const getVote = <ThrowOnError extends boolean = true>(options: Options<GetVoteData, ThrowOnError>) => (options.client ?? client).get<GetVoteResponses, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}', ...options });
+
+/**
+ * Get vote as CSV
+ *
+ * Get votes of individual MEPs as CSV.
+ *
+ */
+export const getVoteCsvmeps = <ThrowOnError extends boolean = true>(options: Options<GetVoteCsvmepsData, ThrowOnError>) => (options.client ?? client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}/members.csv', ...options });
+
+/**
+ * Get vote as CSV (Groups)
+ *
+ * Get voting behavior among groups as CSV.
+ *
+ */
+export const getVoteCsvGroups = <ThrowOnError extends boolean = true>(options: Options<GetVoteCsvGroupsData, ThrowOnError>) => (options.client ?? client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}/groups.csv', ...options });
+
+/**
+ * Get vote as CSV (Countries)
+ *
+ * Get voting behavior among countries as CSV.
+ *
+ */
+export const getVoteCsvCountries = <ThrowOnError extends boolean = true>(options: Options<GetVoteCsvCountriesData, ThrowOnError>) => (options.client ?? client).get<unknown, unknown, ThrowOnError>({ url: '/api/votes/{vote_id}/countries.csv', ...options });
+
+/**
+ * List sessions
+ */
+export const getSessions = <ThrowOnError extends boolean = true>(options?: Options<GetSessionsData, ThrowOnError>) => (options?.client ?? client).get<GetSessionsResponses, unknown, ThrowOnError>({ url: '/api/sessions', ...options });
+
+/**
+ * List general stats
+ */
+export const getStats = <ThrowOnError extends boolean = true>(options?: Options<GetStatsData, ThrowOnError>) => (options?.client ?? client).get<GetStatsResponses, unknown, ThrowOnError>({ url: '/api/stats', ...options });
+
+/**
+ * Get member
+ *
+ * Get information about an MEP.
+ *
+ */
+export const getMember = <ThrowOnError extends boolean = true>(options: Options<GetMemberData, ThrowOnError>) => (options.client ?? client).get<GetMemberResponses, unknown, ThrowOnError>({ url: '/api/members/{member_id}', ...options });

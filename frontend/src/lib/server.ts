@@ -10,9 +10,6 @@ import {
 
 import { type FunctionComponent, h, type VNode } from "preact";
 import render from "preact-render-to-string";
-import { Sdk } from "../api";
-import { createClient } from "../api/generated/client";
-import { BACKEND_PRIVATE_URL } from "../config";
 import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
 import { requestIsBot } from "./bots";
@@ -22,7 +19,6 @@ const log = getLogger();
 
 export interface Request extends BaseRequest {
   isBot: boolean;
-  api: Sdk;
 }
 
 export type Loader<Data> = (request: Request) => Promise<Data>;
@@ -53,7 +49,6 @@ export function logRequests(
       status: response.statusCode,
       path: request.path,
       is_bot: request.isBot,
-      trace_id: request.headers["x-trace-id"],
     });
 
     Sentry.metrics.count("requests_handled", 1, {
@@ -66,48 +61,6 @@ export function logRequests(
   });
 
   next?.();
-}
-
-// This middleware instantiates a new API client for each request
-export function apiClient(
-  request: Request,
-  _response: Response,
-  next?: NextFunction,
-) {
-  const client = createClient({
-    baseUrl: BACKEND_PRIVATE_URL,
-    headers: {
-      "X-Trace-Id": request.headers["x-trace-id"],
-    },
-  });
-
-  client.interceptors.error.use((_, response) => {
-    if (response?.status === 404) {
-      throw new HTTPException(404);
-    }
-
-    return response;
-  });
-
-  request.api = new Sdk({ client });
-  next?.();
-}
-
-// This middleware passes the request trace ID to Sentry
-export function sentryTrace(
-  request: Request,
-  _response: Response,
-  next?: NextFunction,
-) {
-  Sentry.withScope((scope) => {
-    scope.setContext("trace", {
-      trace_id: request.headers["x-trace-id"],
-      // We don’t use spans, but `span_id` is required, so we use a placeholder
-      span_id: "0000000000000000",
-    });
-
-    next?.();
-  });
 }
 
 // The default VNode<{}> type mismatches when calling something like

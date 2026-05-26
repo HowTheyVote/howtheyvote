@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import type { VotesQueryResponse } from "../api";
+import { getVotes, type VotesQueryResponse } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
 import Hero from "../components/Hero";
@@ -11,7 +11,7 @@ import { PUBLIC_URL } from "../config";
 import { redirect } from "../lib/http";
 import { getLogger } from "../lib/logging";
 import { FACETS, SearchQuery, SORT_PARAMS } from "../lib/search";
-import type { Loader, Page } from "../lib/server";
+import type { Loader, Page, Request } from "../lib/server";
 
 const log = getLogger();
 
@@ -19,7 +19,7 @@ type SearchPageData = VotesQueryResponse & {
   searchQuery: SearchQuery;
 };
 
-export const loader: Loader<SearchPageData> = async (request) => {
+export const loader: Loader<SearchPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
   // Apply some basic normalization to make log aggregation easier
@@ -38,7 +38,7 @@ export const loader: Loader<SearchPageData> = async (request) => {
     });
   }
 
-  const { data } = await request.api.getVotes({
+  const { data } = await getVotes({
     query: {
       q: searchQuery.q,
       page: searchQuery.page,

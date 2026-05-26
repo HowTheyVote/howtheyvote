@@ -1,12 +1,11 @@
-import type { Member } from "../api";
+import type { Request } from "@tinyhttp/app";
+import { getMember, type Member } from "../api";
 import App from "../components/App";
 import MemberSharepic from "../components/MemberSharepic";
 import type { Loader, Page } from "../lib/server";
 
-export const loader: Loader<Member> = async (request) => {
-  const { data } = await request.api.getMember({
-    path: { member_id: request.params.id },
-  });
+export const loader: Loader<Member> = async (request: Request) => {
+  const { data } = await getMember({ path: { member_id: request.params.id } });
   return data;
 };
 
