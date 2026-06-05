@@ -819,7 +819,7 @@ def _load_related(vote: Vote) -> Iterable[Vote]:
     if not vote.group_key:
         return []
 
-    stmt = select(Vote).where(Vote.group_key == vote.group_key).order_by(Vote.order)
+    stmt = select(Vote).where(Vote.group_key == vote.group_key).order_by(Vote.date, Vote.order)
 
     return Session.execute(stmt).scalars()
 
