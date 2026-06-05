@@ -13,9 +13,9 @@ from ..analysis import (
 )
 from ..db import Session
 from ..helpers import frontend_url
-from ..models import Member, Vote
+from ..models import Member, PlenarySession, Vote
 from ..pushover import send_notification
-from ..query import member_active_at
+from ..query import member_active_at, session_is_current_at
 from ..scrapers import (
     DocumentScraper,
     EurlexDocumentScraper,
@@ -284,7 +284,13 @@ class RCVListPipeline(BasePipeline):
     def _analyze_vote_groups(self) -> None:
         log.info("Running vote groups analysis", date=self.date, term=self.term)
         writer = BulkWriter()
-        analyzer = VoteGroupsAnalyzer(date=self.date, votes=self._votes())
+        session = Session.execute(
+            select(PlenarySession).where(session_is_current_at(self.date))
+        ).scalar_one()
+        analyzer = VoteGroupsAnalyzer(
+            session_start_date=session.start_date,
+            votes=self._votes(),
+        )
         writer.add(analyzer.run())
         writer.flush()
 

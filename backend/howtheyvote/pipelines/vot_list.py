@@ -1,10 +1,13 @@
 import datetime
 from collections.abc import Iterator
 
+from sqlalchemy import select
 from structlog import get_logger
 
 from ..analysis import VoteGroupsAnalyzer
-from ..models import Vote
+from ..db import Session
+from ..models import PlenarySession, Vote
+from ..query import session_is_current_at
 from ..scrapers import NoWorkingUrlError, VOTListScraper
 from ..store import Aggregator, BulkWriter, index_records, map_vote
 from .common import BasePipeline, DataUnavailable, generate_vote_sharepics
@@ -44,7 +47,13 @@ class VOTListPipeline(BasePipeline):
     def _analyze_vote_groups(self) -> None:
         self._log.info("Running vote groups analysis")
         writer = BulkWriter()
-        analyzer = VoteGroupsAnalyzer(date=self.date, votes=self._votes())
+        session = Session.execute(
+            select(PlenarySession).where(session_is_current_at(self.date))
+        ).scalar_one()
+        analyzer = VoteGroupsAnalyzer(
+            session_start_date=session.start_date,
+            votes=self._votes(),
+        )
         writer.add(analyzer.run())
         writer.flush()
 

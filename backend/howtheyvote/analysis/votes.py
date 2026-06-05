@@ -17,15 +17,15 @@ class VoteGroupsAnalyzer:
     session and title. The key can be used to retrieve other votes from the same group,
     e.g. in order to display a list of amendment votes for a given main vote."""
 
-    def __init__(self, date: datetime.date, votes: Iterable[Vote]):
-        self.date = date
+    def __init__(self, session_start_date: datetime.date, votes: Iterable[Vote]):
+        self.session_start_date = session_start_date
         self.votes = votes
 
     def run(self) -> Iterator[Fragment]:
         groups: dict[str, list[int]] = defaultdict(list)
 
         for vote in self.votes:
-            group_key = self._make_group_key(self.date, vote)
+            group_key = self._make_group_key(self.session_start_date, vote)
             if group_key:
                 groups[group_key].append(vote.id)
 
@@ -39,13 +39,13 @@ class VoteGroupsAnalyzer:
                     data={"group_key": group_key},
                 )
 
-    def _make_group_key(self, date: datetime.date, vote: Vote) -> str | None:
+    def _make_group_key(self, session_start_date: datetime.date, vote: Vote) -> str | None:
         title = vote.display_title
 
         if not title:
             return None
 
-        return make_key(date.isoformat(), title)
+        return make_key(session_start_date.isoformat(), title)
 
 
 class MainVoteAnalyzer:

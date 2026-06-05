@@ -275,7 +275,8 @@ def vote_groups() -> None:
             votes = Session.execute(
                 select(Vote).where(func.date(Vote.timestamp) == date)
             ).scalars()
-            writer.add(VoteGroupsAnalyzer(date, votes).run())
+            analyzer = VoteGroupsAnalyzer(session_start_date=session.start_date, votes=votes)
+            writer.add(analyzer.run())
             writer.flush()
 
 
