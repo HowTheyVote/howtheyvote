@@ -41,7 +41,7 @@ def test_vote_group_analyzer_title():
     ]
 
     analyzer = VoteGroupsAnalyzer(
-        date=datetime.date(2026, 1, 1),
+        session_start_date=datetime.date(2026, 1, 1),
         votes=votes,
     )
     fragments = list(analyzer.run())
@@ -75,7 +75,7 @@ def test_vote_group_analyzer_dlv_title():
     ]
 
     analyzer = VoteGroupsAnalyzer(
-        date=datetime.date(2026, 1, 1),
+        session_start_date=datetime.date(2026, 1, 1),
         votes=votes,
     )
     fragments = list(analyzer.run())
@@ -84,6 +84,36 @@ def test_vote_group_analyzer_dlv_title():
     assert fragments[0].data["group_key"] == fragments[1].data["group_key"]
     assert fragments[0].data["group_key"] != fragments[2].data["group_key"]
     assert fragments[1].data["group_key"] != fragments[2].data["group_key"]
+
+
+def test_vote_group_analyzer_across_session_days():
+    votes = [
+        Vote(
+            id=130991,
+            timestamp=datetime.datetime(2021, 5, 18),
+            title="2019-2020 Reports on Montenegro",
+            reference="A9-0131/2021",
+            description="Am 6",
+        ),
+        Vote(
+            id=131714,
+            timestamp=datetime.datetime(2021, 5, 19),
+            title="2019-2020 Reports on Montenegro",
+            reference="A9-0131/2021",
+            description="Proposition de résolution",
+        ),
+    ]
+
+    analyzer = VoteGroupsAnalyzer(
+        session_start_date=datetime.date(2021, 5, 17),
+        votes=votes,
+    )
+    fragments = list(analyzer.run())
+
+    assert len(fragments) == 2
+    assert fragments[0].group_key == 130991
+    assert fragments[1].group_key == 131714
+    assert fragments[0].data["group_key"] == fragments[1].data["group_key"]
 
 
 def test_main_vote_analyzer_description():

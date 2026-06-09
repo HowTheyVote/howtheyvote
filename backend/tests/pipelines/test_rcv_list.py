@@ -11,12 +11,28 @@ from howtheyvote.models import (
     MemberVote,
     OEILSubject,
     PipelineStatus,
+    PlenarySession,
     Vote,
     VotePosition,
 )
 from howtheyvote.pipelines import RCVListPipeline
 
 from ..helpers import load_fixture
+
+
+@pytest.fixture
+def plenary_session(db_session):
+    session = PlenarySession(
+        id="2024-04-22",
+        term=9,
+        start_date=datetime.date(2024, 4, 22),
+        end_date=datetime.date(2024, 4, 25),
+    )
+
+    db_session.add(session)
+    db_session.commit()
+
+    yield session
 
 
 @pytest.fixture
@@ -49,7 +65,7 @@ def test_run_source_not_available(responses, db_session):
 
 
 @pytest.mark.always_mock_requests
-def test_run(responses, db_session, member, mocker):
+def test_run(responses, db_session, member, plenary_session, mocker):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-RCV_FR.xml",
         body=load_fixture("pipelines/data/rcv-list_pv-9-2024-04-24-rcv-fr-noon.xml"),
@@ -91,7 +107,7 @@ def test_run(responses, db_session, member, mocker):
 
 
 @pytest.mark.always_mock_requests
-def test_run_data_unchanged(responses, db_session, member):
+def test_run_data_unchanged(responses, db_session, member, plenary_session):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-RCV_FR.xml",
         body=load_fixture("pipelines/data/rcv-list_pv-9-2024-04-24-rcv-fr-noon.xml"),

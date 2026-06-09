@@ -1002,6 +1002,39 @@ def test_votes_api_related_votes(db_session, api):
     assert res.json["related"] == expected
 
 
+def test_votes_api_related_votes_order(db_session, api):
+    amendment = Vote(
+        id=130991,
+        is_main=False,
+        timestamp=datetime.datetime(2021, 5, 18, 0, 0, 0),
+        order=261,
+        title="2019-2020 Reports on Montenegro",
+        reference="A9-0131/2021",
+        description="Am 6",
+        group_key="abc123",
+    )
+
+    main_vote = Vote(
+        id=131714,
+        is_main=True,
+        timestamp=datetime.datetime(2021, 5, 19, 0, 0, 0),
+        order=60,
+        title="2019-2020 Reports on Montenegro",
+        reference="A9-0131/2021",
+        description="Proposition de résolution",
+        group_key="abc123",
+    )
+
+    db_session.add_all([amendment, main_vote])
+    db_session.commit()
+
+    res = api.get("/api/votes/131714")
+
+    # Related votes are sorted by date first, and by order second
+    assert res.json["related"][0]["id"] == 130991
+    assert res.json["related"][1]["id"] == 131714
+
+
 def test_votes_api_not_found(api):
     res = api.get("/api/votes/123")
 
