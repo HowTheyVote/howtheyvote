@@ -72,12 +72,14 @@ class RCVListScraper(BeautifulSoupScraper):
         term: int,
         active_members: list[tuple[int, str, str]],
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
         super().__init__(
             date=date,
             term=term,
             active_members_count=len(active_members),
             request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
         )
 
         self.date = date
@@ -290,8 +292,19 @@ class RCVListEnglishScraper(BeautifulSoupScraper):
     BS_PARSER = "lxml-xml"
     BASE_URL = "https://www.europarl.europa.eu/doceo/document"
 
-    def __init__(self, date: date, term: int, request_cache: RequestCache | None = None):
-        super().__init__(date=date, term=term, request_cache=request_cache)
+    def __init__(
+        self,
+        date: date,
+        term: int,
+        request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
+    ):
+        super().__init__(
+            date=date,
+            term=term,
+            request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
+        )
         self.date = date
         self.term = term
 
@@ -355,11 +368,13 @@ class VOTListScraper(BeautifulSoupScraper):
         date: date,
         term: int,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
         super().__init__(
             date=date,
             term=term,
             request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
         )
 
         self.date = date
@@ -556,8 +571,14 @@ class DocumentScraper(BeautifulSoupScraper):
         vote_id: int,
         reference: str,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
-        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
+        super().__init__(
+            vote_id=vote_id,
+            reference=reference,
+            request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
+        )
         self.vote_id = vote_id
         self.reference = reference
 
@@ -626,11 +647,13 @@ class ProcedureScraper(BeautifulSoupScraper):
         procedure_reference: str | None,
         reference: str | None,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
         super().__init__(
             vote_id=vote_id,
             procedure_reference=procedure_reference,
             request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
         )
         self.vote_id = vote_id
         self.procedure_reference = procedure_reference
@@ -781,11 +804,13 @@ class EurlexProcedureScraper(BeautifulSoupScraper):
         vote_id: int,
         procedure_reference: str,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
         super().__init__(
             vote_id=vote_id,
             procedure_reference=procedure_reference,
             request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
         )
         self.vote_id = vote_id
         self.procedure_reference = procedure_reference
@@ -858,8 +883,14 @@ class EurlexDocumentScraper(BeautifulSoupScraper):
         vote_id: int,
         reference: str,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
-        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
+        super().__init__(
+            vote_id=vote_id,
+            reference=reference,
+            request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
+        )
         self.vote_id = vote_id
         self.reference = reference
 
