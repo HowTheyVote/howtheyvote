@@ -700,6 +700,7 @@ class ODPDocumentScraper(JSONScraper):
 
 class ODPProcedureScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/procedures"
+    COMMITTEE_CODE_REGEX = re.compile(r"^org/([^/]+)$")
 
     def __init__(
         self,
@@ -721,11 +722,13 @@ class ODPProcedureScraper(JSONScraper):
     def _extract_data(self, doc: Any) -> Fragment:
         procedure_reference = doc["data"][0]["label"]
         procedure_title = doc["data"][0]["process_title"]["en"]
+        responsible_committees = self._responsible_committees(doc)
 
         self._log.info(
             "Extracted procedure information",
             procedure_reference=procedure_reference,
             procedure_title=procedure_title,
+            responsible_committees=responsible_committees,
         )
 
         return self._fragment(
@@ -735,8 +738,31 @@ class ODPProcedureScraper(JSONScraper):
             data={
                 "procedure_reference": procedure_reference,
                 "procedure_title": procedure_title,
+                "responsible_committees": responsible_committees,
             },
         )
+
+    def _responsible_committees(self, doc: Any) -> set[str]:
+        committees: set[str] = set()
+
+        for item in doc["data"][0].get("had_participation", []):
+            if item["participation_role"] != "def/ep-roles/COMMITTEE_LEAD":
+                continue
+
+            for organization in item["had_participant_organization"]:
+                match = self.COMMITTEE_CODE_REGEX.match(organization)
+
+                if not match:
+                    continue
+
+                committee = Committee.get(match.group(1))
+
+                if not committee:
+                    continue
+
+                committees.add(committee.code)
+
+        return committees
 
 
 class ProcedureScraper(BeautifulSoupScraper):
