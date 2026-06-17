@@ -647,7 +647,7 @@ class ODPDocumentScraper(JSONScraper):
 
         self._log.info(
             "Extracted document information",
-            procedure_reference=odp_procedure_reference,
+            odp_procedure_reference=odp_procedure_reference,
             eurovoc_concepts=eurovoc_concepts,
         )
 
@@ -696,6 +696,47 @@ class ODPDocumentScraper(JSONScraper):
                 concepts.add(concept.id)
 
         return concepts, geo_areas
+
+
+class ODPProcedureScraper(JSONScraper):
+    BASE_URL = "https://data.europarl.europa.eu/api/v2/procedures"
+
+    def __init__(
+        self,
+        vote_id: int,
+        odp_procedure_reference: str,
+        request_cache: RequestCache | None = None,
+    ):
+        super().__init__(
+            vote_id=vote_id,
+            odp_procedure_reference=odp_procedure_reference,
+            request_cache=request_cache,
+        )
+        self.vote_id = vote_id
+        self.odp_procedure_reference = odp_procedure_reference
+
+    def _url(self) -> str:
+        return f"{self.BASE_URL}/{self.odp_procedure_reference}?format=application/ld+json"
+
+    def _extract_data(self, doc: Any) -> Fragment:
+        procedure_reference = doc["data"][0]["label"]
+        procedure_title = doc["data"][0]["process_title"]["en"]
+
+        self._log.info(
+            "Extracted procedure information",
+            procedure_reference=procedure_reference,
+            procedure_title=procedure_title,
+        )
+
+        return self._fragment(
+            model=Vote,
+            source_id=self.vote_id,
+            group_key=self.vote_id,
+            data={
+                "procedure_reference": procedure_reference,
+                "procedure_title": procedure_title,
+            },
+        )
 
 
 class ProcedureScraper(BeautifulSoupScraper):

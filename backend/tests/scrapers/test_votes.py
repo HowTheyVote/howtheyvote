@@ -16,6 +16,7 @@ from howtheyvote.scrapers.votes import (
     EurlexDocumentScraper,
     EurlexProcedureScraper,
     ODPDocumentScraper,
+    ODPProcedureScraper,
     ProcedureScraper,
     RCVListScraper,
     VOTListScraper,
@@ -675,7 +676,7 @@ def test_document_scraper(responses):
 def test_odp_document_scraper(responses):
     responses.get(
         "https://data.europarl.europa.eu/api/v2/plenary-documents/RC-10-2025-0249?format=application/ld+json",
-        body=load_fixture("scrapers/data/votes/odp-document_rc-10-2025-0249.html"),
+        body=load_fixture("scrapers/data/votes/odp-document_rc-10-2025-0249.json"),
     )
 
     scraper = ODPDocumentScraper(vote_id=176309, reference="RC-B10-0249/2025")
@@ -696,4 +697,19 @@ def test_odp_document_scraper(responses):
             "RUS",
             "UKR",
         },
+    }
+
+
+def test_odp_procedure_scraper(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2025-2691?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2025-2691.json"),
+    )
+
+    scraper = ODPProcedureScraper(vote_id=176309, odp_procedure_reference="2025-2691")
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "procedure_reference": "2025/2691(RSP)",
+        "procedure_title": "Return of Ukrainian children forcibly transferred and deported by Russia",
     }
