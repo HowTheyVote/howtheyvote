@@ -712,4 +712,21 @@ def test_odp_procedure_scraper(responses):
     assert fragment.data == {
         "procedure_reference": "2025/2691(RSP)",
         "procedure_title": "Return of Ukrainian children forcibly transferred and deported by Russia",
+        "responsible_committees": set(),
+    }
+
+
+def test_odp_procedure_scraper_responsible_committees(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2025-0581?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2025-0581.json"),
+    )
+
+    scraper = ODPProcedureScraper(vote_id=193557, odp_procedure_reference="2025-0581")
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "procedure_reference": "2025/0581(CNS)",
+        "procedure_title": "Amending Directive (EU) 2020/262 as regards the general arrangements for excise duty in respect of tobacco and tobacco related products",
+        "responsible_committees": {"ECON"},
     }
