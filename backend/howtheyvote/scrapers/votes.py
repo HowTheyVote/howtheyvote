@@ -1,7 +1,7 @@
 import re
 from collections.abc import Iterator
 from datetime import date, datetime
-from typing import cast
+from typing import Any, cast
 from urllib.parse import parse_qs, urlparse
 
 import pytz
@@ -24,7 +24,13 @@ from ..models import (
     VoteResultType,
     serialize_amendment_author,
 )
-from .common import BeautifulSoupScraper, NoWorkingUrlError, RequestCache, ScrapingError
+from .common import (
+    BeautifulSoupScraper,
+    JSONScraper,
+    NoWorkingUrlError,
+    RequestCache,
+    ScrapingError,
+)
 from .helpers import (
     fill_missing_by_reference,
     fix_spelling_edge_cases,
@@ -633,6 +639,84 @@ class DocumentScraper(BeautifulSoupScraper):
             return None
 
         return texts_adopted_link.get_text(strip=True)
+
+
+class ODPDocumentScraper(JSONScraper):
+    BASE_URL = "https://data.europarl.europa.eu/api/v2/plenary-documents"
+    EUROVOC_URL_REGEX = re.compile(r"^http://eurovoc\.europa\.eu/([^/]+)$")
+    PROCEDURE_ID_REGEX = re.compile(r"^eli/dl/proc/([^/]+)$")
+
+    def __init__(
+        self,
+        vote_id: int,
+        reference: str,
+        request_cache: RequestCache | None = None,
+    ):
+        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
+        self.vote_id = vote_id
+        self.reference = reference
+
+    def _url(self) -> str:
+        ref = parse_reference(self.reference)
+        number = str(ref["number"]).rjust(4, "0")
+        formatted_ref = f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
+        return f"{self.BASE_URL}/{formatted_ref}?format=application/ld+json"
+
+    def _extract_data(self, doc: Any) -> Fragment:
+        odp_procedure_reference = self._odp_procedure_reference(doc)
+        eurovoc_concepts, geo_areas = self._eurovoc_concepts(doc)
+
+        self._log.info(
+            "Extracted document information",
+            procedure_reference=odp_procedure_reference,
+            eurovoc_concepts=eurovoc_concepts,
+        )
+
+        return self._fragment(
+            model=Vote,
+            source_id=self.vote_id,
+            group_key=self.vote_id,
+            data={
+                "odp_procedure_reference": odp_procedure_reference,
+                "eurovoc_concepts": eurovoc_concepts,
+                "geo_areas": geo_areas,
+            },
+        )
+
+    def _odp_procedure_reference(self, doc: Any) -> str | None:
+        procedures = doc["data"][0]["inverse_created_a_realization_of"]
+
+        if not procedures:
+            return None
+
+        match = self.PROCEDURE_ID_REGEX.match(procedures[0])
+
+        if not match:
+            raise ScrapingError(f"Unrecognized procedure ID format: {procedures[0]}")
+
+        return match.group(1)
+
+    def _eurovoc_concepts(self, doc: Any) -> tuple[set[str], set[str]]:
+        concepts: set[str] = set()
+        geo_areas: set[str] = set()
+
+        for concept_url in doc["data"][0].get("is_about", []):
+            match = self.EUROVOC_URL_REGEX.match(concept_url)
+
+            if not match:
+                raise ScrapingError(f"Unrecognized Eurovoc URL: {concept_url}")
+
+            concept = EurovocConcept.get(match.group(1))
+
+            if not concept:
+                continue
+
+            if concept.geo_area_code:
+                geo_areas.add(concept.geo_area_code)
+            else:
+                concepts.add(concept.id)
+
+        return concepts, geo_areas
 
 
 class ProcedureScraper(BeautifulSoupScraper):

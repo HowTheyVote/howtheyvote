@@ -15,6 +15,7 @@ from howtheyvote.scrapers.votes import (
     DocumentScraper,
     EurlexDocumentScraper,
     EurlexProcedureScraper,
+    ODPDocumentScraper,
     ProcedureScraper,
     RCVListScraper,
     VOTListScraper,
@@ -668,4 +669,31 @@ def test_document_scraper(responses):
     assert fragment.data == {
         "procedure_reference": "2025/2691(RSP)",
         "texts_adopted_reference": "P10_TA(2025)0096",
+    }
+
+
+def test_odp_document_scraper(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/RC-10-2025-0249?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_rc-10-2025-0249.html"),
+    )
+
+    scraper = ODPDocumentScraper(vote_id=176309, reference="RC-B10-0249/2025")
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "odp_procedure_reference": "2025-2691",
+        "eurovoc_concepts": {
+            "3916",
+            "406",
+            "c_e78f03db",
+            "564",
+            "758",
+            "3919",
+            "5335",
+        },
+        "geo_areas": {
+            "RUS",
+            "UKR",
+        },
     }
