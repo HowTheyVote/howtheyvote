@@ -279,6 +279,7 @@ class Vote(BaseWithId):
     dlv_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_title: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
+    odp_procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
     amendment_subject: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_number: Mapped[str | None] = mapped_column(sa.Unicode)

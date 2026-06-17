@@ -70,6 +70,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         rapporteur=record.get("rapporteur"),
         procedure_title=record.get("procedure_title"),
         procedure_reference=record.get("procedure_reference"),
+        odp_procedure_reference=record.get("odp_procedure_reference"),
         procedure_stage=record.get(
             key="procedure_stage",
             type=lambda x: ProcedureStage[x] if x else None,
