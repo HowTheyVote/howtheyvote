@@ -706,13 +706,18 @@ def test_odp_procedure_scraper(responses):
         body=load_fixture("scrapers/data/votes/odp-procedure_2025-2691.json"),
     )
 
-    scraper = ODPProcedureScraper(vote_id=176309, odp_procedure_reference="2025-2691")
+    scraper = ODPProcedureScraper(
+        vote_id=176309,
+        odp_procedure_reference="2025-2691",
+        date=datetime.date(2025, 5, 8),
+    )
     fragment = scraper.run()
 
     assert fragment.data == {
         "procedure_reference": "2025/2691(RSP)",
         "procedure_title": "Return of Ukrainian children forcibly transferred and deported by Russia",
         "responsible_committees": set(),
+        "texts_adopted_reference": "P10_TA(2025)0096",
     }
 
 
@@ -722,11 +727,37 @@ def test_odp_procedure_scraper_responsible_committees(responses):
         body=load_fixture("scrapers/data/votes/odp-procedure_2025-0581.json"),
     )
 
-    scraper = ODPProcedureScraper(vote_id=193557, odp_procedure_reference="2025-0581")
+    scraper = ODPProcedureScraper(
+        vote_id=193557,
+        odp_procedure_reference="2025-0581",
+        date=datetime.date(2026, 6, 17),
+    )
     fragment = scraper.run()
 
     assert fragment.data == {
         "procedure_reference": "2025/0581(CNS)",
         "procedure_title": "Amending Directive (EU) 2020/262 as regards the general arrangements for excise duty in respect of tobacco and tobacco related products",
         "responsible_committees": {"ECON"},
+        "texts_adopted_reference": None,
     }
+
+
+def test_odp_procedure_scraper_texts_adopted_multiple(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2025-0260?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2025-0260.json"),
+    )
+
+    scraper = ODPProcedureScraper(
+        vote_id=193516,
+        odp_procedure_reference="2025-0260",
+        date=datetime.date(2026, 6, 16),
+    )
+    assert scraper.run().data["texts_adopted_reference"] == "P10_TA(2026)0197"
+
+    scraper = ODPProcedureScraper(
+        vote_id=189596,
+        odp_procedure_reference="2025-0260",
+        date=datetime.date(2026, 3, 26),
+    )
+    assert scraper.run().data["texts_adopted_reference"] == "P10_TA(2026)0097"

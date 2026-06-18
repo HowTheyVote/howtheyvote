@@ -722,19 +722,23 @@ class ODPDocumentScraper(JSONScraper):
 class ODPProcedureScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/procedures"
     COMMITTEE_CODE_REGEX = re.compile(r"^org/([^/]+)$")
+    TEXTS_ADOPTED_REFERENCE_REGEX = re.compile(r"^eli/dl/doc/TA-(\d+)-(\d{4})-(\d{4})$")
 
     def __init__(
         self,
         vote_id: int,
         odp_procedure_reference: str,
+        date: date,
         request_cache: RequestCache | None = None,
     ):
         super().__init__(
             vote_id=vote_id,
             odp_procedure_reference=odp_procedure_reference,
+            date=date,
             request_cache=request_cache,
         )
         self.vote_id = vote_id
+        self.date = date
         self.odp_procedure_reference = odp_procedure_reference
 
     def _url(self) -> str:
@@ -744,12 +748,14 @@ class ODPProcedureScraper(JSONScraper):
         procedure_reference = doc["data"][0]["label"]
         procedure_title = doc["data"][0]["process_title"]["en"]
         responsible_committees = self._responsible_committees(doc)
+        texts_adopted_reference = self._texts_adopted_reference(doc)
 
         self._log.info(
             "Extracted procedure information",
             procedure_reference=procedure_reference,
             procedure_title=procedure_title,
             responsible_committees=responsible_committees,
+            texts_adopted_reference=texts_adopted_reference,
         )
 
         return self._fragment(
@@ -760,6 +766,7 @@ class ODPProcedureScraper(JSONScraper):
                 "procedure_reference": procedure_reference,
                 "procedure_title": procedure_title,
                 "responsible_committees": responsible_committees,
+                "texts_adopted_reference": texts_adopted_reference,
             },
         )
 
@@ -784,6 +791,24 @@ class ODPProcedureScraper(JSONScraper):
                 committees.add(committee.code)
 
         return committees
+
+    def _texts_adopted_reference(self, doc: Any) -> str | None:
+        for item in doc["data"][0]["consists_of"]:
+            if item["type"] != "Decision":
+                continue
+
+            if item["activity_date"] != self.date.isoformat():
+                continue
+
+            for document in item["decided_on_a_realization_of"]:
+                match = self.TEXTS_ADOPTED_REFERENCE_REGEX.match(document)
+
+                if not match:
+                    continue
+
+                return f"P{match.group(1)}_TA({match.group(2)}){match.group(3)}"
+
+        return None
 
 
 class ProcedureScraper(BeautifulSoupScraper):
