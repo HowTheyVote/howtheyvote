@@ -316,6 +316,7 @@ class RCVListPipeline(BasePipeline):
                 vote_id=vote.id,
                 odp_procedure_reference=vote.odp_procedure_reference,
                 request_cache=self._request_cache,
+                date=self.date,
             )
 
             try:
