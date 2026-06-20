@@ -49,6 +49,7 @@ class RCVListPipeline(BasePipeline):
         term: int,
         date: datetime.date,
         last_run_checksum: str | None = None,
+        use_legacy_doceo_sources: bool = False,
     ):
         super().__init__(
             term=term,
@@ -58,6 +59,7 @@ class RCVListPipeline(BasePipeline):
         self.term = term
         self.date = date
         self.last_run_checksum = last_run_checksum
+        self.use_legacy_doceo_sources = use_legacy_doceo_sources
         self.checksum: str | None = None
         self._vote_ids: set[str] = set()
         self._main_vote_ids: set[str] = set()
@@ -71,8 +73,12 @@ class RCVListPipeline(BasePipeline):
         self._eurlex_aws_waf_token = None
 
         self._scrape_rcv_list()
-        self._scrape_odp_documents()
-        self._scrape_odp_procedures()
+
+        if self.use_legacy_doceo_sources:
+            self._scrape_documents()
+        else:
+            self._scrape_odp_documents()
+            self._scrape_odp_procedures()
 
         # We still need the OEIL procedure scraper, as the ODP procedure scraper
         # provides only a subset of the data available in the Legislative Observatory.
