@@ -285,6 +285,14 @@ def test_parse_amendment_authors():
         AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
     ]
 
+    # Remove "and" conjunction between authors
+    assert parse_amendment_authors("S&D, Renew, Verts/ALE and The Left") == [
+        AmendmentAuthorGroup(group=Group["SD"]),
+        AmendmentAuthorGroup(group=Group["RENEW"]),
+        AmendmentAuthorGroup(group=Group["GREEN_EFA"]),
+        AmendmentAuthorGroup(group=Group["GUE_NGL"]),
+    ]
+
     # Remove compromise amendment suffix
     assert parse_amendment_authors("PPE (CA)") == [
         AmendmentAuthorGroup(group=Group["EPP"]),

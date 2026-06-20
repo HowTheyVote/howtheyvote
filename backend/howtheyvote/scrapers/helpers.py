@@ -246,8 +246,9 @@ def parse_amendment_authors(raw_authors: str) -> list[AmendmentAuthor]:
     tokens = raw_authors.strip().split(" ")
 
     # "CA" is short for "Compromise Amendment". We don’t have a use case for this, so for now
-    # we simply ignore it
-    tokens = [token for token in tokens if token != "(ca)"]
+    # we simply ignore it. In case of multiple authors, the source sometimes (but not always)
+    # uses a conjunction which we also need to ignore.
+    tokens = [token for token in tokens if token not in ("(ca)", "and")]
 
     while len(tokens) > 0:
         author = None
