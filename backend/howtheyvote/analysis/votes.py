@@ -68,6 +68,7 @@ class MainVoteAnalyzer:
             "motion for a resolution (as a whole)",
             "motion for a resolution (text as a whole)",
             "proposition de rejet",
+            "proposition de rejet de la position du conseil",
             "proposal for rejection",
             "proposition de resolution",
             "proposition de resolution (ensemble du texte)",
