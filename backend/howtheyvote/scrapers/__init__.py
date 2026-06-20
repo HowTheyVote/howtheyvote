@@ -12,8 +12,6 @@ from .press_releases import (
 from .sessions import CalendarSessionsScraper, ODPSessionScraper
 from .votes import (
     DocumentScraper,
-    EurlexDocumentScraper,
-    EurlexProcedureScraper,
     ODPDocumentScraper,
     ODPProcedureScraper,
     ProcedureScraper,
@@ -38,8 +36,6 @@ __all__ = [
     "RCVListEnglishScraper",
     "VOTListScraper",
     "DocumentScraper",
-    "EurlexDocumentScraper",
-    "EurlexProcedureScraper",
     "PressReleasesIndexScraper",
     "PressReleasesRSSScraper",
     "PressReleaseScraper",

@@ -221,9 +221,7 @@ class EurovocConceptRow(TypedDict):
 
 
 class EurovocConceptVoteRow(TypedDict):
-    """Each row represents an EuroVoc concept related to a vote. This information is sourced
-    from [EUR-Lex](https://eur-lex.europa.eu/homepage.html) isn’t available for all votes. For
-    example, EUR-Lex doesn’t contain information about motions for resolutions."""
+    """Each row represents an EuroVoc concept related to a vote."""
 
     vote_id: int
     """Vote ID"""

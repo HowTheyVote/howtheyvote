@@ -13,8 +13,6 @@ from howtheyvote.models import (
 from howtheyvote.scrapers.common import NoWorkingUrlError, ScrapingError
 from howtheyvote.scrapers.votes import (
     DocumentScraper,
-    EurlexDocumentScraper,
-    EurlexProcedureScraper,
     ODPDocumentScraper,
     ODPProcedureScraper,
     ProcedureScraper,
@@ -565,97 +563,6 @@ def test_procedure_scraper_non_breaking_spaces(responses):
         fragment.data["procedure_title"]
         == "European High Performance Computing Joint Undertaking (EuroHPC)"
     )
-
-
-def test_eurlex_procedure_scraper_eurovoc_concepts(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/procedure/EN/2021_106",
-        body=load_fixture("scrapers/data/votes/eurlex-procedure_2021-106.html"),
-    )
-
-    scraper = EurlexProcedureScraper(vote_id=166051, procedure_reference="2021/0106(COD)")
-    fragment = scraper.run()
-
-    eurovoc_concepts = {
-        "1439",
-        "3030",
-        "3636",
-        "4347",
-        "5181",
-        "5451",
-        "5595",
-        "5726",
-        "7219",
-        "7410",
-    }
-    assert fragment.data["eurovoc_concepts"] == eurovoc_concepts
-
-
-def test_eurlex_procedure_scraper_geo_areas(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/procedure/EN/2023_102",
-        body=load_fixture("scrapers/data/votes/eurlex-procedure_2023-102.html"),
-    )
-
-    scraper = EurlexProcedureScraper(vote_id=161383, procedure_reference="2023/0102(NLE)")
-    fragment = scraper.run()
-
-    assert fragment.data["eurovoc_concepts"] == {
-        "5540",
-        "1474",
-        "185",
-        "5649",
-        "210",
-        "2901",
-        "5640",
-        "8439",
-    }
-    assert fragment.data["geo_areas"] == {"MNE"}
-
-
-def test_eurlex_document_scraper_eurovoc_concepts(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2021)0270",
-        body=load_fixture("scrapers/data/votes/eurlex-document_p9-a-2021-0270.html"),
-    )
-
-    scraper = EurlexDocumentScraper(vote_id=136238, reference="A9-0270/2021")
-    fragment = scraper.run()
-
-    eurovoc_concepts = {
-        "189",
-        "341",
-        "4491",
-        "5158",
-        "538",
-        "6064",
-        "8439",
-        "933",
-    }
-    assert fragment.data["eurovoc_concepts"] == eurovoc_concepts
-
-
-def test_eurlex_document_scraper_geo_areas(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2023)0369",
-        body=load_fixture("scrapers/data/votes/eurlex-document_p9-a-2023-0369.html"),
-    )
-
-    scraper = EurlexDocumentScraper(vote_id=136238, reference="A9-0369/2023")
-    fragment = scraper.run()
-
-    assert fragment.data["eurovoc_concepts"] == {
-        "2300",
-        "6541",
-        "5540",
-        "1474",
-        "5649",
-        "210",
-        "2901",
-        "5640",
-        "8439",
-    }
-    assert fragment.data["geo_areas"] == {"MNE"}
 
 
 def test_document_scraper(responses):
