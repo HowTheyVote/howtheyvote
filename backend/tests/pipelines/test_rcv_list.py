@@ -71,8 +71,12 @@ def test_run(responses, db_session, member, plenary_session, mocker):
         body=load_fixture("pipelines/data/rcv-list_pv-9-2024-04-24-rcv-fr-noon.xml"),
     )
     responses.get(
-        "https://www.europarl.europa.eu/doceo/document/A-9-2024-0163_EN.html",
-        body=load_fixture("pipelines/data/document_a-9-2024-0163-en.html"),
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-9-2024-0163?format=application/ld+json",
+        body=load_fixture("pipelines/data/odp-document_a-9-2024-0163.json"),
+    )
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2024-2006?format=application/ld+json",
+        body=load_fixture("pipelines/data/odp-procedure_2024-2006.json"),
     )
     responses.get(
         "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=2024/2006(REG)",
@@ -92,7 +96,7 @@ def test_run(responses, db_session, member, plenary_session, mocker):
     assert votes[0].title is None
     assert (
         votes[0].procedure_title
-        == "EP Rules of Procedure: training on preventing conflict and harassment in the workplace and on good office management"
+        == "Amendments to Parliament’s Rules of Procedure concerning the training on preventing conflict and harassment in the workplace and on good office management"
     )
     assert votes[0].reference == "A9-0163/2024"
     assert votes[0].procedure_reference == "2024/2006(REG)"
