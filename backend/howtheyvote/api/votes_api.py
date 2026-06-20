@@ -91,14 +91,8 @@ SOURCE_INFO = {
     "OEILSummaryScraper": {
         "name": "Vote summary (Legislative Observatory)",
     },
-    "EurlexProcedureScraper": {
-        "name": "Procedure file (EUR-Lex)",
-    },
     "DocumentScraper": {
         "name": "Report or resolution",
-    },
-    "EurlexDocumentScraper": {
-        "name": "Report or resolution (EUR-Lex)",
     },
 }
 

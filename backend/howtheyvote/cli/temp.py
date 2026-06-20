@@ -2,7 +2,7 @@ import datetime
 
 import click
 from cachetools import LRUCache
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..analysis import (
@@ -18,8 +18,6 @@ from ..pipelines import OEILSummariesPipeline
 from ..query import member_active_at
 from ..scrapers import (
     DocumentScraper,
-    EurlexDocumentScraper,
-    EurlexProcedureScraper,
     NoWorkingUrlError,
     PressReleaseScraper,
     ProcedureScraper,
@@ -54,56 +52,6 @@ def sharepics() -> None:
 
         path = vote_sharepic_path(vote.id)
         path.write_bytes(image)
-
-
-@temp.command()
-def eurovoc() -> None:
-    """Scrape EuroVoc concepts for all votes."""
-    query = select(Vote)
-    query = query.where(
-        or_(
-            Vote.procedure_reference != None,  # noqa: E711
-            Vote.reference != None,  # noqa: E711
-        )
-    )
-    query = query.order_by(
-        Vote.procedure_reference,
-        Vote.reference,
-    )
-    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
-    cache: RequestCache = LRUCache(maxsize=50)
-    writer = BulkWriter()
-
-    for partition in votes.partitions():
-        for vote in partition:
-            if not vote.procedure_reference:
-                continue
-
-            try:
-                proc_scraper = EurlexProcedureScraper(
-                    vote_id=vote.id,
-                    procedure_reference=vote.procedure_reference,
-                    request_cache=cache,
-                )
-                writer.add(proc_scraper.run())
-            except ScrapingError:
-                pass
-
-        for vote in partition:
-            if not vote.reference:
-                continue
-
-            try:
-                doc_scraper = EurlexDocumentScraper(
-                    vote_id=vote.id,
-                    reference=vote.reference,
-                    request_cache=cache,
-                )
-                writer.add(doc_scraper.run())
-            except ScrapingError:
-                pass
-
-        writer.flush()
 
 
 @temp.command()

@@ -2,14 +2,13 @@ import re
 from collections.abc import Iterator
 from datetime import date, datetime
 from typing import Any, cast
-from urllib.parse import parse_qs, urlparse
 
 import pytz
 from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
 from .. import config
-from ..helpers import parse_procedure_reference, parse_reference
+from ..helpers import parse_reference
 from ..models import (
     AmendmentAuthor,
     Committee,
@@ -938,155 +937,3 @@ class ProcedureScraper(BeautifulSoupScraper):
             committees.add(committee.code)
 
         return committees
-
-
-class EurlexProcedureScraper(BeautifulSoupScraper):
-    """Scrapes EuroVoc concepts from the procedure page on EUR-Lex. EuroVoc is thesaurus
-    maintained by the EU Publications Office. Most interinstitutional procedures are assigned
-    multiple EuroVoc concepts (i.e. tags) that we can use to improve search recall or to
-    fetch related votes. In theory, it should also be possible to fetch these via a SPARQL
-    endpoint. However, I wasn’t able to come up with a query that reliably returned EuroVoc
-    concepts that were consitent with what’s displayed on EUR-Lex."""
-
-    BS_PARSER = "lxml"
-    BASE_URL = "https://eur-lex.europa.eu/procedure/EN"
-    EUROVOC_URL_REGEX = re.compile(r"LP_DC_CODED=")
-
-    def __init__(
-        self,
-        vote_id: int,
-        procedure_reference: str,
-        request_cache: RequestCache | None = None,
-    ):
-        super().__init__(
-            vote_id=vote_id,
-            procedure_reference=procedure_reference,
-            request_cache=request_cache,
-        )
-        self.vote_id = vote_id
-        self.procedure_reference = procedure_reference
-
-    def _url(self) -> str:
-        ref = parse_procedure_reference(self.procedure_reference)
-
-        # EUR-Lex URLs have the format `https://eur-lex.europa.eu/procedure/2021_160` whereas
-        # the procedure reference is usually formatted with leading zeros: `2021/0160(COD)`.
-        number = ref["number"].lstrip("0")
-
-        return f"{self.BASE_URL}/{ref['year']}_{number}"
-
-    def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
-        container = doc.select_one("#eurovocProc")
-
-        if not container:
-            return None
-
-        eurovoc_concepts: set[str] = set()
-        geo_areas: set[str] = set()
-        links = container.find_all("a", href=self.EUROVOC_URL_REGEX)
-
-        for link in links:
-            url = urlparse(link["href"])
-            query = parse_qs(url.query)
-            eurovoc_id = query.get("LP_DC_CODED")
-
-            if not eurovoc_id:
-                continue
-
-            eurovoc_concept = EurovocConcept.get(eurovoc_id[0])
-
-            if not eurovoc_concept:
-                continue
-
-            if eurovoc_concept.geo_area:
-                geo_areas.add(eurovoc_concept.geo_area.code)
-            else:
-                eurovoc_concepts.add(eurovoc_concept.id)
-
-        self._log.info(
-            "Extracted EurLex procedure information",
-            eurovoc_terms=eurovoc_concepts,
-            geo_areas=geo_areas,
-        )
-
-        return self._fragment(
-            model=Vote,
-            source_id=self.vote_id,
-            group_key=self.vote_id,
-            data={
-                "eurovoc_concepts": eurovoc_concepts,
-                "geo_areas": geo_areas,
-            },
-        )
-
-
-class EurlexDocumentScraper(BeautifulSoupScraper):
-    """Scrapes EuroVoc concepts from the document page on EUR-Lex. This scraper is very
-    similar to and complements the `EurlexDocumentScraper`. In some cases, the procedure
-    page on EUR-Lex doesn’t include any EuroVoc concepts, but the document page does."""
-
-    BS_PARSER = "lxml"
-    BASE_URL = "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:"
-    EUROVOC_URL_REGEX = re.compile(r"DC_CODED=")
-
-    def __init__(
-        self,
-        vote_id: int,
-        reference: str,
-        request_cache: RequestCache | None = None,
-    ):
-        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
-        self.vote_id = vote_id
-        self.reference = reference
-
-    def _url(self) -> str:
-        ref = parse_reference(self.reference)
-        number = str(ref["number"]).rjust(4, "0")
-
-        # EUR-Lex URLs have the format `https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2021)0270`
-        # whereas the reference is usually formatted like this: `A9-0270/2021`.
-        return f"{self.BASE_URL}P{ref['term']}_{ref['type'].value}({ref['year']}){number}"
-
-    def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
-        container = doc.select_one("#PPClass_Contents")
-
-        if not container:
-            return None
-
-        eurovoc_concepts: set[str] = set()
-        geo_areas: set[str] = set()
-        links = container.find_all("a", href=self.EUROVOC_URL_REGEX)
-
-        for link in links:
-            url = urlparse(link["href"])
-            query = parse_qs(url.query)
-            eurovoc_id = query.get("DC_CODED")
-
-            if not eurovoc_id:
-                continue
-
-            eurovoc_concept = EurovocConcept.get(eurovoc_id[0])
-
-            if not eurovoc_concept:
-                continue
-
-            if eurovoc_concept.geo_area:
-                geo_areas.add(eurovoc_concept.geo_area.code)
-            else:
-                eurovoc_concepts.add(eurovoc_concept.id)
-
-        self._log.info(
-            "Extracted EurLex document information",
-            eurovoc_terms=eurovoc_concepts,
-            geo_areas=geo_areas,
-        )
-
-        return self._fragment(
-            model=Vote,
-            source_id=self.vote_id,
-            group_key=self.vote_id,
-            data={
-                "eurovoc_concepts": eurovoc_concepts,
-                "geo_areas": geo_areas,
-            },
-        )
