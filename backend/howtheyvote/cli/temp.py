@@ -19,6 +19,8 @@ from ..query import member_active_at
 from ..scrapers import (
     DocumentScraper,
     NoWorkingUrlError,
+    ODPDocumentScraper,
+    ODPProcedureScraper,
     PressReleaseScraper,
     ProcedureScraper,
     RCVListScraper,
@@ -84,6 +86,37 @@ def procedures() -> None:
 
 
 @temp.command()
+def odp_procedures() -> None:
+    """Scrape all referenced ODP procedures"""
+    query = (
+        select(Vote)
+        .where(Vote.odp_procedure_reference != None)  # noqa: E711
+        .order_by(Vote.odp_procedure_reference)
+    )
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    cache: RequestCache = LRUCache(maxsize=50)
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            if not vote.odp_procedure_reference:
+                continue
+
+            try:
+                doc_scraper = ODPProcedureScraper(
+                    vote_id=vote.id,
+                    odp_procedure_reference=vote.odp_procedure_reference,
+                    date=vote.timestamp.date(),
+                    request_cache=cache,
+                )
+                writer.add(doc_scraper.run())
+            except ScrapingError:
+                pass
+
+        writer.flush()
+
+
+@temp.command()
 def documents() -> None:
     """Scrape all referenced documents"""
     query = select(Vote)
@@ -100,6 +133,32 @@ def documents() -> None:
 
             try:
                 doc_scraper = DocumentScraper(
+                    vote_id=vote.id,
+                    reference=vote.reference,
+                    request_cache=cache,
+                )
+                writer.add(doc_scraper.run())
+            except ScrapingError:
+                pass
+
+        writer.flush()
+
+
+@temp.command()
+def odp_documents() -> None:
+    """Scrape all referenced ODP documents"""
+    query = select(Vote).where(Vote.reference != None).order_by(Vote.reference)  # noqa: E711
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    cache: RequestCache = LRUCache(maxsize=50)
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            if not vote.reference:
+                continue
+
+            try:
+                doc_scraper = ODPDocumentScraper(
                     vote_id=vote.id,
                     reference=vote.reference,
                     request_cache=cache,
