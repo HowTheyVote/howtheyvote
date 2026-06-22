@@ -623,32 +623,40 @@ class ODPDocumentScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/plenary-documents"
     EUROVOC_URL_REGEX = re.compile(r"^http://eurovoc\.europa\.eu/([^/]+)$")
     PROCEDURE_ID_REGEX = re.compile(r"^eli/dl/proc/([^/]+)$")
+    AMENDMENTS_BASE_URL = "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd"
 
     def __init__(
         self,
         vote_id: int,
         reference: str,
+        amendment_number: int | None = None,
         request_cache: RequestCache | None = None,
     ):
-        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
+        super().__init__(
+            vote_id=vote_id,
+            reference=reference,
+            amendment_number=amendment_number,
+            request_cache=request_cache,
+        )
         self.vote_id = vote_id
+        self.amendment_number = amendment_number
         self.reference = reference
 
     def _url(self) -> str:
-        ref = parse_reference(self.reference)
-        number = str(ref["number"]).rjust(4, "0")
-        formatted_ref = f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
+        formatted_ref = self._formatted_reference()
         return f"{self.BASE_URL}/{formatted_ref}?format=application/ld+json"
 
     def _extract_data(self, doc: Any) -> Fragment:
         odp_procedure_reference = self._odp_procedure_reference(doc)
         eurovoc_concepts, geo_areas = self._eurovoc_concepts(doc)
+        amendment_url = self._amendment_url(doc)
 
         self._log.info(
             "Extracted document information",
             odp_procedure_reference=odp_procedure_reference,
             geo_areas=geo_areas,
             eurovoc_concepts=eurovoc_concepts,
+            amendment_url=amendment_url,
         )
 
         return self._fragment(
@@ -659,6 +667,7 @@ class ODPDocumentScraper(JSONScraper):
                 "odp_procedure_reference": odp_procedure_reference,
                 "eurovoc_concepts": eurovoc_concepts,
                 "geo_areas": geo_areas,
+                "amendment_url": amendment_url,
             },
         )
 
@@ -697,6 +706,29 @@ class ODPDocumentScraper(JSONScraper):
                 concepts.add(concept.id)
 
         return concepts, geo_areas
+
+    def _amendment_url(self, doc: Any) -> str | None:
+        if self.amendment_number is None:
+            return None
+
+        for amendment_list in doc["data"][0].get("inverse_foresees_change_of", []):
+            start = amendment_list["itemNumberBegin"]
+            end = amendment_list["itemNumberEnd"]
+
+            # TODO Check if intervals are inclusive
+            if start > self.amendment_number or end < self.amendment_number:
+                continue
+
+            formatted_ref = self._formatted_reference()
+            amendment_list_id = f"{formatted_ref}-AM-{start:03d}-{end:03d}"
+            url = f"{self.AMENDMENTS_BASE_URL}/{amendment_list_id}/{amendment_list_id}_en.pdf"
+
+            return url
+
+    def _formatted_reference(self) -> str:
+        ref = parse_reference(self.reference)
+        number = str(ref["number"]).rjust(4, "0")
+        return f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
 
 
 class ODPProcedureScraper(JSONScraper):
