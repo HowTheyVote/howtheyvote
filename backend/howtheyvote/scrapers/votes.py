@@ -662,7 +662,7 @@ class ODPDocumentScraper(JSONScraper):
         )
 
     def _odp_procedure_reference(self, doc: Any) -> str | None:
-        procedures = doc["data"][0]["inverse_created_a_realization_of"]
+        procedures = doc["data"][0].get("inverse_created_a_realization_of", [])
 
         if not procedures:
             return None
@@ -771,7 +771,7 @@ class ODPProcedureScraper(JSONScraper):
         return committees
 
     def _texts_adopted_reference(self, doc: Any) -> str | None:
-        for item in doc["data"][0]["consists_of"]:
+        for item in doc["data"][0].get("consists_of", []):
             if item["type"] != "Decision":
                 continue
 
