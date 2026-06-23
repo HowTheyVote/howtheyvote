@@ -157,8 +157,20 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
 
     # Index EuroVoc concept labels for full-text search
     for concept in vote.eurovoc_concepts:
-        for term in set([concept.label, *concept.alt_labels]):
-            generator.index_text(term, 1, field_to_prefix("eurovoc_concept_labels"))
+        labels = set()
+        labels.add(concept.label)
+        labels.update(concept.alt_labels)
+
+        for replaced_by in concept.replaced_by:
+            labels.add(replaced_by.label)
+            labels.update(replaced_by.alt_labels)
+
+        for replaces in concept.replaces:
+            labels.add(replaces.label)
+            labels.update(replaces.alt_labels)
+
+        for label in labels:
+            generator.index_text(label, 1, field_to_prefix("eurovoc_concept_labels"))
             generator.increase_termpos()
 
     # Index geographic area labels for full-text search
