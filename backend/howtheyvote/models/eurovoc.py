@@ -13,7 +13,7 @@ class EurovocConceptMeta(type):
         concept = eurovoc_concepts.get(key)
 
         if not concept:
-            raise KeyError()
+            raise KeyError(f"No Eurovoc concept with ID {key} found.")
 
         return concept
 

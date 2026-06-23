@@ -12,7 +12,7 @@ class OEILSubjectMeta(type):
         subject = oeil_subjects.get(key)
 
         if not subject:
-            raise KeyError()
+            raise KeyError(f"No OEIL subject with code {key} found.")
 
         return subject
 
