@@ -25,6 +25,8 @@ class EurovocConcept(DeserializableDataclass, metaclass=EurovocConceptMeta):
     alt_labels: list[str]
     related_ids: list[str]
     broader_ids: list[str]
+    replaced_by_ids: list[str]
+    replaces_ids: list[str]
     geo_area_code: str | None
 
     def __hash__(self) -> int:
@@ -44,6 +46,14 @@ class EurovocConcept(DeserializableDataclass, metaclass=EurovocConceptMeta):
     @property
     def broader(self) -> set["EurovocConcept"]:
         return {EurovocConcept[id_] for id_ in self.broader_ids}
+
+    @property
+    def replaced_by(self) -> set["EurovocConcept"]:
+        return {EurovocConcept[id_] for id_ in self.replaced_by_ids}
+
+    @property
+    def replaces(self) -> set["EurovocConcept"]:
+        return {EurovocConcept[id_] for id_ in self.replaces_ids}
 
     @property
     def geo_area(self) -> Country | None:

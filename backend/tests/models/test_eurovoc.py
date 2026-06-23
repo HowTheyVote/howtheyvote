@@ -6,7 +6,12 @@ def test_eurovoc_concept_related():
     concept = EurovocConcept["3030"]
     related = concept.related
 
-    expected = {EurovocConcept["3740"], EurovocConcept["3293"], EurovocConcept["c_5a195ffd"]}
+    expected = {
+        EurovocConcept["3740"],
+        EurovocConcept["3293"],
+        EurovocConcept["c_5a195ffd"],
+        EurovocConcept["c_782eaeb3"],
+    }
     assert related == expected
 
 
