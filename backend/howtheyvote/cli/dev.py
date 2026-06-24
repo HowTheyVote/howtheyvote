@@ -7,7 +7,7 @@ import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Committee, Country, EurovocConcept, Group, OEILSubject
+from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
 
 log = get_logger(__name__)
 
@@ -508,6 +508,59 @@ def load_oeil_subjects(file: TextIO) -> None:
         )
 
     subjects.save()
+
+
+@dev.command()
+def load_national_parties() -> None:
+    # TODO: Update this
+    """Loads a list of national parties as published by the EP Open Data Portal.
+    """
+    parties = DataclassContainer(
+        dataclass=NationalParty,
+        file_path=DATA_DIR.joinpath("national_parties.json"),
+        key_attr="id",
+    )
+
+    meta_data = requests.get(
+        "https://data.europarl.europa.eu/OdpDatasetService/Datasets/corporate-bodies-of-the-european-parliament"
+    ).json()
+    latest_version = len(meta_data["odpDatasetVersions"])
+
+    data_url = f"https://data.europarl.europa.eu/distribution/corporate-bodies_{latest_version}_en.csv"
+
+    with requests.get(data_url, stream=True) as r:
+        lines = (line.decode("utf-8") for line in r.iter_lines())
+        # Structure of each line:
+        # 0 - corporate_body_identifier
+        # 1- corporate_body_label
+        # 2 - corporate_body_preferred_label
+        # 3 - corporate_body_alternative_label
+        # 4 - corporate_body_classification_label
+        # 5 - corporate_body_classification_code
+        # 6 - corporate_body_start_date
+        # 7 - corporate_body_end_date
+        # 8 - corporate_body_represents
+        # 9 - corporate_body_linked_to
+        # 10 - corporate_body_sub_organization
+        # 11 - corporate_body_URI
+        for line in csv.reader(lines):
+            if line[4] != "National political group":
+                continue
+            print(line)
+            parties.add(
+                # TODO: Fix dates and country code (should be the code, not the name as in the CSV)
+                NationalParty(
+                    id=line[0],
+                    short_label=line[1],
+                    label=line[2],
+                    alt_label=line[3] if line[3] else None,
+                    start_date=line[6] if line[6] else None,
+                    end_date=line[7] if line[7] else None,
+                    country_code=line[8] if line[8] else None,
+                )
+            )
+
+        parties.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:
