@@ -1519,13 +1519,13 @@
   },
   {
     "code": "XDST",
-    "label": "Disputed region",
+    "label": "disputed region",
     "alt_label": null,
     "iso_alpha_2": null
   },
   {
     "code": "XEU",
-    "label": "EU Waters",
+    "label": "EU waters",
     "alt_label": null,
     "iso_alpha_2": null
   },
@@ -1537,7 +1537,7 @@
   },
   {
     "code": "XHS",
-    "label": "High seas",
+    "label": "high seas",
     "alt_label": null,
     "iso_alpha_2": null
   },
@@ -1555,7 +1555,7 @@
   },
   {
     "code": "XIN",
-    "label": "International Waters",
+    "label": "international waters",
     "alt_label": null,
     "iso_alpha_2": null
   },
@@ -1603,7 +1603,7 @@
   },
   {
     "code": "XMAZ",
-    "label": "Marine zone",
+    "label": "marine zone",
     "alt_label": null,
     "iso_alpha_2": null
   },
@@ -1675,7 +1675,7 @@
   },
   {
     "code": "XUCT",
-    "label": "Unclaimed territory",
+    "label": "unclaimed territory",
     "alt_label": null,
     "iso_alpha_2": null
   },
