@@ -708,3 +708,17 @@ def test_odp_procedure_scraper_participant_no_role(responses):
         date=datetime.date(2024, 4, 10),
     ).run()
     # No assertion needed, just need to test that the scraper runs without errors
+
+
+def test_odp_procedure_scraper_malformed_activity(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2018-2070?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2018-2070.json"),
+    )
+
+    ODPProcedureScraper(
+        vote_id=125904,
+        odp_procedure_reference="2018-2070",
+        date=datetime.date(2020, 12, 16),
+    ).run()
+    # No assertion needed, just need to test that the scraper runs without errors
