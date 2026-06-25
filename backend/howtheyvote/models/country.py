@@ -13,7 +13,7 @@ class CountryMeta(type):
         country = countries.get(key)
 
         if not country:
-            raise KeyError()
+            raise KeyError(f"No country with code {key} found.")
 
         return country
 

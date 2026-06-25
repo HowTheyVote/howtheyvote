@@ -70,56 +70,65 @@ def load_eurovoc() -> None:
     query = """
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
     PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
+    PREFIX eurovoc: <http://eurovoc.europa.eu/schema#>
 
     SELECT
       ?term
       ?label
       ?geo_area_code
-      (GROUP_CONCAT(DISTINCT ?related_id, ",") as ?related_ids)
-      (GROUP_CONCAT(DISTINCT ?broader_id, ",") as ?broader_ids)
-      (GROUP_CONCAT(DISTINCT ?alt_label, ",") as ?alt_labels)
+      (GROUP_CONCAT(?related_id, ",") as ?related_ids)
+      (GROUP_CONCAT(?broader_id, ",") as ?broader_ids)
+      (GROUP_CONCAT(?replaced_by_id, ",") as ?replaced_by_ids)
+      (GROUP_CONCAT(?replaces_id, ",") as ?replaces_ids)
+      (GROUP_CONCAT(?alt_label, ",") as ?alt_labels)
     WHERE {
-      GRAPH <http://publications.europa.eu/resource/dataset/eurovoc> {
-        ?term euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
+      VALUES ?type { eurovoc:Domain eurovoc:ThesaurusConcept }
+      ?term rdf:type ?type.
 
-        ?term skos:prefLabel ?label_.
-        FILTER(lang(?label_) = "en")
-        BIND(STR(?label_) as ?label)
+      ?term skos:prefLabel ?label_.
+      FILTER(lang(?label_) = "en")
+      BIND(STR(?label_) as ?label)
 
-        OPTIONAL {
-          ?term skos:related ?related.
-          ?related euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
-          ?related dc:identifier ?related_id.
-        }
-
-        OPTIONAL {
-          ?term skos:broader ?broader.
-          ?broader euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
-          ?broader dc:identifier ?broader_id.
-        }
-
-        OPTIONAL {
-          ?term skos:altLabel ?alt_label_.
-          FILTER(lang(?alt_label_) = "en")
-          BIND(STR(?alt_label_) as ?alt_label)
-        }
+      OPTIONAL {
+        ?term skos:related ?related.
+        ?related euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
+        ?related dc:identifier ?related_id.
       }
 
       OPTIONAL {
-        GRAPH <http://publications.europa.eu/resource/dataset/eurovoc_alignment_country> {
-          ?term skos:exactMatch ?geo_area.
-        }
+        ?term skos:broader ?broader.
+        ?broader euvoc:status <http://publications.europa.eu/resource/authority/concept-status/CURRENT>.
+        ?broader dc:identifier ?broader_id.
+      }
 
-        GRAPH <http://publications.europa.eu/resource/authority/country> {
-          ?geo_area dc:identifier ?geo_area_code.
-        }
+      OPTIONAL {
+        ?term dcterms:isReplacedBy ?replaced_by.
+        ?replaced_by dc:identifier ?replaced_by_id.
+      }
+
+      OPTIONAL {
+        ?term dcterms:replaces ?replaces.
+        ?replaces dc:identifier ?replaces_id.
+      }
+
+      OPTIONAL {
+        ?term skos:altLabel ?alt_label_.
+        FILTER(lang(?alt_label_) = "en")
+        BIND(STR(?alt_label_) as ?alt_label)
+      }
+
+      OPTIONAL {
+        ?term skos:exactMatch ?geo_area.
+        ?geo_area dc:identifier ?geo_area_code.
+        ?geo_area rdf:type euvoc:Country
       }
     }
     GROUP BY ?term ?label ?geo_area_code
     """
     log.info("Retrieving EuroVoc terms")
-    results = exec_sparql_query(DATA_ENDPOINT, query)
+    results = exec_sparql_query(PUBLICATIONS_ENDPOINT, query)
     container = DataclassContainer(
         dataclass=EurovocConcept,
         file_path=DATA_DIR.joinpath("eurovoc.json"),
@@ -153,6 +162,16 @@ def load_eurovoc() -> None:
         else:
             broader_ids = set()
 
+        if result["replaced_by_ids"]["value"]:
+            replaced_by_ids = set(result["replaced_by_ids"]["value"].split(","))
+        else:
+            replaced_by_ids = set()
+
+        if result["replaces_ids"]["value"]:
+            replaces_ids = set(result["replaces_ids"]["value"].split(","))
+        else:
+            replaces_ids = set()
+
         if "geo_area_code" in result:
             geo_area_code = result["geo_area_code"]["value"]
         else:
@@ -165,6 +184,8 @@ def load_eurovoc() -> None:
                 alt_labels=sorted(alt_labels),
                 related_ids=sorted(related_ids),
                 broader_ids=sorted(broader_ids),
+                replaced_by_ids=sorted(replaced_by_ids),
+                replaces_ids=sorted(replaces_ids),
                 geo_area_code=geo_area_code,
             )
         )

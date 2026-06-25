@@ -13,7 +13,7 @@ class CommitteeMeta(type):
         committee = committees.get(key)
 
         if not committee:
-            raise KeyError()
+            raise KeyError(f"No committee with code {key} found.")
 
         return committee
 

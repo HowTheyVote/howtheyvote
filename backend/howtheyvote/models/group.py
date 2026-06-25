@@ -12,7 +12,7 @@ class GroupMeta(type):
         country = groups.get(key)
 
         if not country:
-            raise KeyError()
+            raise KeyError(f"No group with code {key} found.")
 
         return country
 

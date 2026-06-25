@@ -12,7 +12,7 @@ class TopicMeta(type):
         topic = topics.get(key)
 
         if not topic:
-            raise KeyError()
+            raise KeyError(f"No topic with code {key} found.")
 
         return topic
 
