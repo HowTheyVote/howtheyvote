@@ -665,6 +665,7 @@ class ODPDocumentScraper(JSONScraper):
         procedures = doc["data"][0].get("inverse_created_a_realization_of", [])
 
         if not procedures:
+            log.warning("Document without procedure reference.", reference=self.reference)
             return None
 
         match = self.PROCEDURE_ID_REGEX.match(procedures[0])
