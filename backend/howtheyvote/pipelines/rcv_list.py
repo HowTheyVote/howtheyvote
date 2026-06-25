@@ -18,9 +18,9 @@ from ..pushover import send_notification
 from ..query import member_active_at, session_is_current_at
 from ..scrapers import (
     DocumentScraper,
-    EurlexDocumentScraper,
-    EurlexProcedureScraper,
     NoWorkingUrlError,
+    ODPDocumentScraper,
+    ODPProcedureScraper,
     ProcedureScraper,
     RCVListScraper,
     RequestCache,
@@ -48,11 +48,13 @@ class RCVListPipeline(BasePipeline):
         term: int,
         date: datetime.date,
         last_run_checksum: str | None = None,
+        use_legacy_doceo_sources: bool = False,
     ):
         super().__init__(term=term, date=date, last_run_checksum=last_run_checksum)
         self.term = term
         self.date = date
         self.last_run_checksum = last_run_checksum
+        self.use_legacy_doceo_sources = use_legacy_doceo_sources
         self.checksum: str | None = None
         self._vote_ids: set[str] = set()
         self._main_vote_ids: set[str] = set()
@@ -60,10 +62,17 @@ class RCVListPipeline(BasePipeline):
 
     def _run(self) -> None:
         self._scrape_rcv_list()
-        self._scrape_documents()
-        self._scrape_eurlex_documents()
+
+        if self.use_legacy_doceo_sources:
+            self._scrape_documents()
+        else:
+            self._scrape_odp_documents()
+            self._scrape_odp_procedures()
+
+        # We still need the OEIL procedure scraper, as the ODP procedure scraper
+        # provides only a subset of the data available in the Legislative Observatory.
         self._scrape_procedures()
-        self._scrape_eurlex_procedures()
+
         self._analyze_main_votes()
         self._analyze_topics()
         self._analyze_vote_groups()
@@ -159,19 +168,26 @@ class RCVListPipeline(BasePipeline):
 
         writer.flush()
 
-    def _scrape_eurlex_documents(self) -> None:
-        log.info("Scraping EUR-Lex documents", date=self.date, term=self.term)
+    def _scrape_odp_documents(self) -> None:
+        log.info("Scraping documents", date=self.date, term=self.term)
         writer = BulkWriter()
 
         for vote in self._votes():
             if not vote.reference:
                 log.info(
-                    "Skipping EUR-Lex document scraper as vote has no reference",
+                    "Skipping ODP document scraper as vote has no reference",
                     vote_id=vote.id,
                 )
                 continue
 
-            scraper = EurlexDocumentScraper(
+            if vote.reference.startswith("C"):
+                log.info(
+                    "Skipping ODP document scraper as reference is commission doc reference",
+                    vote_id=vote.id,
+                )
+                continue
+
+            scraper = ODPDocumentScraper(
                 vote_id=vote.id,
                 reference=vote.reference,
                 request_cache=self._request_cache,
@@ -180,13 +196,12 @@ class RCVListPipeline(BasePipeline):
             try:
                 writer.add(scraper.run())
             except NoWorkingUrlError:
-                # This is expected, as EUR-Lex doesn’t have information for all documents
                 pass
             except ScrapingError as err:
                 log.exception(
-                    "Failed scraping EUR-Lex document",
+                    "Failed scraping document",
                     vote_id=vote.id,
-                    procedure_reference=vote.reference,
+                    reference=vote.reference,
                 )
                 sentry_sdk.capture_exception(err)
 
@@ -223,34 +238,34 @@ class RCVListPipeline(BasePipeline):
 
         writer.flush()
 
-    def _scrape_eurlex_procedures(self) -> None:
-        log.info("Scraping EUR-Lex procedures", date=self.date, term=self.term)
+    def _scrape_odp_procedures(self) -> None:
+        log.info("Scraping ODP procedure", date=self.date, term=self.term)
         writer = BulkWriter()
 
         for vote in self._votes():
-            if not vote.procedure_reference:
+            if not vote.odp_procedure_reference:
                 log.info(
-                    "Skipping EUR-Lex procedure scraper as vote has no procedure reference",
+                    "Skipping ODP procedure scraper as vote has no ODP procedure reference",
                     vote_id=vote.id,
                 )
                 continue
 
-            scraper = EurlexProcedureScraper(
+            scraper = ODPProcedureScraper(
                 vote_id=vote.id,
-                procedure_reference=vote.procedure_reference,
+                odp_procedure_reference=vote.odp_procedure_reference,
                 request_cache=self._request_cache,
+                date=self.date,
             )
 
             try:
                 writer.add(scraper.run())
             except NoWorkingUrlError:
-                # This is expected, as EUR-Lex doesn’t have information for all procedures
                 pass
             except ScrapingError as err:
                 log.exception(
-                    "Failed scraping EUR-Lex procedure",
+                    "Failed scraping ODP procedure",
                     vote_id=vote.id,
-                    procedure_reference=vote.procedure_reference,
+                    odp_procedure_reference=vote.odp_procedure_reference,
                 )
                 sentry_sdk.capture_exception(err)
 

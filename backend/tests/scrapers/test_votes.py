@@ -13,8 +13,8 @@ from howtheyvote.models import (
 from howtheyvote.scrapers.common import NoWorkingUrlError, ScrapingError
 from howtheyvote.scrapers.votes import (
     DocumentScraper,
-    EurlexDocumentScraper,
-    EurlexProcedureScraper,
+    ODPDocumentScraper,
+    ODPProcedureScraper,
     ProcedureScraper,
     RCVListScraper,
     VOTListScraper,
@@ -565,97 +565,6 @@ def test_procedure_scraper_non_breaking_spaces(responses):
     )
 
 
-def test_eurlex_procedure_scraper_eurovoc_concepts(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/procedure/EN/2021_106",
-        body=load_fixture("scrapers/data/votes/eurlex-procedure_2021-106.html"),
-    )
-
-    scraper = EurlexProcedureScraper(vote_id=166051, procedure_reference="2021/0106(COD)")
-    fragment = scraper.run()
-
-    eurovoc_concepts = {
-        "1439",
-        "3030",
-        "3636",
-        "4347",
-        "5181",
-        "5451",
-        "5595",
-        "5726",
-        "7219",
-        "7410",
-    }
-    assert fragment.data["eurovoc_concepts"] == eurovoc_concepts
-
-
-def test_eurlex_procedure_scraper_geo_areas(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/procedure/EN/2023_102",
-        body=load_fixture("scrapers/data/votes/eurlex-procedure_2023-102.html"),
-    )
-
-    scraper = EurlexProcedureScraper(vote_id=161383, procedure_reference="2023/0102(NLE)")
-    fragment = scraper.run()
-
-    assert fragment.data["eurovoc_concepts"] == {
-        "5540",
-        "1474",
-        "185",
-        "5649",
-        "210",
-        "2901",
-        "5640",
-        "8439",
-    }
-    assert fragment.data["geo_areas"] == {"MNE"}
-
-
-def test_eurlex_document_scraper_eurovoc_concepts(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2021)0270",
-        body=load_fixture("scrapers/data/votes/eurlex-document_p9-a-2021-0270.html"),
-    )
-
-    scraper = EurlexDocumentScraper(vote_id=136238, reference="A9-0270/2021")
-    fragment = scraper.run()
-
-    eurovoc_concepts = {
-        "189",
-        "341",
-        "4491",
-        "5158",
-        "538",
-        "6064",
-        "8439",
-        "933",
-    }
-    assert fragment.data["eurovoc_concepts"] == eurovoc_concepts
-
-
-def test_eurlex_document_scraper_geo_areas(responses):
-    responses.get(
-        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2023)0369",
-        body=load_fixture("scrapers/data/votes/eurlex-document_p9-a-2023-0369.html"),
-    )
-
-    scraper = EurlexDocumentScraper(vote_id=136238, reference="A9-0369/2023")
-    fragment = scraper.run()
-
-    assert fragment.data["eurovoc_concepts"] == {
-        "2300",
-        "6541",
-        "5540",
-        "1474",
-        "5649",
-        "210",
-        "2901",
-        "5640",
-        "8439",
-    }
-    assert fragment.data["geo_areas"] == {"MNE"}
-
-
 def test_document_scraper(responses):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/RC-10-2025-0249_EN.html",
@@ -669,3 +578,147 @@ def test_document_scraper(responses):
         "procedure_reference": "2025/2691(RSP)",
         "texts_adopted_reference": "P10_TA(2025)0096",
     }
+
+
+def test_odp_document_scraper(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/RC-10-2025-0249?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_rc-10-2025-0249.json"),
+    )
+
+    scraper = ODPDocumentScraper(vote_id=176309, reference="RC-B10-0249/2025")
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "odp_procedure_reference": "2025-2691",
+        "eurovoc_concepts": {
+            "3916",
+            "406",
+            "c_e78f03db",
+            "564",
+            "758",
+            "3919",
+            "5335",
+        },
+        "geo_areas": {
+            "RUS",
+            "UKR",
+        },
+    }
+
+
+def test_odp_document_scraper_no_procedure_reference(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/RC-9-2021-0068?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_rc-9-2021-0068.json"),
+    )
+
+    scraper = ODPDocumentScraper(vote_id=127182, reference="RC-B9-0068/2021")
+    fragment = scraper.run()
+
+    assert fragment.data["odp_procedure_reference"] is None
+
+
+def test_odp_procedure_scraper(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2025-2691?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2025-2691.json"),
+    )
+
+    scraper = ODPProcedureScraper(
+        vote_id=176309,
+        odp_procedure_reference="2025-2691",
+        date=datetime.date(2025, 5, 8),
+    )
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "procedure_reference": "2025/2691(RSP)",
+        "procedure_title": "Return of Ukrainian children forcibly transferred and deported by Russia",
+        "responsible_committees": set(),
+        "texts_adopted_reference": "P10_TA(2025)0096",
+    }
+
+
+def test_odp_procedure_scraper_responsible_committees(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2025-0581?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2025-0581.json"),
+    )
+
+    scraper = ODPProcedureScraper(
+        vote_id=193557,
+        odp_procedure_reference="2025-0581",
+        date=datetime.date(2026, 6, 17),
+    )
+    fragment = scraper.run()
+
+    assert fragment.data == {
+        "procedure_reference": "2025/0581(CNS)",
+        "procedure_title": "Amending Directive (EU) 2020/262 as regards the general arrangements for excise duty in respect of tobacco and tobacco related products",
+        "responsible_committees": {"ECON"},
+        "texts_adopted_reference": None,
+    }
+
+
+def test_odp_procedure_scraper_texts_adopted_multiple(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2025-0260?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2025-0260.json"),
+    )
+
+    scraper = ODPProcedureScraper(
+        vote_id=193516,
+        odp_procedure_reference="2025-0260",
+        date=datetime.date(2026, 6, 16),
+    )
+    assert scraper.run().data["texts_adopted_reference"] == "P10_TA(2026)0197"
+
+    scraper = ODPProcedureScraper(
+        vote_id=189596,
+        odp_procedure_reference="2025-0260",
+        date=datetime.date(2026, 3, 26),
+    )
+    assert scraper.run().data["texts_adopted_reference"] == "P10_TA(2026)0097"
+
+
+def test_odp_procedure_scraper_texts_adopted_missing(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2007-0181?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2007-0181.json"),
+    )
+
+    scraper = ODPProcedureScraper(
+        vote_id=115253,
+        odp_procedure_reference="2007-0181",
+        date=datetime.date(2020, 6, 17),
+    )
+    assert scraper.run().data["texts_adopted_reference"] is None
+
+
+def test_odp_procedure_scraper_participant_no_role(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2016-0132?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2016-0132.json"),
+    )
+
+    ODPProcedureScraper(
+        vote_id=166929,
+        odp_procedure_reference="2016-0132",
+        date=datetime.date(2024, 4, 10),
+    ).run()
+    # No assertion needed, just need to test that the scraper runs without errors
+
+
+def test_odp_procedure_scraper_malformed_activity(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2018-2070?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2018-2070.json"),
+    )
+
+    ODPProcedureScraper(
+        vote_id=125904,
+        odp_procedure_reference="2018-2070",
+        date=datetime.date(2020, 12, 16),
+    ).run()
+    # No assertion needed, just need to test that the scraper runs without errors

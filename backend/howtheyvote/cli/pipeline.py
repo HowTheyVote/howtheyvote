@@ -86,11 +86,20 @@ def all(
 @pipeline.command()
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
-def rcv_list(term: int, date: datetime.datetime) -> None:
+@click.option("--use-legacy-doceo-sources", is_flag=True)
+def rcv_list(
+    term: int,
+    date: datetime.datetime,
+    use_legacy_doceo_sources: bool = False,
+) -> None:
     """Run the RCV list pipeline for a given day. This scrapes the list of roll-call votes
     for the given day as well as additional sources for related legislative procedures or
     plenary documents."""
-    pipeline = RCVListPipeline(term=term, date=date.date())
+    pipeline = RCVListPipeline(
+        term=term,
+        date=date.date(),
+        use_legacy_doceo_sources=use_legacy_doceo_sources,
+    )
     pipeline.run()
 
 
