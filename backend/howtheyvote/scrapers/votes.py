@@ -802,6 +802,13 @@ class ODPProcedureScraper(JSONScraper):
 
     def _texts_adopted_reference(self, doc: Any) -> str | None:
         for item in doc["data"][0].get("consists_of", []):
+            if not isinstance(item, dict):
+                log.warning(
+                    "Malformed activity item",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
             if item["type"] != "Decision":
                 continue
 
