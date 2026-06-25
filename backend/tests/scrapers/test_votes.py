@@ -668,3 +668,17 @@ def test_odp_procedure_scraper_texts_adopted_multiple(responses):
         date=datetime.date(2026, 3, 26),
     )
     assert scraper.run().data["texts_adopted_reference"] == "P10_TA(2026)0097"
+
+
+def test_odp_procedure_scraper_texts_adopted_missing(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2007-0181?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2007-0181.json"),
+    )
+
+    scraper = ODPProcedureScraper(
+        vote_id=115253,
+        odp_procedure_reference="2007-0181",
+        date=datetime.date(2020, 6, 17),
+    )
+    assert scraper.run().data["texts_adopted_reference"] is None

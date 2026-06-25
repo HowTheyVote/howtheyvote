@@ -778,6 +778,13 @@ class ODPProcedureScraper(JSONScraper):
             if item["activity_date"] != self.date.isoformat():
                 continue
 
+            if "decided_on_a_realization_of" not in item:
+                log.warning(
+                    "Missing texts adopted reference for decision.",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
             for document in item["decided_on_a_realization_of"]:
                 match = self.TEXTS_ADOPTED_REFERENCE_REGEX.match(document)
 
