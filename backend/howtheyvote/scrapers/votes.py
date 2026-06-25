@@ -773,6 +773,13 @@ class ODPProcedureScraper(JSONScraper):
         committees: set[str] = set()
 
         for item in doc["data"][0].get("had_participation", []):
+            if "participation_role" not in item:
+                log.warning(
+                    "Procedure participant without role.",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
             if item["participation_role"] != "def/ep-roles/COMMITTEE_LEAD":
                 continue
 

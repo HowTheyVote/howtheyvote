@@ -682,3 +682,17 @@ def test_odp_procedure_scraper_texts_adopted_missing(responses):
         date=datetime.date(2020, 6, 17),
     )
     assert scraper.run().data["texts_adopted_reference"] is None
+
+
+def test_odp_procedure_scraper_participant_no_role(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/procedures/2016-0132?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-procedure_2016-0132.json"),
+    )
+
+    ODPProcedureScraper(
+        vote_id=166929,
+        odp_procedure_reference="2016-0132",
+        date=datetime.date(2024, 4, 10),
+    ).run()
+    # No assertion needed, just need to test that the scraper runs without errors
