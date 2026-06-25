@@ -647,6 +647,7 @@ class ODPDocumentScraper(JSONScraper):
         self._log.info(
             "Extracted document information",
             odp_procedure_reference=odp_procedure_reference,
+            geo_areas=geo_areas,
             eurovoc_concepts=eurovoc_concepts,
         )
 
