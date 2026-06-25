@@ -775,6 +775,13 @@ class ODPProcedureScraper(JSONScraper):
         committees: set[str] = set()
 
         for item in doc["data"][0].get("had_participation", []):
+            if not isinstance(item, dict):
+                log.warning(
+                    "Malformed participation item.",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
             if "participation_role" not in item:
                 log.warning(
                     "Procedure participant without role.",
