@@ -607,6 +607,18 @@ def test_odp_document_scraper(responses):
     }
 
 
+def test_odp_document_scraper_no_procedure_reference(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/RC-9-2021-0068?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_rc-9-2021-0068.json"),
+    )
+
+    scraper = ODPDocumentScraper(vote_id=127182, reference="RC-B9-0068/2021")
+    fragment = scraper.run()
+
+    assert fragment.data["odp_procedure_reference"] is None
+
+
 def test_odp_procedure_scraper(responses):
     responses.get(
         "https://data.europarl.europa.eu/api/v2/procedures/2025-2691?format=application/ld+json",
