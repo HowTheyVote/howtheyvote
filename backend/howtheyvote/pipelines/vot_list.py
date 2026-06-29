@@ -10,20 +10,22 @@ from ..models import PlenarySession, Vote
 from ..query import session_is_current_at
 from ..scrapers import NoWorkingUrlError, VOTListScraper
 from ..store import Aggregator, BulkWriter, index_records, map_vote
+from ..waf import solve_ep_aws_waf_challenge
 from .common import BasePipeline, DataUnavailable, generate_vote_sharepics
 
 log = get_logger(__name__)
 
 
 class VOTListPipeline(BasePipeline):
-    def __init__(self, term: int, date: datetime.date, aws_waf_token: str | None = None):
+    def __init__(self, term: int, date: datetime.date):
         super().__init__(term=term, date=date)
         self.term = term
         self.date = date
-        self.aws_waf_token = aws_waf_token
         self._vote_ids: set[str] = set()
 
     def _run(self) -> None:
+        self._aws_waf_token = solve_ep_aws_waf_challenge()
+
         self._scrape_vot_list()
         self._analyze_vote_groups()
         self._index_votes()
@@ -35,7 +37,7 @@ class VOTListPipeline(BasePipeline):
         scraper = VOTListScraper(
             term=self.term,
             date=self.date,
-            aws_waf_token=self.aws_waf_token,
+            aws_waf_token=self._aws_waf_token,
         )
 
         try:
