@@ -19,6 +19,10 @@ FILES_DIR = env.get("HTV_BACKEND_FILES_DIR", "/howtheyvote/files")
 REQUEST_TIMEOUT = 20
 REQUEST_SLEEP = 2.5
 
+# Headless Chromium
+CHROMIUM_HOST = "chromium"
+CHROMIUM_PORT = 9222
+
 # Misc
 CURRENT_TERM = 10
 TIMEZONE = "Europe/Brussels"
