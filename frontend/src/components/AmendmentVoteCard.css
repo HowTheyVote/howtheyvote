@@ -1,0 +1,5 @@
+.amendment-vote-card__action {
+  display: inline-flex;
+  gap: var(--space-xxs);
+  align-items: center;
+}
