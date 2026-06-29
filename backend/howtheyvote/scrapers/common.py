@@ -36,7 +36,7 @@ def get_url(
     request_cache: RequestCache | None = None,
     aws_waf_token: str | None = None,
     max_retries: int = 0,
-    timeout: int = config.REQUEST_TIMEOUT,
+    timeout: float = config.REQUEST_TIMEOUT,
 ) -> requests.Response | None:
     if isinstance(request_cache, Cache):
         if url in request_cache:
@@ -107,7 +107,7 @@ def get_url(
 
 class BaseScraper[T](ABC):
     REQUEST_MAX_RETRIES: int = 0
-    REQUEST_TIMEOUT: int = config.REQUEST_TIMEOUT
+    REQUEST_TIMEOUT: float = config.REQUEST_TIMEOUT
 
     def __init__(
         self,
