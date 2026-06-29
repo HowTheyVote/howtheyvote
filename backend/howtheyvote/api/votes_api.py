@@ -850,6 +850,7 @@ def _format_related(votes: Iterable[Vote]) -> list[RelatedVoteDict]:
                 "amendment_subject": vote.amendment_subject,
                 "amendment_number": vote.amendment_number,
                 "amendment_authors": authors,
+                "amendment_url": vote.amendment_url,
                 "result": vote.result,
             }
         )
