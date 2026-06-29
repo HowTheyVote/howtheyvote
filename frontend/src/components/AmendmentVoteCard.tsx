@@ -1,6 +1,9 @@
 import type { RelatedVote } from "../api";
 import Card from "./Card";
+import Icon from "./Icon";
 import Thumb from "./Thumb";
+
+import "./AmendmentVoteCard.css";
 
 type AmendmentVoteCardProps = {
   vote: RelatedVote;
@@ -61,10 +64,25 @@ export default function AmendmentVoteCard({ vote }: AmendmentVoteCardProps) {
 
   return (
     <Card
+      className="amendment-vote-card"
       title={title}
       meta={meta}
       link={`/votes/${vote.id}`}
+      clickable={false}
       thumb={vote.result && <Thumb style="circle" result={vote.result} />}
+      action={
+        vote.amendment_url && (
+          <a
+            class="amendment-vote-card__action"
+            href={vote.amendment_url}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <Icon name="external-link" />
+            View text
+          </a>
+        )
+      }
     />
   );
 }
