@@ -500,6 +500,11 @@ export type RelatedVote = {
      */
     amendment_authors?: Array<AmendmentAuthor>;
     /**
+     * Link to a PDF document containing the text of the amendment. The linked document
+     * may contain multiple amendments, not just the amendment the vote was about.
+     */
+    amendment_url?: string;
+    /**
      * Vote result. This field is only available for votes starting in 2024.
      */
     result?: 'ADOPTED' | 'REJECTED' | 'LAPSED' | 'WITHDRAWN';

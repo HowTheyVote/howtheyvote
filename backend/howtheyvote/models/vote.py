@@ -286,6 +286,7 @@ class Vote(BaseWithId):
     amendment_authors: Mapped[list[AmendmentAuthor] | None] = mapped_column(
         ListType(SAAmendmentAuthorType())
     )
+    amendment_url: Mapped[str | None] = mapped_column(sa.Unicode)
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     texts_adopted_reference: Mapped[str | None] = mapped_column(sa.Unicode)
