@@ -725,6 +725,8 @@ class ODPDocumentScraper(JSONScraper):
 
             return url
 
+        return None
+
     def _formatted_reference(self) -> str:
         ref = parse_reference(self.reference)
         number = str(ref["number"]).rjust(4, "0")
