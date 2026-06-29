@@ -351,6 +351,13 @@ class RelatedVoteDict(TypedDict):
     """Information regarding the authors of an amendment.
     This field is only available for votes starting in 2024"""
 
+    amendment_url: Annotated[
+        str | None,
+        "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-9-2023-0217-AM-057-057/A-9-2023-0217-AM-057-057_en.pdf",
+    ]
+    """Link to a PDF document containing the text of the amendment. The linked document
+    may contain multiple amendments, not just the amendment the vote was about."""
+
     result: VoteResult | None
     """Vote result. This field is only available for votes starting in 2024."""
 
