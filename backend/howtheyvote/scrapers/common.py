@@ -49,8 +49,8 @@ def get_url(
 
     for retry in range(0, max_retries + 1):
         try:
-            session = get_session(aws_waf_token)
-            response = session.get(url, timeout=timeout)
+            with get_session(aws_waf_token) as session:
+                response = session.get(url, timeout=timeout)
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
