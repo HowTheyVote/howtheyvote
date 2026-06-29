@@ -24,6 +24,10 @@ class NoWorkingUrlError(ScrapingError):
     pass
 
 
+class WAFChallengeError(ScrapingError):
+    pass
+
+
 RequestCache = Cache[str, Response | None]
 
 
@@ -73,8 +77,9 @@ def get_url(
                     took=response.elapsed.total_seconds(),
                     aws_waf_token=aws_waf_token,
                 )
-                # Do not retry, we would just get the same challenge again
-                return None
+                raise WAFChallengeError(
+                    "The request failed because the server responded with a WAF JS challenge."
+                )
 
             log.info(
                 "URL request succeeded",
