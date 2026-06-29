@@ -143,6 +143,10 @@ class VoteRow(TypedDict):
     """Number of the specific amendment if applicable.
     This field is only available for votes starting in 2024"""
 
+    amendment_url: str | None
+    """Link to a PDF document containing the text of the amendment. The linked document
+    may contain multiple amendments, not just the amendment the vote was about."""
+
     is_main: bool
     """Whether this vote is a main vote. We classify certain votes as main votes based on
     the text description in the voting records published by Parliament. For example, if
@@ -582,6 +586,7 @@ class Export:
                         "description": vote.description,
                         "amendment_subject": vote.amendment_subject,
                         "amendment_number": vote.amendment_number,
+                        "amendment_url": vote.amendment_url,
                         "is_main": vote.is_main,
                         "procedure_reference": vote.procedure_reference,
                         "procedure_title": vote.procedure_title,
