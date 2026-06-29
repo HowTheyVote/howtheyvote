@@ -1,5 +1,4 @@
 import html
-import ssl
 import time
 from abc import ABC, abstractmethod
 from typing import Any
@@ -8,11 +7,11 @@ import requests
 from bs4 import BeautifulSoup
 from cachetools import Cache
 from requests import RequestException, Response
-from requests.adapters import HTTPAdapter
 from structlog import get_logger
 
 from .. import config
 from ..models import BaseWithId, Fragment
+from ..waf import get_session
 
 log = get_logger(__name__)
 
@@ -26,61 +25,6 @@ class NoWorkingUrlError(ScrapingError):
 
 
 RequestCache = Cache[str, Response | None]
-
-
-class BrowserTLSAdapter(HTTPAdapter):
-    def __init__(self, ssl_context: ssl.SSLContext, **kwargs: Any) -> None:
-        self.ssl_context = ssl_context
-        super().__init__(**kwargs)
-
-    def init_poolmanager(self, *args: Any, **kwargs: Any) -> None:
-        kwargs["ssl_context"] = self.ssl_context
-        super().init_poolmanager(*args, **kwargs)
-
-    def proxy_manager_for(self, proxy: str, **proxy_kwargs: Any) -> Any:
-        proxy_kwargs["ssl_context"] = self.ssl_context
-        return super().proxy_manager_for(proxy, **proxy_kwargs)
-
-
-# Firefox 147 cipher suite
-# See: https://github.com/lexiforest/curl-impersonate/blob/main/patches/curl.patch
-FIREFOX_CIPHERS = ":".join(
-    [
-        "TLS_AES_128_GCM_SHA256",
-        "TLS_CHACHA20_POLY1305_SHA256",
-        "TLS_AES_256_GCM_SHA384",
-        "ECDHE-ECDSA-AES128-GCM-SHA256",
-        "ECDHE-RSA-AES128-GCM-SHA256",
-        "ECDHE-ECDSA-CHACHA20-POLY1305",
-        "ECDHE-RSA-CHACHA20-POLY1305",
-        "ECDHE-ECDSA-AES256-GCM-SHA384",
-        "ECDHE-RSA-AES256-GCM-SHA384",
-        "ECDHE-ECDSA-AES256-SHA",
-        "ECDHE-RSA-AES256-SHA",
-        "ECDHE-ECDSA-AES128-SHA",
-        "ECDHE-RSA-AES128-SHA",
-        "AES128-GCM-SHA256",
-        "AES256-GCM-SHA384",
-        "AES256-SHA",
-        "AES128-SHA",
-    ]
-)
-
-# Firefox 147 default request headers
-# See: https://github.com/lexiforest/curl-impersonate/blob/main/patches/curl.patch
-FIREFOX_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0",  # noqa: E501
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br, zstd",
-    "Upgrade-Insecure-Requests": "1",
-    "Sec-Fetch-Dest": "document",
-    "Sec-Fetch-Mode": "navigate",
-    "Sec-Fetch-Site": "none",
-    "Sec-Fetch-User": "?1",
-    "Priority": "u=0, i",
-    "Te": "trailers",
-}
 
 
 def get_url(
@@ -101,26 +45,8 @@ def get_url(
 
     for retry in range(0, max_retries + 1):
         try:
-            ctx = ssl.create_default_context()
-            ctx.minimum_version = ssl.TLSVersion.TLSv1_2
-            ctx.maximum_version = ssl.TLSVersion.TLSv1_3
-            ctx.set_ciphers(FIREFOX_CIPHERS)
-
-            # Firefox does not send a session ticket by default in private mode
-            ctx.options |= ssl.OP_NO_TICKET
-
-            ctx.set_alpn_protocols(["h2", "http/1.1"])
-
-            session = requests.Session()
-            session.mount("https://", BrowserTLSAdapter(ctx))
-
-            cookies = {"aws-waf-token": aws_waf_token} if aws_waf_token else None
-            response = session.get(
-                url,
-                headers=FIREFOX_HEADERS,
-                timeout=timeout,
-                cookies=cookies,
-            )
+            session = get_session(aws_waf_token)
+            response = session.get(url, timeout=timeout)
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
