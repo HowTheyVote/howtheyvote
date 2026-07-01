@@ -6,11 +6,11 @@
   "author": "Till Prochaska <mail@tillprochaska.de>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@sentry/node": "^10.56.0",
+    "@sentry/node": "^10.63.0",
     "@tinyhttp/app": "^2.4.0",
-    "isbot": "^5.1.40",
+    "isbot": "^5.1.44",
     "pino": "^10.3.1",
-    "preact": "^10.29.2",
+    "preact": "^10.29.3",
     "preact-render-to-string": "^6.7.0",
     "sirv": "^3.0.2"
   },
