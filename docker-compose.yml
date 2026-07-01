@@ -71,7 +71,7 @@ services:
       SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 
   caddy:
-    image: "caddy:2.11.3-alpine"
+    image: "caddy:2.11.4-alpine"
     volumes:
       - "caddy_data:/data"
       - "caddy_config:/config"
