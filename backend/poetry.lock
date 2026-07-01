@@ -1633,14 +1633,14 @@ sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
 name = "structlog"
-version = "25.5.0"
+version = "26.1.0"
 description = "Structured Logging for Python"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "structlog-25.5.0-py3-none-any.whl", hash = "sha256:a8453e9b9e636ec59bd9e79bbd4a72f025981b3ba0f5837aebf48f02f37a7f9f"},
-    {file = "structlog-25.5.0.tar.gz", hash = "sha256:098522a3bebed9153d4570c6d0288abf80a031dfdb2048d59a49e9dc2190fc98"},
+    {file = "structlog-26.1.0-py3-none-any.whl", hash = "sha256:e081a26d6c373e6d201eca24eede26d8ffab07f88f477822e679183428d3d91e"},
+    {file = "structlog-26.1.0.tar.gz", hash = "sha256:f63a716cbd1b1291cf7661de7794b455acfa4c43c5bcf1630e6ad5ddc1adb3b7"},
 ]
 
 [[package]]
@@ -1920,4 +1920,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "3fea5547e22378ce0a0b393ddb99925829fb1a9fd44e4686532bff20272a08ca"
+content-hash = "ec6cc69abb4f43ed01e9e17bd3e2608989ee933113c4c0f98f6ba3a8aadc819d"
