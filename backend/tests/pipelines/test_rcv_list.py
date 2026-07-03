@@ -16,6 +16,7 @@ from howtheyvote.models import (
     VotePosition,
 )
 from howtheyvote.pipelines import RCVListPipeline
+from howtheyvote.waf import WAFTokenError
 
 from ..helpers import load_fixture
 
@@ -171,3 +172,16 @@ def test_run_data_unchanged(responses, db_session, member, plenary_session, mock
 
     vote_ids = list(db_session.execute(select(Vote.id)).scalars())
     assert vote_ids == [168834, 168864]
+
+
+def test_run_waf_token_failed(mocker):
+    mocker.patch(
+        "howtheyvote.pipelines.rcv_list.solve_ep_aws_waf_challenge",
+        side_effect=WAFTokenError("Failed to obtain an AWS WAF token."),
+    )
+
+    pipe = RCVListPipeline(term=9, date=datetime.date(2024, 4, 24))
+
+    with pytest.raises(WAFTokenError):
+        # Pipeline fails loudly if we cannot acquire a WAF token
+        pipe.run()
