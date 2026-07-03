@@ -6,6 +6,7 @@ from collections.abc import Callable, Generator
 from concurrent.futures import Future
 from concurrent.futures import TimeoutError as FutureTimeoutError
 from contextlib import AbstractContextManager, contextmanager
+from itertools import count
 from typing import Any, TypedDict, cast
 
 import requests
@@ -60,7 +61,7 @@ class Session:
         self._ws = WebSocket()
         self._ws.settimeout(timeout)
         self._timeout = timeout
-        self._message_counter = 0
+        self._message_counter = count()
 
         self._waiting_for_result: dict[int, list[Future[ResultMessage]]] = defaultdict(list)
         self._waiting_for_event: dict[str, list[Future[EventMessage]]] = defaultdict(list)
@@ -158,7 +159,7 @@ class Session:
     def send(self, method: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         """Send a CDP command and wait for the result. The method blocks until the result
         has been received."""
-        message_id = self.generate_message_id()
+        message_id = next(self._message_counter)
 
         with self._wait_for_result(message_id) as wait:
             payload = {
@@ -180,11 +181,6 @@ class Session:
         the context manager before sending the command that triggers the event. Otherwise the
         event could be received (and discarded) before waiting for it."""
         return self._wait_for_event(event)
-
-    def generate_message_id(self) -> int:
-        message_id = self._message_counter
-        self._message_counter += 1
-        return message_id
 
 
 class Client:
