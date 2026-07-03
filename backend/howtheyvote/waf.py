@@ -1,5 +1,4 @@
 import ssl
-from concurrent.futures import ThreadPoolExecutor
 from typing import Any, cast
 
 import requests
@@ -133,13 +132,16 @@ def solve_aws_waf_challenge(url: str) -> str:
 
         session.send("Page.enable")
 
-        with ThreadPoolExecutor() as executor:
-            # After the JS challenge has been solved, a cookie is set and a navigation to
-            # the originally requested URL occurs.
-            executor.submit(session.wait_event, "Page.frameNavigated")
-            # Only navigate after waiting for the navigation event. Otherwise the navigation
-            # event might occur before we wait for it.
-            executor.submit(session.send, "Page.navigate", {"url": url})
+        # Navigate to the URL that triggers the JS challenge. This emits a first navigation
+        # challenge. Once the JS challenge has been solved, a redirect happens and the token
+        # cookie gets set. This emits a second navigation event.
+        with (
+            session.expect_event("Page.frameNavigated") as wait_1,
+            session.expect_event("Page.frameNavigated") as wait_2,
+        ):
+            session.send("Page.navigate", {"url": url})
+            wait_1()
+            wait_2()
 
         response = session.send("Network.getCookies")
 

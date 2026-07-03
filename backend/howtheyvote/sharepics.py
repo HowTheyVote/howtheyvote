@@ -43,8 +43,10 @@ def capture_screenshot(url: str) -> bytes:
             },
         )
         session.send("Page.enable")
-        session.send("Page.navigate", {"url": url, "format": "png"})
-        session.wait_event("Page.loadEventFired")
-        res = session.send("Page.captureScreenshot")
 
+        with session.expect_event("Page.loadEventFired") as wait:
+            session.send("Page.navigate", {"url": url, "format": "png"})
+            wait()
+
+        res = session.send("Page.captureScreenshot")
         return base64.b64decode(res["data"])
