@@ -3,6 +3,7 @@ from .common import Base, BaseWithId, Fragment, PipelineRun, PipelineStatus
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
+from .national_parties import NationalParty
 from .member import (
     GroupMembership,
     Member,
@@ -51,6 +52,7 @@ __all__ = [
     "EurovocConceptType",
     "OEILSubject",
     "OEILSubjectType",
+    "NationalParty",
     "Topic",
     "TopicType",
     "OEILSummary",
