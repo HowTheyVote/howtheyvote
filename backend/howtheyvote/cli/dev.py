@@ -1,13 +1,15 @@
 import csv
 import datetime
+import io
 from typing import Any, NotRequired, TextIO, TypedDict
+from urllib import response
 
 import click
 import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Committee, Country, EurovocConcept, Group, OEILSubject
+from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
 
 log = get_logger(__name__)
 
@@ -529,6 +531,43 @@ def load_oeil_subjects(file: TextIO) -> None:
         )
 
     subjects.save()
+
+
+@dev.command()
+def load_national_parties() -> None:
+    """Loads a list of national parties as published by the EP Open Data Portal."""
+    parties = DataclassContainer(
+        dataclass=NationalParty,
+        file_path=DATA_DIR.joinpath("national_parties.json"),
+        key_attr="id",
+    )
+
+    meta_url = "https://data.europarl.europa.eu/OdpDatasetService/Datasets/corporate-bodies-of-the-european-parliament"
+    meta_data = requests.get(meta_url).json()
+    latest_version = len(meta_data["odpDatasetVersions"])
+
+    data_url = f"https://data.europarl.europa.eu/distribution/corporate-bodies_{latest_version}_en.csv"
+    response = requests.get(data_url)
+    csv_file = csv.DictReader(io.StringIO(response.text))
+    
+    for line in csv_file:
+                    
+        if line["corporate_body_classification_label"] != "National political group":
+            continue
+
+        parties.add(
+            NationalParty(
+                id=line["corporate_body_identifier"],
+                short_label=line["corporate_body_label"],
+                label=line["corporate_body_preferred_label"],
+                alt_label=line["corporate_body_alternative_label"] if line["corporate_body_alternative_label"] else None,
+                start_date=line["corporate_body_start_date"][:10],
+                end_date=line["corporate_body_end_date"][:10] if line["corporate_body_end_date"] else None,
+                country_code=Country.from_label(line["corporate_body_represents"]).code  
+            )
+        )
+
+    parties.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:
