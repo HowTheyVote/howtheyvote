@@ -27,6 +27,7 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..store import Aggregator, BulkWriter, index_records, map_vote
+from ..waf import solve_ep_aws_waf_challenge
 from .common import (
     BasePipeline,
     DataUnavailable,
@@ -49,7 +50,11 @@ class RCVListPipeline(BasePipeline):
         date: datetime.date,
         last_run_checksum: str | None = None,
     ):
-        super().__init__(term=term, date=date, last_run_checksum=last_run_checksum)
+        super().__init__(
+            term=term,
+            date=date,
+            last_run_checksum=last_run_checksum,
+        )
         self.term = term
         self.date = date
         self.last_run_checksum = last_run_checksum
@@ -59,11 +64,17 @@ class RCVListPipeline(BasePipeline):
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
     def _run(self) -> None:
+        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
+
+        # Temporarily disable EUR-Lex scrapers
+        # self._eurlex_aws_waf_token = solve_eurlex_aws_waf_challenge()
+        self._eurlex_aws_waf_token = None
+
         self._scrape_rcv_list()
         self._scrape_documents()
-        self._scrape_eurlex_documents()
+        # self._scrape_eurlex_documents()
         self._scrape_procedures()
-        self._scrape_eurlex_procedures()
+        # self._scrape_eurlex_procedures()
         self._analyze_main_votes()
         self._analyze_topics()
         self._analyze_vote_groups()
@@ -99,6 +110,7 @@ class RCVListPipeline(BasePipeline):
             term=self.term,
             date=self.date,
             active_members=active_members,
+            aws_waf_token=self._ep_aws_waf_token,
         )
 
         try:
@@ -143,6 +155,7 @@ class RCVListPipeline(BasePipeline):
                 vote_id=vote.id,
                 reference=vote.reference,
                 request_cache=self._request_cache,
+                aws_waf_token=self._ep_aws_waf_token,
             )
 
             try:
@@ -175,6 +188,7 @@ class RCVListPipeline(BasePipeline):
                 vote_id=vote.id,
                 reference=vote.reference,
                 request_cache=self._request_cache,
+                aws_waf_token=self._eurlex_aws_waf_token,
             )
 
             try:
@@ -209,6 +223,7 @@ class RCVListPipeline(BasePipeline):
                 procedure_reference=vote.procedure_reference,
                 reference=vote.reference,
                 request_cache=self._request_cache,
+                aws_waf_token=self._ep_aws_waf_token,
             )
 
             try:
@@ -239,6 +254,7 @@ class RCVListPipeline(BasePipeline):
                 vote_id=vote.id,
                 procedure_reference=vote.procedure_reference,
                 request_cache=self._request_cache,
+                aws_waf_token=self._eurlex_aws_waf_token,
             )
 
             try:

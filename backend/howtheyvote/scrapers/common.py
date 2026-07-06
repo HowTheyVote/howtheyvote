@@ -1,5 +1,4 @@
 import html
-import random
 import time
 from abc import ABC, abstractmethod
 from typing import Any
@@ -12,14 +11,9 @@ from structlog import get_logger
 
 from .. import config
 from ..models import BaseWithId, Fragment
+from ..waf import get_session
 
 log = get_logger(__name__)
-
-USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",  # noqa: E501
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1 Safari/605.1.15",  # noqa: E501
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0",  # noqa: E501
-]
 
 
 class ScrapingError(Exception):
@@ -30,15 +24,19 @@ class NoWorkingUrlError(ScrapingError):
     pass
 
 
+class WAFChallengeError(ScrapingError):
+    pass
+
+
 RequestCache = Cache[str, Response | None]
 
 
 def get_url(
     url: str,
-    headers: dict[str, str],
     request_cache: RequestCache | None = None,
+    aws_waf_token: str | None = None,
     max_retries: int = 0,
-    timeout: int = config.REQUEST_TIMEOUT,
+    timeout: float = config.REQUEST_TIMEOUT,
 ) -> requests.Response | None:
     if isinstance(request_cache, Cache):
         if url in request_cache:
@@ -51,30 +49,47 @@ def get_url(
 
     for retry in range(0, max_retries + 1):
         try:
-            response = requests.get(url, headers=headers, timeout=timeout)
+            with get_session(aws_waf_token) as session:
+                response = session.get(url, timeout=timeout)
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
 
-            if response.ok:
-                log.info(
-                    "URL request succeeded",
+            if not response.ok:
+                log.warning(
+                    "URL request failed",
                     url=url,
                     retry=retry,
                     max_retries=max_retries,
                     status=response.status_code,
                     took=response.elapsed.total_seconds(),
                 )
-                break
+                # Retry in case it's just a temporary issue
+                continue
 
-            log.warning(
-                "URL request failed",
+            if response.headers.get("x-amzn-waf-action") == "challenge":
+                log.error(
+                    "Encountered AWS WAF JavaScript challenge",
+                    url=url,
+                    retry=retry,
+                    max_retries=max_retries,
+                    status=response.status_code,
+                    took=response.elapsed.total_seconds(),
+                    aws_waf_token=aws_waf_token,
+                )
+                raise WAFChallengeError(
+                    "The request failed because the server responded with a WAF JS challenge."
+                )
+
+            log.info(
+                "URL request succeeded",
                 url=url,
                 retry=retry,
                 max_retries=max_retries,
                 status=response.status_code,
                 took=response.elapsed.total_seconds(),
             )
+            break
         except RequestException:
             log.warning(
                 "URL request failed",
@@ -92,10 +107,16 @@ def get_url(
 
 class BaseScraper[T](ABC):
     REQUEST_MAX_RETRIES: int = 0
-    REQUEST_TIMEOUT: int = config.REQUEST_TIMEOUT
+    REQUEST_TIMEOUT: float = config.REQUEST_TIMEOUT
 
-    def __init__(self, request_cache: RequestCache | None = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         self._request_cache = request_cache
+        self._aws_waf_token = aws_waf_token
         self._log = log.bind(scraper=type(self).__name__, **kwargs)
 
     def run(self) -> Any:
@@ -134,17 +155,16 @@ class BaseScraper[T](ABC):
 
     def _fetch(self) -> Response:
         urls = self._url()
-        headers = self._headers()
 
         if isinstance(urls, str):
             urls = [urls]
 
         for url in urls:
-            self._log.info("Loading source", url=url, user_agent=headers["user-agent"])
+            self._log.info("Loading source", url=url)
             response = get_url(
                 url=url,
-                headers=headers,
                 request_cache=self._request_cache,
+                aws_waf_token=self._aws_waf_token,
                 max_retries=self.REQUEST_MAX_RETRIES,
                 timeout=self.REQUEST_TIMEOUT,
             )
@@ -156,13 +176,6 @@ class BaseScraper[T](ABC):
 
         self._log.error("No working URL found.", urls=urls)
         raise NoWorkingUrlError("No working URL found.")
-
-    def _headers(self) -> dict[str, str]:
-        return {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "accept-language": "en-us",
-            "user-agent": random.choice(USER_AGENTS),
-        }
 
 
 class BeautifulSoupScraper(BaseScraper[BeautifulSoup]):

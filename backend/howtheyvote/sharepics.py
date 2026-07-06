@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 
 from structlog import get_logger
 
-from .. import config
+from . import config
 from .cdp import Client
 
 log = get_logger(__name__)
@@ -26,7 +26,11 @@ def capture_screenshot(url: str) -> bytes:
     and writes the resulting PNG file to `path`."""
     log.info("Capturing screenshot", url=url)
 
-    client = Client(host="chromium", port=9222, timeout=5)
+    client = Client(
+        host=config.CHROMIUM_HOST,
+        port=config.CHROMIUM_PORT,
+        timeout=5,
+    )
 
     with client.connect() as session:
         session.send(
@@ -39,8 +43,10 @@ def capture_screenshot(url: str) -> bytes:
             },
         )
         session.send("Page.enable")
-        session.send("Page.navigate", {"url": url, "format": "png"})
-        session.wait_event("Page.loadEventFired")
-        res = session.send("Page.captureScreenshot")
 
+        with session.expect_event("Page.loadEventFired") as wait:
+            session.send("Page.navigate", {"url": url, "format": "png"})
+            wait()
+
+        res = session.send("Page.captureScreenshot")
         return base64.b64decode(res["data"])

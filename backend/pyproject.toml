@@ -51,6 +51,7 @@ time-machine = "^3.2.0"
 types-tabulate = "^0.10.0.20260508"
 pytest-mock = "^3.15.1"
 types-pytz = "^2026.2.0.20260518"
+typing-extensions = "^4.16.0"
 
 [tool.ruff]
 line-length = 95
@@ -72,6 +73,8 @@ env = [
     "HTV_BACKEND_PUBLIC_URL=https://example.org/api",
     "HTV_SEARCH_INDEX_PREFIX=test",
     "HTV_ENV=test",
+    "HTV_BACKEND_REQUEST_TIMEOUT=0.5",
+    "HTV_BACKEND_REQUEST_SLEEP=0",
     # Disable pushover notifications in test env even when an API token and user key
     # is configured in development environment
     "PUSHOVER_API_TOKEN=",
