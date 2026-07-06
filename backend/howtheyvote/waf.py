@@ -105,10 +105,6 @@ def solve_ep_aws_waf_challenge() -> str:
     )
 
 
-def solve_eurlex_aws_waf_challenge() -> str:
-    return solve_aws_waf_challenge("https://eur-lex.europa.eu/homepage.html?locale=en")
-
-
 def solve_aws_waf_challenge(url: str) -> str:
     """Requests the given URL using headless Chromium, waits until the automatic JS challenge
     is completed, and returns the AWS WAF token."""

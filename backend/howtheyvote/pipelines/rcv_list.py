@@ -68,10 +68,6 @@ class RCVListPipeline(BasePipeline):
     def _run(self) -> None:
         self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
 
-        # Temporarily disable EUR-Lex scrapers
-        # self._eurlex_aws_waf_token = solve_eurlex_aws_waf_challenge()
-        self._eurlex_aws_waf_token = None
-
         self._scrape_rcv_list()
 
         if self.use_legacy_doceo_sources:
