@@ -127,6 +127,13 @@ def solve_aws_waf_challenge(url: str, timeout: int = 10) -> str:
             },
         )
 
+        # By default, Chromium stores cookies set, including any WAF token cookies set
+        # previously. After all, that’s what cookies are for! It would be nice to reuse
+        # the token in case the cookie is already set. However, the token stored in the
+        # cookie might have expired, so we’d need to also handle that. Instead,  we
+        # simply delete all cookies, which guarantees we’ll get a fresh token.
+        session.send("Network.clearBrowserCookies")
+
         session.send("Page.enable")
         session.send("Page.navigate", {"url": url})
 
