@@ -1,4 +1,5 @@
 import ssl
+import time
 from typing import Any, cast
 
 import requests
@@ -105,13 +106,13 @@ def solve_ep_aws_waf_challenge() -> str:
     )
 
 
-def solve_aws_waf_challenge(url: str) -> str:
+def solve_aws_waf_challenge(url: str, timeout: int = 10) -> str:
     """Requests the given URL using headless Chromium, waits until the automatic JS challenge
     is completed, and returns the AWS WAF token."""
     client = Client(
         host=config.CHROMIUM_HOST,
         port=config.CHROMIUM_PORT,
-        timeout=10,
+        timeout=timeout,
     )
 
     with client.connect() as session:
@@ -127,60 +128,33 @@ def solve_aws_waf_challenge(url: str) -> str:
         )
 
         session.send("Page.enable")
+        session.send("Page.navigate", {"url": url})
 
-        # Navigate to the URL that triggers the JS challenge. This emits a first navigation
-        # challenge. Once the JS challenge has been solved, a redirect happens and the token
-        # cookie gets set. This emits a second navigation event.
-        with (
-            session.expect_event("Page.frameNavigated") as wait_1,
-            session.expect_event("Page.frameNavigated") as wait_2,
-        ):
-            session.send("Page.navigate", {"url": url})
-            wait_1()
+        # Poll cookies for the current page until the WAF token cookie has been set
+        # or the timeout expires.
+        deadline = time.monotonic() + timeout
 
-            # Sometimes, we retrieve a WAF token without solving a challenge, so we first
-            # need to check whether we’re actually presented with a challenge page. To do
-            # this, we check the contents of the main heading.
-            heading = session.send(
-                "Runtime.evaluate",
-                {
-                    "expression": 'document.querySelector("h1")?.innerText',
-                    "returnByValue": True,
-                },
-            )
+        while time.monotonic() < deadline:
+            response = session.send("Network.getCookies")
 
-            if heading["result"].get("value", "").strip() == "JavaScript is disabled":
-                # We retrieved a JS challenge and need to wait for a redirect before we
-                # can extract the token from cookies.
-                log.info("Waiting for redirect after AWS WAF JS challenge.")
-                wait_2()
-            else:
-                # Otherwise, we have been granted acess without solving a challenge.
-                # This means we don’t have to wait for a redirect before extracting the
-                # token from cookies.
-                log.info(
-                    "Did not receive AWS WAF challenge page. "
-                    "Trying to extract cookie from current page."
-                )
+            for cookie in response["cookies"]:
+                if cookie["name"] == "aws-waf-token":
+                    log.info(
+                        "Obtained AWS WAF token",
+                        aws_waf_token=cookie["value"],
+                        domain=cookie["domain"],
+                    )
+                    sentry_sdk.metrics.count(
+                        "waf_challenges",
+                        1,
+                        attributes={
+                            "status": "success",
+                            "url": url,
+                        },
+                    )
+                    return cast(str, cookie["value"])
 
-        response = session.send("Network.getCookies")
-
-    for cookie in response["cookies"]:
-        if cookie["name"] == "aws-waf-token":
-            log.info(
-                "Obtained AWS WAF token",
-                aws_waf_token=cookie["value"],
-                domain=cookie["domain"],
-            )
-            sentry_sdk.metrics.count(
-                "waf_challenges",
-                1,
-                attributes={
-                    "status": "success",
-                    "url": url,
-                },
-            )
-            return cast(str, cookie["value"])
+        time.sleep(0.1)
 
     sentry_sdk.metrics.count(
         "waf_challenges",
