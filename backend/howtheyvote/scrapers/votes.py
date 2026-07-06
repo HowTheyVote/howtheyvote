@@ -1,15 +1,14 @@
 import re
 from collections.abc import Iterator
 from datetime import date, datetime
-from typing import cast
-from urllib.parse import parse_qs, urlparse
+from typing import Any, cast
 
 import pytz
 from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
 from .. import config
-from ..helpers import parse_procedure_reference, parse_reference
+from ..helpers import parse_reference
 from ..models import (
     AmendmentAuthor,
     Committee,
@@ -24,7 +23,13 @@ from ..models import (
     VoteResultType,
     serialize_amendment_author,
 )
-from .common import BeautifulSoupScraper, NoWorkingUrlError, RequestCache, ScrapingError
+from .common import (
+    BeautifulSoupScraper,
+    JSONScraper,
+    NoWorkingUrlError,
+    RequestCache,
+    ScrapingError,
+)
 from .helpers import (
     fill_missing_by_reference,
     fix_spelling_edge_cases,
@@ -635,6 +640,206 @@ class DocumentScraper(BeautifulSoupScraper):
         return texts_adopted_link.get_text(strip=True)
 
 
+class ODPDocumentScraper(JSONScraper):
+    BASE_URL = "https://data.europarl.europa.eu/api/v2/plenary-documents"
+    EUROVOC_URL_REGEX = re.compile(r"^http://eurovoc\.europa\.eu/([^/]+)$")
+    PROCEDURE_ID_REGEX = re.compile(r"^eli/dl/proc/([^/]+)$")
+
+    def __init__(
+        self,
+        vote_id: int,
+        reference: str,
+        request_cache: RequestCache | None = None,
+    ):
+        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
+        self.vote_id = vote_id
+        self.reference = reference
+
+    def _url(self) -> str:
+        ref = parse_reference(self.reference)
+        number = str(ref["number"]).rjust(4, "0")
+        formatted_ref = f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
+        return f"{self.BASE_URL}/{formatted_ref}?format=application/ld+json"
+
+    def _extract_data(self, doc: Any) -> Fragment:
+        odp_procedure_reference = self._odp_procedure_reference(doc)
+        eurovoc_concepts, geo_areas = self._eurovoc_concepts(doc)
+
+        self._log.info(
+            "Extracted document information",
+            odp_procedure_reference=odp_procedure_reference,
+            geo_areas=geo_areas,
+            eurovoc_concepts=eurovoc_concepts,
+        )
+
+        return self._fragment(
+            model=Vote,
+            source_id=self.vote_id,
+            group_key=self.vote_id,
+            data={
+                "odp_procedure_reference": odp_procedure_reference,
+                "eurovoc_concepts": eurovoc_concepts,
+                "geo_areas": geo_areas,
+            },
+        )
+
+    def _odp_procedure_reference(self, doc: Any) -> str | None:
+        procedures = doc["data"][0].get("inverse_created_a_realization_of", [])
+
+        if not procedures:
+            log.warning("Document without procedure reference.", reference=self.reference)
+            return None
+
+        match = self.PROCEDURE_ID_REGEX.match(procedures[0])
+
+        if not match:
+            raise ScrapingError(f"Unrecognized procedure ID format: {procedures[0]}")
+
+        return match.group(1)
+
+    def _eurovoc_concepts(self, doc: Any) -> tuple[set[str], set[str]]:
+        concepts: set[str] = set()
+        geo_areas: set[str] = set()
+
+        for concept_url in doc["data"][0].get("is_about", []):
+            match = self.EUROVOC_URL_REGEX.match(concept_url)
+
+            if not match:
+                raise ScrapingError(f"Unrecognized Eurovoc URL: {concept_url}")
+
+            concept = EurovocConcept.get(match.group(1))
+
+            if not concept:
+                continue
+
+            if concept.geo_area_code:
+                geo_areas.add(concept.geo_area_code)
+            else:
+                concepts.add(concept.id)
+
+        return concepts, geo_areas
+
+
+class ODPProcedureScraper(JSONScraper):
+    BASE_URL = "https://data.europarl.europa.eu/api/v2/procedures"
+    COMMITTEE_CODE_REGEX = re.compile(r"^org/([^/]+)$")
+    TEXTS_ADOPTED_REFERENCE_REGEX = re.compile(r"^eli/dl/doc/TA-(\d+)-(\d{4})-(\d{4})$")
+
+    def __init__(
+        self,
+        vote_id: int,
+        odp_procedure_reference: str,
+        date: date,
+        request_cache: RequestCache | None = None,
+    ):
+        super().__init__(
+            vote_id=vote_id,
+            odp_procedure_reference=odp_procedure_reference,
+            date=date,
+            request_cache=request_cache,
+        )
+        self.vote_id = vote_id
+        self.date = date
+        self.odp_procedure_reference = odp_procedure_reference
+
+    def _url(self) -> str:
+        return f"{self.BASE_URL}/{self.odp_procedure_reference}?format=application/ld+json"
+
+    def _extract_data(self, doc: Any) -> Fragment:
+        procedure_reference = doc["data"][0]["label"]
+        procedure_title = doc["data"][0]["process_title"]["en"]
+        responsible_committees = self._responsible_committees(doc)
+        texts_adopted_reference = self._texts_adopted_reference(doc)
+
+        self._log.info(
+            "Extracted procedure information",
+            procedure_reference=procedure_reference,
+            procedure_title=procedure_title,
+            responsible_committees=responsible_committees,
+            texts_adopted_reference=texts_adopted_reference,
+        )
+
+        return self._fragment(
+            model=Vote,
+            source_id=self.vote_id,
+            group_key=self.vote_id,
+            data={
+                "procedure_reference": procedure_reference,
+                "procedure_title": procedure_title,
+                "responsible_committees": responsible_committees,
+                "texts_adopted_reference": texts_adopted_reference,
+            },
+        )
+
+    def _responsible_committees(self, doc: Any) -> set[str]:
+        committees: set[str] = set()
+
+        for item in doc["data"][0].get("had_participation", []):
+            if not isinstance(item, dict):
+                log.warning(
+                    "Malformed participation item.",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
+            if "participation_role" not in item:
+                log.warning(
+                    "Procedure participant without role.",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
+            if item["participation_role"] != "def/ep-roles/COMMITTEE_LEAD":
+                continue
+
+            for organization in item["had_participant_organization"]:
+                match = self.COMMITTEE_CODE_REGEX.match(organization)
+
+                if not match:
+                    continue
+
+                committee = Committee.get(match.group(1))
+
+                if not committee:
+                    continue
+
+                committees.add(committee.code)
+
+        return committees
+
+    def _texts_adopted_reference(self, doc: Any) -> str | None:
+        for item in doc["data"][0].get("consists_of", []):
+            if not isinstance(item, dict):
+                log.warning(
+                    "Malformed activity item",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
+            if item["type"] != "Decision":
+                continue
+
+            if item["activity_date"] != self.date.isoformat():
+                continue
+
+            if "decided_on_a_realization_of" not in item:
+                log.warning(
+                    "Missing texts adopted reference for decision.",
+                    odp_procedure_reference=self.odp_procedure_reference,
+                )
+                continue
+
+            for document in item["decided_on_a_realization_of"]:
+                match = self.TEXTS_ADOPTED_REFERENCE_REGEX.match(document)
+
+                if not match:
+                    continue
+
+                return f"P{match.group(1)}_TA({match.group(2)}){match.group(3)}"
+
+        return None
+
+
 class ProcedureScraper(BeautifulSoupScraper):
     BS_PARSER = "lxml"
     BASE_URL = "https://oeil.europarl.europa.eu/oeil/en/procedure-file"
@@ -785,163 +990,3 @@ class ProcedureScraper(BeautifulSoupScraper):
             committees.add(committee.code)
 
         return committees
-
-
-class EurlexProcedureScraper(BeautifulSoupScraper):
-    """Scrapes EuroVoc concepts from the procedure page on EUR-Lex. EuroVoc is thesaurus
-    maintained by the EU Publications Office. Most interinstitutional procedures are assigned
-    multiple EuroVoc concepts (i.e. tags) that we can use to improve search recall or to
-    fetch related votes. In theory, it should also be possible to fetch these via a SPARQL
-    endpoint. However, I wasn’t able to come up with a query that reliably returned EuroVoc
-    concepts that were consitent with what’s displayed on EUR-Lex."""
-
-    BS_PARSER = "lxml"
-    BASE_URL = "https://eur-lex.europa.eu/procedure/EN"
-    EUROVOC_URL_REGEX = re.compile(r"LP_DC_CODED=")
-
-    def __init__(
-        self,
-        vote_id: int,
-        procedure_reference: str,
-        request_cache: RequestCache | None = None,
-        aws_waf_token: str | None = None,
-    ):
-        super().__init__(
-            vote_id=vote_id,
-            procedure_reference=procedure_reference,
-            request_cache=request_cache,
-            aws_waf_token=aws_waf_token,
-        )
-        self.vote_id = vote_id
-        self.procedure_reference = procedure_reference
-
-    def _url(self) -> str:
-        ref = parse_procedure_reference(self.procedure_reference)
-
-        # EUR-Lex URLs have the format `https://eur-lex.europa.eu/procedure/2021_160` whereas
-        # the procedure reference is usually formatted with leading zeros: `2021/0160(COD)`.
-        number = ref["number"].lstrip("0")
-
-        return f"{self.BASE_URL}/{ref['year']}_{number}"
-
-    def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
-        container = doc.select_one("#eurovocProc")
-
-        if not container:
-            return None
-
-        eurovoc_concepts: set[str] = set()
-        geo_areas: set[str] = set()
-        links = container.find_all("a", href=self.EUROVOC_URL_REGEX)
-
-        for link in links:
-            url = urlparse(link["href"])
-            query = parse_qs(url.query)
-            eurovoc_id = query.get("LP_DC_CODED")
-
-            if not eurovoc_id:
-                continue
-
-            eurovoc_concept = EurovocConcept.get(eurovoc_id[0])
-
-            if not eurovoc_concept:
-                continue
-
-            if eurovoc_concept.geo_area:
-                geo_areas.add(eurovoc_concept.geo_area.code)
-            else:
-                eurovoc_concepts.add(eurovoc_concept.id)
-
-        self._log.info(
-            "Extracted EurLex procedure information",
-            eurovoc_terms=eurovoc_concepts,
-            geo_areas=geo_areas,
-        )
-
-        return self._fragment(
-            model=Vote,
-            source_id=self.vote_id,
-            group_key=self.vote_id,
-            data={
-                "eurovoc_concepts": eurovoc_concepts,
-                "geo_areas": geo_areas,
-            },
-        )
-
-
-class EurlexDocumentScraper(BeautifulSoupScraper):
-    """Scrapes EuroVoc concepts from the document page on EUR-Lex. This scraper is very
-    similar to and complements the `EurlexDocumentScraper`. In some cases, the procedure
-    page on EUR-Lex doesn’t include any EuroVoc concepts, but the document page does."""
-
-    BS_PARSER = "lxml"
-    BASE_URL = "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:"
-    EUROVOC_URL_REGEX = re.compile(r"DC_CODED=")
-
-    def __init__(
-        self,
-        vote_id: int,
-        reference: str,
-        request_cache: RequestCache | None = None,
-        aws_waf_token: str | None = None,
-    ):
-        super().__init__(
-            vote_id=vote_id,
-            reference=reference,
-            request_cache=request_cache,
-            aws_waf_token=aws_waf_token,
-        )
-        self.vote_id = vote_id
-        self.reference = reference
-
-    def _url(self) -> str:
-        ref = parse_reference(self.reference)
-        number = str(ref["number"]).rjust(4, "0")
-
-        # EUR-Lex URLs have the format `https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=EP:P9_A(2021)0270`
-        # whereas the reference is usually formatted like this: `A9-0270/2021`.
-        return f"{self.BASE_URL}P{ref['term']}_{ref['type'].value}({ref['year']}){number}"
-
-    def _extract_data(self, doc: BeautifulSoup) -> Fragment | None:
-        container = doc.select_one("#PPClass_Contents")
-
-        if not container:
-            return None
-
-        eurovoc_concepts: set[str] = set()
-        geo_areas: set[str] = set()
-        links = container.find_all("a", href=self.EUROVOC_URL_REGEX)
-
-        for link in links:
-            url = urlparse(link["href"])
-            query = parse_qs(url.query)
-            eurovoc_id = query.get("DC_CODED")
-
-            if not eurovoc_id:
-                continue
-
-            eurovoc_concept = EurovocConcept.get(eurovoc_id[0])
-
-            if not eurovoc_concept:
-                continue
-
-            if eurovoc_concept.geo_area:
-                geo_areas.add(eurovoc_concept.geo_area.code)
-            else:
-                eurovoc_concepts.add(eurovoc_concept.id)
-
-        self._log.info(
-            "Extracted EurLex document information",
-            eurovoc_terms=eurovoc_concepts,
-            geo_areas=geo_areas,
-        )
-
-        return self._fragment(
-            model=Vote,
-            source_id=self.vote_id,
-            group_key=self.vote_id,
-            data={
-                "eurovoc_concepts": eurovoc_concepts,
-                "geo_areas": geo_areas,
-            },
-        )
