@@ -137,7 +137,31 @@ def solve_aws_waf_challenge(url: str) -> str:
         ):
             session.send("Page.navigate", {"url": url})
             wait_1()
-            wait_2()
+
+            # Sometimes, we retrieve a WAF token without solving a challenge, so we first
+            # need to check whether we’re actually presented with a challenge page. To do
+            # this, we check the contents of the main heading.
+            heading = session.send(
+                "Runtime.evaluate",
+                {
+                    "expression": 'document.querySelector("h1")?.innerText',
+                    "returnByValue": True,
+                },
+            )
+
+            if heading["result"].get("value", "").strip() == "JavaScript is disabled":
+                # We retrieved a JS challenge and need to wait for a redirect before we
+                # can extract the token from cookies.
+                log.info("Waiting for redirect after AWS WAF JS challenge.")
+                wait_2()
+            else:
+                # Otherwise, we have been granted acess without solving a challenge.
+                # This means we don’t have to wait for a redirect before extracting the
+                # token from cookies.
+                log.info(
+                    "Did not receive AWS WAF challenge page. "
+                    "Trying to extract cookie from current page."
+                )
 
         response = session.send("Network.getCookies")
 
