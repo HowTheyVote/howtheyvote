@@ -902,6 +902,15 @@ def _format_links(vote: Vote) -> list[LinkDict]:
             }
         )
 
+    if vote.amendment_url:
+        links.append(
+            {
+                "title": "Amendment",
+                "description": "Text of the amendment voted on. The linked document may also contain other amendments.",  #  noqa: E501
+                "url": vote.amendment_url,
+            }
+        )
+
     if vote.procedure_reference:
         links.append(
             {
