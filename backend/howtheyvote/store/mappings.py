@@ -78,6 +78,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         amendment_subject=record.get("amendment_subject"),
         amendment_number=record.get("amendment_number"),
         amendment_authors=amendment_authors,
+        amendment_url=record.get("amendment_url"),
         is_main=record.get("is_main") or False,
         group_key=record.get("group_key"),
         result=record.get(

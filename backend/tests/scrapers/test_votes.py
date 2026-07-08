@@ -586,7 +586,11 @@ def test_odp_document_scraper(responses):
         body=load_fixture("scrapers/data/votes/odp-document_rc-10-2025-0249.json"),
     )
 
-    scraper = ODPDocumentScraper(vote_id=176309, reference="RC-B10-0249/2025")
+    scraper = ODPDocumentScraper(
+        vote_id=176309,
+        reference="RC-B10-0249/2025",
+        amendment_number=None,
+    )
     fragment = scraper.run()
 
     assert fragment.data == {
@@ -604,6 +608,7 @@ def test_odp_document_scraper(responses):
             "RUS",
             "UKR",
         },
+        "amendment_url": None,
     }
 
 
@@ -613,10 +618,45 @@ def test_odp_document_scraper_no_procedure_reference(responses):
         body=load_fixture("scrapers/data/votes/odp-document_rc-9-2021-0068.json"),
     )
 
-    scraper = ODPDocumentScraper(vote_id=127182, reference="RC-B9-0068/2021")
+    scraper = ODPDocumentScraper(
+        vote_id=127182,
+        reference="RC-B9-0068/2021",
+        amendment_number=None,
+    )
     fragment = scraper.run()
 
     assert fragment.data["odp_procedure_reference"] is None
+
+
+def test_odp_document_scraper_amendment_url(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-10-2026-0106?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_a-10-2026-0106.json"),
+    )
+
+    scraper = ODPDocumentScraper(
+        vote_id=194048,
+        reference="A10-0106/2026",
+        amendment_number=2,
+    )
+    fragment = scraper.run()
+
+    assert (
+        fragment.data["amendment_url"]
+        == "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-001-006/A-10-2026-0106-AM-001-006_en.pdf"
+    )
+
+    scraper = ODPDocumentScraper(
+        vote_id=194053,
+        reference="A10-0106/2026",
+        amendment_number=42,
+    )
+    fragment = scraper.run()
+
+    assert (
+        fragment.data["amendment_url"]
+        == "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-041-050/A-10-2026-0106-AM-041-050_en.pdf"
+    )
 
 
 def test_odp_procedure_scraper(responses):
