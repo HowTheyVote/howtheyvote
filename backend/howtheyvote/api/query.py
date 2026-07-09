@@ -35,6 +35,7 @@ from ..search import (
     field_to_slot,
     field_to_type,
     get_index,
+    get_stemmer,
     get_stopper,
     serialize_sortable_value,
 )
@@ -480,6 +481,8 @@ class SearchQuery[T: BaseWithId](Query[T]):
     def _xapian_query_parser(self, index: Database) -> QueryParser:
         parser = QueryParser()
         parser.set_stopper(get_stopper())
+        parser.set_stemmer(get_stemmer())
+        parser.set_stemming_strategy(QueryParser.STEM_ALL)
         parser.set_database(index)
 
         return parser
