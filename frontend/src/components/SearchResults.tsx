@@ -30,7 +30,17 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
         />
       </Island>
 
-      {data.corrected_query && (
+      {data.query && data.query !== searchQuery.q && (
+        <div>
+          Showing results for{" "}
+          <a href={searchQuery.setQ(data.query).toUrl()}>
+            <strong>{data.query}</strong>
+          </a>
+          {". "}There were no results for <strong>{searchQuery.q}</strong>.
+        </div>
+      )}
+
+      {data.query === searchQuery.q && data.corrected_query && (
         <div>
           Did you mean{" "}
           <a href={searchQuery.setQ(data.corrected_query).toUrl()}>

@@ -34,4 +34,38 @@ describe("SearchResults", () => {
     screen.getByText(/Did you mean/);
     screen.getByRole("link", { name: "defence" });
   });
+
+  it("shows notice if corrected search query has been applied", () => {
+    const url = new URL("https://howtheyvote.eu/votes?q=mercosour");
+
+    const data = {
+      query: "mercosur", // "mercosur" without "ou"
+      corrected_query: undefined,
+      total: 1,
+      page: 1,
+      page_size: 20,
+      has_prev: false,
+      has_next: false,
+      results: [
+        {
+          id: 1,
+          timestamp: "2026-01-01T00:00:00+00:00",
+          display_title: "Vote one",
+          is_main: true,
+          topics: [],
+          geo_areas: [],
+          eurovoc_concepts: [],
+          oeil_subjects: [],
+        },
+      ],
+      facets: {},
+    };
+
+    render(<SearchResults url={url} data={data} />);
+
+    screen.getByText(/Showing results for/);
+    screen.getByRole("link", { name: "mercosur" });
+    screen.getByText(/There were no results for/);
+    screen.getByText(/mercosur/);
+  });
 });

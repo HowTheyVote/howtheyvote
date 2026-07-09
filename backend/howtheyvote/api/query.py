@@ -77,6 +77,7 @@ class FacetOption(TypedDict):
 
 
 class SearchQueryResponse[T: BaseWithId](QueryResponse[T]):
+    query: str | None
     corrected_query: str | None
     facets: dict[str, list[FacetOption]]
 
@@ -401,6 +402,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
         }
 
         response: SearchQueryResponse[T] = {
+            "query": self.get_query(),
             "corrected_query": corrected_query,
             "total": mset.get_matches_estimated(),
             "page": page,

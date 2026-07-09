@@ -45,7 +45,7 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
     });
   }
 
-  const { data } = await getVotes({
+  let { data } = await getVotes({
     query: {
       q: searchQuery.q,
       page: searchQuery.page,
@@ -92,6 +92,23 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
         rawCorrectedQuery,
       },
     });
+  }
+
+  // If the original query resulted in 0 results and there is a spelling correction,
+  // repeat the search with the corrected spelling.
+  if (data.total === 0 && data.corrected_query) {
+    const { data: correctedData } = await getVotes({
+      query: {
+        q: data.corrected_query,
+        page: searchQuery.page,
+        // The array spread is a workaround to make the readonly array a mutable array
+        // See https://github.com/hey-api/openapi-ts/issues/1641
+        facets: [...FACETS],
+        ...searchQuery.filters,
+        ...SORT_PARAMS[searchQuery.sort],
+      },
+    });
+    data = correctedData;
   }
 
   // This is a shortcut for power users. If a user searches for a resolution/report reference,

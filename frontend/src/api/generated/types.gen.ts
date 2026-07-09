@@ -460,6 +460,7 @@ export type QueryResponse = {
 };
 
 export type SearchQueryResponse = QueryResponse & {
+    query?: string;
     corrected_query?: string;
     facets: {
         [key: string]: Array<FacetOption>;

@@ -582,6 +582,7 @@ class FacetOptionDict(TypedDict):
 
 
 class SearchQueryResponseDict(QueryResponseDict):
+    query: str | None
     corrected_query: str | None
     facets: dict[str, list[FacetOptionDict]]
 
