@@ -26,24 +26,30 @@ type MemberPageData = {
 export const loader: Loader<MemberPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
-  const { data: member } = await getMember({
-    path: { member_id: request.params.id },
-  });
+  const [member, votes] = await Promise.all([
+    getMember({
+      path: {
+        member_id: request.params.id,
+      },
+    }),
+    getMemberVotes({
+      path: {
+        member_id: request.params.id,
+      },
+      query: {
+        q: searchQuery.q,
+        page: searchQuery.page,
+        facets: [...FACETS],
+        ...searchQuery.filters,
+        ...SORT_PARAMS[searchQuery.sort],
+      },
+    }),
+  ]);
 
-  const { data: votes } = await getMemberVotes({
-    path: {
-      member_id: request.params.id,
-    },
-    query: {
-      q: searchQuery.q,
-      page: searchQuery.page,
-      facets: [...FACETS],
-      ...searchQuery.filters,
-      ...SORT_PARAMS[searchQuery.sort],
-    },
-  });
-
-  return { member, votes };
+  return {
+    member: member.data,
+    votes: votes.data,
+  };
 };
 
 export const MemberPage: Page<MemberPageData> = ({ data, request }) => {

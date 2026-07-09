@@ -24,25 +24,26 @@ type HomePageData = {
 };
 
 export const loader: Loader<HomePageData> = async () => {
-  const { data: current } = await getSessions({
-    query: {
-      status: "current",
-      page_size: 1,
-      sort_order: "asc",
-    },
-  });
-
-  const { data: past } = await getSessions({
-    query: {
-      status: "past",
-      page_size: 1,
-      sort_order: "desc",
-    },
-  });
+  const [current, past] = await Promise.all([
+    getSessions({
+      query: {
+        status: "current",
+        page_size: 1,
+        sort_order: "asc",
+      },
+    }),
+    getSessions({
+      query: {
+        status: "past",
+        page_size: 1,
+        sort_order: "desc",
+      },
+    }),
+  ]);
 
   return {
-    currentSession: current.results[0],
-    lastSession: past.results[0],
+    currentSession: current.data.results[0],
+    lastSession: past.data.results[0],
   };
 };
 
