@@ -3,12 +3,12 @@ from dataclasses import dataclass
 from typing import TypedDict
 
 import sqlalchemy as sa
-from flask import url_for
 from sqlalchemy.engine import Dialect
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import TypeDecorator
 from structlog import get_logger
 
+from ..files import member_photo_url, member_sharepic_url
 from .common import BaseWithId
 from .country import Country, CountryType
 from .group import Group
@@ -105,12 +105,12 @@ class Member(BaseWithId):
 
         return None
 
-    def photo_url(self, size: str | int | None = None) -> str:
-        return url_for("api.static_api.member_photo", member_id=self.id, size=size)
+    def photo_url(self, size: int | None = None) -> str:
+        return member_photo_url(self.id, size)
 
     @property
     def sharepic_url(self) -> str:
-        return url_for("api.static_api.member_sharepic", member_id=self.id)
+        return member_sharepic_url(self.id)
 
     @property
     def full_name(self) -> str:

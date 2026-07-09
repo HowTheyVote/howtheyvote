@@ -658,7 +658,7 @@ def test_votes_api_show(records, db_session, api):
             "stage": None,
         },
         "snippet": None,
-        "sharepic_url": "/api/static/votes/sharepic-1.png",
+        "sharepic_url": "/files/votes/sharepic-1.png",
         "stats": {
             "total": {
                 "FOR": 1,
@@ -741,8 +741,8 @@ def test_votes_api_show(records, db_session, api):
                         "label": "The Left in the European Parliament",
                         "short_label": "The Left",
                     },
-                    "photo_url": "/api/static/members/1.jpg",
-                    "thumb_url": "/api/static/members/1-104.jpg",
+                    "photo_url": "/files/members/1.jpg",
+                    "thumb_url": "/files/members/1-104.jpg",
                 },
             },
             {
@@ -762,8 +762,8 @@ def test_votes_api_show(records, db_session, api):
                         "label": "European People’s Party",
                         "short_label": "EPP",
                     },
-                    "photo_url": "/api/static/members/2.jpg",
-                    "thumb_url": "/api/static/members/2-104.jpg",
+                    "photo_url": "/files/members/2.jpg",
+                    "thumb_url": "/files/members/2-104.jpg",
                 },
             },
         ],

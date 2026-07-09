@@ -4,13 +4,13 @@ from enum import Enum
 from typing import TYPE_CHECKING, Any, TypedDict
 
 import sqlalchemy as sa
-from flask import url_for
 from sqlalchemy import ColumnElement, ForeignKey
 from sqlalchemy.engine import Dialect
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import TypeDecorator
 
+from ..files import vote_sharepic_url
 from .committee import Committee, CommitteeType
 from .common import BaseWithId
 from .country import Country, CountryType
@@ -347,4 +347,4 @@ class Vote(BaseWithId):
 
     @property
     def sharepic_url(self) -> str:
-        return url_for("api.static_api.vote_sharepic", vote_id=self.id)
+        return vote_sharepic_url(self.id)
