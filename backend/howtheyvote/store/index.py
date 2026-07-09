@@ -15,6 +15,7 @@ from ..search import (
     field_to_prefix,
     field_to_slot,
     get_index,
+    get_stemmer,
     get_stopper,
     serialize_list,
     serialize_sortable_value,
@@ -102,6 +103,8 @@ def index_search[T: BaseWithId](
         generator.set_database(index)
         generator.set_stopper(get_stopper())
         generator.set_stopper_strategy(TermGenerator.STOP_ALL)
+        generator.set_stemmer(get_stemmer())
+        generator.set_stemming_strategy(TermGenerator.STEM_ALL)
 
         # Automatically add words from indexed documents to spelling dictionary to
         # enable spelling correction

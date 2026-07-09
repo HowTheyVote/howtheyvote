@@ -8,10 +8,13 @@ from datetime import date, datetime, time
 from typing import Any, Literal, overload
 
 from structlog import get_logger
+from unidecode import unidecode
 from xapian import (
     DB_CREATE_OR_OPEN,
     Database,
     SimpleStopper,
+    Stem,
+    StemImplementation,
     WritableDatabase,
     sortable_serialise,
 )
@@ -249,6 +252,21 @@ def get_index(
 
 def get_stopper() -> SimpleStopper:
     return SimpleStopper(config.SEARCH_STOPWORDS_PATH)
+
+
+class UnidecodeStemmer(StemImplementation):
+    """This is a very simple stemmer implementation that normalizes tokens
+    using `unidecode`, e.g. by removing diacritics."""
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def __call__(self, token: bytes) -> str:
+        return unidecode(token.decode("utf-8")).lower()
+
+
+def get_stemmer() -> Stem:
+    return Stem(UnidecodeStemmer())
 
 
 def delete_indexes() -> None:
