@@ -13,6 +13,20 @@
         file_server
     }
 
+    # Serve static MEP photos
+    handle_path /files/members/* {
+        root * /howtheyvote/files/members
+        file_server
+        header cache-control "public, max-age=15552000" # 180 days
+    }
+
+    # Serve static sharepics
+    handle_path /files/votes/* {
+        root * /howtheyvote/files/votes
+        file_server
+        header cache-control "public, max-age=15552000" # 180 days
+    }
+
     # Enable Gzip compression for common plaintext formats such as
     # HTML, CSS, JS, JSON, SVG etc.
     encode gzip
