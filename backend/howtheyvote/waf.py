@@ -1,4 +1,5 @@
 import ssl
+import time
 from typing import Any, cast
 
 import requests
@@ -105,13 +106,13 @@ def solve_ep_aws_waf_challenge() -> str:
     )
 
 
-def solve_aws_waf_challenge(url: str) -> str:
+def solve_aws_waf_challenge(url: str, timeout: int = 10) -> str:
     """Requests the given URL using headless Chromium, waits until the automatic JS challenge
     is completed, and returns the AWS WAF token."""
     client = Client(
         host=config.CHROMIUM_HOST,
         port=config.CHROMIUM_PORT,
-        timeout=10,
+        timeout=timeout,
     )
 
     with client.connect() as session:
@@ -126,37 +127,41 @@ def solve_aws_waf_challenge(url: str) -> str:
             },
         )
 
+        # By default, Chromium stores cookies set, including any WAF token cookies set
+        # previously. After all, that’s what cookies are for! It would be nice to reuse
+        # the token in case the cookie is already set. However, the token stored in the
+        # cookie might have expired, so we’d need to also handle that. Instead,  we
+        # simply delete all cookies, which guarantees we’ll get a fresh token.
+        session.send("Network.clearBrowserCookies")
+
         session.send("Page.enable")
+        session.send("Page.navigate", {"url": url})
 
-        # Navigate to the URL that triggers the JS challenge. This emits a first navigation
-        # challenge. Once the JS challenge has been solved, a redirect happens and the token
-        # cookie gets set. This emits a second navigation event.
-        with (
-            session.expect_event("Page.frameNavigated") as wait_1,
-            session.expect_event("Page.frameNavigated") as wait_2,
-        ):
-            session.send("Page.navigate", {"url": url})
-            wait_1()
-            wait_2()
+        # Poll cookies for the current page until the WAF token cookie has been set
+        # or the timeout expires.
+        deadline = time.monotonic() + timeout
 
-        response = session.send("Network.getCookies")
+        while time.monotonic() < deadline:
+            response = session.send("Network.getCookies")
 
-    for cookie in response["cookies"]:
-        if cookie["name"] == "aws-waf-token":
-            log.info(
-                "Obtained AWS WAF token",
-                aws_waf_token=cookie["value"],
-                domain=cookie["domain"],
-            )
-            sentry_sdk.metrics.count(
-                "waf_challenges",
-                1,
-                attributes={
-                    "status": "success",
-                    "url": url,
-                },
-            )
-            return cast(str, cookie["value"])
+            for cookie in response["cookies"]:
+                if cookie["name"] == "aws-waf-token":
+                    log.info(
+                        "Obtained AWS WAF token",
+                        aws_waf_token=cookie["value"],
+                        domain=cookie["domain"],
+                    )
+                    sentry_sdk.metrics.count(
+                        "waf_challenges",
+                        1,
+                        attributes={
+                            "status": "success",
+                            "url": url,
+                        },
+                    )
+                    return cast(str, cookie["value"])
+
+        time.sleep(0.1)
 
     sentry_sdk.metrics.count(
         "waf_challenges",
