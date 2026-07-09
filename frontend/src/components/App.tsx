@@ -55,6 +55,10 @@ export default function App({
           content="black-translucent"
         />
         <meta name="theme-color" content="var(--blue-darkest)" />
+        <meta
+          name="fediverse:creator"
+          content="@HowTheyVote.eu@eupolicy.social"
+        />
 
         <link
           rel="alternate"
