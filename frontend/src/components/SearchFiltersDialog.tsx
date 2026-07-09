@@ -60,30 +60,36 @@ function SearchFiltersDialog({
               end={searchQuery.getFilter("date[lte]")[0]}
             />
           </SearchFacet>
-          <SearchFacet label="Topics">
-            <SearchFacetMultiselectOptions
-              field="topics"
-              options={facets.topics}
-              selected={searchQuery.getFilter("topics")}
-              searchLabel="Filter topics"
-            />
-          </SearchFacet>
-          <SearchFacet label="Country">
-            <SearchFacetMultiselectOptions
-              field="geo_areas"
-              options={facets.geo_areas}
-              selected={searchQuery.getFilter("geo_areas")}
-              searchLabel="Filter countries"
-            />
-          </SearchFacet>
-          <SearchFacet label="Responsible committee">
-            <SearchFacetMultiselectOptions
-              field="responsible_committees"
-              options={facets.responsible_committees}
-              selected={searchQuery.getFilter("responsible_committees")}
-              searchLabel="Filter committees"
-            />
-          </SearchFacet>
+          {facets.topics && (
+            <SearchFacet label="Topics">
+              <SearchFacetMultiselectOptions
+                field="topics"
+                options={facets.topics}
+                selected={searchQuery.getFilter("topics")}
+                searchLabel="Filter topics"
+              />
+            </SearchFacet>
+          )}
+          {facets.geo_areas && (
+            <SearchFacet label="Country">
+              <SearchFacetMultiselectOptions
+                field="geo_areas"
+                options={facets.geo_areas}
+                selected={searchQuery.getFilter("geo_areas")}
+                searchLabel="Filter countries"
+              />
+            </SearchFacet>
+          )}
+          {facets.responsible_committees && (
+            <SearchFacet label="Responsible committee">
+              <SearchFacetMultiselectOptions
+                field="responsible_committees"
+                options={facets.responsible_committees}
+                selected={searchQuery.getFilter("responsible_committees")}
+                searchLabel="Filter committees"
+              />
+            </SearchFacet>
+          )}
         </div>
         <div class="search-filters-dialog__submit">
           <Button type="submit">Apply filters</Button>

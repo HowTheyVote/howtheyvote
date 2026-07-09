@@ -54,21 +54,27 @@ function SearchActions({ url, total, facets }: SearchActionsProps) {
           id="date[lte]"
           prefix="Until"
         />
-        <SearchFacetMultiselectTags
-          searchQuery={searchQuery}
-          id="topics"
-          options={facets.topics}
-        />
-        <SearchFacetMultiselectTags
-          searchQuery={searchQuery}
-          id="geo_areas"
-          options={facets.geo_areas}
-        />
-        <SearchFacetMultiselectTags
-          searchQuery={searchQuery}
-          id="responsible_committees"
-          options={facets.responsible_committees}
-        />
+        {facets.topics && (
+          <SearchFacetMultiselectTags
+            searchQuery={searchQuery}
+            id="topics"
+            options={facets.topics}
+          />
+        )}
+        {facets.geo_areas && (
+          <SearchFacetMultiselectTags
+            searchQuery={searchQuery}
+            id="geo_areas"
+            options={facets.geo_areas}
+          />
+        )}
+        {facets.responsible_committees && (
+          <SearchFacetMultiselectTags
+            searchQuery={searchQuery}
+            id="responsible_committees"
+            options={facets.responsible_committees}
+          />
+        )}
       </ul>
     </div>
   );
