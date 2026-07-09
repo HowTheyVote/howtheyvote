@@ -47,3 +47,12 @@ def terms(vote_id: int) -> None:
                 click.echo(term)
 
             click.echo()
+
+
+@search.command()
+def dictionary() -> None:
+    """Returns a list of all terms in the dictionary."""
+
+    with get_index(Vote) as index:
+        for term in index.spellings():
+            click.echo(term.term)

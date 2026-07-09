@@ -235,6 +235,40 @@ def test_search_query_handle_normalization(db_session, search_index):
     assert response["results"][0].id == 1
 
 
+def test_search_query_handle_spelling_correction(db_session, search_index):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="Mercosur",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    response = SearchQuery(Vote).query("mercosour").handle()
+    assert response["total"] == 0
+    assert response["corrected_query"] == "mercosur"
+
+
+def test_search_query_handle_spelling_correction_stopwords(db_session, search_index):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="2019 discharge: European Agency for Safety and Health at Work",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    # This should not suggest "at" as a corrected spelling
+    response = SearchQuery(Vote).query("cat").handle()
+    assert response["corrected_query"] is None
+
+
 def test_search_query_handle_pagination(votes):
     response = SearchQuery(Vote).page(1).handle()
     assert response["total"] == 3

@@ -30,6 +30,16 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
         />
       </Island>
 
+      {data.corrected_query && (
+        <div>
+          Did you mean{" "}
+          <a href={searchQuery.setQ(data.corrected_query).toUrl()}>
+            <strong>{data.corrected_query}</strong>
+          </a>
+          ?
+        </div>
+      )}
+
       <VoteCards
         groupByDate={!searchQuery.q && !searchQuery.hasFilters()}
         votes={data.results}

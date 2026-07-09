@@ -435,7 +435,8 @@ export type QueryResponse = {
     has_next: boolean;
 };
 
-export type QueryResponseWithFacets = QueryResponse & {
+export type SearchQueryResponse = QueryResponse & {
+    corrected_query?: string;
     facets: {
         [key: string]: Array<FacetOption>;
     };
@@ -448,14 +449,14 @@ export type FacetOption = {
     count: number;
 };
 
-export type VotesQueryResponse = QueryResponseWithFacets & {
+export type VotesQueryResponse = SearchQueryResponse & {
     /**
      * Votes
      */
     results: Array<BaseVote>;
 };
 
-export type MemberVotesQueryResponse = QueryResponseWithFacets & {
+export type MemberVotesQueryResponse = SearchQueryResponse & {
     /**
      * Votes
      */

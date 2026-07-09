@@ -19,12 +19,16 @@ type SearchPageData = VotesQueryResponse & {
   searchQuery: SearchQuery;
 };
 
+function normalizeQuery(query?: string) {
+  return query?.toLowerCase().trim().replaceAll(/\s+/g, " ");
+}
+
 export const loader: Loader<SearchPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
   // Apply some basic normalization to make log aggregation easier
   const rawQuery = searchQuery?.q;
-  const normalizedQuery = rawQuery?.toLowerCase().replace(/\s+/, " ");
+  const normalizedQuery = normalizeQuery(rawQuery);
 
   if (!request.isBot && normalizedQuery) {
     log.info({
@@ -64,6 +68,28 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
       attributes: {
         normalizedQuery,
         rawQuery,
+      },
+    });
+  }
+
+  if (!request.isBot && data.corrected_query) {
+    const rawCorrectedQuery = data.corrected_query;
+    const normalizedCorrectedQuery = normalizeQuery(rawCorrectedQuery);
+
+    log.info({
+      msg: "Search with corrected spelling",
+      normalizedQuery,
+      rawQuery,
+      normalizedCorrectedQuery,
+      rawCorrectedQuery,
+    });
+
+    Sentry.metrics.count("searches_corrected_spelling", 1, {
+      attributes: {
+        normalizedQuery,
+        rawQuery,
+        normalizedCorrectedQuery,
+        rawCorrectedQuery,
       },
     });
   }

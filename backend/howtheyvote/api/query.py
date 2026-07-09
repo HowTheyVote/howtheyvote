@@ -7,6 +7,7 @@ from typing import Any, Literal, Self, TypedDict, overload
 
 from sqlalchemy import and_, asc, desc, func, select, true
 from sqlalchemy.sql import ColumnElement
+from unidecode import unidecode
 from xapian import (
     BM25Weight,
     Database,
@@ -75,7 +76,8 @@ class FacetOption(TypedDict):
     count: int
 
 
-class QueryResponseWithFacets[T: BaseWithId](QueryResponse[T]):
+class SearchQueryResponse[T: BaseWithId](QueryResponse[T]):
+    corrected_query: str | None
     facets: dict[str, list[FacetOption]]
 
 
@@ -349,13 +351,15 @@ class SearchQuery[T: BaseWithId](Query[T]):
         self._query: str | None = None
         self._facets: list[str] = []
 
-    def handle(self) -> QueryResponseWithFacets[T]:
+    def handle(self) -> SearchQueryResponse[T]:
         page = self.get_page()
         page_size = self.get_page_size()
         limit = self.get_limit()
         offset = self.get_offset()
 
         with get_index(self.model) as index:
+            corrected_query = self._get_corrected_query(index)
+
             query = self._xapian_query(index)
             enquire = Enquire(index)
             enquire.set_query(query)
@@ -396,7 +400,8 @@ class SearchQuery[T: BaseWithId](Query[T]):
             field: self._compute_facet(field) for field in self.get_facets()
         }
 
-        response: QueryResponseWithFacets[T] = {
+        response: SearchQueryResponse[T] = {
+            "corrected_query": corrected_query,
             "total": mset.get_matches_estimated(),
             "page": page,
             "page_size": page_size,
@@ -415,6 +420,22 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def get_query(self) -> str:
         return self._query or ""
+
+    def _get_corrected_query(self, index: Database) -> str | None:
+        original = self.get_query()
+        parser = self._xapian_query_parser(index)
+        parser.parse_query(
+            original,
+            QueryParser.FLAG_BOOLEAN
+            | QueryParser.FLAG_PHRASE
+            | QueryParser.FLAG_SPELLING_CORRECTION,
+        )
+        corrected = parser.get_corrected_query_string().decode("utf-8")
+
+        if unidecode(corrected) == unidecode(original):
+            return None
+
+        return corrected if corrected != "" else None
 
     def _compute_facet(self, field: str) -> list[FacetOption]:
         spy = MultiValueCountMatchSpy(field_to_slot(field))

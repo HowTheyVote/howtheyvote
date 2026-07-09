@@ -4,7 +4,7 @@ from typing import cast
 from bs4 import BeautifulSoup
 from sqlalchemy.dialects.sqlite import insert
 from structlog import get_logger
-from xapian import Document, TermGenerator
+from xapian import Document, TermGenerator, WritableDatabase
 
 from ..db import Session
 from ..helpers import chunks
@@ -99,19 +99,8 @@ def index_search[T: BaseWithId](
     log.info("Indexing aggregated records", count=len(filtered_votes))
 
     with get_index(Vote, AccessType.WRITE) as index:
-        generator = TermGenerator()
-        generator.set_database(index)
-        generator.set_stopper(get_stopper())
-        generator.set_stopper_strategy(TermGenerator.STOP_ALL)
-        generator.set_stemmer(get_stemmer())
-        generator.set_stemming_strategy(TermGenerator.STEM_ALL)
-
-        # Automatically add words from indexed documents to spelling dictionary to
-        # enable spelling correction
-        generator.set_flags(TermGenerator.FLAG_SPELLING)
-
         for vote in filtered_votes:
-            doc = _serialize_vote(vote, generator)
+            doc = _serialize_vote(vote, index)
             index.replace_document(int(vote.id), doc)
 
 
@@ -128,35 +117,55 @@ def _filter_records[T: BaseWithId](records: Iterable[T]) -> Iterable[T]:
         yield record
 
 
-def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
+def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     doc = Document()
+
+    generator = TermGenerator()
+    generator.set_database(index)
     generator.set_document(doc)
+    generator.set_stopper(get_stopper())
+    generator.set_stopper_strategy(TermGenerator.STOP_ALL)
+    generator.set_stemmer(get_stemmer())
+    generator.set_stemming_strategy(TermGenerator.STEM_ALL)
+
+    # The term generator only adds unprefixed terms to the spelling directory. We use
+    # prefixes for all fields. To workaround this limitation, we create a second term
+    # generator, that we use to generate terms only for the spelling dictionary, but
+    # not for the actual index.
+    spelling_generator = TermGenerator()
+    spelling_generator.set_database(index)
+    spelling_generator.set_stopper(get_stopper())
+    spelling_generator.set_stopper_strategy(TermGenerator.STOP_ALL)
+    spelling_generator.set_flags(TermGenerator.FLAG_SPELLING)
+
+    def index_text(text: str, field: str) -> None:
+        generator.index_text(text, 1, field_to_prefix(field))
+
+        # Calling this method between indexing of different fields prevents
+        # searches matching terms from different fields, (e.g. last term of
+        # the title and first term of the following field).
+        generator.increase_termpos()
+
+        # Populate the spelling dictionary
+        spelling_generator.index_text(text, 1)
 
     if not vote.display_title:
         raise ValueError("Cannot index vote without `display_title`.")
 
-    generator.index_text(vote.display_title, 1, field_to_prefix("display_title"))
-
-    # Calling this method between indexing of different fields prevents
-    # searches matching terms from different fields, (e.g. last term of
-    # the title and first term of the following field).
-    generator.increase_termpos()
+    index_text(vote.display_title, "display_title")
 
     if vote.press_release:
         if vote.press_release.facts:
             facts = html_to_plaintext(vote.press_release.facts)
-            generator.index_text(facts, 1, field_to_prefix("press_release"))
-            generator.increase_termpos()
+            index_text(facts, "press_release")
 
         if vote.press_release.text:
             text = html_to_plaintext(vote.press_release.text)
-            generator.index_text(text, 1, field_to_prefix("press_release"))
-            generator.increase_termpos()
+            index_text(text, "press_release")
 
     if vote.oeil_summary:
         text = html_to_plaintext(vote.oeil_summary.content)
-        generator.index_text(text, 1, field_to_prefix("oeil_summary"))
-        generator.increase_termpos()
+        index_text(text, "oeil_summary")
 
     # Index EuroVoc concept labels for full-text search
     for concept in vote.eurovoc_concepts:
@@ -173,21 +182,18 @@ def _serialize_vote(vote: Vote, generator: TermGenerator) -> Document:
             labels.update(replaces.alt_labels)
 
         for label in labels:
-            generator.index_text(label, 1, field_to_prefix("eurovoc_concept_labels"))
-            generator.increase_termpos()
+            index_text(label, "eurovoc_concept_labels")
 
     # Index geographic area labels for full-text search
     for geo_area in vote.geo_areas:
-        generator.index_text(geo_area.label, 1, field_to_prefix("geo_area_labels"))
-        generator.increase_termpos()
+        index_text(geo_area.label, "geo_area_labels")
 
     # Index rapporteur name
     if vote.rapporteur:
-        generator.index_text(vote.rapporteur, 1, field_to_prefix("rapporteur"))
+        index_text(vote.rapporteur, "rapporteur")
 
     for topic in vote.topics:
-        generator.index_text(topic.label, 1, field_to_prefix("topics"))
-        generator.increase_termpos()
+        index_text(topic.label, "topics")
 
     # Store date in slot for ranking and range filters
     date = serialize_sortable_value(vote.date)
