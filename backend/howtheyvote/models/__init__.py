@@ -3,13 +3,13 @@ from .common import Base, BaseWithId, Fragment, PipelineRun, PipelineStatus
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
-from .national_parties import NationalParty
 from .member import (
     GroupMembership,
     Member,
     deserialize_group_membership,
     serialize_group_membership,
 )
+from .national_parties import NationalParty
 from .oeil_subject import OEILSubject, OEILSubjectType
 from .oeil_summary import OEILSummary
 from .press_release import PressRelease
