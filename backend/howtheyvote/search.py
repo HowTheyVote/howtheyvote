@@ -20,7 +20,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country, Topic
+from .models import BaseWithId, Committee, Country, Topic, Vote
 
 log = get_logger(__name__)
 
@@ -279,6 +279,30 @@ def delete_indexes() -> None:
 
         log.info("Deleting index", path=path.name)
         shutil.rmtree(path)
+
+
+def add_synonym(index: WritableDatabase, term: str, synonym: str) -> None:
+    for field in SEARCH_FIELDS:
+        prefix = field_to_prefix(field)
+        index.add_synonym(f"{prefix}{term}", f"{prefix}{synonym}")
+
+
+def clear_synonyms(index: WritableDatabase) -> None:
+    for term in index.synonym_keys():
+        index.clear_synonyms(term.decode("utf-8"))
+
+
+def reload_synonyms() -> None:
+    pairs = []
+
+    if config.SEARCH_SYNONYMS:
+        pairs = [pair.split(":") for pair in config.SEARCH_SYNONYMS.split("|") if pair]
+
+    with get_index(Vote, AccessType.WRITE) as index:
+        clear_synonyms(index)
+
+        for term, synonym in pairs:
+            add_synonym(index, term, synonym)
 
 
 def serialize_sortable_value(value: int | float | date | datetime) -> str:
