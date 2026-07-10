@@ -19,6 +19,7 @@ jobs:
         image:
           - frontend
           - backend
+          - caddy
 
     steps:
       - name: Checkout repo
