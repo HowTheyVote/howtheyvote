@@ -269,6 +269,24 @@ def test_search_query_handle_spelling_correction_stopwords(db_session, search_in
     assert response["corrected_query"] is None
 
 
+@pytest.mark.override_config(SEARCH_SYNONYMS="corona:covid")
+def test_search_query_handle_synonyms(db_session, search_index, mocker):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="Covid-19",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    response = SearchQuery(Vote).query("corona").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 1
+
+
 def test_search_query_handle_pagination(votes):
     response = SearchQuery(Vote).page(1).handle()
     assert response["total"] == 3

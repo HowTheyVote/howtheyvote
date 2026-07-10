@@ -548,7 +548,10 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 XapianQuery.OP_SCALE_WEIGHT,
                 parser.parse_query(
                     self.get_query(),
-                    QueryParser.FLAG_BOOLEAN | QueryParser.FLAG_PHRASE,
+                    QueryParser.FLAG_BOOLEAN
+                    | QueryParser.FLAG_PHRASE
+                    | QueryParser.FLAG_AUTO_SYNONYMS
+                    | QueryParser.FLAG_AUTO_MULTIWORD_SYNONYMS,
                     field_to_prefix(field),
                 ),
                 field_to_boost(field),

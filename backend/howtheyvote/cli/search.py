@@ -56,3 +56,13 @@ def dictionary() -> None:
     with get_index(Vote) as index:
         for term in index.spellings():
             click.echo(term.term)
+
+
+@search.command()
+def synonyms() -> None:
+    """Returns a list of all synonyms."""
+
+    with get_index(Vote) as index:
+        for term in index.synonym_keys():
+            for synonym in index.synonyms(term):
+                click.echo(f"{term.decode('utf-8')}:{synonym.decode('utf-8')}")
