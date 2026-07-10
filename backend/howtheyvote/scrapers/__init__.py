@@ -19,6 +19,7 @@ from .votes import (
     RCVListScraper,
     VOTListScraper,
 )
+from .national_parties import ODPNationalPartyScraper
 
 __all__ = [
     "ScrapingError",
@@ -31,6 +32,7 @@ __all__ = [
     "ODPSessionScraper",
     "ODPDocumentScraper",
     "ODPProcedureScraper",
+    "ODPNationalPartyScraper"
     "ProcedureScraper",
     "RCVListScraper",
     "RCVListEnglishScraper",
