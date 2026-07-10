@@ -95,6 +95,18 @@
 }
 
 {$CADDY_SITE_ADDRESS} {
+    rate_limit {
+        zone dynamic {
+            key {remote_host}
+            window 10s
+            events 5
+            match {
+                path /api/*
+                path /api
+            }
+        }
+    }
+
     import main
     header Strict-Transport-Security "max-age=31536000;"
 }
