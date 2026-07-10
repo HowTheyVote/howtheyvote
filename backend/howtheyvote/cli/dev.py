@@ -2,7 +2,6 @@ import csv
 import datetime
 import io
 from typing import Any, NotRequired, TextIO, TypedDict
-from urllib import response
 
 import click
 import requests
@@ -10,6 +9,7 @@ from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
 from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
+from ..scrapers import ODPNationalPartyScraper
 
 log = get_logger(__name__)
 
@@ -536,38 +536,26 @@ def load_oeil_subjects(file: TextIO) -> None:
 @dev.command()
 def load_national_parties() -> None:
     """Loads a list of national parties as published by the EP Open Data Portal."""
-    parties = DataclassContainer(
+    retrieved_parties = DataclassContainer(
         dataclass=NationalParty,
         file_path=DATA_DIR.joinpath("national_parties.json"),
         key_attr="id",
     )
+    retrieved_parties.load()
 
-    meta_url = "https://data.europarl.europa.eu/OdpDatasetService/Datasets/corporate-bodies-of-the-european-parliament"
-    meta_data = requests.get(meta_url).json()
-    latest_version = len(meta_data["odpDatasetVersions"])
+    all_parties_response = requests.get("https://data.europarl.europa.eu/api/v2/corporate-bodies?body-classification=NATIONAL_POLITICAL_GROUP&format=application/ld+json&offset=0", timeout=60).json()
+    all_parties = all_parties_response["data"]
+    print(f"Loading data for {len(all_parties)} parties")
 
-    data_url = f"https://data.europarl.europa.eu/distribution/corporate-bodies_{latest_version}_en.csv"
-    response = requests.get(data_url)
-    csv_file = csv.DictReader(io.StringIO(response.text))
-    
-    for line in csv_file:
-                    
-        if line["corporate_body_classification_label"] != "National political group":
-            continue
-
-        parties.add(
-            NationalParty(
-                id=line["corporate_body_identifier"],
-                short_label=line["corporate_body_label"],
-                label=line["corporate_body_preferred_label"],
-                alt_label=line["corporate_body_alternative_label"] if line["corporate_body_alternative_label"] else None,
-                start_date=line["corporate_body_start_date"][:10],
-                end_date=line["corporate_body_end_date"][:10] if line["corporate_body_end_date"] else None,
-                country_code=Country.from_label(line["corporate_body_represents"]).code  
-            )
-        )
-
-    parties.save()
+    for party in all_parties:
+        curr_party_identifier = party["identifier"]
+        if not any(p.id == curr_party_identifier for p in retrieved_parties):
+            try:
+                party_info = ODPNationalPartyScraper(id=party["identifier"]).run()
+                retrieved_parties.add(party_info)
+            except: 
+                retrieved_parties.save()            
+    retrieved_parties.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:
