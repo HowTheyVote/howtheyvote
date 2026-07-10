@@ -5,6 +5,7 @@ volumes:
 services:
   frontend:
     image: "ghcr.io/howtheyvote/howtheyvote-frontend:${HTV_TAG:-main}"
+    init: true
     depends_on:
       - backend
     expose:
@@ -19,6 +20,7 @@ services:
 
   backend:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:${HTV_TAG:-main}"
+    init: true
     depends_on:
       - chromium
     volumes:
@@ -38,6 +40,7 @@ services:
   worker:
     image: "ghcr.io/howtheyvote/howtheyvote-backend:${HTV_TAG:-main}"
     command: "htv worker"
+    init: true
     depends_on:
       - chromium
     volumes:
