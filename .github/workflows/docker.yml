@@ -20,7 +20,8 @@ jobs:
           - frontend
           - backend
           - caddy
-
+    # Only build caddy image when we really need to
+    if: matrix.image != 'caddy' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
