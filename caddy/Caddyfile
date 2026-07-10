@@ -107,6 +107,11 @@
         }
     }
 
+    handle_errors 429 {
+        header Content-Type "application/json"
+        respond `{"error": "rate_limited", "message": "For a bulk download of our data, please visit https://github.com/howtheyVote/data"}` 429
+    }
+
     import main
     header Strict-Transport-Security "max-age=31536000;"
 }
