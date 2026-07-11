@@ -6,7 +6,7 @@ from collections import defaultdict
 from typing import Any, Literal, Self, TypedDict, overload
 
 from sqlalchemy import and_, asc, desc, func, select, true
-from sqlalchemy.sql import ColumnElement
+from sqlalchemy.sql import ColumnElement, Select
 from unidecode import unidecode
 from xapian import (
     BM25Weight,
@@ -98,6 +98,10 @@ class Query[T: BaseWithId](ABC):
 
     @abstractmethod
     def handle(self) -> QueryResponse[T]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def debug(self) -> str:
         raise NotImplementedError
 
     def copy(self) -> Self:
@@ -215,13 +219,7 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
         limit = self.get_limit()
         offset = self.get_offset()
 
-        query = (
-            select(self.model)
-            .order_by(self._order_expr())
-            .where(self._filters_expr())
-            .where(*self._where)
-        )
-
+        query = self._sql_query()
         total_query = query.with_only_columns(func.count(self.model.id))
         results_query = query.limit(limit).offset(offset)
 
@@ -238,6 +236,17 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
         }
 
         return response
+
+    def debug(self) -> str:
+        return str(self._sql_query())
+
+    def _sql_query(self) -> Select[tuple[T]]:
+        return (
+            select(self.model)
+            .order_by(self._order_expr())
+            .where(self._filters_expr())
+            .where(*self._where)
+        )
 
     def _order_expr(self) -> ColumnElement[Any]:
         # Apply default sorting if none is specified explicitly
@@ -414,6 +423,10 @@ class SearchQuery[T: BaseWithId](Query[T]):
         }
 
         return response
+
+    def debug(self) -> str:
+        with get_index(self.model) as index:
+            return str(self._xapian_query(index))
 
     def query(self, query: str | None = None) -> Self:
         copy = self.copy()
