@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import click
 
+from ..api.query import SearchQuery
 from ..models import Vote
 from ..search import get_index, prefix_to_field
 
@@ -66,3 +67,10 @@ def synonyms() -> None:
         for term in index.synonym_keys():
             for synonym in index.synonyms(term):
                 click.echo(f"{term.decode('utf-8')}:{synonym.decode('utf-8')}")
+
+
+@search.command()
+@click.argument("query")
+def query(query: str) -> None:
+    """Print a text representation of the parsed query."""
+    click.echo(SearchQuery(Vote).query(query).debug())
