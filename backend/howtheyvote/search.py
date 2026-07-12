@@ -39,6 +39,7 @@ SEARCH_FIELDS = [
     "press_release",
     "oeil_summary",
     "topics",
+    "keywords",
 ]
 
 
@@ -58,6 +59,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "member_id": "XM",
     "oeil_summary": "XS",
     "topics": "XT",
+    "keywords": "XK",
 }
 
 
@@ -152,6 +154,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "procedure_reference": StringType(),
     "member_id": IntegerType(),
     "topics": TopicType(),
+    "keywords": StringType(),
 }
 
 
@@ -182,6 +185,7 @@ FIELD_TO_SLOT_MAPPING = {
 # See: https://trac.xapian.org/wiki/FAQ/ExtraWeight
 FIELD_TO_BOOST_MAPPING = {
     "display_title": 5,
+    "keywords": 5,
 }
 
 
