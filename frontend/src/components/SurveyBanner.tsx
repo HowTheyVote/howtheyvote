@@ -2,11 +2,11 @@ import { useState } from "preact/hooks";
 import Icon from "./Icon";
 import Wrapper from "./Wrapper";
 
-import "./Banner.css";
+import "./SurveyBanner.css";
 
 const STORAGE_KEY = "survey-banner-dismissed";
 
-export default function Banner() {
+export default function SurveyBanner() {
   const [isDismissed, setIsDismissed] = useState<boolean>(
     typeof window === "undefined"
       ? true // Don't render on the server
@@ -23,8 +23,8 @@ export default function Banner() {
   }
 
   return (
-    <div className="Banner">
-      <Wrapper className="Banner__wrapper">
+    <div className="survey-banner">
+      <Wrapper className="survey-banner__wrapper">
         Answer <strong>3 quick questions</strong> to help us improve
         HowTheyVote.eu.{" "}
         <a
@@ -34,9 +34,9 @@ export default function Banner() {
         >
           Fill out survey
         </a>
-        <button type="button" className="Banner__close" onClick={onClose}>
+        <button type="button" className="survey-banner__close" onClick={onClose}>
           <span class="visually-hidden">Close</span>
-          <Icon name="close" className="Banner__icon" />
+          <Icon name="close" className="survey-banner__icon" />
         </button>
       </Wrapper>
     </div>

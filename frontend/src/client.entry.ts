@@ -1,4 +1,4 @@
-import Banner from "./components/Banner";
+import SurveyBanner from "./components/SurveyBanner";
 import CountryStatsList from "./components/CountryStatsList";
 import DatawrapperLinkList from "./components/DatawrapperLinkList";
 import Eyes from "./components/Eyes";
@@ -16,7 +16,7 @@ hydrateIslands([
   VoteTabs,
   Eyes,
   ShareButton,
-  Banner,
+  SurveyBanner,
   SearchActions,
   DatawrapperLinkList,
 ]);
