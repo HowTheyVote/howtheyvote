@@ -44,15 +44,17 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
         </Callout>
       )}
 
-      {data.query === searchQuery.q && data.corrected_query && (
-        <Callout>
-          Did you mean{" "}
-          <a href={searchQuery.setQ(data.corrected_query).toUrl()}>
-            <strong>{data.corrected_query}</strong>
-          </a>
-          ?
-        </Callout>
-      )}
+      {data.total <= 3 &&
+        data.query === searchQuery.q &&
+        data.corrected_query && (
+          <Callout>
+            Did you mean{" "}
+            <a href={searchQuery.setQ(data.corrected_query).toUrl()}>
+              <strong>{data.corrected_query}</strong>
+            </a>
+            ?
+          </Callout>
+        )}
 
       {data.total === 0 && (
         <SearchFeedback title="No results found." query={searchQuery.q} />
