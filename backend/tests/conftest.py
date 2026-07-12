@@ -13,7 +13,24 @@ from structlog.testing import capture_logs
 
 from howtheyvote import config
 from howtheyvote.db import Session, engine, migrate, session_factory
+from howtheyvote.search import reload_synonyms
 from howtheyvote.wsgi import app as flask_app
+
+
+@pytest.fixture(autouse=True)
+def override_config(request, monkeypatch):
+    """Allows tests to override configuration by specifying markers. For example, to
+    override the `PUBLIC_URL` constant, decorate the test as follows:
+
+    ```
+    @pytest.mark.override_config(PUBLIC_URL="https://example.org/")
+    ```
+    """
+    marker = request.node.get_closest_marker("override_config")
+
+    if marker:
+        for key, value in marker.kwargs.items():
+            monkeypatch.setattr(config, key, value)
 
 
 @pytest.fixture(scope="session")
@@ -39,10 +56,10 @@ def db_session(migrations):
 
 
 @pytest.fixture()
-def search_index(tmp_path):
+def search_index(tmp_path, monkeypatch):
     """Create temporary directory for search index."""
-    config.SEARCH_INDEX_DIR = tmp_path
-    yield
+    monkeypatch.setattr(config, "SEARCH_INDEX_DIR", tmp_path)
+    reload_synonyms()
 
 
 @pytest.fixture()
