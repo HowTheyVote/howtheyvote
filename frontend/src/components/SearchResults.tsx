@@ -3,6 +3,7 @@ import { Island } from "../lib/islands";
 import { getSearchFeedbackFormUrl } from "../lib/links";
 import { SearchQuery } from "../lib/search";
 import Button from "./Button";
+import Callout from "./Callout";
 import EmptyState from "./EmptyState";
 import Pagination from "./Pagination";
 import SearchActions from "./SearchActions";
@@ -34,23 +35,23 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
       </Island>
 
       {data.query && data.query !== searchQuery.q && (
-        <div>
+        <Callout>
           Showing results for{" "}
           <a href={searchQuery.setQ(data.query).toUrl()}>
             <strong>{data.query}</strong>
           </a>
           {". "}There were no results for <strong>{searchQuery.q}</strong>.
-        </div>
+        </Callout>
       )}
 
       {data.query === searchQuery.q && data.corrected_query && (
-        <div>
+        <Callout>
           Did you mean{" "}
           <a href={searchQuery.setQ(data.corrected_query).toUrl()}>
             <strong>{data.corrected_query}</strong>
           </a>
           ?
-        </div>
+        </Callout>
       )}
 
       {data.total === 0 && (

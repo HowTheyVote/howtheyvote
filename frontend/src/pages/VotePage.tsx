@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/node";
 import { getVote, type Vote } from "../api";
 import App from "../components/App";
-import BaseLayout from "../components/BaseLayout";
 import Banner from "../components/Banner";
+import BaseLayout from "../components/BaseLayout";
 import CopyrightLink from "../components/CopyrightLink";
 import DataWrapperLinkList from "../components/DatawrapperLinkList";
 import ExternalLinks from "../components/ExternalLinks";

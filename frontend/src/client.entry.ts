@@ -1,4 +1,3 @@
-import SurveyBanner from "./components/SurveyBanner";
 import CountryStatsList from "./components/CountryStatsList";
 import DatawrapperLinkList from "./components/DatawrapperLinkList";
 import Eyes from "./components/Eyes";
@@ -6,6 +5,7 @@ import GroupStatsList from "./components/GroupStatsList";
 import MemberVotesList from "./components/MemberVotesList";
 import SearchActions from "./components/SearchActions";
 import ShareButton from "./components/ShareButton";
+import SurveyBanner from "./components/SurveyBanner";
 import VoteTabs from "./components/VoteTabs";
 import { hydrateIslands } from "./lib/islands";
 
