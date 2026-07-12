@@ -68,4 +68,25 @@ describe("SearchResults", () => {
     screen.getByText(/There were no results for/);
     screen.getByText(/mercosur/);
   });
+
+  it("asks for feedback if there are no results", () => {
+    const url = new URL("https://howtheyvote.eu/votes?q=chat+control");
+
+    const data = {
+      query: "chat control",
+      corrected_query: undefined,
+      total: 0,
+      page: 1,
+      page_size: 20,
+      has_prev: false,
+      has_next: false,
+      results: [],
+      facets: {},
+    };
+
+    render(<SearchResults url={url} data={data} />);
+
+    screen.getByText(/No results found/);
+    screen.getByRole("link", { name: "Share feedback" });
+  });
 });
