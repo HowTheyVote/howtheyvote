@@ -115,6 +115,7 @@ def map_vote(record: CompositeRecord) -> Vote:
         ),
         press_release_id=record.get("press_release"),
         oeil_summary_id=record.get("oeil_summary_id"),
+        keywords=record.chain("keywords"),
     )
 
 

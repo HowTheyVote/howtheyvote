@@ -195,6 +195,9 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     for topic in vote.topics:
         index_text(topic.label, "topics")
 
+    for keyword in vote.keywords:
+        index_text(keyword, "keywords")
+
     # Store date in slot for ranking and range filters
     date = serialize_sortable_value(vote.date)
     doc.add_value(field_to_slot("date"), date)
