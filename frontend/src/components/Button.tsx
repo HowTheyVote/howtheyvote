@@ -1,31 +1,34 @@
-import type { ComponentChildren, FunctionComponent, JSX } from "preact";
+import type { JSX } from "preact";
 import { bem } from "../lib/bem";
+
 import "./Button.css";
 
-type ButtonProps = Omit<JSX.ButtonHTMLAttributes, "size"> & {
+type ButtonProps<T extends "button" | "a"> = JSX.IntrinsicElements[T] & {
+  as?: "button" | "a";
   size?: "lg" | "sm";
   style?: "fill" | "block" | "ghost";
   className?: string;
-  children: ComponentChildren;
 };
 
-const Button: FunctionComponent<ButtonProps> = ({
+export default function Button<T extends "button" | "a">({
+  as = "button",
   size,
-  className,
-  children,
   style,
+  className,
   type = "button",
+  children,
   ...rest
-}: ButtonProps) => {
+}: ButtonProps<T>) {
+  const Component = as;
+
   return (
-    <button
-      type={type}
+    <Component
+      type={as === "button" ? type : undefined}
       className={`${bem("button", [size, style])} ${className || ""}`}
-      {...rest}
+      // biome-ignore lint/suspicious/noExplicitAny: There is no sensible way to avoid this cast
+      {...(rest as any)}
     >
       {children}
-    </button>
+    </Component>
   );
-};
-
-export default Button;
+}
