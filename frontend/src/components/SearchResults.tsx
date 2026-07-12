@@ -1,6 +1,9 @@
 import type { MemberVotesQueryResponse, VotesQueryResponse } from "../api";
 import { Island } from "../lib/islands";
+import { getSearchFeedbackFormUrl } from "../lib/links";
 import { SearchQuery } from "../lib/search";
+import Button from "./Button";
+import EmptyState from "./EmptyState";
 import Pagination from "./Pagination";
 import SearchActions from "./SearchActions";
 import Stack from "./Stack";
@@ -50,23 +53,44 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
         </div>
       )}
 
-      <VoteCards
-        groupByDate={!searchQuery.q && !searchQuery.hasFilters()}
-        votes={data.results}
-      >
-        {({ vote }: { vote: (typeof data)["results"][number] }) => (
-          <VoteCard
-            key={vote.id}
-            vote={vote}
-            thumb={
-              "position" in vote &&
-              thumb === "position" && (
-                <Thumb style="circle" position={vote.position} />
-              )
-            }
-          />
-        )}
-      </VoteCards>
+      {data.results.length === 0 && (
+        <EmptyState
+          action={
+            <Button
+              as="a"
+              href={getSearchFeedbackFormUrl(searchQuery.q || "")}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Share feedback
+            </Button>
+          }
+        >
+          <strong>No results found.</strong>
+          <br />
+          Let us know what you are searching for to help us improve search.
+        </EmptyState>
+      )}
+
+      {data.results.length > 0 && (
+        <VoteCards
+          groupByDate={!searchQuery.q && !searchQuery.hasFilters()}
+          votes={data.results}
+        >
+          {({ vote }: { vote: (typeof data)["results"][number] }) => (
+            <VoteCard
+              key={vote.id}
+              vote={vote}
+              thumb={
+                "position" in vote &&
+                thumb === "position" && (
+                  <Thumb style="circle" position={vote.position} />
+                )
+              }
+            />
+          )}
+        </VoteCards>
+      )}
 
       <Pagination
         next={data.has_next && searchQuery.setNextPage().toUrl()}
