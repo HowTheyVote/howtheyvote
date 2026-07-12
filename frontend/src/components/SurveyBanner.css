@@ -1,4 +1,4 @@
-.Banner {
+.survey-banner {
   position: relative;
   padding-block: var(--space-xs);
   padding-inline: var(--space-sm);
@@ -7,19 +7,19 @@
   font-size: var(--text-sm);
 }
 
-.Banner__wrapper {
+.survey-banner__wrapper {
   position: relative;
   /* Space reserved for close button */
   padding-inline-end: 1em;
 }
 
-.Banner strong,
-.Banner a {
+.survey-banner strong,
+.survey-banner a {
   font-weight: 500;
   color: var(--color-text);
 }
 
-.Banner__close {
+.survey-banner__close {
   position: absolute;
   top: 50%;
   right: -0.5em;
@@ -30,12 +30,12 @@
   border-radius: 50%;
 }
 
-.Banner__close:hover,
-.Banner__close:focus {
+.survey-banner__close:hover,
+.survey-banner__close:focus {
   background-color: hsla(var(--blue-h), var(--blue-s), var(--blue-l), 0.25);
 }
 
-.Banner__icon {
+.survey-banner__icon {
   display: block;
   width: 100%;
   height: 100%;
