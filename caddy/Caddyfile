@@ -96,10 +96,20 @@
 
 {$CADDY_SITE_ADDRESS} {
     rate_limit {
-        zone dynamic {
+        zone api_second {
             key {remote_host}
-            window 10s
-            events 5
+            window 1s
+            events 20
+            match {
+                path /api/*
+                path /api
+            }
+        }
+
+        zone api_minute {
+            key {remote_host}
+            window 60s
+            events 120
             match {
                 path /api/*
                 path /api
