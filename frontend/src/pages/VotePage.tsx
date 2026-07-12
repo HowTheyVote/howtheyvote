@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/node";
 import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
-import Callout from "../components/Callout";
+import Banner from "../components/Banner";
 import CopyrightLink from "../components/CopyrightLink";
 import DataWrapperLinkList from "../components/DatawrapperLinkList";
 import ExternalLinks from "../components/ExternalLinks";
@@ -83,12 +83,12 @@ export const VotePage: Page<Vote> = ({ data }) => {
           <PageNavItem href="#errors">Report an error</PageNavItem>
         </PageNav>
         {!data.is_main && (
-          <Callout>
+          <Banner>
             <p>
               This is a vote on an amendment! View the result of the{" "}
               <a href={`/votes/${main_vote?.id}`}>final vote</a>.
             </p>
-          </Callout>
+          </Banner>
         )}
         <Stack space="lg">
           <div id="result" className="px mt--lg">
