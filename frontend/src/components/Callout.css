@@ -1,0 +1,6 @@
+.callout {
+  padding: var(--space-xs);
+  background-color: var(--blue-lightest);
+  border: 1px solid var(--blue-light);
+  border-radius: var(--border-radius-sm);
+}

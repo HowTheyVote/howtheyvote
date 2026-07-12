@@ -1,9 +1,9 @@
 import type { ComponentChildren } from "preact";
 import { bem } from "../lib/bem";
 import { Island } from "../lib/islands";
-import SurveyBanner from "./SurveyBanner";
 import Footer from "./Footer";
 import Header from "./Header";
+import SurveyBanner from "./SurveyBanner";
 import Wrapper from "./Wrapper";
 
 import "./BaseLayout.css";

@@ -34,7 +34,11 @@ export default function SurveyBanner() {
         >
           Fill out survey
         </a>
-        <button type="button" className="survey-banner__close" onClick={onClose}>
+        <button
+          type="button"
+          className="survey-banner__close"
+          onClick={onClose}
+        >
           <span class="visually-hidden">Close</span>
           <Icon name="close" className="survey-banner__icon" />
         </button>
