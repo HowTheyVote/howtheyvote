@@ -52,6 +52,11 @@ updates:
     schedule:
       interval: "monthly"
 
+  - package-ecosystem: "docker"
+    directory: "/caddy"
+    schedule:
+      interval: "monthly"
+
   - package-ecosystem: "docker-compose"
     directory: "/"
     schedule:
