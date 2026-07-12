@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/node";
 import { getVote, type Vote } from "../api";
 import App from "../components/App";
 import BaseLayout from "../components/BaseLayout";
-import Callout from "../components/Callout";
+import Banner from "../components/Banner";
 import CopyrightLink from "../components/CopyrightLink";
 import DataWrapperLinkList from "../components/DatawrapperLinkList";
 import ExternalLinks from "../components/ExternalLinks";
@@ -92,43 +92,43 @@ export const VotePage: Page<Vote> = ({ data }) => {
           <PageNavItem href="#errors">Report an error</PageNavItem>
         </PageNav>
         {!data.is_main && (
-          <Callout>
+          <Banner>
             <p>
               This is a vote on an amendment! View the result of the{" "}
               <a href={`/votes/${main_vote?.id}`}>final vote</a>.
             </p>
-          </Callout>
+          </Banner>
         )}
         {isRejection && (
           <>
             {data.procedure?.type === "COD" &&
               data.procedure?.stage === "OLP_FIRST_READING" && (
-                <Callout>
+                <Banner>
                   <p>
                     This vote is about a proposal to reject a draft legislation.
                     If the proposal to reject secures a simple majority of votes
                     cast, the President of the European Parliament will ask for
                     the draft to be withdrawn.
                   </p>
-                </Callout>
+                </Banner>
               )}
             {data.procedure?.type === "COD" &&
               data.procedure?.stage === "OLP_SECOND_READING" && (
-                <Callout>
+                <Banner>
                   <p>
                     This vote is about a proposal to reject the Council’s
                     position. If at least 361 MEPs vote in favour of the
                     proposal, the legislative procedure ends.
                   </p>
-                </Callout>
+                </Banner>
               )}
             {data.procedure?.type === "COD" && !data.procedure?.stage && (
-              <Callout>
+              <Banner>
                 <p>
                   This vote is about a proposal to reject a legislative
                   proposal.
                 </p>
-              </Callout>
+              </Banner>
             )}
           </>
         )}

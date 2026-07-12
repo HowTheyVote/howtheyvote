@@ -1,15 +1,15 @@
 import type { ComponentChildren } from "preact";
 import Wrapper from "./Wrapper";
 
-import "./Callout.css";
+import "./Banner.css";
 
-type CalloutProps = {
+type BannerProps = {
   children?: ComponentChildren;
 };
 
-export default function Callout({ children }: CalloutProps) {
+export default function Banner({ children }: BannerProps) {
   return (
-    <div class="callout px">
+    <div class="banner px">
       <Wrapper>{children}</Wrapper>
     </div>
   );
