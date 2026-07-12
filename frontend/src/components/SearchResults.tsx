@@ -53,23 +53,8 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
         </div>
       )}
 
-      {data.results.length === 0 && (
-        <EmptyState
-          action={
-            <Button
-              as="a"
-              href={getSearchFeedbackFormUrl(searchQuery.q || "")}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              Share feedback
-            </Button>
-          }
-        >
-          <strong>No results found.</strong>
-          <br />
-          Let us know what you are searching for to help us improve search.
-        </EmptyState>
+      {data.total === 0 && (
+        <SearchFeedback title="No results found." query={searchQuery.q} />
       )}
 
       {data.results.length > 0 && (
@@ -92,11 +77,41 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
         </VoteCards>
       )}
 
-      <Pagination
-        next={data.has_next && searchQuery.setNextPage().toUrl()}
-        prev={data.has_prev && searchQuery.setPrevPage().toUrl()}
-      />
+      {(data.has_next || data.has_prev) && (
+        <Pagination
+          next={data.has_next && searchQuery.setNextPage().toUrl()}
+          prev={data.has_prev && searchQuery.setPrevPage().toUrl()}
+        />
+      )}
+
+      {data.total > 0 && (
+        <SearchFeedback
+          title="Not finding what you are looking for?"
+          query={searchQuery.q}
+        />
+      )}
     </Stack>
+  );
+}
+
+function SearchFeedback({ title, query }: { title: string; query?: string }) {
+  return (
+    <EmptyState
+      action={
+        <Button
+          as="a"
+          href={getSearchFeedbackFormUrl(query || "")}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          Share feedback
+        </Button>
+      }
+    >
+      <strong>{title}</strong>
+      <br />
+      Let us know what you are searching for to help us improve search.
+    </EmptyState>
   );
 }
 
