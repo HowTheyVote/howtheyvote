@@ -834,6 +834,7 @@ def _format_related(votes: Iterable[Vote]) -> list[RelatedVoteDict]:
                 "amendment_subject": vote.amendment_subject,
                 "amendment_number": vote.amendment_number,
                 "amendment_authors": authors,
+                "amendment_url": vote.amendment_url,
                 "result": vote.result,
             }
         )
@@ -898,6 +899,15 @@ def _format_links(vote: Vote) -> list[LinkDict]:
                 "title": "Texts adopted",
                 "description": "Texts adopted during the plenary session, including changes from amendments.",  #  noqa: E501
                 "url": doceo_texts_adopted_url(vote.texts_adopted_reference),
+            }
+        )
+
+    if vote.amendment_url:
+        links.append(
+            {
+                "title": "Amendment",
+                "description": "Text of the amendment voted on. The linked document may also contain other amendments.",  #  noqa: E501
+                "url": vote.amendment_url,
             }
         )
 
