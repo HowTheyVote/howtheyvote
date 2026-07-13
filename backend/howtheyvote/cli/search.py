@@ -8,7 +8,7 @@ from sqlalchemy.exc import NoResultFound
 from ..api.query import SearchQuery
 from ..db import Session
 from ..models import Fragment, Vote
-from ..search import get_index, prefix_to_field
+from ..search import field_to_prefix, get_index, prefix_to_field
 from ..store import (
     Aggregator,
     index_records,
@@ -58,6 +58,19 @@ def terms(vote_id: int) -> None:
                 click.echo(term)
 
             click.echo()
+
+
+@search.command()
+@click.argument("vote_id", type=int)
+@click.argument("field", type=str)
+@click.argument("term", type=str)
+def positions(vote_id: int, field: str, term: str) -> None:
+    """Returns a list of positions for the given vote, field, and term."""
+    prefix = field_to_prefix(field)
+
+    with get_index(Vote) as index:
+        for position in index.positionlist(vote_id, f"{prefix}{term}"):
+            click.echo(position)
 
 
 @search.command()
