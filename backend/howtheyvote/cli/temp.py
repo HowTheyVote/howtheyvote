@@ -6,6 +6,7 @@ from sqlalchemy import func, select
 from structlog import get_logger
 
 from ..analysis import (
+    MainVoteAnalyzer,
     PressReleaseAnalyzer,
     PressReleaseVotePositionCountsAnalyzer,
     TopicsAnalyzer,
@@ -291,6 +292,18 @@ def vote_groups() -> None:
             analyzer = VoteGroupsAnalyzer(session_start_date=session.start_date, votes=votes)
             writer.add(analyzer.run())
             writer.flush()
+
+
+@temp.command()
+def main_votes() -> None:
+    query = select(Vote)
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            writer.add(MainVoteAnalyzer(vote.id, vote.description, vote.title).run())
+        writer.flush()
 
 
 @temp.command()
