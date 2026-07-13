@@ -73,6 +73,12 @@ export const VotePage: Page<Vote> = ({ data }) => {
   // This will not work in all cases, but might be good enough in combination with the amendment condition above.
   const main_vote = data.related.find((related_vote) => related_vote.is_main);
 
+  const isRejection =
+    data.is_main &&
+    data.procedure?.type === "COD" &&
+    (data.description === "Rejet" ||
+      data.description?.startsWith("Proposition de rejet"));
+
   return (
     <App
       title={[data.display_title, "Vote Results"]}
@@ -98,6 +104,40 @@ export const VotePage: Page<Vote> = ({ data }) => {
               <a href={`/votes/${main_vote?.id}`}>final vote</a>.
             </p>
           </Callout>
+        )}
+        {isRejection && (
+          <>
+            {data.procedure?.type === "COD" &&
+              data.procedure?.stage === "OLP_FIRST_READING" && (
+                <Callout>
+                  <p>
+                    This vote is about a proposal to reject a draft legislation.
+                    If the proposal to reject secures a simple majority of votes
+                    cast, the President of the European Parliament will ask the
+                    Commission to withdraw the draft.
+                  </p>
+                </Callout>
+              )}
+            {data.procedure?.type === "COD" &&
+              data.procedure?.stage === "OLP_SECOND_READING" && (
+                <Callout>
+                  <p>
+                    This vote is about a proposal to reject the Council’s
+                    position. If the proposal to reject secures an absolute
+                    majority of Parliament’s component members, the legislative
+                    procedure ends.
+                  </p>
+                </Callout>
+              )}
+            {data.procedure?.type === "COD" && !data.procedure?.stage && (
+              <Callout>
+                <p>
+                  This vote is about a proposal to reject a legislative
+                  proposal.
+                </p>
+              </Callout>
+            )}
+          </>
         )}
         <Stack space="lg">
           <div id="result" className="px mt--lg">
