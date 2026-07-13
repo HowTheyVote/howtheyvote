@@ -132,6 +132,7 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     # prefixes for all fields. To workaround this limitation, we create a second term
     # generator, that we use to generate terms only for the spelling dictionary, but
     # not for the actual index.
+    # See: https://getting-started-with-xapian.readthedocs.io/en/latest/howtos/spelling.html#prefixed-terms
     spelling_generator = TermGenerator()
     spelling_generator.set_database(index)
     spelling_generator.set_stopper(get_stopper())
