@@ -45,7 +45,7 @@ FROM python:3.14-alpine3.24
 
 ARG PYTHON_VERSION
 
-RUN apk --update add \
+RUN apk add --no-cache \
     build-base \
     libffi-dev \
     # TODO: Switch back to LibreSSL once conflicts on Alpine 3.17 are resolved.
@@ -60,7 +60,7 @@ RUN apk --update add \
     sqlite \
     tmux
 
-RUN pip install poetry
+RUN pip install --no-cache-dir poetry
 
 WORKDIR /howtheyvote/backend
 
