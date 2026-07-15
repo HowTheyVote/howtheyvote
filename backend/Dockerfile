@@ -24,7 +24,9 @@ RUN wget -q https://oligarchy.co.uk/xapian/${XAPIAN_VERSION}/xapian-core-${XAPIA
     && ./configure --prefix=/usr/local \
     && make -j$(nproc) \
     && make install \
-    && ldconfig /usr/local/lib
+    && ldconfig /usr/local/lib \
+    && cd /build \
+    && rm -rf xapian-core-${XAPIAN_VERSION} xapian-core-${XAPIAN_VERSION}.tar.xz
 
 # Sphinx is used to build the Xapian docs. We don’t need the docs, but there’s no way
 # to disable building the docs when building the Python bindings.
@@ -35,7 +37,9 @@ RUN wget -q https://oligarchy.co.uk/xapian/${XAPIAN_VERSION}/xapian-bindings-${X
     && cd xapian-bindings-${XAPIAN_VERSION} \
     && ./configure --with-python3 PYTHON=/usr/local/bin/python3 \
     && make -j$(nproc) \
-    && make install
+    && make install \
+    && cd /build \
+    && rm -rf xapian-bindings-${XAPIAN_VERSION} xapian-bindings-${XAPIAN_VERSION}.tar.xz
 
 FROM python:3.14-alpine3.24
 
