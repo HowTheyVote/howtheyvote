@@ -30,6 +30,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - run: head -n 25 ./backend/howtheyvote/data/committees.json
+
       - name: Update committees
         run: |
           docker run \
@@ -37,6 +39,8 @@ jobs:
             --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
             htv dev load-committees
+
+      - run: head -n 25 ./backend/howtheyvote/data/committees.json
 
       - name: Update countries
         run: |
