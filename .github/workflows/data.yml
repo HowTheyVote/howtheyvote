@@ -1,6 +1,7 @@
 name: Update JSON data
 
 on:
+  pull_request: {}
   workflow_dispatch: {}
   schedule:
     - cron: "0 0 1 * *" # every month on the 1st at 0:00
