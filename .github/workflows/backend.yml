@@ -7,58 +7,36 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./backend
-
-    env:
-      # Make Python system packages (such as Xapian) accessible
-      PYTHONPATH: /usr/lib/python3/dist-packages
+    runs-on: ubuntu-26.04-arm
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
 
-      - name: Install Xapian
-        run: sudo apt-get -y -q install python3-xapian
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
 
-      # Stopwords are included in the Alpine Xapian package, but for some reason they are not included
-      # in the Ubuntu package. This downloads them from the same source as the Alpine package:
-      # https://gitlab.alpinelinux.org/alpine/aports/-/blob/3.19-stable/community/xapian-core/APKBUILD#L12
-      - name: Download stopwords
-        working-directory: ${{ runner.temp }}
-        run: |
-          curl -o xapian-core-1.4.26.tar.xz https://oligarchy.co.uk/xapian/1.4.26/xapian-core-1.4.26.tar.xz
-          tar -xf xapian-core-1.4.26.tar.xz
-          mkdir -p /usr/share/xapian-core/stopwords
-          cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
-
-      - name: Install poetry
-        run: pipx install poetry==2.1.4
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Build backend image
+        uses: docker/build-push-action@v7
         with:
-          python-version: "3.12"
-          cache: "poetry"
-          cache-dependency-path: "./backend/poetry.lock"
-
-      - name: Install dependencies
-        run: poetry install
+          context: ./backend
+          platforms: linux/arm64
+          load: true
+          tags: backend
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Check formatting
-        run: make format-check
+        run: docker run --rm backend make format-check
 
       - name: Run linter
-        run: make lint
+        run: docker run --rm backend make lint
 
       - name: Run types
-        run: make typecheck
+        run: docker run --rm backend make typecheck
 
       - name: Run tests
-        run: make test
+        run: docker run --rm --volume=./database.sqlite3:/howtheyvote/database/database.sqlite3 backend make test
         env:
           HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
           HTV_SEARCH_INDEX_DIR: "${{ github.workspace }}/storage/index"
