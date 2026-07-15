@@ -36,7 +36,6 @@ jobs:
         run: |
           docker run \
             --rm \
-            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
             bash -c 'htv dev load-committees && head -n 25 /howtheyvote/backend/data/committees.json'
 
