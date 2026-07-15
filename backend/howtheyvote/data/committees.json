@@ -1,5 +1,13 @@
 [
   {
+    "code": "AFCO",
+    "official_label": "Committee on Constitutional Affairs",
+    "label": "Constitutional Affairs",
+    "abbreviation": "AFCO",
+    "start_date": "1999-07-20",
+    "end_date": null
+  },
+  {
     "code": "AFCO_1982_0",
     "official_label": "Committee on Institutional Affairs",
     "label": "Institutional Affairs",
