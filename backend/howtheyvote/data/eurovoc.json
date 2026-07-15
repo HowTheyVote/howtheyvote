@@ -984,6 +984,25 @@
     "geo_area_code": null
   },
   {
+    "id": "10407",
+    "label": "digital euro",
+    "alt_labels": [
+      "CBDC",
+      "central bank digital currency"
+    ],
+    "related_ids": [
+      "2216",
+      "3248",
+      "c_d1f03d01"
+    ],
+    "broader_ids": [
+      "665"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
     "id": "1041",
     "label": "structural fluctuation",
     "alt_labels": [],
@@ -6815,6 +6834,22 @@
     "geo_area_code": null
   },
   {
+    "id": "13649",
+    "label": "European Union Drugs Agency",
+    "alt_labels": [
+      "EUDA"
+    ],
+    "related_ids": [],
+    "broader_ids": [
+      "5769"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [
+      "5757"
+    ],
+    "geo_area_code": null
+  },
+  {
     "id": "1365",
     "label": "arms industry",
     "alt_labels": [],
@@ -7977,8 +8012,9 @@
   },
   {
     "id": "1426",
-    "label": "computer systems",
+    "label": "computer science",
     "alt_labels": [
+      "computer systems",
       "informatics"
     ],
     "related_ids": [
@@ -9766,6 +9802,7 @@
     "related_ids": [],
     "broader_ids": [
       "2106",
+      "36714",
       "6205",
       "956"
     ],
@@ -14232,7 +14269,11 @@
   {
     "id": "1770",
     "label": "malnutrition",
-    "alt_labels": [],
+    "alt_labels": [
+      "overnutrition",
+      "severe acute malnutrition",
+      "undernutrition"
+    ],
     "related_ids": [
       "2318"
     ],
@@ -16544,8 +16585,7 @@
       "2106",
       "2119",
       "4069",
-      "6205",
-      "7207"
+      "6205"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -22217,6 +22257,7 @@
       "terms of payment"
     ],
     "related_ids": [
+      "10407",
       "4491"
     ],
     "broader_ids": [
@@ -23291,7 +23332,6 @@
       "37333",
       "4789",
       "5264",
-      "5430",
       "5618",
       "7185",
       "7220"
@@ -27546,6 +27586,7 @@
     "alt_labels": [],
     "related_ids": [
       "190",
+      "31800",
       "8466"
     ],
     "broader_ids": [
@@ -37557,6 +37598,7 @@
       "412",
       "413",
       "6255",
+      "77629",
       "c_ef31184b"
     ],
     "broader_ids": [
@@ -39617,6 +39659,18 @@
     "geo_area_code": null
   },
   {
+    "id": "31724",
+    "label": "housing crisis",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [
+      "2496"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
     "id": "3173",
     "label": "designation of origin",
     "alt_labels": [
@@ -39752,6 +39806,27 @@
     "related_ids": [],
     "broader_ids": [
       "491"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "31800",
+    "label": "digital sovereignty",
+    "alt_labels": [
+      "cyber sovereignty",
+      "data sovereignty",
+      "tech sovereignty",
+      "technological sovereignty"
+    ],
+    "related_ids": [
+      "2506",
+      "4238",
+      "8466"
+    ],
+    "broader_ids": [
+      "7219"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -40878,6 +40953,7 @@
       "self-service bank"
     ],
     "related_ids": [
+      "10407",
       "1971",
       "3026",
       "6901",
@@ -42765,7 +42841,8 @@
       "female circumcision"
     ],
     "related_ids": [
-      "7135"
+      "7135",
+      "73670"
     ],
     "broader_ids": [
       "2690"
@@ -46813,6 +46890,22 @@
     ],
     "broader_ids": [
       "1422"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "35859",
+    "label": "menopause",
+    "alt_labels": [
+      "change",
+      "change of life",
+      "climacteric"
+    ],
+    "related_ids": [],
+    "broader_ids": [
+      "73670"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -58309,7 +58402,8 @@
     "label": "national sovereignty",
     "alt_labels": [],
     "related_ids": [
-      "1346"
+      "1346",
+      "31800"
     ],
     "broader_ids": [
       "567"
@@ -63393,12 +63487,12 @@
   },
   {
     "id": "4461",
-    "label": "East Timor",
+    "label": "Timor-Leste",
     "alt_labels": [
       "Democratic Republic of East Timor",
       "Democratic Republic of Timor-Leste",
-      "Portuguese Timor",
-      "Timor-Leste"
+      "East Timor",
+      "Portuguese Timor"
     ],
     "related_ids": [],
     "broader_ids": [
@@ -63687,7 +63781,6 @@
       "3355",
       "4306",
       "4474",
-      "5757",
       "5914",
       "c_058697c2"
     ],
@@ -66275,7 +66368,7 @@
   },
   {
     "id": "4595",
-    "label": "Unesco",
+    "label": "UNESCO",
     "alt_labels": [
       " Scientific and Cultural Organisation",
       "United Nations Educational"
@@ -69659,7 +69752,6 @@
       "196",
       "2275",
       "37333",
-      "5430",
       "7185",
       "7220"
     ],
@@ -73468,8 +73560,7 @@
       "2106",
       "2119",
       "2200",
-      "6205",
-      "7207"
+      "6205"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -74456,7 +74547,8 @@
       "2843",
       "3284",
       "3597",
-      "7135"
+      "7135",
+      "73670"
     ],
     "broader_ids": [
       "965"
@@ -77482,6 +77574,24 @@
     "geo_area_code": null
   },
   {
+    "id": "53220",
+    "label": "staff relocation",
+    "alt_labels": [
+      "employee relocation",
+      "personnel relocation",
+      "relocation of staff"
+    ],
+    "related_ids": [
+      "82"
+    ],
+    "broader_ids": [
+      "5475"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
     "id": "5323",
     "label": "twinning",
     "alt_labels": [
@@ -78107,7 +78217,10 @@
   {
     "id": "5357",
     "label": "political centre",
-    "alt_labels": [],
+    "alt_labels": [
+      "centrism",
+      "centrist"
+    ],
     "related_ids": [],
     "broader_ids": [
       "4436"
@@ -78645,6 +78758,18 @@
     "related_ids": [],
     "broader_ids": [
       "3743"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "53879",
+    "label": "early modern history",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [
+      "1245"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -79386,13 +79511,14 @@
     ],
     "related_ids": [
       "2275",
-      "4789",
-      "7207"
+      "4789"
     ],
     "broader_ids": [
       "2170"
     ],
-    "replaced_by_ids": [],
+    "replaced_by_ids": [
+      "79533"
+    ],
     "replaces_ids": [],
     "geo_area_code": null
   },
@@ -80437,6 +80563,24 @@
     "related_ids": [],
     "broader_ids": [
       "5493"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "54927",
+    "label": "BRICS",
+    "alt_labels": [
+      "BRIC",
+      "BRICS Plus",
+      "BRICS+"
+    ],
+    "related_ids": [
+      "c_964c9649"
+    ],
+    "broader_ids": [
+      "2188"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -85137,7 +85281,9 @@
     "broader_ids": [
       "5769"
     ],
-    "replaced_by_ids": [],
+    "replaced_by_ids": [
+      "13649"
+    ],
     "replaces_ids": [],
     "geo_area_code": null
   },
@@ -93010,7 +93156,7 @@
     "id": "62714",
     "label": "coaching in the workplace",
     "alt_labels": [
-      "carrier coaching",
+      "career coaching",
       "coaching",
       "mentoring",
       "tutor",
@@ -94399,7 +94545,8 @@
     "alt_labels": [
       "internal reassignment",
       "internal transfer",
-      "job reassignment"
+      "job reassignment",
+      "redeployment"
     ],
     "related_ids": [
       "3325",
@@ -94449,6 +94596,9 @@
     "id": "6359",
     "label": "non-participating country (euro area)",
     "alt_labels": [
+      "non-euro area Member State",
+      "non-euro area country",
+      "non-participating Member State",
       "non-participating country",
       "out country",
       "pre-in country"
@@ -94486,7 +94636,10 @@
     "id": "6360",
     "label": "participating country (euro area)",
     "alt_labels": [
+      "euro area Member State",
+      "euro area country",
       "in country",
+      "participating Member State",
       "participating country"
     ],
     "related_ids": [],
@@ -100607,11 +100760,11 @@
     "alt_labels": [
       "North American Free Trade Agreement countries"
     ],
-    "related_ids": [
-      "5430"
-    ],
+    "related_ids": [],
     "broader_ids": [],
-    "replaced_by_ids": [],
+    "replaced_by_ids": [
+      "73283"
+    ],
     "replaces_ids": [],
     "geo_area_code": null
   },
@@ -101101,6 +101254,18 @@
     "geo_area_code": null
   },
   {
+    "id": "73283",
+    "label": "USMCA countries",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [],
+    "replaced_by_ids": [],
+    "replaces_ids": [
+      "7207"
+    ],
+    "geo_area_code": null
+  },
+  {
     "id": "733",
     "label": "office worker",
     "alt_labels": [
@@ -101539,6 +101704,27 @@
     ],
     "broader_ids": [
       "1697"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "73670",
+    "label": "women's health",
+    "alt_labels": [
+      "female health",
+      "girl's health",
+      "the health of women",
+      "woman's health"
+    ],
+    "related_ids": [
+      "3353",
+      "5159",
+      "86576"
+    ],
+    "broader_ids": [
+      "5764"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -102872,6 +103058,23 @@
     ],
     "broader_ids": [
       "4422"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "77629",
+    "label": "early warning system",
+    "alt_labels": [],
+    "related_ids": [
+      "3057",
+      "c_5b447e3a",
+      "c_af502da0",
+      "c_ef31184b"
+    ],
+    "broader_ids": [
+      "4045"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -104734,6 +104937,22 @@
     "geo_area_code": null
   },
   {
+    "id": "79533",
+    "label": "United States-Mexico-Canada Agreement",
+    "alt_labels": [
+      "USMCA"
+    ],
+    "related_ids": [],
+    "broader_ids": [
+      "2170"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [
+      "5430"
+    ],
+    "geo_area_code": null
+  },
+  {
     "id": "7954",
     "label": "European Union Satellite Centre",
     "alt_labels": [
@@ -105869,6 +106088,7 @@
     "label": "working conditions",
     "alt_labels": [],
     "related_ids": [
+      "05322",
       "1443",
       "2082",
       "2824",
@@ -108608,7 +108828,8 @@
     "label": "public policy",
     "alt_labels": [],
     "related_ids": [
-      "2506"
+      "2506",
+      "31800"
     ],
     "broader_ids": [
       "77"
@@ -109997,7 +110218,9 @@
     "alt_labels": [
       "menstrual material"
     ],
-    "related_ids": [],
+    "related_ids": [
+      "73670"
+    ],
     "broader_ids": [
       "26526"
     ],
@@ -110410,7 +110633,6 @@
       "2200",
       "36714",
       "6205",
-      "7207",
       "8366"
     ],
     "replaced_by_ids": [],
@@ -111231,6 +111453,18 @@
     "related_ids": [],
     "broader_ids": [
       "1538"
+    ],
+    "replaced_by_ids": [],
+    "replaces_ids": [],
+    "geo_area_code": null
+  },
+  {
+    "id": "93085",
+    "label": "agroecology",
+    "alt_labels": [],
+    "related_ids": [],
+    "broader_ids": [
+      "6308"
     ],
     "replaced_by_ids": [],
     "replaces_ids": [],
@@ -115124,6 +115358,7 @@
       "4117",
       "413",
       "6375",
+      "77629",
       "93661",
       "99",
       "c_2e08d60f",
@@ -117043,11 +117278,15 @@
       " China and South Africa",
       " India",
       " Russia",
+      "BRIC countries",
       "BRICS",
+      "BRICS Plus countries",
+      "BRICS+ countries",
       "Brazil"
     ],
     "related_ids": [
-      "3080"
+      "3080",
+      "54927"
     ],
     "broader_ids": [],
     "replaced_by_ids": [],
@@ -117843,7 +118082,8 @@
       "EU rapid alert system"
     ],
     "related_ids": [
-      "2836"
+      "2836",
+      "77629"
     ],
     "broader_ids": [
       "4045"
@@ -118952,6 +119192,7 @@
     "label": "Eurosystem",
     "alt_labels": [],
     "related_ids": [
+      "10407",
       "665"
     ],
     "broader_ids": [
@@ -119953,14 +120194,16 @@
       "disaster risk",
       "disaster risk management",
       "disaster risk reduction",
-      "integrative risk management"
+      "integrative risk management",
+      "\u0438\u043d\u0442\u0435\u0433\u0440\u0430\u0442\u0438\u0432\u043d\u043e \u0443\u043f\u0440\u0430\u0432\u0443\u0432\u0430\u045a\u0435 \u0441\u043e \u0440\u0438\u0437\u0438\u043a\u043e\u0442"
     ],
     "related_ids": [
       "3057",
       "3076",
       "4074",
       "412",
-      "413"
+      "413",
+      "77629"
     ],
     "broader_ids": [
       "4045"
