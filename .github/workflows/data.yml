@@ -1,6 +1,7 @@
 name: Update JSON data
 
 on:
+  pull_request: {}
   workflow_dispatch: {}
   schedule:
     - cron: "0 0 1 * *" # every month on the 1st at 0:00
@@ -29,17 +30,41 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - run: head -n 25 ./backend/howtheyvote/data/committees.json
+
       - name: Update committees
-        run: docker run --rm backend htv dev load-committees
+        run: |
+          docker run \
+            --rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/howtheyvote/data \
+            backend \
+            bash -c 'htv dev load-committees && head -n 25 /howtheyvote/backend/howtheyvote/data/committees.json'
+
+      - run: head -n 25 ./backend/howtheyvote/data/committees.json
 
       - name: Update countries
-        run: docker run --rm backend htv dev load-countries
+        run: |
+          docker run \
+            --rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-countries
 
       - name: Update EuroVoc concepts
-        run: docker run --rm backend htv dev load-eurovoc
+        run: |
+          docker run \
+            --rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-eurovoc
 
       - name: Update political groups
-        run: docker run --rm backend htv dev load-groups
+        run: |
+          docker run \
+            --rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-groups
 
       - name: Send Pushover notification
         if: failure()
