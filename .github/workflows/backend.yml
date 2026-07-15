@@ -37,6 +37,3 @@ jobs:
 
       - name: Run tests
         run: docker run --rm --env HTV_BACKEND_DATABASE_URI=sqlite:// backend make test
-        env:
-          HTV_BACKEND_DATABASE_URI: "sqlite:///${{ github.workspace }}/storage/database/database.sqlite3"
-          HTV_SEARCH_INDEX_DIR: "${{ github.workspace }}/storage/index"
