@@ -33,7 +33,7 @@ jobs:
       - name: Update committees
         run: |
           docker run \
-            -rm \
+            --rm \
             --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
             htv dev load-committees
@@ -41,7 +41,7 @@ jobs:
       - name: Update countries
         run: |
           docker run \
-            -rm \
+            --rm \
             --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
             htv dev load-countries
@@ -49,7 +49,7 @@ jobs:
       - name: Update EuroVoc concepts
         run: |
           docker run \
-            -rm \
+            --rm \
             --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
             htv dev load-eurovoc
@@ -57,7 +57,7 @@ jobs:
       - name: Update political groups
         run: |
           docker run \
-            -rm \
+            --rm \
             --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
             htv dev load-groups
