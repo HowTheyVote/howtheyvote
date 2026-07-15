@@ -60,6 +60,15 @@ RUN apk add --no-cache \
     sqlite \
     tmux
 
+# Copy Xapian and the Python bindings from the builder stage
+COPY --from=builder /usr/local/lib/libxapian.so* /usr/local/lib/
+COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian
+COPY --from=builder /usr/local/share/xapian-core/stopwords/english.list /usr/local/share/xapian-core/stopwords/english.list
+RUN ldconfig /usr/local/lib
+
+# Make Python Xapian package accessible
+ENV PYTHONPATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
+
 RUN pip install --no-cache-dir poetry
 
 WORKDIR /howtheyvote/backend
@@ -82,14 +91,5 @@ RUN poetry install --only-root
 ENV TZ=UTC
 ENV ALEMBIC_CONFIG=./howtheyvote/alembic/alembic.ini
 ENV PATH="/howtheyvote/backend/.venv/bin:$PATH"
-
-# Copy Xapian and the Python bindings from the builder stage
-COPY --from=builder /usr/local/lib/libxapian.so* /usr/local/lib/
-COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian
-COPY --from=builder /usr/local/share/xapian-core/stopwords/english.list /usr/local/share/xapian-core/stopwords/english.list
-RUN ldconfig /usr/local/lib
-
-# Make Python Xapian package accessible
-ENV PYTHONPATH=/usr/local/lib/python${PYTHON_VERSION}/site-packages
 
 CMD ["gunicorn", "-b", "[::]:5000", "--workers=5", "--forwarded-allow-ips=*", "howtheyvote.wsgi:app"]
