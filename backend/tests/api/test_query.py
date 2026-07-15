@@ -287,6 +287,33 @@ def test_search_query_handle_synonyms(db_session, search_index, mocker):
     assert response["results"][0].id == 1
 
 
+def test_search_query_handle_phrase(db_session, search_index):
+    votes = [
+        Vote(
+            id=1,
+            is_main=True,
+            title="foo bar baz",
+            timestamp=datetime.datetime(2024, 1, 1),
+        ),
+        Vote(
+            id=2,
+            is_main=True,
+            title="foo baz",
+            timestamp=datetime.datetime(2024, 1, 2),
+        ),
+    ]
+
+    db_session.add_all(votes)
+    db_session.commit()
+    index_search(Vote, votes)
+
+    response = SearchQuery(Vote).query("foo baz").handle()
+    assert response["total"] == 2
+
+    response = SearchQuery(Vote).query('"foo baz"').handle()
+    assert response["total"] == 1
+
+
 def test_search_query_handle_pagination(votes):
     response = SearchQuery(Vote).page(1).handle()
     assert response["total"] == 3
