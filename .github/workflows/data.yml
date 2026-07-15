@@ -30,16 +30,36 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Update committees
-        run: docker run --rm backend htv dev load-committees
+        run: |
+          docker run \
+            -rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-committees
 
       - name: Update countries
-        run: docker run --rm backend htv dev load-countries
+        run: |
+          docker run \
+            -rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-countries
 
       - name: Update EuroVoc concepts
-        run: docker run --rm backend htv dev load-eurovoc
+        run: |
+          docker run \
+            -rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-eurovoc
 
       - name: Update political groups
-        run: docker run --rm backend htv dev load-groups
+        run: |
+          docker run \
+            -rm \
+            --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
+            backend \
+            htv dev load-groups
 
       - name: Send Pushover notification
         if: failure()
