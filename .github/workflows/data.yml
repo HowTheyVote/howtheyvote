@@ -38,7 +38,7 @@ jobs:
             --rm \
             --volume=./backend/howtheyvote/data:/howtheyvote/backend/data \
             backend \
-            htv dev load-committees
+            bash -c 'htv dev load-committees && /howtheyvote/backend/data/committees.json'
 
       - run: head -n 25 ./backend/howtheyvote/data/committees.json
 
