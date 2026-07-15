@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     defaults:
       run:
@@ -35,15 +35,15 @@ jobs:
           mkdir -p /usr/share/xapian-core/stopwords
           cp xapian-core-1.4.26/languages/stopwords/english.list /usr/share/xapian-core/stopwords/english.list
 
-      - name: Install poetry
-        run: pipx install poetry==2.1.4
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.13"
+          python-version: "3.14"
           cache: "poetry"
           cache-dependency-path: "./backend/poetry.lock"
+
+      - name: Install poetry
+        run: pipx install poetry==2.1.4
 
       - name: Install dependencies
         run: poetry install
