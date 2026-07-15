@@ -1,12 +1,10 @@
-ARG ALPINE_VERSION=3.24
+# Update this build arg whenever updating the Python base image
 ARG PYTHON_VERSION=3.14
 ARG XAPIAN_VERSION=2.0.0
 
-FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION} AS builder
+# Base images aren't parameterized because that breaks Dependabot updates
+FROM python:3.14-alpine3.24 AS builder
 
-# Redeclare to make global build args available in stage
-ARG ALPINE_VERSION
-ARG PYTHON_VERSION
 ARG XAPIAN_VERSION
 
 RUN apk add --no-cache \
@@ -39,11 +37,9 @@ RUN wget -q https://oligarchy.co.uk/xapian/${XAPIAN_VERSION}/xapian-bindings-${X
     && make -j$(nproc) \
     && make install
 
-FROM python:${PYTHON_VERSION}-alpine${ALPINE_VERSION}
+FROM python:3.14-alpine3.24
 
-ARG ALPINE_VERSION
 ARG PYTHON_VERSION
-ARG XAPIAN_VERSION
 
 RUN apk --update add \
     build-base \
