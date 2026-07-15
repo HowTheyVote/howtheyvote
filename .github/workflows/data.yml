@@ -33,6 +33,7 @@ jobs:
       - name: Start Docker container
         run: |
           docker run \
+          --detach \
           --name=data \
           --volume=./backend/howtheyvote/data:/howtheyvote/backend/howtheyvote/data \
           backend \
