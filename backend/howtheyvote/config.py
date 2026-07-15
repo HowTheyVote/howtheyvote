@@ -30,7 +30,7 @@ SEARCH_INDEX_PREFIX = env.get("HTV_SEARCH_INDEX_PREFIX", None)
 SEARCH_INDEX_DIR = env.get("HTV_SEARCH_INDEX_DIR", "/howtheyvote/index")
 
 # The Alpine package `xapian-core` installs stop word lists in this location
-SEARCH_STOPWORDS_PATH = "/usr/share/xapian-core/stopwords/english.list"
+SEARCH_STOPWORDS_PATH = "/usr/local/share/xapian-core/stopwords/english.list"
 
 # Pushover
 PUSHOVER_API_TOKEN = env.get("PUSHOVER_API_TOKEN")
