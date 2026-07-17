@@ -41,9 +41,15 @@ def temp() -> None:
 
 
 @temp.command()
-def sharepics() -> None:
-    """Generate share pictures for all votes."""
-    votes = Session.execute(select(Vote), execution_options={"yield_per": 500}).scalars()
+@click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), default=None)
+def sharepics(date: datetime.datetime) -> None:
+    """Generate share pictures for all votes, or votes held on --date when specified."""
+    query = select(Vote)
+
+    if date is not None:
+        query = query.where(Vote.date == date.date())
+
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
 
     for vote in votes:
         try:
