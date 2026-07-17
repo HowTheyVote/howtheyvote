@@ -11,9 +11,10 @@ import "./VoteHeader.css";
 
 type VoteHeaderProps = {
   vote: Vote;
+  showSnippet: boolean;
 };
 
-export default function VoteHeader({ vote }: VoteHeaderProps) {
+export default function VoteHeader({ vote, showSnippet }: VoteHeaderProps) {
   // Sometimes, vote titles contain non-breaking spaces. In many cases these
   // do not work well for large headings, especially on small screens
   const title = vote.display_title?.replace(/\u00A0/g, " ");
@@ -32,7 +33,7 @@ export default function VoteHeader({ vote }: VoteHeaderProps) {
               {vote.description && ` · ${vote.description}`}
             </strong>
           </p>
-          {vote.snippet && (
+          {showSnippet && vote.snippet && (
             <>
               <div
                 class="vote-header__summary"
