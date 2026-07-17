@@ -35,7 +35,7 @@ RUN pip install --no-cache-dir sphinx docutils
 RUN wget -q https://oligarchy.co.uk/xapian/${XAPIAN_VERSION}/xapian-bindings-${XAPIAN_VERSION}.tar.xz \
     && tar xf xapian-bindings-${XAPIAN_VERSION}.tar.xz \
     && cd xapian-bindings-${XAPIAN_VERSION} \
-    && ./configure --with-python3 PYTHON=/usr/local/bin/python3 \
+    && ./configure --with-python3 PYTHON=/usr/local/bin/python3 LDFLAGS="-Wl,-rpath,/usr/local/lib" \
     && make -j$(nproc) \
     && make install \
     && cd /build \
@@ -49,7 +49,6 @@ RUN apk add --no-cache libstdc++ bash less make sqlite tmux
 
 # Copy Xapian and the Python bindings from the builder stage
 COPY --from=builder /usr/local/lib/libxapian.so* /usr/local/lib/
-COPY --from=builder /usr/lib/libpython${PYTHON_VERSION}.so.1.0 /usr/lib/
 COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian
 COPY --from=builder /usr/local/share/xapian-core/stopwords/english.list /usr/local/share/xapian-core/stopwords/english.list
 RUN ldconfig /usr/local/lib
