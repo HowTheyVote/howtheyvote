@@ -85,7 +85,7 @@ export const VotePage: Page<Vote> = ({ data }) => {
       head={<MetaTags vote={data} />}
     >
       <BaseLayout footer={footer}>
-        <VoteHeader vote={data} />
+        <VoteHeader vote={data} showSnippet={!isRejection} />
         <PageNav>
           <PageNavItem href="#result">Vote result</PageNavItem>
           {hasAmendments && (
