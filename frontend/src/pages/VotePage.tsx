@@ -113,8 +113,8 @@ export const VotePage: Page<Vote> = ({ data }) => {
                   <p>
                     This vote is about a proposal to reject a draft legislation.
                     If the proposal to reject secures a simple majority of votes
-                    cast, the President of the European Parliament will ask the
-                    Commission to withdraw the draft.
+                    cast, the President of the European Parliament will ask for
+                    the draft to be withdrawn.
                   </p>
                 </Callout>
               )}
@@ -123,9 +123,8 @@ export const VotePage: Page<Vote> = ({ data }) => {
                 <Callout>
                   <p>
                     This vote is about a proposal to reject the Council’s
-                    position. If the proposal to reject secures an absolute
-                    majority of Parliament’s component members, the legislative
-                    procedure ends.
+                    position. If at least 361 MEPs vote in favour of the
+                    proposal, the legislative procedure ends.
                   </p>
                 </Callout>
               )}
