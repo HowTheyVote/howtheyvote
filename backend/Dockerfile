@@ -45,23 +45,11 @@ FROM python:3.14-alpine3.24
 
 ARG PYTHON_VERSION
 
-RUN apk add --no-cache \
-    build-base \
-    libffi-dev \
-    # TODO: Switch back to LibreSSL once conflicts on Alpine 3.17 are resolved.
-    openssl-dev \
-    libxml2-dev \
-    libxslt-dev \
-    python3-dev \
-    bash \
-    less \
-    make \
-    cargo \
-    sqlite \
-    tmux
+RUN apk add --no-cache libstdc++ bash less make sqlite tmux
 
 # Copy Xapian and the Python bindings from the builder stage
 COPY --from=builder /usr/local/lib/libxapian.so* /usr/local/lib/
+COPY --from=builder /usr/lib/libpython${PYTHON_VERSION}.so.1.0 /usr/lib/
 COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian
 COPY --from=builder /usr/local/share/xapian-core/stopwords/english.list /usr/local/share/xapian-core/stopwords/english.list
 RUN ldconfig /usr/local/lib
