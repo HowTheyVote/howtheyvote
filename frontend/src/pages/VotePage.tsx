@@ -27,7 +27,7 @@ const log = getLogger();
 
 export const loader: Loader<Vote> = async (request: Request) => {
   // For some reason, we get a bunch of requests like this: https://howtheyvote.eu/votes/123456.csv.
-  // The vote ID is valid, so the subsequent API request would succeeded, but return CSV instead of
+  // The vote ID is valid, so the subsequent API request would succeed, but return CSV instead of
   // a JSON response. This results in a lot of errors in Sentry. (The proper solution would be to
   // adjust the route pattern to only match 6-digit IDs, but tinyhttp does not support that.)
   if (!request.params.id.match(/^\d{6}$/)) {
