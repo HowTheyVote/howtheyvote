@@ -30,6 +30,8 @@ services:
     tty: true
 
   caddy:
+    build:
+      context: "./caddy"
     stdin_open: true
     tty: true
     environment:

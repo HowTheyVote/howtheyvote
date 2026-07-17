@@ -95,6 +95,33 @@
 }
 
 {$CADDY_SITE_ADDRESS} {
+    rate_limit {
+        zone api_second {
+            key {remote_host}
+            window 1s
+            events 20
+            match {
+                path /api/*
+                path /api
+            }
+        }
+
+        zone api_minute {
+            key {remote_host}
+            window 60s
+            events 120
+            match {
+                path /api/*
+                path /api
+            }
+        }
+    }
+
+    handle_errors 429 {
+        header Content-Type "application/json"
+        respond `{"error": {"code": "TOO_MANY_REQUESTS", "message": "Rate limit exceeded. Please send no more than 20 requests per second or 120 requests per minute. For a bulk download of our data, please visit https://github.com/howtheyVote/data"}}` 429
+    }
+
     import main
     header Strict-Transport-Security "max-age=31536000;"
 }

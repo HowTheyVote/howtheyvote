@@ -58,7 +58,7 @@ services:
       SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 
   caddy:
-    image: "caddy:2.11.4-alpine"
+    image: "ghcr.io/howtheyvote/howtheyvote-caddy:${HTV_TAG:-main}"
     volumes:
       - "caddy_data:/data"
       - "caddy_config:/config"

@@ -11,14 +11,25 @@ permissions:
   packages: write
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.set.outputs.images }}
+    steps:
+      - id: set
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo 'images=["frontend","backend","caddy"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'images=["frontend","backend"]' >> "$GITHUB_OUTPUT"
+          fi
   docker:
+    needs: prepare 
     runs-on: ubuntu-26.04-arm
 
     strategy:
       matrix:
-        image:
-          - frontend
-          - backend
+        image: ${{ fromJson(needs.prepare.outputs.images) }}
 
     steps:
       - name: Checkout repo
