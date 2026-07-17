@@ -64,7 +64,7 @@ class DummyRegistry(FirstMatchRegistry):
         return response
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def responses(request):
     """Allows mocking HTTP requests made with `requests`. Request mocking can be
     disabled globally using the `HTV_TEST_MOCK_REQUESTS=false` env variable to
