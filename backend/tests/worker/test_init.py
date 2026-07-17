@@ -6,7 +6,6 @@ from sqlalchemy import select
 from howtheyvote.models import PipelineRun, PipelineStatus, PlenarySession
 from howtheyvote.pipelines import (
     PipelineResult,
-    PressPipeline,
     RCVListPipeline,
     VOTListPipeline,
 )
@@ -23,16 +22,6 @@ def test_rcv_list_pipeline(db_session, mocker):
     db_session.commit()
 
     rcv_mock = mocker.patch.object(RCVListPipeline, "run")
-
-    # TODO: For some reason tests will take a very long time if we do not mock the
-    # press pipeline. Probably that's because it’s being executed many times due to
-    # time travel, and each time it’s retrying requests over and over again. But
-    # should double-check that.
-    press_mock = mocker.patch.object(PressPipeline, "run")
-    press_mock.return_value = PipelineResult(
-        status=PipelineStatus.SUCCESS,
-        checksum=None,
-    )
 
     query = (
         select(PipelineRun)
@@ -144,13 +133,6 @@ def test_rcv_list_notification_no_votes(db_session, mocker):
     db_session.commit()
 
     rcv_mock = mocker.patch.object(RCVListPipeline, "run")
-    press_mock = mocker.patch.object(PressPipeline, "run")
-
-    press_mock.return_value = PipelineResult(
-        status=PipelineStatus.SUCCESS,
-        checksum=None,
-    )
-
     pushover_mock = mocker.patch("howtheyvote.worker.send_notification")
 
     query = (
@@ -249,18 +231,6 @@ def test_vot_list_pipeline(db_session, mocker):
         VOTListPipeline,
         "run",
         autospec=True,
-    )
-
-    rcv_mock = mocker.patch.object(RCVListPipeline, "run")
-    rcv_mock.return_value = PipelineResult(
-        status=PipelineStatus.SUCCESS,
-        checksum=None,
-    )
-
-    press_mock = mocker.patch.object(PressPipeline, "run")
-    press_mock.return_value = PipelineResult(
-        status=PipelineStatus.SUCCESS,
-        checksum=None,
     )
 
     query = (
