@@ -76,7 +76,7 @@ export const VotePage: Page<Vote> = ({ data }) => {
   const isRejection =
     data.is_main &&
     data.procedure?.type === "COD" &&
-    (data.description === "Rejet" ||
+    (data.description?.startsWith("Rejet") ||
       data.description?.startsWith("Proposition de rejet"));
 
   return (
