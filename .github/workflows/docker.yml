@@ -4,32 +4,21 @@ on:
   workflow_dispatch: {}
   push:
     branches: ["main"]
-  pull_request: {}
 
 permissions:
   contents: read
   packages: write
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      images: ${{ steps.set.outputs.images }}
-    steps:
-      - id: set
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo 'images=["frontend","backend","caddy"]' >> "$GITHUB_OUTPUT"
-          else
-            echo 'images=["frontend","backend"]' >> "$GITHUB_OUTPUT"
-          fi
   docker:
-    needs: prepare 
     runs-on: ubuntu-26.04-arm
 
     strategy:
       matrix:
-        image: ${{ fromJson(needs.prepare.outputs.images) }}
+        image:
+          - frontend
+          - backend
+          - caddy
 
     steps:
       - name: Checkout repo
