@@ -13,7 +13,7 @@ from howtheyvote.pipelines import (
 from howtheyvote.worker import get_worker
 
 
-def test_rcv_list_pipeline(db_session, mocker):
+def test_rcv_list_pipeline(db_session, mocker, responses):
     plenary_session = PlenarySession(
         id="2025-07-07",
         start_date=datetime.date(2025, 7, 7),
@@ -134,7 +134,7 @@ def test_rcv_list_pipeline(db_session, mocker):
         assert runs[4].status == PipelineStatus.SUCCESS
 
 
-def test_rcv_list_notification_no_votes(db_session, mocker):
+def test_rcv_list_notification_no_votes(db_session, mocker, responses):
     plenary_session = PlenarySession(
         id="2025-07-07",
         start_date=datetime.date(2025, 7, 7),
@@ -236,7 +236,7 @@ def test_rcv_list_notification_no_votes(db_session, mocker):
         assert pushover_mock.call_args.kwargs["title"] == "No RCV list found at end of day"
 
 
-def test_vot_list_pipeline(db_session, mocker):
+def test_vot_list_pipeline(db_session, mocker, responses):
     plenary_session = PlenarySession(
         id="2025-07-07",
         start_date=datetime.date(2025, 7, 7),
