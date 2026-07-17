@@ -1,43 +1,6 @@
-.Banner {
-  position: relative;
+.banner {
   padding-block: var(--space-xs);
-  padding-inline: var(--space-sm);
+  border-block: 1px solid var(--blue-light);
   background-color: var(--blue-lightest);
-  color: var(--color-text-light);
-  font-size: var(--text-sm);
-}
-
-.Banner__wrapper {
-  position: relative;
-  /* Space reserved for close button */
-  padding-inline-end: 1em;
-}
-
-.Banner strong,
-.Banner a {
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.Banner__close {
-  position: absolute;
-  top: 50%;
-  right: -0.5em;
-  transform: translateY(-50%);
-  width: 1.75em;
-  height: 1.75em;
-  padding: calc(0.125 * var(--space));
-  border-radius: 50%;
-}
-
-.Banner__close:hover,
-.Banner__close:focus {
-  background-color: hsla(var(--blue-h), var(--blue-s), var(--blue-l), 0.25);
-}
-
-.Banner__icon {
-  display: block;
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
+  color: var(--blue-darker);
 }

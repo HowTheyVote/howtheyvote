@@ -7,7 +7,7 @@ from howtheyvote.models import Committee, Country, Vote
 from howtheyvote.store import index_search
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def votes(db_session, search_index):
     votes = [
         Vote(
@@ -42,7 +42,7 @@ def votes(db_session, search_index):
     yield
 
 
-def test_database_query_handle():
+def test_database_query_handle(votes):
     response = DatabaseQuery(Vote).handle()
     results = response["results"]
     assert response["total"] == 3
@@ -50,7 +50,7 @@ def test_database_query_handle():
     assert [r.id for r in results] == [3, 2, 1]
 
 
-def test_database_query_handle_sort():
+def test_database_query_handle_sort(votes):
     response = DatabaseQuery(Vote).sort("date").handle()
     results = response["results"]
     assert len(results) == 3
@@ -70,7 +70,7 @@ def test_database_query_handle_sort():
     ]
 
 
-def test_database_query_handle_pagination():
+def test_database_query_handle_pagination(votes):
     response = DatabaseQuery(Vote).page(1).handle()
     assert response["page"] == 1
     assert response["has_prev"] is False
@@ -96,7 +96,7 @@ def test_database_query_handle_pagination():
     assert response["results"][0].id == 1
 
 
-def test_database_query_handle_filters():
+def test_database_query_handle_filters(votes):
     response = DatabaseQuery(Vote).handle()
     assert response["total"] == 3
 
@@ -160,7 +160,7 @@ def test_database_query_handle_filters():
     assert response["results"][0].id == 2
 
 
-def test_database_query_sql_where():
+def test_database_query_sql_where(votes):
     response = DatabaseQuery(Vote).handle()
     assert response["total"] == 3
 
@@ -172,7 +172,7 @@ def test_database_query_sql_where():
     assert response["results"][1].display_title == "Vote Two"
 
 
-def test_search_query_handle():
+def test_search_query_handle(votes):
     response = SearchQuery(Vote).handle()
     assert response["page"] == 1
     assert response["page_size"] == 20
@@ -183,7 +183,7 @@ def test_search_query_handle():
     assert [r.id for r in results] == [3, 2, 1]
 
 
-def test_search_query_handle_sort():
+def test_search_query_handle_sort(votes):
     response = SearchQuery(Vote).sort("date").handle()
     results = response["results"]
     assert len(results) == 3
@@ -203,7 +203,7 @@ def test_search_query_handle_sort():
     ]
 
 
-def test_search_query_handle_query():
+def test_search_query_handle_query(votes):
     response = SearchQuery(Vote).query("vote").handle()
     assert response["total"] == 3
 
@@ -217,7 +217,104 @@ def test_search_query_handle_query():
     assert results[0].id == 2
 
 
-def test_search_query_handle_pagination():
+def test_search_query_handle_normalization(db_session, search_index):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="Vote",
+        rapporteur="Markéta Gregorová",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    response = SearchQuery(Vote).query("gregorova").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 1
+
+
+def test_search_query_handle_spelling_correction(db_session, search_index):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="Mercosur",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    response = SearchQuery(Vote).query("mercosour").handle()
+    assert response["total"] == 0
+    assert response["corrected_query"] == "mercosur"
+
+
+def test_search_query_handle_spelling_correction_stopwords(db_session, search_index):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="2019 discharge: European Agency for Safety and Health at Work",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    # This should not suggest "at" as a corrected spelling
+    response = SearchQuery(Vote).query("cat").handle()
+    assert response["corrected_query"] is None
+
+
+@pytest.mark.override_config(SEARCH_SYNONYMS="corona:covid")
+def test_search_query_handle_synonyms(db_session, search_index, mocker):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1),
+        title="Covid-19",
+        is_main=True,
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    response = SearchQuery(Vote).query("corona").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 1
+
+
+def test_search_query_handle_phrase(db_session, search_index):
+    votes = [
+        Vote(
+            id=1,
+            is_main=True,
+            title="foo bar baz",
+            timestamp=datetime.datetime(2024, 1, 1),
+        ),
+        Vote(
+            id=2,
+            is_main=True,
+            title="foo baz",
+            timestamp=datetime.datetime(2024, 1, 2),
+        ),
+    ]
+
+    db_session.add_all(votes)
+    db_session.commit()
+    index_search(Vote, votes)
+
+    response = SearchQuery(Vote).query("foo baz").handle()
+    assert response["total"] == 2
+
+    response = SearchQuery(Vote).query('"foo baz"').handle()
+    assert response["total"] == 1
+
+
+def test_search_query_handle_pagination(votes):
     response = SearchQuery(Vote).page(1).handle()
     assert response["total"] == 3
     assert response["page"] == 1
@@ -246,7 +343,7 @@ def test_search_query_handle_pagination():
     assert response["results"][0].id == 1
 
 
-def test_search_query_handle_filters():
+def test_search_query_handle_filters(votes):
     response = SearchQuery(Vote).handle()
     assert response["total"] == 3
 
@@ -304,7 +401,7 @@ def test_search_query_handle_filters():
     assert response["results"][0].id == 2
 
 
-def test_search_query_handle_facets():
+def test_search_query_handle_facets(votes):
     response = SearchQuery(Vote).facet("geo_areas").handle()
     assert len(response["facets"]) == 1
     assert response["facets"]["geo_areas"] == [
@@ -329,7 +426,7 @@ def test_search_query_handle_facets():
     ]
 
 
-def test_search_query_handle_facets_filters():
+def test_search_query_handle_facets_filters(votes):
     response = (
         SearchQuery(Vote)
         .facet("geo_areas")
@@ -407,7 +504,7 @@ def test_search_query_handle_facets_filters():
     }
 
 
-def test_search_query_handle_facets_selected():
+def test_search_query_handle_facets_selected(votes):
     response = (
         SearchQuery(Vote)
         .facet("geo_areas")

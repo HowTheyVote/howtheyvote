@@ -6,10 +6,11 @@ from howtheyvote.pushover import send_notification
 
 
 @pytest.mark.always_mock_requests
+@pytest.mark.override_config(
+    PUSHOVER_API_TOKEN="api-token-123",
+    PUSHOVER_USER_KEY="user-key-123",
+)
 def test_send_notification(responses, mocker):
-    mocker.patch("howtheyvote.config.PUSHOVER_API_TOKEN", "api-token-123")
-    mocker.patch("howtheyvote.config.PUSHOVER_USER_KEY", "user-key-123")
-
     res = responses.post(
         url="https://api.pushover.net/1/messages.json",
         match=[
@@ -36,10 +37,11 @@ def test_send_notification(responses, mocker):
 
 
 @pytest.mark.always_mock_requests
+@pytest.mark.override_config(
+    PUSHOVER_API_TOKEN="api-token-123",
+    PUSHOVER_USER_KEY="user-key-123",
+)
 def test_send_notification_connection_error(responses, mocker, logs):
-    mocker.patch("howtheyvote.config.PUSHOVER_API_TOKEN", "api-token-123")
-    mocker.patch("howtheyvote.config.PUSHOVER_USER_KEY", "user-key-123")
-
     responses.post(
         url="https://api.pushover.net/1/messages.json",
         body=requests.ConnectionError("Could not connect to api.pushover.net"),

@@ -40,6 +40,14 @@ export function getSnippetFeedbackFormUrl(
   return url.toString();
 }
 
+const SEARCH_FEEDBACK_FORM_URL = "https://tally.so/r/D4y81R";
+
+export function getSearchFeedbackFormUrl(query: string) {
+  const url = new URL(SEARCH_FEEDBACK_FORM_URL);
+  url.searchParams.set("query", query);
+  return url.toString();
+}
+
 type DataFormat = "json" | "csv";
 
 export function getDownloadUrl(voteId: number, format: DataFormat): string {
