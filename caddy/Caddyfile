@@ -119,7 +119,8 @@
 
     handle_errors 429 {
         header Content-Type "application/json"
-        respond `{"error": {"code": "TOO_MANY_REQUESTS", "message": "Rate limit exceeded. Please send no more than 20 requests per second or 120 requests per minute. For a bulk download of our data, please visit https://github.com/howtheyVote/data"}}` 429
+        # Follows the API error response format
+        respond `{"error": "429 Too Many Requests: Please send no more than 20 requests per second and no more than 120 requests per minute. For a bulk download of our data, please visit https://github.com/howtheyVote/data"}` 429
     }
 
     import main
