@@ -35,7 +35,7 @@ RUN pip install --no-cache-dir sphinx docutils
 RUN wget -q https://oligarchy.co.uk/xapian/${XAPIAN_VERSION}/xapian-bindings-${XAPIAN_VERSION}.tar.xz \
     && tar xf xapian-bindings-${XAPIAN_VERSION}.tar.xz \
     && cd xapian-bindings-${XAPIAN_VERSION} \
-    && ./configure --with-python3 PYTHON=/usr/local/bin/python3 \
+    && ./configure --with-python3 PYTHON=/usr/local/bin/python3 LDFLAGS="-Wl,-rpath,/usr/local/lib" \
     && make -j$(nproc) \
     && make install \
     && cd /build \
@@ -45,20 +45,7 @@ FROM python:3.14-alpine3.24
 
 ARG PYTHON_VERSION
 
-RUN apk add --no-cache \
-    build-base \
-    libffi-dev \
-    # TODO: Switch back to LibreSSL once conflicts on Alpine 3.17 are resolved.
-    openssl-dev \
-    libxml2-dev \
-    libxslt-dev \
-    python3-dev \
-    bash \
-    less \
-    make \
-    cargo \
-    sqlite \
-    tmux
+RUN apk add --no-cache libstdc++ bash less make sqlite tmux
 
 # Copy Xapian and the Python bindings from the builder stage
 COPY --from=builder /usr/local/lib/libxapian.so* /usr/local/lib/
