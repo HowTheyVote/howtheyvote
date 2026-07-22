@@ -549,6 +549,8 @@ def load_national_parties() -> None:
 
     for party in all_parties:
         curr_party_identifier = party["identifier"]
+        # TODO: proper error handling
+        # TODO: non-existent and non-ending parties here
         if not any(p.id == curr_party_identifier for p in retrieved_parties):
             try:
                 party_info = ODPNationalPartyScraper(id=party["identifier"]).run()
