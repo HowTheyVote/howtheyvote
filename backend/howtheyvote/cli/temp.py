@@ -21,6 +21,7 @@ from ..scrapers import (
     DocumentScraper,
     NoWorkingUrlError,
     ODPDocumentScraper,
+    ODPMemberScraper,
     ODPProcedureScraper,
     PressReleaseScraper,
     ProcedureScraper,
@@ -376,4 +377,18 @@ def press_releases() -> None:
             Session.execute(select(Vote).where(func.date(Vote.timestamp) == date)).scalars()
         )
         writer.add(PressReleaseAnalyzer(votes, releases).run())
+        writer.flush()
+
+@temp.command()
+def parties() -> None:
+    """Load national party memberships."""
+    writer = BulkWriter()
+
+    members = Session.execute(select(Member), execution_options={"yield_per": 20}).scalars()
+
+    for partition in members.partitions():
+        for member in partition:
+            scraper = ODPMemberScraper(web_id=member.id)
+            writer.add(scraper.run())
+
         writer.flush()
