@@ -480,6 +480,14 @@
     "country_code": "CZE"
   },
   {
+    "id": "1170",
+    "short_label": "NS",
+    "label": "Naujoji s\u0105junga (socialliberalai)",
+    "start_date": "2003-04-17",
+    "end_date": "2004-07-19",
+    "country_code": "LTU"
+  },
+  {
     "id": "1173",
     "short_label": "TSKF",
     "label": "T\u0117vyn\u0117s S\u0105jungos - konservatori\u0173 frakcija",
@@ -13560,6 +13568,14 @@
     "country_code": "ITA"
   },
   {
+    "id": "6895",
+    "short_label": "HREP",
+    "label": "Hnutie Republika",
+    "start_date": "2024-07-16",
+    "end_date": null,
+    "country_code": "SVK"
+  },
+  {
     "id": "6896",
     "short_label": "E.Verde",
     "label": "Europa Verde - Verdi",
@@ -14990,6 +15006,14 @@
     "start_date": "2026-06-07",
     "end_date": null,
     "country_code": "ITA"
+  },
+  {
+    "id": "8004",
+    "short_label": "Unia Centrum",
+    "label": "Unia Centrum",
+    "start_date": "2026-10-19",
+    "end_date": null,
+    "country_code": "POL"
   },
   {
     "id": "802",
