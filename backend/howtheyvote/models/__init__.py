@@ -9,6 +9,7 @@ from .member import (
     deserialize_group_membership,
     serialize_group_membership,
 )
+from .national_parties import NationalParty
 from .oeil_subject import OEILSubject, OEILSubjectType
 from .oeil_summary import OEILSummary
 from .press_release import PressRelease
@@ -51,6 +52,7 @@ __all__ = [
     "EurovocConceptType",
     "OEILSubject",
     "OEILSubjectType",
+    "NationalParty",
     "Topic",
     "TopicType",
     "OEILSummary",

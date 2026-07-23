@@ -1,5 +1,6 @@
 import csv
 import datetime
+import io
 from typing import Any, NotRequired, TextIO, TypedDict
 
 import click
@@ -7,7 +8,8 @@ import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Committee, Country, EurovocConcept, Group, OEILSubject
+from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
+from ..scrapers import ODPNationalPartyScraper
 
 log = get_logger(__name__)
 
@@ -529,6 +531,31 @@ def load_oeil_subjects(file: TextIO) -> None:
         )
 
     subjects.save()
+
+
+@dev.command()
+def load_national_parties() -> None:
+    """Loads a list of national parties as published by the EP Open Data Portal."""
+    retrieved_parties = DataclassContainer(
+        dataclass=NationalParty,
+        file_path=DATA_DIR.joinpath("national_parties.json"),
+        key_attr="id",
+    )
+    retrieved_parties.load()
+
+    all_parties_response = requests.get("https://data.europarl.europa.eu/api/v2/corporate-bodies?body-classification=NATIONAL_POLITICAL_GROUP&format=application/ld+json&offset=0", timeout=60).json()
+    all_parties = all_parties_response["data"]
+    print(f"Loading data for {len(all_parties)} parties")
+
+    for party in all_parties:
+        curr_party_identifier = party["identifier"]
+        if not any(p.id == curr_party_identifier for p in retrieved_parties):
+            try:
+                party_info = ODPNationalPartyScraper(id=party["identifier"]).run()
+                retrieved_parties.add(party_info)
+            except: 
+                retrieved_parties.save()            
+    retrieved_parties.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:
