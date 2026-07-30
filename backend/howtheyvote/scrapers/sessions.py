@@ -16,9 +16,10 @@ class CalendarSessionsScraper(JSONScraper):
     def __init__(
         self,
         term: int,
+        aws_waf_token: str | None = None,
         request_cache: RequestCache | None = None,
     ):
-        super().__init__(term=term, request_cache=request_cache)
+        super().__init__(term=term, request_cache=request_cache, aws_waf_token=aws_waf_token)
         self.term = term
 
     def _url(self) -> str:
