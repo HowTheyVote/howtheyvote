@@ -11,6 +11,7 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..store import Aggregator, BulkWriter, index_records, map_plenary_session
+from ..waf import solve_ep_aws_waf_challenge
 from .common import BasePipeline
 
 log = get_logger(__name__)
@@ -23,6 +24,7 @@ class SessionsPipeline(BasePipeline):
         self._session_ids: set[str] = set()
 
     def _run(self) -> None:
+        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
         self._scrape_sessions()
         self._scrape_session_locations()
         self._index_sessions()
@@ -30,7 +32,7 @@ class SessionsPipeline(BasePipeline):
     def _scrape_sessions(self) -> None:
         log.info("Scrapping plenary sessions", term=self.term)
         writer = BulkWriter()
-        scraper = CalendarSessionsScraper(term=self.term)
+        scraper = CalendarSessionsScraper(term=self.term, aws_waf_token=self._ep_aws_waf_token)
         writer.add(scraper.run())
         writer.flush()
         self._session_ids = writer.get_touched()
