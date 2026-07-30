@@ -21,6 +21,7 @@ from ..scrapers import (
 )
 from ..sharepics import generate_member_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_member
+from ..waf import solve_ep_aws_waf_challenge
 from .common import BasePipeline
 
 log = get_logger(__name__)
@@ -33,6 +34,7 @@ class MembersPipeline(BasePipeline):
         self._member_ids: set[str] = set()
 
     def _run(self) -> None:
+        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
         self._scrape_members()
         self._scrape_member_groups()
         self._scrape_member_infos()
@@ -44,7 +46,7 @@ class MembersPipeline(BasePipeline):
         log.info("Scraping members", term=self.term)
 
         writer = BulkWriter()
-        scraper = MembersScraper(term=self.term)
+        scraper = MembersScraper(term=self.term, aws_waf_token=self._ep_aws_waf_token)
         writer.add(scraper.run())
         writer.flush()
 
@@ -57,7 +59,9 @@ class MembersPipeline(BasePipeline):
             log.info("Scraping member groups", term=self.term, member_id=member.id)
 
             try:
-                scraper = MemberGroupsScraper(web_id=member.id, term=self.term)
+                scraper = MemberGroupsScraper(
+                    web_id=member.id, term=self.term, aws_waf_token=self._ep_aws_waf_token
+                )
                 writer.add(scraper.run())
             except ScrapingError as err:
                 log.exception(
@@ -76,7 +80,9 @@ class MembersPipeline(BasePipeline):
             log.info("Scraping member info", term=self.term, member_id=member.id)
 
             try:
-                scraper = MemberInfoScraper(web_id=member.id)
+                scraper = MemberInfoScraper(
+                    web_id=member.id, aws_waf_token=self._ep_aws_waf_token
+                )
                 writer.add(scraper.run())
             except ScrapingError as err:
                 log.exception(

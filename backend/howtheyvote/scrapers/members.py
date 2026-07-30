@@ -18,8 +18,13 @@ class MembersScraper(BeautifulSoupScraper):
     BASE_URL = "https://www.europarl.europa.eu/meps/en/directory/xml"
     BS_PARSER = "lxml-xml"
 
-    def __init__(self, term: int, request_cache: RequestCache | None = None):
-        super().__init__(term=term, request_cache=request_cache)
+    def __init__(
+        self,
+        term: int,
+        request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
+    ):
+        super().__init__(term=term, request_cache=request_cache, aws_waf_token=aws_waf_token)
         self.term = term
 
     def _url(self) -> str:
@@ -56,8 +61,15 @@ class MemberInfoScraper(BeautifulSoupScraper):
 
     BASE_URL = "https://www.europarl.europa.eu/meps/en"
 
-    def __init__(self, web_id: int, request_cache: RequestCache | None = None):
-        super().__init__(web_id=web_id, request_cache=request_cache)
+    def __init__(
+        self,
+        web_id: int,
+        request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
+    ):
+        super().__init__(
+            web_id=web_id, request_cache=request_cache, aws_waf_token=aws_waf_token
+        )
         self.web_id = web_id
 
     def _url(self) -> str:
@@ -151,8 +163,16 @@ class MemberGroupsScraper(BeautifulSoupScraper):
 
     BASE_URL = "https://www.europarl.europa.eu/meps/en"
 
-    def __init__(self, web_id: int, term: int, request_cache: RequestCache | None = None):
-        super().__init__(web_id=web_id, term=term, request_cache=request_cache)
+    def __init__(
+        self,
+        web_id: int,
+        term: int,
+        request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
+    ):
+        super().__init__(
+            web_id=web_id, term=term, request_cache=request_cache, aws_waf_token=aws_waf_token
+        )
         self.web_id = web_id
         self.term = term
 
