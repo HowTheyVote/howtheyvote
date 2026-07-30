@@ -106,7 +106,7 @@ def solve_ep_aws_waf_challenge() -> str:
     )
 
 
-def solve_aws_waf_challenge(url: str, timeout: int = 10) -> str:
+def solve_aws_waf_challenge(url: str, timeout: int = 60) -> str:
     """Requests the given URL using headless Chromium, waits until the automatic JS challenge
     is completed, and returns the AWS WAF token."""
     client = Client(
