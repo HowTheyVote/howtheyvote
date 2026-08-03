@@ -12,6 +12,8 @@ from howtheyvote.models import (
     GroupMembership,
     Member,
     MemberVote,
+    NationalParty,
+    NationalPartyMembership,
     OEILSubject,
     OEILSummary,
     PressRelease,
@@ -44,6 +46,20 @@ def records(db_session, search_index):
                 group=Group["GUE_NGL"],
             ),
         ],
+        national_party_memberships=[
+            NationalPartyMembership(
+                start_date=datetime.date(2022, 1, 1),
+                end_date=None,
+                party=NationalParty(
+                    id="1",
+                    short_label="UP",
+                    label="Une partie",
+                    start_date=datetime.date(2020, 1, 1),
+                    end_date=None,
+                    country_code="FRA",
+                ),
+            )
+        ],
     )
 
     jane = Member(
@@ -59,6 +75,20 @@ def records(db_session, search_index):
                 end_date=datetime.date(2023, 12, 31),
                 group=Group["EPP"],
             ),
+        ],
+        national_party_memberships=[
+            NationalPartyMembership(
+                start_date=datetime.date(2022, 1, 1),
+                end_date=None,
+                party=NationalParty(
+                    id="2",
+                    short_label="DTP",
+                    label="Die Testpartei",
+                    start_date=datetime.date(2020, 1, 1),
+                    end_date=None,
+                    country_code="DEU",
+                ),
+            )
         ],
     )
 
@@ -771,6 +801,7 @@ def test_votes_api_show(records, db_session, api):
                         "label": "The Left in the European Parliament",
                         "short_label": "The Left",
                     },
+                    "national_party": {"id": "1", "label": "Une partie", "short_label": "UP"},
                     "photo_url": "/files/members/1.jpg",
                     "thumb_url": "/files/members/1-104.jpg",
                 },
@@ -791,6 +822,11 @@ def test_votes_api_show(records, db_session, api):
                         "code": "EPP",
                         "label": "European People’s Party",
                         "short_label": "EPP",
+                    },
+                    "national_party": {
+                        "id": "2",
+                        "label": "Die Testpartei",
+                        "short_label": "DTP",
                     },
                     "photo_url": "/files/members/2.jpg",
                     "thumb_url": "/files/members/2-104.jpg",
