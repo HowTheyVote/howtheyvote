@@ -12,6 +12,7 @@ from ..files import member_photo_url, member_sharepic_url
 from .common import BaseWithId
 from .country import Country, CountryType
 from .group import Group
+from .national_party import NationalParty
 from .types import ListType
 
 log = get_logger(__name__)
@@ -32,6 +33,19 @@ class SerializedGroupMembership(TypedDict):
     end_date: str | None
 
 
+@dataclass
+class NationalPartyMembership:
+    party: NationalParty
+    start_date: datetime.date
+    end_date: datetime.date | None
+
+
+class SerializedNationalPartyMembership(TypedDict):
+    party: str
+    start_date: str
+    end_date: str | None
+
+
 def serialize_group_membership(group_membership: GroupMembership) -> SerializedGroupMembership:
     return {
         "term": group_membership.term,
@@ -40,6 +54,18 @@ def serialize_group_membership(group_membership: GroupMembership) -> SerializedG
         if group_membership.end_date
         else None,
         "group": group_membership.group.code,
+    }
+
+
+def serialize_national_party_membership(
+    party_membership: NationalPartyMembership,
+) -> SerializedNationalPartyMembership:
+    return {
+        "party": party_membership.party.id,
+        "start_date": party_membership.start_date.isoformat(),
+        "end_date": party_membership.end_date.isoformat()
+        if party_membership.end_date
+        else None,
     }
 
 
@@ -54,6 +80,39 @@ def deserialize_group_membership(
         end_date=datetime.date.fromisoformat(end_date) if end_date else None,
         group=Group[group_membership["group"]],
     )
+
+
+def deserialize_national_party_membership(
+    national_party_membership: SerializedNationalPartyMembership,
+) -> NationalPartyMembership:
+    end_date = national_party_membership.get("end_date")
+
+    return NationalPartyMembership(
+        start_date=datetime.date.fromisoformat(national_party_membership["start_date"]),
+        end_date=datetime.date.fromisoformat(end_date) if end_date else None,
+        party=NationalParty[national_party_membership["party"]],
+    )
+
+
+class NationalPartyMembershipType(TypeDecorator[NationalPartyMembership]):
+    impl = sa.JSON
+    cache_ok = True
+
+    def process_bind_param(
+        self, value: NationalPartyMembership | None, dialect: Dialect
+    ) -> SerializedNationalPartyMembership | None:
+        if not value:
+            return None
+
+        return serialize_national_party_membership(value)
+
+    def process_result_value(
+        self, value: SerializedNationalPartyMembership | None, dialect: Dialect
+    ) -> NationalPartyMembership | None:
+        if not value:
+            return None
+
+        return deserialize_national_party_membership(value)
 
 
 class GroupMembershipType(TypeDecorator[GroupMembership]):
@@ -87,6 +146,9 @@ class Member(BaseWithId):
     group_memberships: Mapped[list[GroupMembership]] = mapped_column(
         ListType(GroupMembershipType())
     )
+    national_party_memberships: Mapped[list[NationalPartyMembership]] = mapped_column(
+        ListType(NationalPartyMembershipType())
+    )
     date_of_birth: Mapped[datetime.date | None] = mapped_column(sa.Date)
     terms: Mapped[list[int]] = mapped_column(sa.JSON, default=[])
     email: Mapped[str | None] = mapped_column(sa.Unicode)
@@ -102,6 +164,21 @@ class Member(BaseWithId):
                 not group_membership.end_date or group_membership.end_date >= date
             ):
                 return group_membership.group
+
+        return None
+
+    def national_party_at(
+        self, date: datetime.date | datetime.datetime
+    ) -> NationalParty | None:
+        if isinstance(date, datetime.datetime):
+            date = date.date()
+
+        for national_party_membership in self.national_party_memberships:
+            if national_party_membership.start_date <= date and (
+                not national_party_membership.end_date
+                or national_party_membership.end_date >= date
+            ):
+                return national_party_membership.party
 
         return None
 

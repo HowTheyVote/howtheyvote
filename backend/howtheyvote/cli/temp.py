@@ -31,7 +31,7 @@ from ..scrapers import (
     VOTListScraper,
 )
 from ..sharepics import generate_vote_sharepic
-from ..store import Aggregator, BulkWriter, index_records, map_press_release
+from ..store import Aggregator, BulkWriter, index_records, map_member, map_press_release
 
 log = get_logger(__name__)
 
@@ -379,6 +379,7 @@ def press_releases() -> None:
         writer.add(PressReleaseAnalyzer(votes, releases).run())
         writer.flush()
 
+
 @temp.command()
 def parties() -> None:
     """Load national party memberships."""
@@ -392,3 +393,10 @@ def parties() -> None:
             writer.add(scraper.run())
 
         writer.flush()
+
+
+@temp.command()
+def aggregate_parties() -> None:
+    aggregator = Aggregator(Member)
+    members_to_aggregate = aggregator.mapped_records(map_func=map_member)
+    index_records(Member, members_to_aggregate)

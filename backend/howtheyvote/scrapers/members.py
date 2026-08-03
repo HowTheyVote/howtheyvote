@@ -4,10 +4,10 @@ from typing import Any, cast
 from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
-from ..models import Country, Fragment, Group, Member, NationalParty
+from ..models import Country, Fragment, Group, Member
+from ..pushover import send_notification
 from .common import BeautifulSoupScraper, JSONScraper, RequestCache, ScrapingError
 from .helpers import parse_full_name
-from ..pushover import send_notification
 
 log = get_logger(__name__)
 
@@ -253,7 +253,11 @@ class ODPMemberScraper(JSONScraper):
             if ms.get("membershipClassification") == "def/ep-entities/NATIONAL_POLITICAL_GROUP"
         ]
 
-        party_memberships = [party_membership for np in national_parties if (party_membership := self._party_membership(np)) is not None]
+        party_memberships = [
+            party_membership
+            for np in national_parties
+            if (party_membership := self._party_membership(np)) is not None
+        ]
 
         return self._fragment(
             model=Member,
@@ -262,8 +266,10 @@ class ODPMemberScraper(JSONScraper):
             data={"national_party_memberships": party_memberships},
         )
 
-    def _party_membership(self, membership: dict[str, Any]) -> dict[str, Any]:
+    def _party_membership(self, membership: dict[str, Any]) -> dict[str, Any] | None:
         time_period = membership.get("memberDuring")
+        if time_period is None:
+            raise ScrapingError("Invalid National Party Date from ODP.")
         start_date = datetime.strptime(time_period["startDate"], "%Y-%m-%d").date()
         end_date = (
             datetime.strptime(time_period["endDate"], "%Y-%m-%d").date()
@@ -275,9 +281,9 @@ class ODPMemberScraper(JSONScraper):
         # We do not store them, but inform us to possibly inquire about them.
         if membership.get("organization") is None:
             send_notification(
-                title=f"Party-membership without organization key found.",
+                title="Party-membership without organization key found.",
                 message=f"For MEP ID {self.web_id}",
-                url=self._url,
+                url=self._url(),
             )
             return None
 

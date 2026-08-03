@@ -1,5 +1,6 @@
 from .common import NoWorkingUrlError, RequestCache, ScrapingError
 from .members import MemberGroupsScraper, MemberInfoScraper, MembersScraper, ODPMemberScraper
+from .national_parties import ODPNationalPartyScraper
 from .oeil_summaries import (
     OEILSummaryIDScraper,
     OEILSummaryScraper,
@@ -19,7 +20,6 @@ from .votes import (
     RCVListScraper,
     VOTListScraper,
 )
-from .national_parties import ODPNationalPartyScraper
 
 __all__ = [
     "ScrapingError",
@@ -33,7 +33,7 @@ __all__ = [
     "ODPDocumentScraper",
     "ODPProcedureScraper",
     "ODPMemberScraper",
-    "ODPNationalPartyScraper"
+    "ODPNationalPartyScraper",
     "ProcedureScraper",
     "RCVListScraper",
     "RCVListEnglishScraper",
