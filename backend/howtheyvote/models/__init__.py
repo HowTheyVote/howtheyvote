@@ -6,10 +6,13 @@ from .group import Group
 from .member import (
     GroupMembership,
     Member,
+    NationalPartyMembership,
     deserialize_group_membership,
+    deserialize_national_party_membership,
     serialize_group_membership,
+    serialize_national_party_membership,
 )
-from .national_parties import NationalParty
+from .national_party import NationalParty
 from .oeil_subject import OEILSubject, OEILSubjectType
 from .oeil_summary import OEILSummary
 from .press_release import PressRelease
@@ -55,6 +58,8 @@ __all__ = [
     "OEILSubject",
     "OEILSubjectType",
     "NationalParty",
+    "NationalPartyMembership",
+    "NationalPartyType",
     "Topic",
     "TopicType",
     "OEILSummary",
@@ -91,4 +96,6 @@ __all__ = [
     "serialize_amendment_author",
     "deserialize_amendment_author",
     "deserialize_amendment_url",
+    "deserialize_national_party_membership",
+    "serialize_national_party_membership",
 ]
