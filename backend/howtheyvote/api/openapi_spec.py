@@ -5,6 +5,7 @@ from .. import config
 from .openapi_helpers import get_schema, normalize_schema_name
 from .serializers import (
     AmendmentAuthorDict,
+    AmendmentURLDict,
     BaseMemberDict,
     BaseVoteDict,
     BaseVoteWithMemberPositionDict,
@@ -85,6 +86,7 @@ schema_classes = [
     FacetOptionDict,
     VotesQueryResponseDict,
     MemberVotesQueryResponseDict,
+    AmendmentURLDict,
     RelatedVoteDict,
     Statistics,
     SnippetDict,

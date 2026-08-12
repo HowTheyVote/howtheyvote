@@ -4,6 +4,7 @@ import pytest
 
 from howtheyvote.models import (
     AmendmentAuthorType,
+    AmendmentURL,
     Fragment,
     MemberVote,
     ProcedureStage,
@@ -608,7 +609,7 @@ def test_odp_document_scraper(responses):
             "RUS",
             "UKR",
         },
-        "amendment_url": None,
+        "amendment_urls": None,
     }
 
 
@@ -637,26 +638,55 @@ def test_odp_document_scraper_amendment_url(responses):
     scraper = ODPDocumentScraper(
         vote_id=194048,
         reference="A10-0106/2026",
-        amendment_number=2,
+        amendment_number="2",
     )
     fragment = scraper.run()
 
-    assert (
-        fragment.data["amendment_url"]
-        == "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-001-006/A-10-2026-0106-AM-001-006_en.pdf"
-    )
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=2,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-001-006/A-10-2026-0106-AM-001-006_en.pdf",
+        )
+    ]
 
     scraper = ODPDocumentScraper(
         vote_id=194053,
         reference="A10-0106/2026",
-        amendment_number=42,
+        amendment_number="42",
     )
     fragment = scraper.run()
 
-    assert (
-        fragment.data["amendment_url"]
-        == "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-041-050/A-10-2026-0106-AM-041-050_en.pdf"
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=42,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-041-050/A-10-2026-0106-AM-041-050_en.pdf",
+        ),
+    ]
+
+
+def test_odp_document_scraper_multiple_amendment_urls(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-10-2026-0175?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_a-10-2026-0175.json"),
     )
+
+    scraper = ODPDocumentScraper(
+        vote_id=194048,
+        reference="A10-0175/2026",
+        amendment_number="17= 25=",
+    )
+    fragment = scraper.run()
+
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=17,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0175-AM-017-024/A-10-2026-0175-AM-017-024_en.pdf",
+        ),
+        AmendmentURL(
+            amendment_number=25,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0175-AM-025-025/A-10-2026-0175-AM-025-025_en.pdf",
+        ),
+    ]
 
 
 def test_odp_procedure_scraper(responses):

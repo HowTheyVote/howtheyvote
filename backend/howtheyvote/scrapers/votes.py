@@ -11,6 +11,7 @@ from .. import config
 from ..helpers import parse_reference
 from ..models import (
     AmendmentAuthor,
+    AmendmentURL,
     Committee,
     Country,
     EurovocConcept,
@@ -670,14 +671,14 @@ class ODPDocumentScraper(JSONScraper):
     def _extract_data(self, doc: Any) -> Fragment:
         odp_procedure_reference = self._odp_procedure_reference(doc)
         eurovoc_concepts, geo_areas = self._eurovoc_concepts(doc)
-        amendment_url = self._amendment_url(doc)
+        amendment_urls = self._amendment_urls(doc)
 
         self._log.info(
             "Extracted document information",
             odp_procedure_reference=odp_procedure_reference,
             geo_areas=geo_areas,
             eurovoc_concepts=eurovoc_concepts,
-            amendment_url=amendment_url,
+            amendment_urls=amendment_urls,
         )
 
         return self._fragment(
@@ -688,7 +689,7 @@ class ODPDocumentScraper(JSONScraper):
                 "odp_procedure_reference": odp_procedure_reference,
                 "eurovoc_concepts": eurovoc_concepts,
                 "geo_areas": geo_areas,
-                "amendment_url": amendment_url,
+                "amendment_urls": amendment_urls,
             },
         )
 
@@ -728,36 +729,42 @@ class ODPDocumentScraper(JSONScraper):
 
         return concepts, geo_areas
 
-    def _amendment_url(self, doc: Any) -> str | None:
+    def _amendment_urls(self, doc: Any) -> list[AmendmentURL] | None:
         if self.amendment_number is None:
             return None
 
-        try:
-            amendment_number = int(self.amendment_number)
-        except ValueError:
-            # TODO: Amendment numbers do not need to be numeric. For example,
-            # `123= 456=` means that amendments 123 and 456 are identical and therefore
-            # tabled together. In theory, we could link to the text of either amendment,
-            # but that could also be confusing. For now, we simply do not provide a
-            # link in that case. In the future, it might make sense to provide links
-            # to both?
-            return None
+        amendment_numbers = [
+            int(number.strip())
+            for number in self.amendment_number.split("=")
+            if number.strip()
+        ]
 
-        for amendment_list in doc["data"][0].get("inverse_foresees_change_of", []):
-            start = amendment_list["itemNumberBegin"]
-            end = amendment_list["itemNumberEnd"]
+        amendment_urls: list[AmendmentURL] = []
+        amendment_lists = doc["data"][0].get("inverse_foresees_change_of", [])
 
-            # TODO Check if intervals are inclusive
-            if start > amendment_number or end < amendment_number:
-                continue
+        for amendment_number in amendment_numbers:
+            for amendment_list in amendment_lists:
+                start = amendment_list["itemNumberBegin"]
+                end = amendment_list["itemNumberEnd"]
 
-            formatted_ref = self._formatted_reference()
-            amendment_list_id = f"{formatted_ref}-AM-{start:03d}-{end:03d}"
-            url = f"{self.AMENDMENTS_BASE_URL}/{amendment_list_id}/{amendment_list_id}_en.pdf"
+                # TODO Check if intervals are inclusive
+                if start > amendment_number or end < amendment_number:
+                    continue
 
-            return url
+                formatted_ref = self._formatted_reference()
+                amendment_list_id = f"{formatted_ref}-AM-{start:03d}-{end:03d}"
+                amendment_urls.append(
+                    AmendmentURL(
+                        amendment_number=amendment_number,
+                        url=(
+                            f"{self.AMENDMENTS_BASE_URL}/{amendment_list_id}/"
+                            f"{amendment_list_id}_en.pdf"
+                        ),
+                    ),
+                )
+                break
 
-        return None
+        return amendment_urls
 
     def _formatted_reference(self) -> str:
         ref = parse_reference(self.reference)
