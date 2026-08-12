@@ -5,6 +5,7 @@ import time_machine
 
 from howtheyvote.export import Export
 from howtheyvote.models import (
+    AmendmentURL,
     Committee,
     Country,
     EurovocConcept,
@@ -31,6 +32,7 @@ def test_readme(db_session, tmp_path):
     assert re.search(r"^## Tables$", readme, re.MULTILINE)
     assert re.search(r"^### members.csv$", readme, re.MULTILINE)
     assert re.search(r"^### votes.csv$", readme, re.MULTILINE)
+    assert re.search(r"^### amendment_urls.csv$", readme, re.MULTILINE)
 
 
 def test_last_updated(db_session, tmp_path):
@@ -149,7 +151,16 @@ def test_export_votes(db_session, tmp_path):
         result=VoteResult.ADOPTED,
         amendment_subject=None,
         amendment_number=None,
-        amendment_url=None,
+        amendment_urls=[
+            AmendmentURL(
+                amendment_number=17,
+                url="https://example.org/amendment-17.pdf",
+            ),
+            AmendmentURL(
+                amendment_number=25,
+                url="https://example.org/amendment-25.pdf",
+            ),
+        ],
         texts_adopted_reference="P10_TA(2025)0123",
     )
 
@@ -163,12 +174,24 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,amendment_subject,amendment_number,amendment_url,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,count_for,count_against,count_abstention,count_did_not_vote,result,texts_adopted_reference\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,1,0,0,0,ADOPTED,P10_TA(2025)0123\n"
+        "id,timestamp,display_title,reference,description,amendment_subject,amendment_number,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,count_for,count_against,count_abstention,count_did_not_vote,result,texts_adopted_reference\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,1,0,0,0,ADOPTED,P10_TA(2025)0123\n"
     )
 
     assert votes_csv.read_text() == expected
     assert votes_meta.is_file()
+
+    amendment_urls_csv = tmp_path.joinpath("amendment_urls.csv")
+    amendment_urls_meta = tmp_path.joinpath("amendment_urls.csv-metadata.json")
+
+    expected = (
+        "vote_id,amendment_number,url\n"
+        "123456,17,https://example.org/amendment-17.pdf\n"
+        "123456,25,https://example.org/amendment-25.pdf\n"
+    )
+
+    assert amendment_urls_csv.read_text() == expected
+    assert amendment_urls_meta.is_file()
 
     member_votes_csv = tmp_path.joinpath("member_votes.csv")
     member_votes_meta = tmp_path.joinpath("member_votes.csv-metadata.json")
