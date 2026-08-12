@@ -32,6 +32,12 @@ describe("AmendmentVoteCard", () => {
       result: "REJECTED",
       amendment_number: "4",
       amendment_subject: "§ 1",
+      amendment_urls: [
+        {
+          amendment_number: 4,
+          url: "https://example.com/amendment-4.pdf",
+        },
+      ],
       amendment_authors: [
         {
           type: "GROUP",
@@ -48,6 +54,7 @@ describe("AmendmentVoteCard", () => {
 
     screen.getByRole("heading", { name: "Amendment 4 by PfE" });
     screen.getByText("§ 1");
+    screen.getByRole("link", { name: "Am 4" });
     screen.getByTitle("rejected");
   });
 

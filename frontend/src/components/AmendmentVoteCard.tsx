@@ -71,17 +71,20 @@ export default function AmendmentVoteCard({ vote }: AmendmentVoteCardProps) {
       clickable={false}
       thumb={vote.result && <Thumb style="circle" result={vote.result} />}
       action={
-        vote.amendment_url && (
+        vote.amendment_urls &&
+        vote.amendment_urls.length > 0 &&
+        vote.amendment_urls.map(({ amendment_number, url }) => (
           <a
+            key={amendment_number}
             class="amendment-vote-card__action"
-            href={vote.amendment_url}
+            href={url}
             target="_blank"
             rel="noreferrer noopener"
           >
             <Icon name="external-link" />
-            View text
+            Am {amendment_number}
           </a>
-        )
+        ))
       }
     />
   );
