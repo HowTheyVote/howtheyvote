@@ -834,7 +834,17 @@ def _format_related(votes: Iterable[Vote]) -> list[RelatedVoteDict]:
                 "amendment_subject": vote.amendment_subject,
                 "amendment_number": vote.amendment_number,
                 "amendment_authors": authors,
-                "amendment_url": vote.amendment_url,
+                "amendment_urls": (
+                    [
+                        {
+                            "amendment_number": amendment_url.amendment_number,
+                            "url": amendment_url.url,
+                        }
+                        for amendment_url in vote.amendment_urls
+                    ]
+                    if vote.amendment_urls is not None
+                    else None
+                ),
                 "result": vote.result,
             }
         )
@@ -902,14 +912,15 @@ def _format_links(vote: Vote) -> list[LinkDict]:
             }
         )
 
-    if vote.amendment_url:
-        links.append(
-            {
-                "title": "Amendment",
-                "description": "Text of the amendment voted on. The linked document may also contain other amendments.",  #  noqa: E501
-                "url": vote.amendment_url,
-            }
-        )
+    if vote.amendment_urls:
+        for amendment_url in vote.amendment_urls:
+            links.append(
+                {
+                    "title": f"Amendment {amendment_url.amendment_number}",
+                    "description": "Text of the amendment voted on. The linked document may also contain other amendments.",  # noqa: E501
+                    "url": amendment_url.url,
+                }
+            )
 
     if vote.procedure_reference:
         links.append(

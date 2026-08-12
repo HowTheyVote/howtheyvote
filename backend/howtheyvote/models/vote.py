@@ -221,6 +221,47 @@ class SAAmendmentAuthorType(TypeDecorator[AmendmentAuthor]):
 
 
 @dataclasses.dataclass
+class AmendmentURL:
+    amendment_number: int
+    url: str
+
+
+def serialize_amendment_url(amendment_url: AmendmentURL | None) -> dict[str, Any] | None:
+    if not amendment_url:
+        return None
+
+    return {
+        "amendment_number": amendment_url.amendment_number,
+        "url": amendment_url.url,
+    }
+
+
+def deserialize_amendment_url(amendment_url: dict[str, Any] | None) -> AmendmentURL | None:
+    if not amendment_url:
+        return None
+
+    return AmendmentURL(
+        amendment_number=amendment_url["amendment_number"],
+        url=amendment_url["url"],
+    )
+
+
+class SAAmendmentURLType(TypeDecorator[AmendmentURL]):
+    impl = sa.JSON
+    cache_ok = True
+
+    def process_bind_param(
+        self, value: AmendmentURL | None, dialect: Dialect
+    ) -> dict[str, Any] | None:
+        return serialize_amendment_url(value)
+
+    def process_result_value(
+        self, value: dict[str, Any] | None, dialect: Dialect
+    ) -> AmendmentURL | None:
+        return deserialize_amendment_url(value)
+
+
+@dataclasses.dataclass
 class MemberVote:
     web_id: int
     position: VotePosition
@@ -286,7 +327,9 @@ class Vote(BaseWithId):
     amendment_authors: Mapped[list[AmendmentAuthor] | None] = mapped_column(
         ListType(SAAmendmentAuthorType())
     )
-    amendment_url: Mapped[str | None] = mapped_column(sa.Unicode)
+    amendment_urls: Mapped[list[AmendmentURL] | None] = mapped_column(
+        ListType(SAAmendmentURLType())
+    )
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
     texts_adopted_reference: Mapped[str | None] = mapped_column(sa.Unicode)
