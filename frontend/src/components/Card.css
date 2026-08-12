@@ -1,12 +1,10 @@
 .card {
   position: relative;
-  display: grid;
+  display: flex;
   width: 100%;
   padding: var(--space-xs);
   gap: var(--space-xs);
   align-items: center;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: "thumb text action";
 
   border: 1px solid var(--gray-light);
   border-radius: var(--border-radius-sm);
@@ -14,15 +12,21 @@
 }
 
 .card__thumb {
-  grid-area: thumb;
+  flex-grow: 0;
+  flex-shrink: 0;
+  order: 1;
 }
 
 .card__text {
-  grid-area: text;
+  flex-grow: 1;
+  flex-shrink: 1;
+  order: 2;
 }
 
 .card__action {
-  grid-area: action;
+  flex-grow: 0;
+  flex-shrink: 0;
+  order: 3;
 }
 
 .card__title {
