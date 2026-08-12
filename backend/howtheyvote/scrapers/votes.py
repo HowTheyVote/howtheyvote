@@ -733,11 +733,13 @@ class ODPDocumentScraper(JSONScraper):
         if self.amendment_number is None:
             return None
 
-        amendment_numbers = [
-            int(number.strip())
-            for number in self.amendment_number.split("=")
-            if number.strip()
-        ]
+        amendment_numbers = []
+
+        for number in self.amendment_number.split(" "):
+            match = re.match(r"\d+", number.strip())
+
+            if match:
+                amendment_numbers.append(int(match.group()))
 
         amendment_urls: list[AmendmentURL] = []
         amendment_lists = doc["data"][0].get("inverse_foresees_change_of", [])
