@@ -289,19 +289,19 @@ class Vote(BaseWithId):
         default=[],
     )
     geo_areas: Mapped[list[Country]] = mapped_column(
-        ListType(CountryType()),
+        ListType(CountryType),
         default=[],
     )
     eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
-        ListType(EurovocConceptType()),
+        ListType(EurovocConceptType),
         default=[],
     )
     oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(
-        ListType(OEILSubjectType()),
+        ListType(OEILSubjectType),
         default=[],
     )
     topics: Mapped[list[Topic]] = mapped_column(
-        ListType(TopicType()),
+        ListType(TopicType),
         default=[],
     )
     keywords: Mapped[list[str]] = mapped_column(
@@ -309,7 +309,7 @@ class Vote(BaseWithId):
         default=[],
     )
     responsible_committees: Mapped[list[Committee]] = mapped_column(
-        ListType(CommitteeType()),
+        ListType(CommitteeType),
         default=[],
     )
     press_release_id: Mapped[str | None] = mapped_column(ForeignKey("press_releases.id"))

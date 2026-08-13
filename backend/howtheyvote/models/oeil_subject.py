@@ -1,10 +1,7 @@
 import dataclasses
 
-import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
-from sqlalchemy.types import TypeDecorator
-
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
+from .types import DataclassReferenceType
 
 
 class OEILSubjectMeta(type):
@@ -59,18 +56,4 @@ oeil_subjects = DataclassContainer(
 oeil_subjects.load()
 
 
-class OEILSubjectType(TypeDecorator[OEILSubject]):
-    impl = sa.Unicode
-    cache_ok = True
-
-    def process_bind_param(self, value: OEILSubject | None, dialect: Dialect) -> str | None:
-        if not value:
-            return None
-
-        return value.code
-
-    def process_result_value(self, value: str | None, dialect: Dialect) -> OEILSubject | None:
-        if not value:
-            return None
-
-        return oeil_subjects.get(value)
+OEILSubjectType = DataclassReferenceType[OEILSubject](oeil_subjects)
