@@ -1,11 +1,8 @@
 import dataclasses
 
-import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
-from sqlalchemy.types import TypeDecorator
-
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
 from .country import Country
+from .types import DataclassReferenceType
 
 
 class EurovocConceptMeta(type):
@@ -71,20 +68,4 @@ eurovoc_concepts = DataclassContainer(
 eurovoc_concepts.load()
 
 
-class EurovocConceptType(TypeDecorator[EurovocConcept]):
-    impl = sa.Unicode
-    cache_ok = True
-
-    def process_bind_param(self, value: EurovocConcept | None, dialect: Dialect) -> str | None:
-        if not value:
-            return None
-
-        return value.id
-
-    def process_result_value(
-        self, value: str | None, dialect: Dialect
-    ) -> EurovocConcept | None:
-        if not value:
-            return None
-
-        return eurovoc_concepts.get(value)
+EurovocConceptType = DataclassReferenceType[EurovocConcept](eurovoc_concepts)
