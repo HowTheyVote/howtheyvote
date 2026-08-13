@@ -51,7 +51,7 @@ class OEILSubject(DeserializableDataclass, metaclass=OEILSubjectMeta):
 oeil_subjects = DataclassContainer(
     dataclass=OEILSubject,
     file_path=DATA_DIR.joinpath("oeil_subjects.json"),
-    key_attr="code",
+    key=lambda subject: subject.code,
 )
 oeil_subjects.load()
 

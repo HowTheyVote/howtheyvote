@@ -38,7 +38,7 @@ class Committee(DeserializableDataclass, metaclass=CommitteeMeta):
 committees = DataclassContainer(
     dataclass=Committee,
     file_path=DATA_DIR.joinpath("committees.json"),
-    key_attr="code",
+    key=lambda committee: committee.code,
 )
 committees.load()
 
