@@ -1,3 +1,4 @@
+import AmendmentVoteCard from "./components/AmendmentVoteCard";
 import Banner from "./components/Banner";
 import CountryStatsList from "./components/CountryStatsList";
 import DatawrapperLinkList from "./components/DatawrapperLinkList";
@@ -10,6 +11,7 @@ import VoteTabs from "./components/VoteTabs";
 import { hydrateIslands } from "./lib/islands";
 
 hydrateIslands([
+  AmendmentVoteCard,
   MemberVotesList,
   GroupStatsList,
   CountryStatsList,
