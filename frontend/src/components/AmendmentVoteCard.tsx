@@ -80,6 +80,11 @@ export default function AmendmentVoteCard({ vote }: AmendmentVoteCardProps) {
             href={url}
             target="_blank"
             rel="noreferrer noopener"
+            onClick={() =>
+              window.alert(
+                `The linked document may contain other amendments in addition to amendment ${amendment_number}. Please make sure you read the correct amendment.`,
+              )
+            }
           >
             <Icon name="external-link" />
             Am {amendment_number}
