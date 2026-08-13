@@ -22,7 +22,7 @@ def test_dataclass_container_save(tmp_path: Path):
     container = DataclassContainer(
         dataclass=ExampleDataclass,
         file_path=file_path,
-        key_attr="id",
+        key=lambda record: record.id,
     )
 
     container.add(ExampleDataclass(id="foo", label="bar"))
@@ -38,7 +38,7 @@ def test_dataclass_container_save_sorted(tmp_path: Path):
     container = DataclassContainer(
         dataclass=ExampleDataclass,
         file_path=file_path,
-        key_attr="id",
+        key=lambda record: record.id,
     )
 
     container.add(ExampleDataclass(id="foo", label="foo"))
@@ -64,7 +64,7 @@ def test_dataclass_container_load(tmp_path: Path):
     container = DataclassContainer(
         dataclass=ExampleDataclass,
         file_path=file_path,
-        key_attr="id",
+        key=lambda record: record.id,
     )
 
     container.load()
@@ -76,7 +76,7 @@ def test_dataclass_container_iter():
     container = DataclassContainer(
         dataclass=ExampleDataclass,
         file_path="",
-        key_attr="id",
+        key=lambda record: record.id,
     )
 
     assert list(container) == []

@@ -41,7 +41,7 @@ class Topic(DeserializableDataclass, metaclass=TopicMeta):
 topics = DataclassContainer(
     dataclass=Topic,
     file_path=DATA_DIR.joinpath("topics.json"),
-    key_attr="code",
+    key=lambda topic: topic.code,
 )
 topics.load()
 

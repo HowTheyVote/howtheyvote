@@ -56,7 +56,7 @@ class Country(DeserializableDataclass, metaclass=CountryMeta):
 countries = DataclassContainer(
     dataclass=Country,
     file_path=DATA_DIR.joinpath("countries.json"),
-    key_attr="code",
+    key=lambda country: country.code,
 )
 countries.load()
 

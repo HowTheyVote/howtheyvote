@@ -23,7 +23,7 @@ class DataclassReferenceType[T: DeserializableDataclass](TypeDecorator[T]):
         if value is None:
             return None
 
-        return getattr(value, self.container.key_attr)
+        return self.container.key(value)
 
     def process_result_value(self, value: str | None, dialect: Dialect) -> T | None:
         if value is None:

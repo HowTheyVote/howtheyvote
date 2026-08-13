@@ -63,7 +63,7 @@ class EurovocConcept(DeserializableDataclass, metaclass=EurovocConceptMeta):
 eurovoc_concepts = DataclassContainer(
     dataclass=EurovocConcept,
     file_path=DATA_DIR.joinpath("eurovoc.json"),
-    key_attr="id",
+    key=lambda concept: concept.id,
 )
 eurovoc_concepts.load()
 
