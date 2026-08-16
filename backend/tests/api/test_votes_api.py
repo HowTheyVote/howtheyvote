@@ -70,6 +70,7 @@ def records(db_session, search_index):
         amendment_number=1,
         amendment_subject="$",
         amendment_authors=[AmendmentAuthorOriginalText()],
+        reference="A10-1234/2025",
         procedure_reference="1234/2025(COD)",
         is_main=True,
         member_votes=[
@@ -640,7 +641,7 @@ def test_votes_api_show(records, db_session, api):
         "is_main": True,
         "display_title": "Should we have pizza for lunch?",
         "timestamp": "2023-01-01T00:00:00",
-        "reference": None,
+        "reference": "A10-1234/2025",
         "description": "Résolution (ensemble du texte)",
         "amendment_subject": "$",
         "amendment_number": "1",
@@ -651,11 +652,17 @@ def test_votes_api_show(records, db_session, api):
                 "committee": None,
             }
         ],
+        "document": {
+            "type": "A",
+            "reference": "A10-1234/2025",
+            "url": "https://www.europarl.europa.eu/doceo/document/A-10-2025-1234_EN.html",
+        },
         "procedure": {
             "title": None,
             "type": "COD",
             "reference": "1234/2025(COD)",
             "stage": None,
+            "url": "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=1234/2025(COD)",
         },
         "snippet": None,
         "sharepic_url": "/files/votes/sharepic-1.png",
@@ -793,6 +800,11 @@ def test_votes_api_show(records, db_session, api):
             },
         ],
         "links": [
+            {
+                "title": "Report or resolution",
+                "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",
+                "url": "https://www.europarl.europa.eu/doceo/document/A-10-2025-1234_EN.html",
+            },
             {
                 "title": "Legislative Observatory",
                 "description": "Find out more about the procedure this vote is part of. This includes information about the current state of the procedure, past and upcoming steps, as well as key players.",

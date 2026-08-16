@@ -7,6 +7,7 @@ from ..models import (
     AmendmentAuthorType,
     Committee,
     Country,
+    DocumentType,
     EurovocConcept,
     Group,
     Member,
@@ -21,6 +22,18 @@ from ..models import (
     VotePosition,
     VoteResult,
 )
+
+
+class DocumentDict(TypedDict):
+    type: DocumentType
+    """Document type (e.g. "A" for report). Refer to the [Plenary User Guide](https://www.europarl.europa.eu/sed/doc/ext/manual/Plenary_guide_en.pdf#page=31)
+    a list of document types."""
+
+    reference: str
+    """Document reference as listed on the European Parliament website."""
+
+    url: str
+    """URL of the document on the European Parliament website."""
 
 
 class ProcedureDict(TypedDict):
@@ -38,6 +51,9 @@ class ProcedureDict(TypedDict):
     stage: ProcedureStage | None
     """Stage of the procedure in which the vote took place. This field is only available for
     votes starting in 2024 and if the vote is part of an Ordinary Legislative Procedure."""
+
+    url: str
+    """URL of the procedure in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)"""
 
 
 class GroupDict(TypedDict):
@@ -486,6 +502,9 @@ class SnippetDict(TypedDict):
 
 
 class VoteDict(BaseVoteDict):
+    document: DocumentDict | None
+    """Information about the report or resolution this vote is about"""
+
     procedure: ProcedureDict | None
     """Information about the legislative procedure to which this vote belongs"""
 
