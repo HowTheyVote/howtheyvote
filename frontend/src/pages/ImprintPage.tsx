@@ -100,8 +100,14 @@ export const ImprintPage: Page = () => {
                 <p>
                   We use a data processor, Functional Software, Inc. d/b/a
                   Sentry, 45 Fremont Street, 8th Floor, San Francisco, CA 94105,
-                  USA, to store access logs. You can learn more about how Sentry
-                  processes personal data in{" "}
+                  USA, to store access logs. This involves the transfer of
+                  personal information to the United States. The transfer is
+                  governed by the EU-US Data Privacy Framework (adequacy
+                  decision in accordance with Art. 45 GDPR), under which Sentry
+                  is certified. Where the adequacy decision does not apply or is
+                  invalidated, the transfer is governed by Standard Contractual
+                  Clauses in accordance with Art. 46(2)(c) GDPR. You can learn
+                  more about how Sentry processes personal data in{" "}
                   <a
                     target="_blank"
                     rel="noreferrer noopener"
