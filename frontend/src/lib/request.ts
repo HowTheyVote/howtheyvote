@@ -8,12 +8,13 @@ import {
   PUBLIC_URL,
 } from "../config";
 
-const asnReader = new mmdb.Reader<AsnResponse>(
-  fs.readFileSync(GEOLITE2_ASN_PATH),
-);
-const countryReader = new mmdb.Reader<CountryResponse>(
-  fs.readFileSync(GEOLITE2_COUNTRY_PATH),
-);
+const asnReader = GEOLITE2_ASN_PATH
+  ? new mmdb.Reader<AsnResponse>(fs.readFileSync(GEOLITE2_ASN_PATH))
+  : null;
+
+const countryReader = GEOLITE2_COUNTRY_PATH
+  ? new mmdb.Reader<CountryResponse>(fs.readFileSync(GEOLITE2_COUNTRY_PATH))
+  : null;
 
 type EnrichedRequestData = {
   referrerHeader?: string;
@@ -38,11 +39,13 @@ export function enrichRequest(request: Request) {
 
   data.referrerUrlParam = url.searchParams.get("utm_source") || undefined;
 
-  if (ipAddress) {
+  if (ipAddress && countryReader) {
     const country = countryReader.get(ipAddress)?.country;
     data.country = country?.iso_code;
     data.countryName = country?.names.en;
+  }
 
+  if (ipAddress && asnReader) {
     const asn = asnReader.get(ipAddress);
     data.asn = asn?.autonomous_system_number;
     data.asName = asn?.autonomous_system_organization;
