@@ -9,6 +9,7 @@
     "@sentry/node": "^10.72.0",
     "@tinyhttp/app": "^2.4.0",
     "isbot": "^5.2.2",
+    "mmdb-lib": "^3.0.2",
     "pino": "^10.3.1",
     "preact": "^10.29.8",
     "preact-render-to-string": "^6.7.0",

@@ -16,7 +16,7 @@ import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
 import { requestIsBot } from "./bots";
 import { getLogger } from "./logging";
-import { requestReferrerHeader, requestReferrerUrlParam } from "./request";
+import { enrichRequest } from "./request";
 
 const log = getLogger();
 
@@ -58,9 +58,7 @@ export function logRequests(
     const requestDuration = performance.now() - startTime;
     const route =
       request.route?.handler !== noMatchHandler ? request.route?.path : null;
-    const referrerHeader = requestReferrerHeader(request);
-    const referrerUrlParam = requestReferrerUrlParam(request);
-    const referrer = referrerHeader || referrerUrlParam;
+    const enrichedData = enrichRequest(request);
 
     const attributes = {
       method: request.method,
@@ -70,9 +68,13 @@ export function logRequests(
       query_string: new URL(request.url, "http://localhost").search.slice(1),
       is_bot: request.isBot,
       bot_name: request.botName,
-      referrerHeader,
-      referrerUrlParam,
-      referrer,
+      referrer_header: enrichedData.referrerHeader,
+      referrer_url_param: enrichedData.referrerUrlParam,
+      referrer: enrichedData.referrerHeader || enrichedData.referrerUrlParam,
+      country: enrichedData.country,
+      country_name: enrichedData.countryName,
+      asn: enrichedData.asn,
+      as_name: enrichedData.asName,
     };
 
     log.info({
