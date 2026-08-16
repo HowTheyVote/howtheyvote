@@ -16,6 +16,7 @@ import { HTTPException, RedirectException } from "../lib/http";
 import { ErrorPage } from "../pages/ErrorPage";
 import { requestIsBot } from "./bots";
 import { getLogger } from "./logging";
+import { requestReferrerHeader, requestReferrerUrlParam } from "./request";
 
 const log = getLogger();
 
@@ -57,6 +58,9 @@ export function logRequests(
     const requestDuration = performance.now() - startTime;
     const route =
       request.route?.handler !== noMatchHandler ? request.route?.path : null;
+    const referrerHeader = requestReferrerHeader(request);
+    const referrerUrlParam = requestReferrerUrlParam(request);
+    const referrer = referrerHeader || referrerUrlParam;
 
     const attributes = {
       method: request.method,
@@ -66,6 +70,9 @@ export function logRequests(
       query_string: new URL(request.url, "http://localhost").search.slice(1),
       is_bot: request.isBot,
       bot_name: request.botName,
+      referrerHeader,
+      referrerUrlParam,
+      referrer,
     };
 
     log.info({
