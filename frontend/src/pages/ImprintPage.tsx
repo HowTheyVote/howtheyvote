@@ -98,9 +98,9 @@ export const ImprintPage: Page = () => {
                 </p>
 
                 <p>
-                  We use a subprocessor, Functional Software, Inc. d/b/a Sentry,
-                  45 Fremont Street, 8th Floor, San Francisco, CA 94105, USA, to
-                  store access logs. You can learn more about how Sentry
+                  We use a data processor, Functional Software, Inc. d/b/a
+                  Sentry, 45 Fremont Street, 8th Floor, San Francisco, CA 94105,
+                  USA, to store access logs. You can learn more about how Sentry
                   processes personal data in{" "}
                   <a
                     target="_blank"
@@ -130,7 +130,7 @@ export const ImprintPage: Page = () => {
                 </p>
 
                 <p>
-                  We use a subprocessor, Tally, August van Lokerenstraat 71,
+                  We use a data processor, Tally, August van Lokerenstraat 71,
                   9050 Gent, Belgium, to provide the forms and collect form
                   submissions. When you access or submit the form the
                   subprocessor processes personal information. You can learn
