@@ -32,7 +32,7 @@ class DocumentDict(TypedDict):
     reference: str
     """Document reference as listed on the European Parliament website."""
 
-    url: str
+    url: str | None
     """URL of the document on the European Parliament website."""
 
 

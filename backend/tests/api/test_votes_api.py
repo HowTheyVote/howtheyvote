@@ -1047,6 +1047,20 @@ def test_votes_api_related_votes_order(db_session, api):
     assert res.json["related"][1]["id"] == 131714
 
 
+def test_votes_api_show_c_document(db_session, api):
+    vote = Vote(
+        id=195775,
+        timestamp=datetime.datetime(2026, 7, 9, 0, 0, 0),
+        reference="C10-0178/2026",
+    )
+
+    db_session.add(vote)
+    db_session.commit()
+
+    res = api.get("/api/votes/195775")
+    assert len(res.json["links"]) == 0
+
+
 def test_votes_api_not_found(api):
     res = api.get("/api/votes/123")
 

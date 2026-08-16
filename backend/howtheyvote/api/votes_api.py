@@ -900,13 +900,16 @@ def _format_links(vote: Vote) -> list[LinkDict]:
         )
 
     if vote.reference:
-        links.append(
-            {
-                "title": "Report or resolution",
-                "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",  #  noqa: E501
-                "url": doceo_document_url(vote.reference),
-            }
-        )
+        url = doceo_document_url(vote.reference)
+
+        if url:
+            links.append(
+                {
+                    "title": "Report or resolution",
+                    "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",  #  noqa: E501
+                    "url": url,
+                }
+            )
 
     if vote.texts_adopted_reference:
         links.append(
