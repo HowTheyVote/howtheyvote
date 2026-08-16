@@ -201,7 +201,8 @@ export const ImprintPage: Page = () => {
                   <li>
                     You are entitled to receive information about the personal
                     data stored about you and have the right to correction,
-                    blocking, and erasure of your personal information.
+                    restriction of processing, erasure, and objection to the
+                    processing of your personal information.
                   </li>
                   <li>
                     If we process your personal information with your consent
