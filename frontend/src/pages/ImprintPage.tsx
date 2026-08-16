@@ -58,14 +58,58 @@ export const ImprintPage: Page = () => {
 
                 <p>
                   This information is strictly necessary in order to provide you
-                  access to HowTheyVote.eu. We do not keep access logfiles or
-                  store this information in any other way after processing your
-                  request.
+                  access to HowTheyVote.eu.
                 </p>
 
                 <p>
                   The legal basis for processing the personal information is
                   Article 6(1)(f) GDPR.
+                </p>
+
+                <h3 class="gamma">Access logs</h3>
+
+                <p>
+                  When you request a page from HowTheyVote.eu, we store certain
+                  information about the request:
+                </p>
+
+                <ul>
+                  <li>Date and time of the request</li>
+                  <li>Page accessed</li>
+                  <li>URL from which you’ve accessed HowTheyVote.eu</li>
+                  <li>Country from which the request originated</li>
+                  <li>
+                    The network operator (e.g.., your internet provider) from
+                    which the request originated
+                  </li>
+                </ul>
+
+                <p>
+                  We derive the country and network operator from your IP
+                  address, but we do not store your IP address. We store this
+                  information to detect and block unusual request patterns,
+                  including attacks such as DDoS. We delete access logs after 30
+                  days.
+                </p>
+
+                <p>
+                  The legal basis for processing the personal information is
+                  Article 6(1)(f) GDPR.
+                </p>
+
+                <p>
+                  We use a subprocessor, Functional Software, Inc. d/b/a Sentry,
+                  45 Fremont Street, 8th Floor, San Francisco, CA 94105, USA, to
+                  store access logs. You can learn more about how Sentry
+                  processes personal data in{" "}
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href="https://sentry.io/privacy"
+                  >
+                    Sentry’s privacy policy
+                  </a>
+                  .
                 </p>
 
                 <h3 class="gamma">Contact forms</h3>
@@ -91,7 +135,11 @@ export const ImprintPage: Page = () => {
                   submissions. When you access or submit the form the
                   subprocessor processes personal information. You can learn
                   more about how Tally processes personal data in{" "}
-                  <a href="https://tally.so/help/privacy-policy">
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href="https://tally.so/help/privacy-policy"
+                  >
                     Tally’s privacy policy
                   </a>
                   .
