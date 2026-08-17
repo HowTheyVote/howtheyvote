@@ -321,6 +321,11 @@ def serialize_amendment_author(author: AmendmentAuthor) -> AmendmentAuthorDict:
     }
 
 
+class AmendmentURLDict(TypedDict):
+    amendment_number: int
+    url: str
+
+
 class RelatedVoteDict(TypedDict):
     id: Annotated[int, 157420]
     """ID as published in the official roll-call vote results"""
@@ -350,6 +355,11 @@ class RelatedVoteDict(TypedDict):
     amendment_authors: list[AmendmentAuthorDict] | None
     """Information regarding the authors of an amendment.
     This field is only available for votes starting in 2024"""
+
+    amendment_urls: list[AmendmentURLDict] | None
+    """Links to PDF documents containing the text of the amendments. The linked documents
+    may contain multiple amendments, not just the amendments the vote was about.
+    This field is only available for votes starting in 2024."""
 
     result: VoteResult | None
     """Vote result. This field is only available for votes starting in 2024."""

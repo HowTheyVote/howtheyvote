@@ -5,10 +5,8 @@ from typing import TYPE_CHECKING, Any, TypedDict
 
 import sqlalchemy as sa
 from sqlalchemy import ColumnElement, ForeignKey
-from sqlalchemy.engine import Dialect
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.types import TypeDecorator
 
 from ..files import vote_sharepic_url
 from .committee import Committee, CommitteeType
@@ -18,7 +16,7 @@ from .eurovoc import EurovocConcept, EurovocConceptType
 from .group import Group
 from .oeil_subject import OEILSubject, OEILSubjectType
 from .topic import Topic, TopicType
-from .types import ListType
+from .types import DataclassType, ListType
 
 if TYPE_CHECKING:
     from ..models import OEILSummary, PressRelease
@@ -159,10 +157,7 @@ AMENDMENT_AUTHOR_TYPE_TO_CLASS: dict[AmendmentAuthorType, type[AmendmentAuthor]]
 }
 
 
-def serialize_amendment_author(author: AmendmentAuthor | None) -> dict[str, Any] | None:
-    if not author:
-        return None
-
+def serialize_amendment_author(author: AmendmentAuthor) -> dict[str, Any]:
     if isinstance(author, AmendmentAuthorGroup):
         return {
             "type": AmendmentAuthorType.GROUP,
@@ -178,10 +173,7 @@ def serialize_amendment_author(author: AmendmentAuthor | None) -> dict[str, Any]
     return {"type": author.type}
 
 
-def deserialize_amendment_author(author: dict[str, Any] | None) -> AmendmentAuthor | None:
-    if not author:
-        return None
-
+def deserialize_amendment_author(author: dict[str, Any]) -> AmendmentAuthor:
     type_ = AmendmentAuthorType[author["type"]]
 
     if type_ == AmendmentAuthorType.GROUP:
@@ -199,25 +191,36 @@ def deserialize_amendment_author(author: dict[str, Any] | None) -> AmendmentAuth
     return author_class()  # type: ignore
 
 
-class SAAmendmentAuthorType(TypeDecorator[AmendmentAuthor]):
-    impl = sa.JSON
-    cache_ok = True
+SAAmendmentAuthorType = DataclassType[AmendmentAuthor](
+    serialize_amendment_author,
+    deserialize_amendment_author,
+)
 
-    def process_bind_param(
-        self, value: AmendmentAuthor | None, dialect: Dialect
-    ) -> dict[str, Any] | None:
-        if value is None:
-            return None
 
-        return serialize_amendment_author(value)
+@dataclasses.dataclass
+class AmendmentURL:
+    amendment_number: int
+    url: str
 
-    def process_result_value(
-        self, value: dict[str, Any] | None, dialect: Dialect
-    ) -> AmendmentAuthor | None:
-        if value is None:
-            return None
 
-        return deserialize_amendment_author(value)
+def serialize_amendment_url(amendment_url: AmendmentURL) -> dict[str, Any]:
+    return {
+        "amendment_number": amendment_url.amendment_number,
+        "url": amendment_url.url,
+    }
+
+
+def deserialize_amendment_url(amendment_url: dict[str, Any]) -> AmendmentURL:
+    return AmendmentURL(
+        amendment_number=amendment_url["amendment_number"],
+        url=amendment_url["url"],
+    )
+
+
+SAAmendmentURLType = DataclassType(
+    serialize_amendment_url,
+    deserialize_amendment_url,
+)
 
 
 @dataclasses.dataclass
@@ -226,39 +229,24 @@ class MemberVote:
     position: VotePosition
 
 
-def serialize_member_vote(member_vote: MemberVote | None) -> dict[str, Any] | None:
-    if not member_vote:
-        return None
-
+def serialize_member_vote(member_vote: MemberVote) -> dict[str, Any]:
     return {
         "web_id": member_vote.web_id,
         "position": member_vote.position.value,
     }
 
 
-def deserialize_member_vote(member_vote: dict[str, Any] | None) -> MemberVote | None:
-    if not member_vote:
-        return None
-
+def deserialize_member_vote(member_vote: dict[str, Any]) -> MemberVote:
     return MemberVote(
         web_id=member_vote["web_id"],
         position=VotePosition[member_vote["position"]],
     )
 
 
-class SAMemberVoteType(TypeDecorator[MemberVote]):
-    impl = sa.JSON
-    cache_ok = True
-
-    def process_bind_param(
-        self, value: MemberVote | None, dialect: Dialect
-    ) -> dict[str, Any] | None:
-        return serialize_member_vote(value)
-
-    def process_result_value(
-        self, value: dict[str, Any] | None, dialect: Dialect
-    ) -> MemberVote | None:
-        return deserialize_member_vote(value)
+SAMemberVoteType = DataclassType(
+    serialize_member_vote,
+    deserialize_member_vote,
+)
 
 
 class VotePositionCounts(TypedDict):
@@ -284,7 +272,10 @@ class Vote(BaseWithId):
     amendment_subject: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_number: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_authors: Mapped[list[AmendmentAuthor] | None] = mapped_column(
-        ListType(SAAmendmentAuthorType())
+        ListType(SAAmendmentAuthorType)
+    )
+    amendment_urls: Mapped[list[AmendmentURL] | None] = mapped_column(
+        ListType(SAAmendmentURLType)
     )
     rapporteur: Mapped[str | None] = mapped_column(sa.Unicode)
     reference: Mapped[str | None] = mapped_column(sa.Unicode)
@@ -294,27 +285,27 @@ class Vote(BaseWithId):
     group_key: Mapped[str | None] = mapped_column(sa.Unicode)
     result: Mapped[VoteResult | None] = mapped_column(sa.Enum(VoteResult))
     member_votes: Mapped[list[MemberVote]] = mapped_column(
-        ListType(SAMemberVoteType()),
+        ListType(SAMemberVoteType),
         default=[],
     )
     geo_areas: Mapped[list[Country]] = mapped_column(
-        ListType(CountryType()),
+        ListType(CountryType),
         default=[],
     )
     eurovoc_concepts: Mapped[list[EurovocConcept]] = mapped_column(
-        ListType(EurovocConceptType()),
+        ListType(EurovocConceptType),
         default=[],
     )
     oeil_subjects: Mapped[list[OEILSubject]] = mapped_column(
-        ListType(OEILSubjectType()),
+        ListType(OEILSubjectType),
         default=[],
     )
     topics: Mapped[list[Topic]] = mapped_column(
-        ListType(TopicType()),
+        ListType(TopicType),
         default=[],
     )
     responsible_committees: Mapped[list[Committee]] = mapped_column(
-        ListType(CommitteeType()),
+        ListType(CommitteeType),
         default=[],
     )
     press_release_id: Mapped[str | None] = mapped_column(ForeignKey("press_releases.id"))

@@ -1,5 +1,6 @@
-import { describe, it } from "node:test";
-import { render, screen } from "@testing-library/preact";
+import { strictEqual } from "node:assert";
+import { describe, it, mock } from "node:test";
+import { fireEvent, render, screen } from "@testing-library/preact";
 import type { RelatedVote } from "../api";
 import AmendmentVoteCard from "./AmendmentVoteCard";
 
@@ -32,6 +33,12 @@ describe("AmendmentVoteCard", () => {
       result: "REJECTED",
       amendment_number: "4",
       amendment_subject: "§ 1",
+      amendment_urls: [
+        {
+          amendment_number: 4,
+          url: "https://example.com/amendment-4.pdf",
+        },
+      ],
       amendment_authors: [
         {
           type: "GROUP",
@@ -48,6 +55,14 @@ describe("AmendmentVoteCard", () => {
 
     screen.getByRole("heading", { name: "Amendment 4 by PfE" });
     screen.getByText("§ 1");
+    const amendmentLink = screen.getByRole("link", { name: "Am 4" });
+    const alert = mock.method(window, "alert");
+    fireEvent.click(amendmentLink);
+    strictEqual(alert.mock.calls.length, 1);
+    strictEqual(
+      alert.mock.calls[0].arguments[0],
+      "The linked document may contain other amendments in addition to amendment 4. Please make sure you read the correct amendment.",
+    );
     screen.getByTitle("rejected");
   });
 

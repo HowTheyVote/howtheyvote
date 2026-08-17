@@ -14,6 +14,7 @@ from ..models import (
     Vote,
     VoteResult,
     deserialize_amendment_author,
+    deserialize_amendment_url,
     deserialize_group_membership,
     deserialize_member_vote,
 )
@@ -78,6 +79,10 @@ def map_vote(record: CompositeRecord) -> Vote:
         amendment_subject=record.get("amendment_subject"),
         amendment_number=record.get("amendment_number"),
         amendment_authors=amendment_authors,
+        amendment_urls=record.chain(
+            key="amendment_urls",
+            type=deserialize_amendment_url,
+        ),
         is_main=record.get("is_main") or False,
         group_key=record.get("group_key"),
         result=record.get(

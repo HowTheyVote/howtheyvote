@@ -1,11 +1,8 @@
 import dataclasses
 import re
 
-import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
-from sqlalchemy.types import TypeDecorator
-
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
+from .types import DataclassReferenceType
 
 
 class CountryMeta(type):
@@ -59,7 +56,7 @@ class Country(DeserializableDataclass, metaclass=CountryMeta):
 countries = DataclassContainer(
     dataclass=Country,
     file_path=DATA_DIR.joinpath("countries.json"),
-    key_attr="code",
+    key=lambda country: country.code,
 )
 countries.load()
 
@@ -71,18 +68,4 @@ def _normalize_label(label: str) -> str:
     return normalized
 
 
-class CountryType(TypeDecorator[Country]):
-    impl = sa.Unicode
-    cache_ok = True
-
-    def process_bind_param(self, value: Country | None, dialect: Dialect) -> str | None:
-        if not value:
-            return None
-
-        return value.code
-
-    def process_result_value(self, value: str | None, dialect: Dialect) -> Country | None:
-        if not value:
-            return None
-
-        return Country[value]
+CountryType = DataclassReferenceType[Country](countries)

@@ -1,10 +1,7 @@
 import dataclasses
 
-import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
-from sqlalchemy.types import TypeDecorator
-
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
+from .types import DataclassReferenceType
 
 
 class TopicMeta(type):
@@ -44,23 +41,9 @@ class Topic(DeserializableDataclass, metaclass=TopicMeta):
 topics = DataclassContainer(
     dataclass=Topic,
     file_path=DATA_DIR.joinpath("topics.json"),
-    key_attr="code",
+    key=lambda topic: topic.code,
 )
 topics.load()
 
 
-class TopicType(TypeDecorator[Topic]):
-    impl = sa.Unicode
-    cache_ok = True
-
-    def process_bind_param(self, value: Topic | None, dialect: Dialect) -> str | None:
-        if not value:
-            return None
-
-        return value.code
-
-    def process_result_value(self, value: str | None, dialect: Dialect) -> Topic | None:
-        if not value:
-            return None
-
-        return topics.get(value)
+TopicType = DataclassReferenceType[Topic](topics)

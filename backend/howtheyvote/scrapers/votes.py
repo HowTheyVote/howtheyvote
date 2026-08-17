@@ -11,6 +11,7 @@ from .. import config
 from ..helpers import parse_reference
 from ..models import (
     AmendmentAuthor,
+    AmendmentURL,
     Committee,
     Country,
     EurovocConcept,
@@ -644,32 +645,40 @@ class ODPDocumentScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/plenary-documents"
     EUROVOC_URL_REGEX = re.compile(r"^http://eurovoc\.europa\.eu/([^/]+)$")
     PROCEDURE_ID_REGEX = re.compile(r"^eli/dl/proc/([^/]+)$")
+    AMENDMENTS_BASE_URL = "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd"
 
     def __init__(
         self,
         vote_id: int,
         reference: str,
+        amendment_number: str | None = None,
         request_cache: RequestCache | None = None,
     ):
-        super().__init__(vote_id=vote_id, reference=reference, request_cache=request_cache)
+        super().__init__(
+            vote_id=vote_id,
+            reference=reference,
+            amendment_number=amendment_number,
+            request_cache=request_cache,
+        )
         self.vote_id = vote_id
+        self.amendment_number = amendment_number
         self.reference = reference
 
     def _url(self) -> str:
-        ref = parse_reference(self.reference)
-        number = str(ref["number"]).rjust(4, "0")
-        formatted_ref = f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
+        formatted_ref = self._formatted_reference()
         return f"{self.BASE_URL}/{formatted_ref}?format=application/ld+json"
 
     def _extract_data(self, doc: Any) -> Fragment:
         odp_procedure_reference = self._odp_procedure_reference(doc)
         eurovoc_concepts, geo_areas = self._eurovoc_concepts(doc)
+        amendment_urls = self._amendment_urls(doc)
 
         self._log.info(
             "Extracted document information",
             odp_procedure_reference=odp_procedure_reference,
             geo_areas=geo_areas,
             eurovoc_concepts=eurovoc_concepts,
+            amendment_urls=amendment_urls,
         )
 
         return self._fragment(
@@ -680,6 +689,7 @@ class ODPDocumentScraper(JSONScraper):
                 "odp_procedure_reference": odp_procedure_reference,
                 "eurovoc_concepts": eurovoc_concepts,
                 "geo_areas": geo_areas,
+                "amendment_urls": amendment_urls,
             },
         )
 
@@ -718,6 +728,50 @@ class ODPDocumentScraper(JSONScraper):
                 concepts.add(concept.id)
 
         return concepts, geo_areas
+
+    def _amendment_urls(self, doc: Any) -> list[AmendmentURL] | None:
+        if self.amendment_number is None:
+            return None
+
+        amendment_numbers = []
+
+        for number in self.amendment_number.split(" "):
+            match = re.match(r"\d+", number.strip())
+
+            if match:
+                amendment_numbers.append(int(match.group()))
+
+        amendment_urls: list[AmendmentURL] = []
+        amendment_lists = doc["data"][0].get("inverse_foresees_change_of", [])
+
+        for amendment_number in amendment_numbers:
+            for amendment_list in amendment_lists:
+                start = amendment_list["itemNumberBegin"]
+                end = amendment_list["itemNumberEnd"]
+
+                # TODO Check if intervals are inclusive
+                if start > amendment_number or end < amendment_number:
+                    continue
+
+                formatted_ref = self._formatted_reference()
+                amendment_list_id = f"{formatted_ref}-AM-{start:03d}-{end:03d}"
+                amendment_urls.append(
+                    AmendmentURL(
+                        amendment_number=amendment_number,
+                        url=(
+                            f"{self.AMENDMENTS_BASE_URL}/{amendment_list_id}/"
+                            f"{amendment_list_id}_en.pdf"
+                        ),
+                    ),
+                )
+                break
+
+        return amendment_urls
+
+    def _formatted_reference(self) -> str:
+        ref = parse_reference(self.reference)
+        number = str(ref["number"]).rjust(4, "0")
+        return f"{ref['type'].value}-{ref['term']}-{ref['year']}-{number}"
 
 
 class ODPProcedureScraper(JSONScraper):

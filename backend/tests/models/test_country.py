@@ -49,7 +49,7 @@ def test_country_type():
     table = Table(
         "countries",
         metadata,
-        Column("country", CountryType()),
+        Column("country", CountryType),
     )
 
     with engine.connect() as connection:

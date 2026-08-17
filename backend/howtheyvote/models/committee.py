@@ -1,11 +1,8 @@
 import dataclasses
 import datetime
 
-import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
-from sqlalchemy.types import TypeDecorator
-
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
+from .types import DataclassReferenceType
 
 
 class CommitteeMeta(type):
@@ -41,23 +38,9 @@ class Committee(DeserializableDataclass, metaclass=CommitteeMeta):
 committees = DataclassContainer(
     dataclass=Committee,
     file_path=DATA_DIR.joinpath("committees.json"),
-    key_attr="code",
+    key=lambda committee: committee.code,
 )
 committees.load()
 
 
-class CommitteeType(TypeDecorator[Committee]):
-    impl = sa.Unicode
-    cache_ok = True
-
-    def process_bind_param(self, value: Committee | None, dialect: Dialect) -> str | None:
-        if not value:
-            return None
-
-        return value.code
-
-    def process_result_value(self, value: str | None, dialect: Dialect) -> Committee | None:
-        if not value:
-            return None
-
-        return committees.get(value)
+CommitteeType = DataclassReferenceType[Committee](committees)

@@ -4,7 +4,6 @@
   width: 100%;
   padding: var(--space-xs);
   gap: var(--space-xs);
-  flex-direction: row-reverse;
   align-items: center;
 
   border: 1px solid var(--gray-light);
@@ -12,19 +11,22 @@
   box-shadow: var(--shadow);
 }
 
-.card:focus-within {
-  outline: var(--focus-outline);
-  outline-offset: -1px;
-}
-
 .card__thumb {
   flex-grow: 0;
   flex-shrink: 0;
+  order: 1;
 }
 
 .card__text {
   flex-grow: 1;
   flex-shrink: 1;
+  order: 2;
+}
+
+.card__action {
+  flex-grow: 0;
+  flex-shrink: 0;
+  order: 3;
 }
 
 .card__title {
@@ -45,11 +47,16 @@
   text-decoration: underline;
 }
 
-.card__title a:focus-visible {
+.card--clickable:focus-within {
+  outline: var(--focus-outline);
+  outline-offset: -1px;
+}
+
+.card--clickable .card__title a:focus-visible {
   outline: none;
 }
 
-.card__title a::before {
+.card--clickable .card__title a::before {
   content: "";
   position: absolute;
   top: 0;

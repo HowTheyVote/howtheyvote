@@ -1,6 +1,9 @@
 import type { RelatedVote } from "../api";
 import Card from "./Card";
+import Icon from "./Icon";
 import Thumb from "./Thumb";
+
+import "./AmendmentVoteCard.css";
 
 type AmendmentVoteCardProps = {
   vote: RelatedVote;
@@ -61,10 +64,33 @@ export default function AmendmentVoteCard({ vote }: AmendmentVoteCardProps) {
 
   return (
     <Card
+      className="amendment-vote-card"
       title={title}
       meta={meta}
       link={`/votes/${vote.id}`}
+      clickable={false}
       thumb={vote.result && <Thumb style="circle" result={vote.result} />}
+      action={
+        vote.amendment_urls &&
+        vote.amendment_urls.length > 0 &&
+        vote.amendment_urls.map(({ amendment_number, url }) => (
+          <a
+            key={amendment_number}
+            class="amendment-vote-card__action"
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+            onClick={() =>
+              window.alert(
+                `The linked document may contain other amendments in addition to amendment ${amendment_number}. Please make sure you read the correct amendment.`,
+              )
+            }
+          >
+            <Icon name="external-link" />
+            Am {amendment_number}
+          </a>
+        ))
+      }
     />
   );
 }

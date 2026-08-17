@@ -4,6 +4,7 @@ import pytest
 
 from howtheyvote.models import (
     AmendmentAuthorOriginalText,
+    AmendmentURL,
     Committee,
     Country,
     Fragment,
@@ -947,6 +948,10 @@ def test_votes_api_related_votes(db_session, api):
         title="Should we have pizza for lunch?",
         description="Am 1",
         group_key="abc123",
+        amendment_urls=[
+            AmendmentURL(amendment_number=17, url="https://example.org/amendment-17.pdf"),
+            AmendmentURL(amendment_number=25, url="https://example.org/amendment-25.pdf"),
+        ],
         member_votes=[
             MemberVote(
                 web_id=1,
@@ -984,6 +989,16 @@ def test_votes_api_related_votes(db_session, api):
             "amendment_subject": None,
             "amendment_number": None,
             "amendment_authors": [],
+            "amendment_urls": [
+                {
+                    "amendment_number": 17,
+                    "url": "https://example.org/amendment-17.pdf",
+                },
+                {
+                    "amendment_number": 25,
+                    "url": "https://example.org/amendment-25.pdf",
+                },
+            ],
             "description": "Am 1",
             "result": None,
         },
@@ -994,6 +1009,7 @@ def test_votes_api_related_votes(db_session, api):
             "amendment_subject": None,
             "amendment_number": None,
             "amendment_authors": [],
+            "amendment_urls": None,
             "description": "Resolution (text as a whole)",
             "result": None,
         },

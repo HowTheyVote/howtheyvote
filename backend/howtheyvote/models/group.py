@@ -80,7 +80,7 @@ class Group(DeserializableDataclass, metaclass=GroupMeta):
 groups = DataclassContainer(
     dataclass=Group,
     file_path=DATA_DIR.joinpath("groups.json"),
-    key_attr="code",
+    key=lambda group: group.code,
 )
 groups.load()
 
