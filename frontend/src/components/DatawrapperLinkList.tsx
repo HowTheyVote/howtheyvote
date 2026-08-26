@@ -5,6 +5,20 @@ import { formatDate } from "../lib/dates";
 import List from "./List";
 import ListItem from "./ListItem";
 
+const COLORS = {
+  FOR: "rgb(0, 144, 118)",
+  AGAINST: "rgb(199, 30, 29)",
+  ABSTENTION: "rgb(29, 129, 162)",
+  DID_NOT_VOTE: "rgb(114, 114, 114)",
+};
+
+const LABELS = {
+  FOR: "For",
+  AGAINST: "Against",
+  ABSTENTION: "Abstention",
+  DID_NOT_VOTE: "Didn’t vote",
+};
+
 type EmbedType = "members" | "groups" | "countries";
 
 type DatawrapperLinkProps = {
@@ -125,11 +139,6 @@ function DataWrapperLinkList({ vote }: { vote: Vote }) {
   );
 }
 
-const GREEN = "rgb(0, 144, 118)";
-const RED = "rgb(199, 30, 29)";
-const BLUE = "rgb(29, 129, 162)";
-const GRAY = "rgb(114, 114, 114)";
-
 function populateConfigForGroups(
   config: Record<string, string>,
   voteId: number,
@@ -145,16 +154,16 @@ function populateConfigForGroups(
     "color-by-column": true,
     "color-category": {
       map: {
-        count_for: GREEN,
-        count_against: RED,
-        count_abstentions: BLUE,
-        count_did_not_vote: GRAY,
+        count_for: COLORS.FOR,
+        count_against: COLORS.AGAINST,
+        count_abstentions: COLORS.ABSTENTION,
+        count_did_not_vote: COLORS.DID_NOT_VOTE,
       },
       categoryLabels: {
-        count_for: "In Favor",
-        count_against: "Against",
-        count_abstentions: "Abstention",
-        count_did_not_vote: "Did not vote",
+        count_for: LABELS.FOR,
+        count_against: LABELS.AGAINST,
+        count_abstentions: LABELS.ABSTENTION,
+        count_did_not_vote: LABELS.DID_NOT_VOTE,
       },
     },
   };
@@ -181,16 +190,16 @@ function populateConfigForCountries(
     "color-by-column": true,
     "color-category": {
       map: {
-        count_for: GREEN,
-        count_against: RED,
-        count_abstentions: BLUE,
-        count_did_not_vote: GRAY,
+        count_for: COLORS.FOR,
+        count_against: COLORS.AGAINST,
+        count_abstentions: COLORS.ABSTENTION,
+        count_did_not_vote: COLORS.DID_NOT_VOTE,
       },
       categoryLabels: {
-        count_for: "In Favor",
-        count_against: "Against",
-        count_abstentions: "Abstention",
-        count_did_not_vote: "Did not vote",
+        count_for: LABELS.FOR,
+        count_against: LABELS.AGAINST,
+        count_abstentions: LABELS.ABSTENTION,
+        count_did_not_vote: LABELS.DID_NOT_VOTE,
       },
     },
   };
@@ -271,10 +280,10 @@ function populateConfigForMembers(
         name: "Vote",
         formula: `CONCAT(
           "<b style='background:currentColor; padding:1px 4px;'><span style='color:white'>",
-          IF(position == "VotePosition.FOR", "For", ""),
-          IF(position == "VotePosition.AGAINST", "Against", ""),
-          IF(position == "VotePosition.ABSTENTION", "Abstention", ""),
-          IF(position == "VotePosition.DID_NOT_VOTE", "Didn’t vote", ""),
+          IF(position == "VotePosition.FOR", "${LABELS.FOR}", ""),
+          IF(position == "VotePosition.AGAINST", "${LABELS.AGAINST}", ""),
+          IF(position == "VotePosition.ABSTENTION", "${LABELS.ABSTENTION}", ""),
+          IF(position == "VotePosition.DID_NOT_VOTE", "${LABELS.DID_NOT_VOTE}", ""),
           "</span></b>"
         )`,
       },
@@ -295,10 +304,10 @@ function populateConfigForMembers(
         customColor: true,
         customColorBy: "Vote",
         customColorText: {
-          For: GREEN,
-          Against: RED,
-          Abstention: BLUE,
-          "Didn’t vote": GRAY,
+          For: COLORS.FOR,
+          Against: COLORS.AGAINST,
+          Abstention: COLORS.ABSTENTION,
+          "Didn’t vote": COLORS.DID_NOT_VOTE,
         },
       },
     },
