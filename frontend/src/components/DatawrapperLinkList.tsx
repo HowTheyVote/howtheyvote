@@ -343,10 +343,10 @@ function getPresetConfig(
   config.description =
     `${formatDate(timestamp)} · ` +
     (reference && `${reference} · `) +
-    (description && `${description}</br>`) +
-    `<b>${stats.FOR} votes in favor</b>, ` +
-    `<b>${stats.AGAINST} votes against</b>, ` +
-    `<b>${stats.ABSTENTION} abstentions</b>.`;
+    (description && `${description}<br/>`) +
+    `${stats.FOR} votes in favor, ` +
+    `${stats.AGAINST} votes against, ` +
+    `${stats.ABSTENTION} abstentions.`;
 
   config.source_url = `https://howtheyvote.eu/votes/${voteId}`;
   config.source_name = "HowTheyVote.eu (Open Database License)";
