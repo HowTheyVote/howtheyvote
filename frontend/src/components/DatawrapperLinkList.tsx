@@ -292,6 +292,14 @@ function populateConfigForMembers(
       },
       Vote: {
         alignment: "right",
+        customColor: true,
+        customColorBy: "Vote",
+        customColorText: {
+          For: GREEN,
+          Against: RED,
+          Abstention: BLUE,
+          "Didn’t vote": GRAY,
+        },
       },
     },
     perPage: 10,
@@ -327,9 +335,9 @@ function getPresetConfig(
     `${formatDate(timestamp)} · ` +
     (reference && `${reference} · `) +
     (description && `${description}</br>`) +
-    `<b style="border-bottom: 2px solid ${GREEN};">${stats.FOR} votes in favor</b>, ` +
-    `<b style="border-bottom:2px solid ${RED};">${stats.AGAINST} votes against</b>, ` +
-    `<b style="border-bottom:2px solid ${BLUE};">${stats.ABSTENTION} abstentions</b>.`;
+    `<b>${stats.FOR} votes in favor</b>, ` +
+    `<b>${stats.AGAINST} votes against</b>, ` +
+    `<b>${stats.ABSTENTION} abstentions</b>.`;
 
   config.source_url = `https://howtheyvote.eu/votes/${voteId}`;
   config.source_name = "HowTheyVote.eu (Open Database License)";
