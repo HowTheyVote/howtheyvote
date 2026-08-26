@@ -270,10 +270,12 @@ function populateConfigForMembers(
       {
         name: "Vote",
         formula: `CONCAT(
-          IF(position == "VotePosition.FOR", "<b style='background:${GREEN}; color:white; padding:1px 4px;'>For</b>", ""),
-          IF(position == "VotePosition.AGAINST", "<b style='background:${RED}; color:white; padding:1px 4px;'>Against</b>", ""),
-          IF(position == "VotePosition.ABSTENTION", "<b style='background:${BLUE}; color:white; padding:1px 4px'>Abstention</b>", ""),
-          IF(position == "VotePosition.DID_NOT_VOTE", "<b style='background:${GRAY}; color:white; padding:1px 4px'>Didn’t vote</b>", "")
+          "<b style='background:currentColor; padding:1px 4px;'><span style='color:white'>",
+          IF(position == "VotePosition.FOR", "For", ""),
+          IF(position == "VotePosition.AGAINST", "Against", ""),
+          IF(position == "VotePosition.ABSTENTION", "Abstention", ""),
+          IF(position == "VotePosition.DID_NOT_VOTE", "Didn’t vote", ""),
+          "</span></b>"
         )`,
       },
     ],
