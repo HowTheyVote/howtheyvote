@@ -288,7 +288,7 @@ def load_committees() -> None:
     PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX euvoc: <http://publications.europa.eu/ontology/euvoc#>
 
-    SELECT ?code ?label ?abbr ?start_date ?end_date
+    SELECT ?code ?label ?abbr ?ep_identifier ?start_date ?end_date
     FROM <http://publications.europa.eu/resource/authority/corporate-body>
     WHERE {
         ?committee dct:type <http://publications.europa.eu/resource/authority/corporate-body-classification/EP_CMT>.
@@ -314,6 +314,12 @@ def load_committees() -> None:
                 ?abbr_status = <http://publications.europa.eu/resource/authority/concept-status/CURRENT>
             )
         }
+
+        # Get the EP identifier
+        OPTIONAL {
+            ?committee skos:notation ?ep_identifier .
+            FILTER(DATATYPE(?ep_identifier) = euvoc:EP)
+        }
     }
     """  # noqa: E501
 
@@ -337,7 +343,12 @@ def load_committees() -> None:
             .strip()
         )
 
-        abbreviation = result["abbr"]["value"] if result.get("abbr") else code
+        if "ep_identifier" in result:
+            abbreviation = result["ep_identifier"]["value"]
+        elif "abbr" in result:
+            abbreviation = result["abbr"]["value"]
+        else:
+            abbreviation = code
 
         start_date = datetime.date.fromisoformat(result["start_date"]["value"])
         end_date = (
