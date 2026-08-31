@@ -12,7 +12,7 @@ services:
       - "8000"
     restart: "unless-stopped"
     volumes:
-      - "./storage/mmdb:/howtheyvote/mmdb"
+      - "./storage/geolite2:/howtheyvote/geolite2"
     environment:
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
       HTV_BACKEND_PRIVATE_URL: "http://backend:5000"
