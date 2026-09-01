@@ -53,7 +53,7 @@ export const loader: Loader<MemberPageData> = async (request: Request) => {
   if (!request.isBot) {
     const { data } = member;
     const attributes = {
-      member_id: data.id,
+      member_id: data.id.toString(),
       member_name: data.full_name,
       member_country_code: data.country.code,
       member_country_label: data.country.label,

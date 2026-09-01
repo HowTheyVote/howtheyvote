@@ -38,7 +38,7 @@ export const loader: Loader<Vote> = async (request: Request) => {
 
   if (!request.isBot) {
     const attributes = {
-      vote_id: data.id,
+      vote_id: data.id.toString(),
       vote_title: data.display_title,
       vote_date: data.timestamp.split("T")[0],
     };

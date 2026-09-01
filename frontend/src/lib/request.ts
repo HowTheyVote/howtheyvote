@@ -21,7 +21,7 @@ type EnrichedRequestData = {
   referrerUrlParam?: string;
   country?: string;
   countryName?: string;
-  asn?: number;
+  asn?: string;
   asName?: string;
 };
 
@@ -47,7 +47,7 @@ export function enrichRequest(request: Request) {
 
   if (ipAddress && asnReader) {
     const asn = asnReader.get(ipAddress);
-    data.asn = asn?.autonomous_system_number;
+    data.asn = asn?.autonomous_system_number.toString();
     data.asName = asn?.autonomous_system_organization;
   }
 
