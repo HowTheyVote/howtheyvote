@@ -81,6 +81,7 @@ describe("requestIsBot", () => {
       "/.git/HEAD",
       "/xmlrpc.php",
       "/admin/index.php",
+      "//wp-admin.php",
     ];
 
     for (const path of allow) {

@@ -53,9 +53,12 @@ export function requestIsBot(request: Request): {
     };
   }
 
+  // Normalize multiple leading slashes
+  const path = request.path.replace(/^\/+/, "/");
+
   // Detect bots based on common request patterns
   for (const prefix of BOT_PATH_PREFIXES) {
-    if (request.path.startsWith(prefix)) {
+    if (path.startsWith(prefix)) {
       return { result: true };
     }
   }
