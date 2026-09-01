@@ -15,15 +15,15 @@
     "sirv": "^3.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.7",
+    "@biomejs/biome": "^2.5.11",
     "@hey-api/openapi-ts": "^0.97.0",
     "@testing-library/preact": "^3.2.4",
-    "@testing-library/user-event": "^14.6.3",
+    "@testing-library/user-event": "^14.6.6",
     "@types/jsdom": "^30.0.0",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.4.0",
     "esbuild": "^0.28.2",
     "jsdom": "^30.0.1",
-    "tsx": "^4.23.11",
+    "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   }
 }
