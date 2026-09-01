@@ -17,6 +17,11 @@ const BOT_PATH_PREFIXES = [
   "/robots.txt",
   "/cgi-bin",
   "/ipfs",
+  "/blog",
+  "/ip",
+  "/graphql",
+  "/signin",
+  "/register",
 ];
 
 const BOT_PATH_SUFFXIES = [
@@ -28,6 +33,8 @@ const BOT_PATH_SUFFXIES = [
   ".conf",
   ".js",
   ".css",
+  ".json",
+  ".env",
 ];
 
 const DEFAULT_HEADERS = ["user-agent", "accept-language", "accept-encoding"];
