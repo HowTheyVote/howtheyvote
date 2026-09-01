@@ -30,6 +30,8 @@ const BOT_PATH_SUFFXIES = [
   ".css",
 ];
 
+const DEFAULT_HEADERS = ["user-agent", "accept-language", "accept-encoding"];
+
 export function requestIsBot(request: Request): {
   result: boolean;
   name?: string;
@@ -53,6 +55,13 @@ export function requestIsBot(request: Request): {
 
   for (const suffix of BOT_PATH_SUFFXIES) {
     if (request.path.endsWith(suffix)) {
+      return { result: true };
+    }
+  }
+
+  for (const header of DEFAULT_HEADERS) {
+    if (!request.headers[header]) {
+      console.log(header, request.headers[header]);
       return { result: true };
     }
   }

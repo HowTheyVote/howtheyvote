@@ -3,15 +3,27 @@ import { describe, it } from "node:test";
 import type { Request } from "@tinyhttp/app";
 import { requestIsBot } from "./bots";
 
+const DEFAULT_OPTIONS = {
+  path: "/",
+  userAgent:
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:155.0) Gecko/20100101 Firefox/155.0",
+  acceptLanguage: "en-US,en;q=0.9",
+  acceptEncoding: "gzip, deflate, br, zstd",
+};
+
 function makeRequest(options: Record<string, string | undefined>) {
-  const {
-    path = "/",
-    userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
-  } = options;
+  const { path, userAgent, acceptLanguage, acceptEncoding } = {
+    ...DEFAULT_OPTIONS,
+    ...options,
+  };
 
   return {
     path,
-    headers: { "user-agent": userAgent },
+    headers: {
+      "user-agent": userAgent,
+      "accept-language": acceptLanguage,
+      "accept-encoding": acceptEncoding,
+    },
   } as unknown as Request;
 }
 
@@ -81,6 +93,26 @@ describe("requestIsBot", () => {
       const isBot = requestIsBot(makeRequest({ path }));
       assert.strictEqual(isBot.result, true);
       assert.strictEqual(isBot.name, undefined);
+    }
+  });
+
+  it("detects missing default headers", () => {
+    for (const value of ["", undefined]) {
+      console.log(value);
+      assert.strictEqual(
+        requestIsBot(makeRequest({ userAgent: value })).result,
+        true,
+      );
+
+      assert.strictEqual(
+        requestIsBot(makeRequest({ acceptLanguage: value })).result,
+        true,
+      );
+
+      assert.strictEqual(
+        requestIsBot(makeRequest({ acceptEncoding: value })).result,
+        true,
+      );
     }
   });
 });
