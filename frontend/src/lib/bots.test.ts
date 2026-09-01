@@ -1,7 +1,19 @@
 import { strict as assert } from "node:assert";
-// import { Request } from "node:http";
 import { describe, it } from "node:test";
+import type { Request } from "@tinyhttp/app";
 import { requestIsBot } from "./bots";
+
+function makeRequest(options: Record<string, string | undefined>) {
+  const {
+    path = "/",
+    userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
+  } = options;
+
+  return {
+    path,
+    headers: { "user-agent": userAgent },
+  } as unknown as Request;
+}
 
 describe("requestIsBot", () => {
   it("detects common bot/crawler user agents", () => {
@@ -31,13 +43,13 @@ describe("requestIsBot", () => {
     ];
 
     for (const userAgent of allow) {
-      const isBot = requestIsBot("/", userAgent);
+      const isBot = requestIsBot(makeRequest({ userAgent }));
       assert.strictEqual(isBot.result, false);
       assert.strictEqual(isBot.name, undefined);
     }
 
     for (const userAgent of block) {
-      const isBot = requestIsBot("/", userAgent);
+      const isBot = requestIsBot(makeRequest({ userAgent }));
       assert.strictEqual(isBot.result, true);
     }
   });
@@ -60,13 +72,13 @@ describe("requestIsBot", () => {
     ];
 
     for (const path of allow) {
-      const isBot = requestIsBot(path, "");
+      const isBot = requestIsBot(makeRequest({ path }));
       assert.strictEqual(isBot.result, false);
       assert.strictEqual(isBot.name, undefined);
     }
 
     for (const path of block) {
-      const isBot = requestIsBot(path, "");
+      const isBot = requestIsBot(makeRequest({ path }));
       assert.strictEqual(isBot.result, true);
       assert.strictEqual(isBot.name, undefined);
     }

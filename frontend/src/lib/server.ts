@@ -37,10 +37,7 @@ export function isBot(
   _response: Response,
   next?: NextFunction,
 ) {
-  const { result, name } = requestIsBot(
-    request.path,
-    request.headers["user-agent"],
-  );
+  const { result, name } = requestIsBot(request);
   request.isBot = result;
   request.botName = name;
   next?.();

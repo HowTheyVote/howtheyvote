@@ -1,3 +1,4 @@
+import type { Request } from "@tinyhttp/app";
 import { isbotMatch } from "isbot";
 
 const BOT_PATH_PREFIXES = [
@@ -29,15 +30,12 @@ const BOT_PATH_SUFFXIES = [
   ".css",
 ];
 
-export function requestIsBot(
-  path: string,
-  userAgent?: string,
-): {
+export function requestIsBot(request: Request): {
   result: boolean;
   name?: string;
 } {
   // Detect certain bots based on user agent
-  const match = isbotMatch(userAgent);
+  const match = isbotMatch(request.headers["user-agent"]);
 
   if (match) {
     return {
@@ -48,13 +46,13 @@ export function requestIsBot(
 
   // Detect bots based on common request patterns
   for (const prefix of BOT_PATH_PREFIXES) {
-    if (path.startsWith(prefix)) {
+    if (request.path.startsWith(prefix)) {
       return { result: true };
     }
   }
 
   for (const suffix of BOT_PATH_SUFFXIES) {
-    if (path.endsWith(suffix)) {
+    if (request.path.endsWith(suffix)) {
       return { result: true };
     }
   }
