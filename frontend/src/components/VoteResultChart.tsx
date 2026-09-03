@@ -50,7 +50,7 @@ function Summary({ stats }: SummaryProps) {
   const percentageAbstention = Math.round((stats.ABSTENTION / total) * 100);
 
   return (
-    <p class="text--sm text--light">
+    <p class="text--sm text--light" data-testid="vote-result-chart-summary">
       For: <strong>{stats.FOR}</strong>
       <span class="visually-hidden">({percentageFor} %)</span>. Against:{" "}
       <strong>{stats.AGAINST}</strong>
