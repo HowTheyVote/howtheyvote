@@ -28,4 +28,29 @@ describe("VoteResultChart", () => {
       "For: 5 (50%). Against: 3 (30%). Abstentions: 2 (20%). In total, 10 MEPs voted. 1 MEPs didn’t vote.",
     );
   });
+
+  it("rounds vote position percentages correctly", () => {
+    // https://howtheyvote.eu/votes/186909
+    render(
+      <VoteResultChart
+        stats={{
+          FOR: 458,
+          AGAINST: 72,
+          ABSTENTION: 98,
+          DID_NOT_VOTE: 90,
+        }}
+      />,
+    );
+
+    screen.getByTitle("458 MEPs voted FOR (73%)");
+    screen.getByTitle("72 MEPs voted AGAINST (11%)");
+    screen.getByTitle("98 MEPs voted ABSTENTION (16%)");
+
+    const summary = screen.getByTestId("vote-result-chart-summary");
+
+    assert.strictEqual(
+      summary.textContent,
+      "For: 458 (73%). Against: 72 (11%). Abstentions: 98 (16%). In total, 628 MEPs voted. 90 MEPs didn’t vote.",
+    );
+  });
 });

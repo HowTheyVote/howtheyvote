@@ -26,7 +26,7 @@ function Bar({ value, total, position }: BarProps) {
     return null;
   }
 
-  const percentage = Math.round(ratio * 100);
+  const percentage = Math.round((value / total) * 100);
   const style = position.toLowerCase().replaceAll("_", "-");
 
   return (
