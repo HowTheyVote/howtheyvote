@@ -25,7 +25,7 @@ describe("VoteResultChart", () => {
 
     assert.strictEqual(
       summary.textContent,
-      "For: 5(50 %). Against: 3(30 %). Abstentions: 2(20 %). In total, 10 MEPs voted. 1 MEPs didn’t vote.",
+      "For: 5 (50%). Against: 3 (30%). Abstentions: 2 (20%). In total, 10 MEPs voted. 1 MEPs didn’t vote.",
     );
   });
 });

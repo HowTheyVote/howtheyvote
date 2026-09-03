@@ -51,12 +51,12 @@ function Summary({ stats }: SummaryProps) {
 
   return (
     <p class="text--sm text--light" data-testid="vote-result-chart-summary">
-      For: <strong>{stats.FOR}</strong>
-      <span class="visually-hidden">({percentageFor} %)</span>. Against:{" "}
-      <strong>{stats.AGAINST}</strong>
-      <span class="visually-hidden">({percentageAgainst} %)</span>. Abstentions:{" "}
-      <strong>{stats.ABSTENTION}</strong>
-      <span class="visually-hidden">({percentageAbstention} %)</span>. In total,{" "}
+      For: <strong>{stats.FOR}</strong>{" "}
+      <span class="visually-hidden">({percentageFor}%)</span>. Against:{" "}
+      <strong>{stats.AGAINST}</strong>{" "}
+      <span class="visually-hidden">({percentageAgainst}%)</span>. Abstentions:{" "}
+      <strong>{stats.ABSTENTION}</strong>{" "}
+      <span class="visually-hidden">({percentageAbstention}%)</span>. In total,{" "}
       <strong>{total} MEPs</strong> voted.{" "}
       <strong>{stats.DID_NOT_VOTE} MEPs</strong> didn’t vote.
     </p>
