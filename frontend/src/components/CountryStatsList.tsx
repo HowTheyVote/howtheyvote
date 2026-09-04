@@ -33,7 +33,7 @@ function Item({ country, stats }: ItemProps) {
         </>
       }
       subtitle={subtitle}
-      chart={<VoteResultChart stats={stats} style="slim" />}
+      chart={<VoteResultChart stats={stats} style="slim" includeNoShows={true} />}
     />
   );
 }

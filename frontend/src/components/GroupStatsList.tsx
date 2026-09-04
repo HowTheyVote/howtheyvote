@@ -28,7 +28,7 @@ function Item({ group, stats }: ItemProps) {
       title={`${group.label}`}
       subtitle={subtitle}
       avatar={<Avatar url={avatarUrl} style="square" />}
-      chart={<VoteResultChart stats={stats} style="slim" />}
+      chart={<VoteResultChart stats={stats} style="slim" includeNoShows={true} />}
     />
   );
 }
