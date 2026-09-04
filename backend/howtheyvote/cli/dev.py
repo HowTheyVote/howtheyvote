@@ -7,7 +7,8 @@ import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Committee, Country, EurovocConcept, Group, OEILSubject
+from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
+from ..scrapers import ODPNationalPartyScraper
 
 log = get_logger(__name__)
 
@@ -529,6 +530,44 @@ def load_oeil_subjects(file: TextIO) -> None:
         )
 
     subjects.save()
+
+
+@dev.command()
+def load_national_parties() -> None:
+    """Loads a list of national parties as published by the EP Open Data Portal."""
+    retrieved_parties = DataclassContainer(
+        dataclass=NationalParty,
+        file_path=DATA_DIR.joinpath("national_parties.json"),
+        key_attr="id",
+    )
+    retrieved_parties.load()
+
+    all_parties_response = requests.get(
+        "https://data.europarl.europa.eu/api/v2/corporate-bodies?body-classification=NATIONAL_POLITICAL_GROUP&format=application/ld+json&offset=0",
+        timeout=60,
+    ).json()
+    all_parties = all_parties_response["data"]
+    print(f"Got data for {len(all_parties)} national parties from ODP")  # noqa: T201
+
+    # We need to retrieve info for parties that we do not yet have locally.
+    # As we do not know for sure how renamings are handled by the ODP,
+    # also rescrape info for active parties.
+    party_identifier_to_scrape = [
+        party["identifier"]
+        for party in all_parties
+        if (retrieved := retrieved_parties.get(party["identifier"])) is None
+        or retrieved.end_date is None
+    ]
+    print(  # noqa: T201
+        f"Scraping data for {len(party_identifier_to_scrape)} "
+        "parties which are new or still active."
+    )
+    for identifier in party_identifier_to_scrape:
+        try:
+            party_info = ODPNationalPartyScraper(id=identifier).run()
+            retrieved_parties.add(party_info)
+        finally:
+            retrieved_parties.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:

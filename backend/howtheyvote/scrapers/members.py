@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
 from ..models import Country, Fragment, Group, Member
-from .common import BeautifulSoupScraper, RequestCache, ScrapingError
+from ..pushover import send_notification
+from .common import BeautifulSoupScraper, JSONScraper, RequestCache, ScrapingError
 from .helpers import parse_full_name
 
 log = get_logger(__name__)
@@ -231,3 +232,65 @@ class MemberGroupsScraper(BeautifulSoupScraper):
         start, end = (datetime.strptime(part, "%d-%m-%Y") for part in parts)
 
         return start.date(), end.date()
+
+
+class ODPMemberScraper(JSONScraper):
+    BASE_URL = "https://data.europarl.europa.eu/api/v2/meps"
+
+    def __init__(self, web_id: int, request_cache: RequestCache | None = None):
+        super().__init__(web_id=web_id, request_cache=request_cache)
+        self.web_id = web_id
+        self.REQUEST_TIMEOUT = 60
+
+    def _url(self) -> str:
+        return f"{self.BASE_URL}/{self.web_id}?format=application/ld+json"
+
+    def _extract_data(self, doc: Any) -> Fragment:
+        memberships = doc["data"][0]["hasMembership"]
+        national_parties = [
+            ms
+            for ms in memberships
+            if ms.get("membershipClassification") == "def/ep-entities/NATIONAL_POLITICAL_GROUP"
+        ]
+
+        party_memberships = [
+            party_membership
+            for np in national_parties
+            if (party_membership := self._party_membership(np)) is not None
+        ]
+
+        return self._fragment(
+            model=Member,
+            source_id=f"{self.web_id}",
+            group_key=self.web_id,
+            data={"national_party_memberships": party_memberships},
+        )
+
+    def _party_membership(self, membership: dict[str, Any]) -> dict[str, Any] | None:
+        time_period = membership.get("memberDuring")
+        if time_period is None:
+            raise ScrapingError("Invalid National Party Date from ODP.")
+        start_date = datetime.strptime(time_period["startDate"], "%Y-%m-%d").date()
+        end_date = (
+            datetime.strptime(time_period["endDate"], "%Y-%m-%d").date()
+            if time_period.get("endDate")
+            else None
+        )
+
+        # In some cases we have active memberships for which the organization is not known.
+        # We do not store them, but inform us to possibly inquire about them.
+        if membership.get("organization") is None:
+            send_notification(
+                title="Party-membership without organization key found.",
+                message=f"For MEP ID {self.web_id}",
+                url=self._url(),
+            )
+            return None
+
+        party_id = membership["organization"].split("/", 1)[1]
+
+        return {
+            "party": party_id,
+            "start_date": start_date,
+            "end_date": end_date,
+        }

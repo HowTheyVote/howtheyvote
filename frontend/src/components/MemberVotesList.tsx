@@ -26,11 +26,14 @@ type ItemProps = {
 };
 
 function Item({ member, position }: ItemProps) {
+  console.log(member);
   const subtitle = (
     <>
       <abbr title={member.group?.label}>{member.group?.short_label}</abbr>
       {" · "}
       {member.country.label}
+      {member.national_party && " · "}
+      {member.national_party && member.national_party?.label}
     </>
   );
 
@@ -74,10 +77,10 @@ export default function MemberVotesList({
     <div class="member-votes-list">
       <div class="member-votes-list__action-bar">
         <label class="member-votes-list__search">
-          <span class="visually-hidden">Filter by name</span>
+          <span class="visually-hidden">Filter by name or national party</span>
           <Input
             type="search"
-            placeholder="Filter by name"
+            placeholder="Filter by name or national party"
             value={query}
             autoComplete="off"
             onInput={(event) => setQuery(event.currentTarget.value)}
@@ -140,7 +143,17 @@ function filterMemberVotes(
   { query, selectedGroup, selectedCountry, selectedPosition }: FilterConfig,
 ) {
   return memberVotes.filter(({ member, position }) => {
-    if (!normalize(member.full_name).includes(normalize(query))) {
+    if (
+      !normalize(member.full_name).includes(normalize(query)) &&
+      !(
+        member.national_party &&
+        normalize(member.national_party.label).includes(normalize(query))
+      ) &&
+      !(
+        member.national_party &&
+        normalize(member.national_party.short_label).includes(normalize(query))
+      )
+    ) {
       return false;
     }
 
