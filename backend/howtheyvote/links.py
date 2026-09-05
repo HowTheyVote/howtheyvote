@@ -1,8 +1,14 @@
 from .helpers import parse_procedure_reference, parse_reference, parse_texts_adopted_reference
+from .models import DocumentType
 
 
-def doceo_document_url(reference: str) -> str:
+def doceo_document_url(reference: str) -> str | None:
     ref = parse_reference(reference)
+
+    if ref["type"] == DocumentType.C:
+        # C documents are documents from other institutions and not available on the EP website
+        return None
+
     base_url = "https://www.europarl.europa.eu/doceo/document"
     file = f"{ref['type'].value}-{ref['term']}-{ref['year']}-{ref['number']:04}_EN.html"
     url = f"{base_url}/{file}"

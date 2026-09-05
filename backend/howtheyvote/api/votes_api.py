@@ -20,6 +20,7 @@ from ..helpers import (
     flatten_dict,
     frontend_url,
     parse_procedure_reference,
+    parse_reference,
     subset_dict,
 )
 from ..links import (
@@ -43,6 +44,7 @@ from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 from .query import Order, SearchQuery
 from .serializers import (
+    DocumentDict,
     LinkDict,
     MemberVoteDict,
     MemberVotesQueryResponseDict,
@@ -445,6 +447,18 @@ def show(vote_id: int) -> ResponseReturnValue:
         return abort(404)
 
     base_vote = serialize_base_vote(vote)
+
+    document: DocumentDict | None = None
+
+    if vote.reference:
+        reference = parse_reference(vote.reference)
+
+        document = {
+            "type": reference["type"],
+            "reference": vote.reference,
+            "url": doceo_document_url(vote.reference),
+        }
+
     procedure: ProcedureDict | None = None
 
     if vote.procedure_reference:
@@ -455,6 +469,7 @@ def show(vote_id: int) -> ResponseReturnValue:
             "type": procedure_reference["type"],
             "reference": vote.procedure_reference,
             "stage": vote.procedure_stage,
+            "url": oeil_procedure_url(vote.procedure_reference),
         }
 
     members = _load_members(vote)
@@ -477,6 +492,7 @@ def show(vote_id: int) -> ResponseReturnValue:
 
     data: VoteDict = {
         **base_vote,
+        "document": document,
         "procedure": procedure,
         "snippet": snippet,
         "sharepic_url": vote.sharepic_url,
@@ -884,13 +900,16 @@ def _format_links(vote: Vote) -> list[LinkDict]:
         )
 
     if vote.reference:
-        links.append(
-            {
-                "title": "Report or resolution",
-                "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",  #  noqa: E501
-                "url": doceo_document_url(vote.reference),
-            }
-        )
+        url = doceo_document_url(vote.reference)
+
+        if url:
+            links.append(
+                {
+                    "title": "Report or resolution",
+                    "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",  #  noqa: E501
+                    "url": url,
+                }
+            )
 
     if vote.texts_adopted_reference:
         links.append(
