@@ -20,13 +20,16 @@ type SummaryProps = {
 };
 
 function Bar({ value, total, position }: BarProps) {
-  const ratio = Math.round((value / total) * 1000) / 1000;
-
   if (value === 0) {
     return null;
   }
 
+  // Used to determine bar width
+  const ratio = Math.round((value / total) * 1000) / 1000;
+
+  // Used as a text label, lower precision than `ratio` above
   const percentage = Math.round((value / total) * 100);
+
   const style = position.toLowerCase().replaceAll("_", "-");
 
   return (
