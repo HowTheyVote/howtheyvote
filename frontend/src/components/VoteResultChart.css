@@ -65,7 +65,7 @@
 }
 
 @container vote-result-chart-bar (width < 30px) {
-  .vote-result-chart__thumb {
+  .vote-result-chart__label {
     display: none;
   }
 }

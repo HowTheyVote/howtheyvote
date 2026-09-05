@@ -20,13 +20,16 @@ type SummaryProps = {
 };
 
 function Bar({ value, total, position }: BarProps) {
-  const ratio = Math.round((value / total) * 1000) / 1000;
-
   if (value === 0) {
     return null;
   }
 
-  const percentage = Math.round(ratio * 100);
+  // Used to determine bar width
+  const ratio = Math.round((value / total) * 1000) / 1000;
+
+  // Used as a text label, lower precision than `ratio` above
+  const percentage = Math.round((value / total) * 100);
+
   const style = position.toLowerCase().replaceAll("_", "-");
 
   return (
@@ -50,13 +53,13 @@ function Summary({ stats }: SummaryProps) {
   const percentageAbstention = Math.round((stats.ABSTENTION / total) * 100);
 
   return (
-    <p class="text--sm text--light">
+    <p class="text--sm text--light" data-testid="vote-result-chart-summary">
       For: <strong>{stats.FOR}</strong>
-      <span class="visually-hidden">({percentageFor} %)</span>. Against:{" "}
+      <span class="visually-hidden"> ({percentageFor}%)</span>. Against:{" "}
       <strong>{stats.AGAINST}</strong>
-      <span class="visually-hidden">({percentageAgainst} %)</span>. Abstentions:{" "}
+      <span class="visually-hidden"> ({percentageAgainst}%)</span>. Abstentions:{" "}
       <strong>{stats.ABSTENTION}</strong>
-      <span class="visually-hidden">({percentageAbstention} %)</span>. In total,{" "}
+      <span class="visually-hidden"> ({percentageAbstention}%)</span>. In total,{" "}
       <strong>{total} MEPs</strong> voted.{" "}
       <strong>{stats.DID_NOT_VOTE} MEPs</strong> didn’t vote.
     </p>
