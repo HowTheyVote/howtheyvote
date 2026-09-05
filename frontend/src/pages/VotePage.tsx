@@ -37,20 +37,14 @@ export const loader: Loader<Vote> = async (request: Request) => {
   const { data } = await getVote({ path: { vote_id: request.params.id } });
 
   if (!request.isBot) {
-    log.info({
-      msg: "Handling vote request",
-      vote_id: data.id,
+    const attributes = {
+      vote_id: data.id.toString(),
       vote_title: data.display_title,
       vote_date: data.timestamp.split("T")[0],
-    });
+    };
 
-    Sentry.metrics.count("vote_page_views", 1, {
-      attributes: {
-        vote_id: data.id,
-        vote_title: data.display_title,
-        vote_date: data.timestamp.split("T")[0],
-      },
-    });
+    log.info({ msg: "Handling vote request", ...attributes });
+    Sentry.metrics.count("vote_page_views", 1, { attributes });
   }
 
   return data;

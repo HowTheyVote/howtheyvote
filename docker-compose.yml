@@ -11,10 +11,14 @@ services:
     expose:
       - "8000"
     restart: "unless-stopped"
+    volumes:
+      - "./storage/geolite2:/howtheyvote/geolite2"
     environment:
       HTV_FRONTEND_PUBLIC_URL: "${HTV_FRONTEND_PUBLIC_URL}"
       HTV_BACKEND_PRIVATE_URL: "http://backend:5000"
       HTV_BACKEND_PUBLIC_URL: "${HTV_BACKEND_PUBLIC_URL}"
+      HTV_FRONTEND_GEOLITE2_ASN_PATH: "${HTV_GEOLITE2_ASN_PATH}"
+      HTV_FRONTEND_GEOLITE2_COUNTRY_PATH: "${HTV_GEOLITE2_COUNTRY_PATH}"
       SENTRY_DSN: "${HTV_FRONTEND_SENTRY_DSN}"
       SENTRY_ENVIRONMENT: "${SENTRY_ENVIRONMENT}"
 

@@ -1,3 +1,4 @@
+import type { Request } from "@tinyhttp/app";
 import { isbotMatch } from "isbot";
 
 const BOT_PATH_PREFIXES = [
@@ -16,6 +17,11 @@ const BOT_PATH_PREFIXES = [
   "/robots.txt",
   "/cgi-bin",
   "/ipfs",
+  "/blog",
+  "/ip",
+  "/graphql",
+  "/signin",
+  "/register",
 ];
 
 const BOT_PATH_SUFFXIES = [
@@ -27,17 +33,18 @@ const BOT_PATH_SUFFXIES = [
   ".conf",
   ".js",
   ".css",
+  ".json",
+  ".env",
 ];
 
-export function requestIsBot(
-  path: string,
-  userAgent?: string,
-): {
+const DEFAULT_HEADERS = ["user-agent", "accept-language", "accept-encoding"];
+
+export function requestIsBot(request: Request): {
   result: boolean;
   name?: string;
 } {
   // Detect certain bots based on user agent
-  const match = isbotMatch(userAgent);
+  const match = isbotMatch(request.headers["user-agent"]);
 
   if (match) {
     return {
@@ -45,6 +52,9 @@ export function requestIsBot(
       name: match,
     };
   }
+
+  // Normalize multiple leading slashes
+  const path = request.path.replace(/^\/+/, "/");
 
   // Detect bots based on common request patterns
   for (const prefix of BOT_PATH_PREFIXES) {
@@ -54,7 +64,14 @@ export function requestIsBot(
   }
 
   for (const suffix of BOT_PATH_SUFFXIES) {
-    if (path.endsWith(suffix)) {
+    if (request.path.endsWith(suffix)) {
+      return { result: true };
+    }
+  }
+
+  for (const header of DEFAULT_HEADERS) {
+    if (!request.headers[header]) {
+      console.log(header, request.headers[header]);
       return { result: true };
     }
   }

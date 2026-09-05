@@ -58,14 +58,64 @@ export const ImprintPage: Page = () => {
 
                 <p>
                   This information is strictly necessary in order to provide you
-                  access to HowTheyVote.eu. We do not keep access logfiles or
-                  store this information in any other way after processing your
-                  request.
+                  access to HowTheyVote.eu.
                 </p>
 
                 <p>
                   The legal basis for processing the personal information is
                   Article 6(1)(f) GDPR.
+                </p>
+
+                <h3 class="gamma">Access logs</h3>
+
+                <p>
+                  When you request a page from HowTheyVote.eu, we store certain
+                  information about the request:
+                </p>
+
+                <ul>
+                  <li>Date and time of the request</li>
+                  <li>Page accessed</li>
+                  <li>URL from which you’ve accessed HowTheyVote.eu</li>
+                  <li>Country from which the request originated</li>
+                  <li>
+                    The network operator (e.g.., your internet provider) from
+                    which the request originated
+                  </li>
+                </ul>
+
+                <p>
+                  We derive the country and network operator from your IP
+                  address, but we do not store your IP address. We store this
+                  information to detect and block unusual request patterns,
+                  including attacks such as DDoS. We delete access logs after 30
+                  days.
+                </p>
+
+                <p>
+                  The legal basis for processing the personal information is
+                  Article 6(1)(f) GDPR.
+                </p>
+
+                <p>
+                  We use a data processor, Functional Software, Inc. d/b/a
+                  Sentry, 45 Fremont Street, 8th Floor, San Francisco, CA 94105,
+                  USA, to store access logs. This involves the transfer of
+                  personal information to the United States. The transfer is
+                  governed by the EU-US Data Privacy Framework (adequacy
+                  decision in accordance with Art. 45 GDPR), under which Sentry
+                  is certified. Where the adequacy decision does not apply or is
+                  invalidated, the transfer is governed by Standard Contractual
+                  Clauses in accordance with Art. 46(2)(c) GDPR. You can learn
+                  more about how Sentry processes personal data in{" "}
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href="https://sentry.io/privacy"
+                  >
+                    Sentry’s privacy policy
+                  </a>
+                  .
                 </p>
 
                 <h3 class="gamma">Contact forms</h3>
@@ -86,12 +136,16 @@ export const ImprintPage: Page = () => {
                 </p>
 
                 <p>
-                  We use a subprocessor, Tally, August van Lokerenstraat 71,
+                  We use a data processor, Tally, August van Lokerenstraat 71,
                   9050 Gent, Belgium, to provide the forms and collect form
                   submissions. When you access or submit the form the
                   subprocessor processes personal information. You can learn
                   more about how Tally processes personal data in{" "}
-                  <a href="https://tally.so/help/privacy-policy">
+                  <a
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    href="https://tally.so/help/privacy-policy"
+                  >
                     Tally’s privacy policy
                   </a>
                   .
@@ -147,7 +201,8 @@ export const ImprintPage: Page = () => {
                   <li>
                     You are entitled to receive information about the personal
                     data stored about you and have the right to correction,
-                    blocking, and erasure of your personal information.
+                    restriction of processing, erasure, and objection to the
+                    processing of your personal information.
                   </li>
                   <li>
                     If we process your personal information with your consent

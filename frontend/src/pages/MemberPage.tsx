@@ -1,4 +1,5 @@
-import type { Request } from "@tinyhttp/app";
+import * as Sentry from "@sentry/node";
+
 import {
   getMember,
   getMemberVotes,
@@ -15,8 +16,11 @@ import SearchResults from "../components/SearchResults";
 import Stack from "../components/Stack";
 import Wrapper from "../components/Wrapper";
 import { PUBLIC_URL } from "../config";
+import { getLogger } from "../lib/logging";
 import { FACETS, SearchQuery, SORT_PARAMS } from "../lib/search";
-import type { Loader, Page } from "../lib/server";
+import type { Loader, Page, Request } from "../lib/server";
+
+const log = getLogger();
 
 type MemberPageData = {
   member: Member;
@@ -45,6 +49,21 @@ export const loader: Loader<MemberPageData> = async (request: Request) => {
       },
     }),
   ]);
+
+  if (!request.isBot) {
+    const { data } = member;
+    const attributes = {
+      member_id: data.id.toString(),
+      member_name: data.full_name,
+      member_country_code: data.country.code,
+      member_country_label: data.country.label,
+      member_group_code: data.group?.code,
+      member_group_label: data.group?.label,
+    };
+
+    log.info({ msg: "Handling member request", ...attributes });
+    Sentry.metrics.count("member_page_views", 1, { attributes });
+  }
 
   return {
     member: member.data,
