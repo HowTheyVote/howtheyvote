@@ -568,6 +568,28 @@ def test_votes_api_index_search_special_chars(db_session, search_index, api):
     assert res.json["results"][0]["id"] == 1
 
 
+def test_votes_api_index_search_diacritics(db_session, search_index, api):
+    vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 9, 19, 0, 0, 0),
+        title="The case of José Daniel Ferrier García in Cuba",
+        is_main=True,
+    )
+    db_session.add(vote)
+    db_session.commit()
+    index_search(Vote, [vote])
+
+    res = api.get("/api/votes/search", query_string={"q": "jose garcia"})
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes/search", query_string={"q": "Jose Garcia"})
+    assert res.status_code == 200
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+
+
 def test_votes_api_member_votes_index(records, api):
     res = api.get("/api/members/1/votes")
     assert len(res.json["results"]) == 1

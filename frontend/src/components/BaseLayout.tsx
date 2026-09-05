@@ -1,9 +1,9 @@
 import type { ComponentChildren } from "preact";
 import { bem } from "../lib/bem";
 import { Island } from "../lib/islands";
-import Banner from "./Banner";
 import Footer from "./Footer";
 import Header from "./Header";
+import SurveyBanner from "./SurveyBanner";
 import Wrapper from "./Wrapper";
 
 import "./BaseLayout.css";
@@ -27,7 +27,7 @@ export default function BaseLayout({
   return (
     <div className={bem("base-layout", style)}>
       <Island>
-        <Banner />
+        <SurveyBanner />
       </Island>
       {header}
       <main className="base-layout__main">{children}</main>

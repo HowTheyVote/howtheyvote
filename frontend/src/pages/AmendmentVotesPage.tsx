@@ -2,8 +2,8 @@ import { getVote, type Vote } from "../api";
 import AmendmentHeader from "../components/AmendmentHeader";
 import AmendmentVoteCard from "../components/AmendmentVoteCard";
 import App from "../components/App";
+import Banner from "../components/Banner";
 import BaseLayout from "../components/BaseLayout";
-import Callout from "../components/Callout";
 import Stack from "../components/Stack";
 import VoteCards from "../components/VoteCards";
 import Wrapper from "../components/Wrapper";
@@ -33,14 +33,14 @@ export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
         <Stack space="lg">
           <div>
             <AmendmentHeader vote={data} />
-            <Callout>
+            <Banner>
               <p>
                 Before voting on a text, MEPs might propose changes or vote on
                 individual parts of the text. These votes take place before the
                 final vote. View the result of the{" "}
                 <a href={`/votes/${data.id}`}>final vote</a>.
               </p>
-            </Callout>
+            </Banner>
           </div>
           <div class="px">
             <Wrapper>

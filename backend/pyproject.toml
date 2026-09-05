@@ -79,9 +79,12 @@ env = [
     # is configured in development environment
     "PUSHOVER_API_TOKEN=",
     "PUSHOVER_USER_KEY=",
+    # Disable search synonyms in tests
+    "HTV_SEARCH_SYNONYMS=",
 ]
 markers = [
-    "always_mock_requests: Always mock HTTP requests, even when request mocks are disabled globally"
+    "always_mock_requests: Always mock HTTP requests, even when request mocks are disabled globally",
+    "override_config: Override configuration values for individual tests",
 ]
 addopts = [
     "--import-mode=importlib",

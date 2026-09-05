@@ -3,6 +3,7 @@ import click
 from ..db import migrate as _migrate
 from ..db import optimize as _optimize
 from ..search import delete_indexes as _delete_indexes
+from ..search import reload_synonyms as _reload_synonyms
 
 
 @click.group()
@@ -18,6 +19,12 @@ def delete_indexes() -> None:
 
 
 @system.command()
+def reload_synonyms() -> None:
+    """Reload the synonym list."""
+    _reload_synonyms()
+
+
+@system.command()
 def migrate() -> None:
     """Run database migrations."""
     _migrate()
@@ -25,8 +32,9 @@ def migrate() -> None:
 
 @system.command()
 def upgrade() -> None:
-    """Equivalent of running the `migrate` and `configure-indexes` subcommands."""
+    """Equivalent of running the `migrate` and `reload-synonyms` subcommands."""
     _migrate()
+    _reload_synonyms()
 
 
 @system.command()

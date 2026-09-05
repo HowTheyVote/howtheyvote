@@ -19,12 +19,16 @@ type SearchPageData = VotesQueryResponse & {
   searchQuery: SearchQuery;
 };
 
+function normalizeQuery(query?: string) {
+  return query?.toLowerCase().trim().replaceAll(/\s+/g, " ");
+}
+
 export const loader: Loader<SearchPageData> = async (request: Request) => {
   const searchQuery = SearchQuery.fromUrl(new URL(request.url, PUBLIC_URL));
 
   // Apply some basic normalization to make log aggregation easier
   const rawQuery = searchQuery?.q;
-  const normalizedQuery = rawQuery?.toLowerCase().replace(/\s+/, " ");
+  const normalizedQuery = normalizeQuery(rawQuery);
 
   if (!request.isBot && normalizedQuery) {
     log.info({
@@ -41,7 +45,7 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
     });
   }
 
-  const { data } = await getVotes({
+  let { data } = await getVotes({
     query: {
       q: searchQuery.q,
       page: searchQuery.page,
@@ -66,6 +70,45 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
         rawQuery,
       },
     });
+  }
+
+  if (!request.isBot && data.corrected_query) {
+    const rawCorrectedQuery = data.corrected_query;
+    const normalizedCorrectedQuery = normalizeQuery(rawCorrectedQuery);
+
+    log.info({
+      msg: "Search with corrected spelling",
+      normalizedQuery,
+      rawQuery,
+      normalizedCorrectedQuery,
+      rawCorrectedQuery,
+    });
+
+    Sentry.metrics.count("searches_corrected_spelling", 1, {
+      attributes: {
+        normalizedQuery,
+        rawQuery,
+        normalizedCorrectedQuery,
+        rawCorrectedQuery,
+      },
+    });
+  }
+
+  // If the original query resulted in 0 results and there is a spelling correction,
+  // repeat the search with the corrected spelling.
+  if (data.total === 0 && data.corrected_query) {
+    const { data: correctedData } = await getVotes({
+      query: {
+        q: data.corrected_query,
+        page: searchQuery.page,
+        // The array spread is a workaround to make the readonly array a mutable array
+        // See https://github.com/hey-api/openapi-ts/issues/1641
+        facets: [...FACETS],
+        ...searchQuery.filters,
+        ...SORT_PARAMS[searchQuery.sort],
+      },
+    });
+    data = correctedData;
   }
 
   // This is a shortcut for power users. If a user searches for a resolution/report reference,
