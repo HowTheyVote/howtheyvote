@@ -9,5 +9,6 @@
         "jsxImportSource": "preact",
         "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
+        "resolveJsonModule": true,
     }
 }

@@ -1,0 +1,18 @@
+.showcase {
+  display: grid;
+  gap: var(--space);
+}
+
+.showcase__item {
+  display: grid;
+  gap: var(--space-xxs);
+  padding: var(--space-xs);
+
+  border: 1px solid var(--gray-light);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.showcase__meta {
+  color: var(--color-text-light);
+}
