@@ -5,7 +5,7 @@ from flask.typing import ResponseReturnValue
 
 from ..db import Session
 from ..models import Member
-from .serializers import serialize_group, serialize_member
+from .serializers import serialize_group, serialize_member, serialize_national_party
 
 bp = Blueprint("members_api", __name__)
 
@@ -43,10 +43,14 @@ def show(member_id: int) -> ResponseReturnValue:
         return abort(404)
 
     group = member.group_at(today) or member.group_memberships[-1].group
+    national_party = member.national_party_at(today)
 
     return jsonify(
         {
             **serialize_member(member, today),
             "group": serialize_group(group),
+            "national_party": serialize_national_party(national_party)
+            if national_party is not None
+            else None,
         }
     )

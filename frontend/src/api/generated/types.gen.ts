@@ -47,6 +47,10 @@ export type BaseMember = {
      */
     group?: Group;
     /**
+     * The MEP’s national party at the time of the vote
+     */
+    national_party?: NationalParty;
+    /**
      * URL to the MEP’s official portrait photo
      */
     photo_url: string;
@@ -99,6 +103,18 @@ export type Group = {
      * Short label or acronym of the political group
      */
     short_label?: string;
+};
+
+/**
+ * A national party in one of the EU member states
+ */
+export type NationalParty = {
+    /**
+     * Unique identified for the party as used by the ODP for this organization
+     */
+    id: string;
+    short_label: string;
+    label: string;
 };
 
 /**

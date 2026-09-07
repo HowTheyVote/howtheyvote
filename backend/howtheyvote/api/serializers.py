@@ -10,6 +10,7 @@ from ..models import (
     EurovocConcept,
     Group,
     Member,
+    NationalParty,
     OEILSubject,
     PlenarySession,
     PlenarySessionLocation,
@@ -58,6 +59,25 @@ def serialize_group(group: Group) -> GroupDict:
         "code": group.code,
         "label": group.label,
         "short_label": group.short_label,
+    }
+
+
+class NationalPartyDict(TypedDict):
+    """A national party in one of the EU member states"""
+
+    id: Annotated[str, "123"]
+    """Unique identified for the party as used by the ODP for this organization"""
+
+    short_label: Annotated[str, "SPD"]
+
+    label: Annotated[str, "Sozialdemokratische Partei Deutschlands"]
+
+
+def serialize_national_party(national_party: NationalParty) -> NationalPartyDict:
+    return {
+        "id": national_party.id,
+        "label": national_party.label,
+        "short_label": national_party.short_label,
     }
 
 
@@ -177,6 +197,9 @@ class BaseMemberDict(TypedDict):
     group: GroupDict | None
     """The MEP’s political group at the time of the vote"""
 
+    national_party: NationalPartyDict | None
+    """The MEP’s national party at the time of the vote"""
+
     photo_url: str
     """URL to the MEP’s official portrait photo"""
 
@@ -192,6 +215,7 @@ def serialize_base_member(
         date = datetime.date.today()
 
     group = member.group_at(date)
+    national_party = member.national_party_at(date)
 
     return {
         "id": member.id,
@@ -200,6 +224,7 @@ def serialize_base_member(
         "full_name": member.full_name,
         "country": serialize_country(member.country),
         "group": serialize_group(group) if group else None,
+        "national_party": serialize_national_party(national_party) if national_party else None,
         "photo_url": member.photo_url(),
         "thumb_url": member.photo_url(104),
     }
