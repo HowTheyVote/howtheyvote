@@ -58,6 +58,12 @@
   --vote-result-chart-bar-background-color: var(--blue);
 }
 
+.vote-result-chart__bar--did-not-vote {
+  --vote-result-chart-bar-background-color: var(--gray-medium);
+  --vote-result-chart-bar-background-image: var(--green-pattern);
+
+}
+
 @container vote-result-chart-bar (width < 50px) {
   .vote-result-chart__percentage {
     display: none;
