@@ -18,6 +18,7 @@ FILES_DIR = env.get("HTV_BACKEND_FILES_DIR", "/howtheyvote/files")
 # Request configuration
 REQUEST_TIMEOUT = float(env.get("HTV_BACKEND_REQUEST_TIMEOUT", 20))
 REQUEST_SLEEP = float(env.get("HTV_BACKEND_REQUEST_SLEEP", 2.5))
+TOKEN_RENEWAL_SLEEP = 600
 
 # Headless Chromium
 CHROMIUM_HOST = "chromium"

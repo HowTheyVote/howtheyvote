@@ -27,8 +27,6 @@ from .common import BasePipeline
 
 log = get_logger(__name__)
 
-TOKEN_RENEWAL_SLEEP = 600
-
 
 class MembersPipeline(BasePipeline):
     def __init__(self, term: int):
@@ -59,31 +57,40 @@ class MembersPipeline(BasePipeline):
         writer = BulkWriter()
 
         for member in self._members():
-            for attempt in range(2):
-                try:
-                    scraper = MemberGroupsScraper(
-                        web_id=member.id, term=self.term, aws_waf_token=self._ep_aws_waf_token
-                    )
-                    writer.add(scraper.run())
-                    break
-                except WAFChallengeError as waf_err:
-                    if attempt == 1:
-                        log.exception(
-                            "New WAF token did not solve challenge", member_id=member.id
+            try:
+                for attempt in range(2):
+                    try:
+                        scraper = MemberGroupsScraper(
+                            web_id=member.id,
+                            term=self.term,
+                            aws_waf_token=self._ep_aws_waf_token,
                         )
-                        sentry_sdk.capture_exception(waf_err)
-                    else:
-                        log.warning(
-                            "Obtaining new WAF Token", member_id=member.id, attempt=attempt
-                        )
-                        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
-                        continue
-                except ScrapingError as err:
-                    log.exception(
-                        "Failed scraping member groups", member_id=member.id, term=self.term
-                    )
-                    sentry_sdk.capture_exception(err)
-                    break
+                        writer.add(scraper.run())
+                        break  # don't need second attempt in success case
+                    except WAFChallengeError:
+                        if attempt == 1:
+                            raise
+                        else:
+                            log.warning(
+                                "Waiting before trying to obtain new token.",
+                                member_id=member.id,
+                                attempt=attempt,
+                            )
+                            time.sleep(config.TOKEN_RENEWAL_SLEEP)
+                            log.warning(
+                                "Obtaining new WAF token", member_id=member.id, attempt=attempt
+                            )
+                            self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
+                            continue
+            except WAFChallengeError as waf_err:
+                log.exception("New WAF token did not solve challenge", member_id=member.id)
+                sentry_sdk.capture_exception(waf_err)
+                raise
+            except ScrapingError as err:
+                log.exception(
+                    "Failed scraping member groups", member_id=member.id, term=self.term
+                )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
@@ -92,41 +99,40 @@ class MembersPipeline(BasePipeline):
 
         for member in self._members():
             log.info("Scraping member info", term=self.term, member_id=member.id)
-
-            for attempt in range(2):
-                try:
-                    scraper = MemberInfoScraper(
-                        web_id=member.id, aws_waf_token=self._ep_aws_waf_token
-                    )
-                    writer.add(scraper.run())
-                    break
-                except WAFChallengeError as waf_err:
-                    if attempt == 2:
-                        log.exception(
-                            "New WAF token did not solve challenge", member_id=member.id
+            try:
+                for attempt in range(2):
+                    try:
+                        scraper = MemberInfoScraper(
+                            web_id=member.id, aws_waf_token=self._ep_aws_waf_token
                         )
-                        sentry_sdk.capture_exception(waf_err)
-                        raise (waf_err)
-                    else:
-                        log.warning(
-                            "Waiting before trying to obtain new token.",
-                            member_id=member.id,
-                            attempt=attempt,
-                        )
-                        time.sleep(TOKEN_RENEWAL_SLEEP)
-                        log.warning(
-                            "Obtaining new WAF token", member_id=member.id, attempt=attempt
-                        )
-                        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
-                        continue
-                except ScrapingError as err:
-                    log.exception(
-                        "Failed scraping member info",
-                        member_id=member.id,
-                        term=self.term,
-                    )
-                    sentry_sdk.capture_exception(err)
-                    break  # non-retryable, give up on this member
+                        writer.add(scraper.run())
+                        break
+                    except WAFChallengeError:
+                        if attempt == 1:
+                            raise
+                        else:
+                            log.warning(
+                                "Waiting before trying to obtain new token.",
+                                member_id=member.id,
+                                attempt=attempt,
+                            )
+                            time.sleep(config.TOKEN_RENEWAL_SLEEP)
+                            log.warning(
+                                "Obtaining new WAF token", member_id=member.id, attempt=attempt
+                            )
+                            self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
+                            continue
+            except WAFChallengeError as waf_err:
+                log.exception("New WAF token did not solve challenge", member_id=member.id)
+                sentry_sdk.capture_exception(waf_err)
+                raise
+            except ScrapingError as err:
+                log.exception(
+                    "Failed scraping member info",
+                    member_id=member.id,
+                    term=self.term,
+                )
+                sentry_sdk.capture_exception(err)
 
         writer.flush()
 
