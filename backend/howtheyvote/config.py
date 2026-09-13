@@ -26,11 +26,18 @@ CHROMIUM_PORT = 9222
 # Misc
 CURRENT_TERM = 10
 TIMEZONE = "Europe/Brussels"
+
+# Search
 SEARCH_INDEX_PREFIX = env.get("HTV_SEARCH_INDEX_PREFIX", None)
 SEARCH_INDEX_DIR = env.get("HTV_SEARCH_INDEX_DIR", "/howtheyvote/index")
 
 # The Alpine package `xapian-core` installs stop word lists in this location
 SEARCH_STOPWORDS_PATH = "/usr/local/share/xapian-core/stopwords/english.list"
+
+# List of synonym pairs. Synonyms are unidirectional. For example, given the synonym
+# `corona:covid`, searching for `corona` would also find votes containing `covid`,
+# but not the other way around.
+SEARCH_SYNONYMS = env.get("HTV_SEARCH_SYNONYMS", "")
 
 # Pushover
 PUSHOVER_API_TOKEN = env.get("PUSHOVER_API_TOKEN")

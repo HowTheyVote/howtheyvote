@@ -6,7 +6,8 @@ from collections import defaultdict
 from typing import Any, Literal, Self, TypedDict, overload
 
 from sqlalchemy import and_, asc, desc, func, select, true
-from sqlalchemy.sql import ColumnElement
+from sqlalchemy.sql import ColumnElement, Select
+from unidecode import unidecode
 from xapian import (
     BM25Weight,
     Database,
@@ -35,6 +36,7 @@ from ..search import (
     field_to_slot,
     field_to_type,
     get_index,
+    get_stemmer,
     get_stopper,
     serialize_sortable_value,
 )
@@ -74,7 +76,9 @@ class FacetOption(TypedDict):
     count: int
 
 
-class QueryResponseWithFacets[T: BaseWithId](QueryResponse[T]):
+class SearchQueryResponse[T: BaseWithId](QueryResponse[T]):
+    query: str | None
+    corrected_query: str | None
     facets: dict[str, list[FacetOption]]
 
 
@@ -94,6 +98,10 @@ class Query[T: BaseWithId](ABC):
 
     @abstractmethod
     def handle(self) -> QueryResponse[T]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def debug(self) -> str:
         raise NotImplementedError
 
     def copy(self) -> Self:
@@ -211,13 +219,7 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
         limit = self.get_limit()
         offset = self.get_offset()
 
-        query = (
-            select(self.model)
-            .order_by(self._order_expr())
-            .where(self._filters_expr())
-            .where(*self._where)
-        )
-
+        query = self._sql_query()
         total_query = query.with_only_columns(func.count(self.model.id))
         results_query = query.limit(limit).offset(offset)
 
@@ -234,6 +236,17 @@ class DatabaseQuery[T: BaseWithId](Query[T]):
         }
 
         return response
+
+    def debug(self) -> str:
+        return str(self._sql_query())
+
+    def _sql_query(self) -> Select[tuple[T]]:
+        return (
+            select(self.model)
+            .order_by(self._order_expr())
+            .where(self._filters_expr())
+            .where(*self._where)
+        )
 
     def _order_expr(self) -> ColumnElement[Any]:
         # Apply default sorting if none is specified explicitly
@@ -348,13 +361,15 @@ class SearchQuery[T: BaseWithId](Query[T]):
         self._query: str | None = None
         self._facets: list[str] = []
 
-    def handle(self) -> QueryResponseWithFacets[T]:
+    def handle(self) -> SearchQueryResponse[T]:
         page = self.get_page()
         page_size = self.get_page_size()
         limit = self.get_limit()
         offset = self.get_offset()
 
         with get_index(self.model) as index:
+            corrected_query = self._get_corrected_query(index)
+
             query = self._xapian_query(index)
             enquire = Enquire(index)
             enquire.set_query(query)
@@ -395,7 +410,9 @@ class SearchQuery[T: BaseWithId](Query[T]):
             field: self._compute_facet(field) for field in self.get_facets()
         }
 
-        response: QueryResponseWithFacets[T] = {
+        response: SearchQueryResponse[T] = {
+            "query": self.get_query(),
+            "corrected_query": corrected_query,
             "total": mset.get_matches_estimated(),
             "page": page,
             "page_size": page_size,
@@ -407,6 +424,10 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
         return response
 
+    def debug(self) -> str:
+        with get_index(self.model) as index:
+            return str(self._xapian_query(index))
+
     def query(self, query: str | None = None) -> Self:
         copy = self.copy()
         copy._query = query
@@ -414,6 +435,22 @@ class SearchQuery[T: BaseWithId](Query[T]):
 
     def get_query(self) -> str:
         return self._query or ""
+
+    def _get_corrected_query(self, index: Database) -> str | None:
+        original = self.get_query()
+        parser = self._xapian_query_parser(index)
+        parser.parse_query(
+            original,
+            QueryParser.FLAG_BOOLEAN
+            | QueryParser.FLAG_PHRASE
+            | QueryParser.FLAG_SPELLING_CORRECTION,
+        )
+        corrected = parser.get_corrected_query_string().decode("utf-8")
+
+        if unidecode(corrected) == unidecode(original):
+            return None
+
+        return corrected if corrected != "" else None
 
     def _compute_facet(self, field: str) -> list[FacetOption]:
         spy = MultiValueCountMatchSpy(field_to_slot(field))
@@ -480,6 +517,8 @@ class SearchQuery[T: BaseWithId](Query[T]):
     def _xapian_query_parser(self, index: Database) -> QueryParser:
         parser = QueryParser()
         parser.set_stopper(get_stopper())
+        parser.set_stemmer(get_stemmer())
+        parser.set_stemming_strategy(QueryParser.STEM_ALL)
         parser.set_database(index)
 
         return parser
@@ -522,7 +561,10 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 XapianQuery.OP_SCALE_WEIGHT,
                 parser.parse_query(
                     self.get_query(),
-                    QueryParser.FLAG_BOOLEAN | QueryParser.FLAG_PHRASE,
+                    QueryParser.FLAG_BOOLEAN
+                    | QueryParser.FLAG_PHRASE
+                    | QueryParser.FLAG_AUTO_SYNONYMS
+                    | QueryParser.FLAG_AUTO_MULTIWORD_SYNONYMS,
                     field_to_prefix(field),
                 ),
                 field_to_boost(field),

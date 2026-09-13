@@ -8,16 +8,19 @@ from datetime import date, datetime, time
 from typing import Any, Literal, overload
 
 from structlog import get_logger
+from unidecode import unidecode
 from xapian import (
     DB_CREATE_OR_OPEN,
     Database,
     SimpleStopper,
+    Stem,
+    StemImplementation,
     WritableDatabase,
     sortable_serialise,
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country, Topic
+from .models import BaseWithId, Committee, Country, Topic, Vote
 
 log = get_logger(__name__)
 
@@ -36,6 +39,7 @@ SEARCH_FIELDS = [
     "press_release",
     "oeil_summary",
     "topics",
+    "keywords",
 ]
 
 
@@ -55,6 +59,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "member_id": "XM",
     "oeil_summary": "XS",
     "topics": "XT",
+    "keywords": "XK",
 }
 
 
@@ -149,6 +154,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "procedure_reference": StringType(),
     "member_id": IntegerType(),
     "topics": TopicType(),
+    "keywords": StringType(),
 }
 
 
@@ -179,6 +185,7 @@ FIELD_TO_SLOT_MAPPING = {
 # See: https://trac.xapian.org/wiki/FAQ/ExtraWeight
 FIELD_TO_BOOST_MAPPING = {
     "display_title": 5,
+    "keywords": 5,
 }
 
 
@@ -251,6 +258,21 @@ def get_stopper() -> SimpleStopper:
     return SimpleStopper(config.SEARCH_STOPWORDS_PATH)
 
 
+class UnidecodeStemmer(StemImplementation):
+    """This is a very simple stemmer implementation that normalizes tokens
+    using `unidecode`, e.g. by removing diacritics."""
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def __call__(self, token: bytes) -> str:
+        return unidecode(token.decode("utf-8")).lower()
+
+
+def get_stemmer() -> Stem:
+    return Stem(UnidecodeStemmer())
+
+
 def delete_indexes() -> None:
     """Delete all search indexes."""
     root = pathlib.Path(config.SEARCH_INDEX_DIR)
@@ -261,6 +283,30 @@ def delete_indexes() -> None:
 
         log.info("Deleting index", path=path.name)
         shutil.rmtree(path)
+
+
+def add_synonym(index: WritableDatabase, term: str, synonym: str) -> None:
+    for field in SEARCH_FIELDS:
+        prefix = field_to_prefix(field)
+        index.add_synonym(f"{prefix}{term}", f"{prefix}{synonym}")
+
+
+def clear_synonyms(index: WritableDatabase) -> None:
+    for term in index.synonym_keys():
+        index.clear_synonyms(term.decode("utf-8"))
+
+
+def reload_synonyms() -> None:
+    pairs = []
+
+    if config.SEARCH_SYNONYMS:
+        pairs = [pair.split(":") for pair in config.SEARCH_SYNONYMS.split("|") if pair]
+
+    with get_index(Vote, AccessType.WRITE) as index:
+        clear_synonyms(index)
+
+        for term, synonym in pairs:
+            add_synonym(index, term, synonym)
 
 
 def serialize_sortable_value(value: int | float | date | datetime) -> str:

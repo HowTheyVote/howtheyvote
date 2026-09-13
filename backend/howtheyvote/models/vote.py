@@ -313,6 +313,10 @@ class Vote(BaseWithId):
         ListType(TopicType()),
         default=[],
     )
+    keywords: Mapped[list[str]] = mapped_column(
+        ListType(sa.Unicode()),
+        default=[],
+    )
     responsible_committees: Mapped[list[Committee]] = mapped_column(
         ListType(CommitteeType()),
         default=[],
