@@ -140,6 +140,22 @@ export type Committee = {
     abbreviation?: string;
 };
 
+export type Document = {
+    /**
+     * Document type (e.g. "A" for report). Refer to the [Plenary User Guide](https://www.europarl.europa.eu/sed/doc/ext/manual/Plenary_guide_en.pdf#page=31)
+     * a list of document types.
+     */
+    type: 'A' | 'B' | 'C' | 'RC';
+    /**
+     * Document reference as listed on the European Parliament website.
+     */
+    reference: string;
+    /**
+     * URL of the document on the European Parliament website.
+     */
+    url?: string;
+};
+
 /**
  * A topic (policy area) a vote is concerned with. Expect topics and their names to change in the future as we improve this feature.
  */
@@ -210,6 +226,10 @@ export type PlenarySessionsQueryResponse = QueryResponse & {
 };
 
 export type Vote = BaseVote & {
+    /**
+     * Information about the report or resolution this vote is about
+     */
+    document?: Document;
     /**
      * Information about the legislative procedure to which this vote belongs
      */
@@ -342,6 +362,10 @@ export type Procedure = {
      * votes starting in 2024 and if the vote is part of an Ordinary Legislative Procedure.
      */
     stage?: 'OLP_FIRST_READING' | 'OLP_SECOND_READING' | 'OLP_THIRD_READING';
+    /**
+     * URL of the procedure in the [Legislative Observatory](https://oeil.europarl.europa.eu/oeil/en)
+     */
+    url: string;
 };
 
 export type VoteStats = {

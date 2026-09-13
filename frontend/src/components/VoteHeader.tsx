@@ -29,7 +29,18 @@ export default function VoteHeader({ vote, showSnippet }: VoteHeaderProps) {
               <time datetime={vote.timestamp}>
                 {formatDate(vote.timestamp)}
               </time>
-              {vote.reference && ` · ${vote.reference}`}
+              {vote.document && (
+                <>
+                  {" · "}
+                  <a
+                    href={vote.document.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {vote.document.reference}
+                  </a>
+                </>
+              )}
               {vote.description && ` · ${vote.description}`}
             </strong>
           </p>
