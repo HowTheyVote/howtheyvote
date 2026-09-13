@@ -1,7 +1,31 @@
 import { strict as assert } from "node:assert";
-// import { Request } from "node:http";
 import { describe, it } from "node:test";
+import type { Request } from "@tinyhttp/app";
 import { requestIsBot } from "./bots";
+
+const DEFAULT_OPTIONS = {
+  path: "/",
+  userAgent:
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:155.0) Gecko/20100101 Firefox/155.0",
+  acceptLanguage: "en-US,en;q=0.9",
+  acceptEncoding: "gzip, deflate, br, zstd",
+};
+
+function makeRequest(options: Record<string, string | undefined>) {
+  const { path, userAgent, acceptLanguage, acceptEncoding } = {
+    ...DEFAULT_OPTIONS,
+    ...options,
+  };
+
+  return {
+    path,
+    headers: {
+      "user-agent": userAgent,
+      "accept-language": acceptLanguage,
+      "accept-encoding": acceptEncoding,
+    },
+  } as unknown as Request;
+}
 
 describe("requestIsBot", () => {
   it("detects common bot/crawler user agents", () => {
@@ -31,13 +55,13 @@ describe("requestIsBot", () => {
     ];
 
     for (const userAgent of allow) {
-      const isBot = requestIsBot("/", userAgent);
+      const isBot = requestIsBot(makeRequest({ userAgent }));
       assert.strictEqual(isBot.result, false);
       assert.strictEqual(isBot.name, undefined);
     }
 
     for (const userAgent of block) {
-      const isBot = requestIsBot("/", userAgent);
+      const isBot = requestIsBot(makeRequest({ userAgent }));
       assert.strictEqual(isBot.result, true);
     }
   });
@@ -57,18 +81,39 @@ describe("requestIsBot", () => {
       "/.git/HEAD",
       "/xmlrpc.php",
       "/admin/index.php",
+      "//wp-admin.php",
     ];
 
     for (const path of allow) {
-      const isBot = requestIsBot(path, "");
+      const isBot = requestIsBot(makeRequest({ path }));
       assert.strictEqual(isBot.result, false);
       assert.strictEqual(isBot.name, undefined);
     }
 
     for (const path of block) {
-      const isBot = requestIsBot(path, "");
+      const isBot = requestIsBot(makeRequest({ path }));
       assert.strictEqual(isBot.result, true);
       assert.strictEqual(isBot.name, undefined);
+    }
+  });
+
+  it("detects missing default headers", () => {
+    for (const value of ["", undefined]) {
+      console.log(value);
+      assert.strictEqual(
+        requestIsBot(makeRequest({ userAgent: value })).result,
+        true,
+      );
+
+      assert.strictEqual(
+        requestIsBot(makeRequest({ acceptLanguage: value })).result,
+        true,
+      );
+
+      assert.strictEqual(
+        requestIsBot(makeRequest({ acceptEncoding: value })).result,
+        true,
+      );
     }
   });
 });
