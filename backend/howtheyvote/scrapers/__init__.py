@@ -1,4 +1,4 @@
-from .common import NoWorkingUrlError, RequestCache, ScrapingError
+from .common import NoWorkingUrlError, RequestCache, ScrapingError, WAFChallengeError
 from .members import MemberGroupsScraper, MemberInfoScraper, MembersScraper
 from .oeil_summaries import (
     OEILSummaryIDScraper,
@@ -41,4 +41,5 @@ __all__ = [
     "PressReleaseScraper",
     "OEILSummaryIDScraper",
     "OEILSummaryScraper",
+    "WAFChallengeError",
 ]
