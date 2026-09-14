@@ -749,7 +749,6 @@ class ODPDocumentScraper(JSONScraper):
                 start = amendment_list["itemNumberBegin"]
                 end = amendment_list["itemNumberEnd"]
 
-                # TODO Check if intervals are inclusive
                 if start > amendment_number or end < amendment_number:
                     continue
 
