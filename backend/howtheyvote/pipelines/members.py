@@ -70,18 +70,19 @@ class MembersPipeline(BasePipeline):
                     except WAFChallengeError:
                         if attempt == 1:
                             raise
-                        else:
-                            log.warning(
-                                "Waiting before trying to obtain new token.",
-                                member_id=member.id,
-                                attempt=attempt,
-                            )
-                            time.sleep(config.TOKEN_RENEWAL_SLEEP)
-                            log.warning(
-                                "Obtaining new WAF token", member_id=member.id, attempt=attempt
-                            )
-                            self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
-                            continue
+
+                        log.warning(
+                            "Waiting before trying to obtain new token.",
+                            member_id=member.id,
+                            attempt=attempt,
+                        )
+                        time.sleep(config.TOKEN_RENEWAL_SLEEP)
+                        log.warning(
+                            "Obtaining new WAF token",
+                            member_id=member.id,
+                            attempt=attempt,
+                        )
+                        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
             except WAFChallengeError as waf_err:
                 log.exception("New WAF token did not solve challenge", member_id=member.id)
                 sentry_sdk.capture_exception(waf_err)
@@ -110,18 +111,19 @@ class MembersPipeline(BasePipeline):
                     except WAFChallengeError:
                         if attempt == 1:
                             raise
-                        else:
-                            log.warning(
-                                "Waiting before trying to obtain new token.",
-                                member_id=member.id,
-                                attempt=attempt,
-                            )
-                            time.sleep(config.TOKEN_RENEWAL_SLEEP)
-                            log.warning(
-                                "Obtaining new WAF token", member_id=member.id, attempt=attempt
-                            )
-                            self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
-                            continue
+
+                        log.warning(
+                            "Waiting before trying to obtain new token.",
+                            member_id=member.id,
+                            attempt=attempt,
+                        )
+                        time.sleep(config.TOKEN_RENEWAL_SLEEP)
+                        log.warning(
+                            "Obtaining new WAF token",
+                            member_id=member.id,
+                            attempt=attempt,
+                        )
+                        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
             except WAFChallengeError as waf_err:
                 log.exception("New WAF token did not solve challenge", member_id=member.id)
                 sentry_sdk.capture_exception(waf_err)
