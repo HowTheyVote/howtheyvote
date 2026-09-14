@@ -1,5 +1,6 @@
 import ssl
 import time
+from collections.abc import Callable, Iterable
 from typing import Any, cast
 
 import requests
@@ -8,6 +9,7 @@ from structlog import get_logger
 
 from . import config
 from .cdp import Client
+from .scrapers.exceptions import WAFChallengeError
 
 log = get_logger(__name__)
 
@@ -172,3 +174,25 @@ def solve_aws_waf_challenge(url: str, timeout: int = 60) -> str:
         },
     )
     raise WAFTokenError("Failed to obtain an AWS WAF token.")
+
+
+def run_each_with_waf_token[Item](
+    iterable: Iterable[Item],
+    func: Callable[[Item, str], None],
+    current_waf_token: str,
+    solve_waf_challenge: Callable[[], str],
+    sleep: int,
+) -> str:
+    """Run `func` for each item in `iterable`. If `func` raises a `WAFChallengeError`, fetch a
+    new WAF token and retry once."""
+    waf_token = current_waf_token
+
+    for item in iterable:
+        try:
+            func(item, waf_token)
+        except WAFChallengeError:
+            time.sleep(sleep)
+            waf_token = solve_waf_challenge()
+            func(item, waf_token)
+
+    return waf_token
