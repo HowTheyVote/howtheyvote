@@ -22,6 +22,7 @@ from ..scrapers import (
 from ..sharepics import generate_member_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_member
 from ..waf import (
+    WAFChallengeError,
     run_each_with_waf_token,
     solve_ep_aws_waf_challenge,
 )
@@ -112,26 +113,40 @@ class MembersPipeline(BasePipeline):
         writer.flush()
 
     def _download_member_photos(self) -> None:
-        for member in self._members():
+        def download_member_photo(member: Member, waf_token: str) -> None:
             url = f"https://www.europarl.europa.eu/mepphoto/{member.id}.jpg"
 
             log.info("Downloading member photo.", member_id=member.id)
 
             try:
-                path = download_file(url, member_photo_path(member.id))
+                path = download_file(
+                    url=url,
+                    path=member_photo_path(member.id),
+                    aws_waf_token=waf_token,
+                )
+            except WAFChallengeError:
+                raise
             except Exception as err:
                 log.exception("Failed downloading member photo.", member_id=member.id)
                 sentry_sdk.capture_exception(err)
-                continue
+                return
 
             if not path:
                 log.error("Failed downloading member photo.", member_id=member.id)
-                continue
+                return
 
             log.info("Creating member photo thumbnail.", web_id=member.id)
             image_thumb(path, member_photo_path(member.id, size=104), format="jpeg", size=104)
 
             time.sleep(config.REQUEST_SLEEP)
+
+        self._ep_aws_waf_token = run_each_with_waf_token(
+            iterable=self._members(),
+            func=download_member_photo,
+            current_waf_token=self._ep_aws_waf_token,
+            solve_waf_challenge=solve_ep_aws_waf_challenge,
+            sleep=config.TOKEN_RENEWAL_SLEEP,
+        )
 
     def _generate_sharepics(self) -> None:
         for member in self._members():
