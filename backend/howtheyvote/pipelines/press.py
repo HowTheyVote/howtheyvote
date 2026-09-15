@@ -5,6 +5,7 @@ import sentry_sdk
 from sqlalchemy import func, select
 from structlog import get_logger
 
+from .. import config
 from ..analysis import PressReleaseAnalyzer, PressReleaseVotePositionCountsAnalyzer
 from ..db import Session
 from ..models import PlenarySession, PressRelease, Vote
@@ -16,6 +17,7 @@ from ..scrapers import (
     ScrapingError,
 )
 from ..store import Aggregator, BulkWriter, index_records, map_press_release, map_vote
+from ..waf import run_each_with_waf_token, solve_ep_aws_waf_challenge
 from .common import BasePipeline
 
 log = get_logger(__name__)
@@ -39,6 +41,8 @@ class PressPipeline(BasePipeline):
         self._vote_ids: set[str] = set()
 
     def _run(self) -> None:
+        self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
+
         if self.with_rss:
             self._scrape_press_releases_rss()
 
@@ -70,13 +74,35 @@ class PressPipeline(BasePipeline):
             self._scrape_press_releases_index_by_date(language="fr", date=self.date)
             self._scrape_press_releases_index_by_date(language="en", date=self.date)
         else:
-            for page in range(self.MAX_PAGES):
-                self._scrape_press_releases_index_by_page(language="en", page=page)
 
-    def _scrape_press_releases_index_by_page(self, language: str, page: int) -> None:
+            def scrape_page(page: int, waf_token: str) -> None:
+                self._scrape_press_releases_index_by_page(
+                    language="en",
+                    page=page,
+                    waf_token=waf_token,
+                )
+
+            self._ep_aws_waf_token = run_each_with_waf_token(
+                iterable=range(self.MAX_PAGES),
+                func=scrape_page,
+                current_waf_token=self._ep_aws_waf_token,
+                solve_waf_challenge=solve_ep_aws_waf_challenge,
+                sleep=config.TOKEN_RENEWAL_SLEEP,
+            )
+
+    def _scrape_press_releases_index_by_page(
+        self,
+        language: str,
+        page: int,
+        waf_token: str,
+    ) -> None:
         writer = BulkWriter()
         log.info("Scraping press releases by page", page=page)
-        scraper = PressReleasesIndexScraper(language=language, page=page)
+        scraper = PressReleasesIndexScraper(
+            language=language,
+            page=page,
+            aws_waf_token=waf_token,
+        )
         writer.add(scraper.run())
         writer.flush()
 
@@ -97,6 +123,7 @@ class PressPipeline(BasePipeline):
         scraper = PressReleasesIndexScraper(
             session_start_date=plenary_session.start_date,
             language=language,
+            aws_waf_token=self._ep_aws_waf_token,
         )
         writer.add(scraper.run())
         writer.flush()
@@ -106,11 +133,14 @@ class PressPipeline(BasePipeline):
     def _scrape_press_releases(self) -> None:
         writer = BulkWriter(auto_flush=1000)
 
-        for release_id in self._release_ids:
+        def scrape_release(release_id: str, waf_token: str) -> None:
             log.info("Scraping press release contents", release_id=release_id, date=self.date)
 
             try:
-                scraper = PressReleaseScraper(release_id=release_id)
+                scraper = PressReleaseScraper(
+                    release_id=release_id,
+                    aws_waf_token=waf_token,
+                )
                 writer.add(scraper.run())
             except ScrapingError as err:
                 log.exception(
@@ -120,6 +150,13 @@ class PressPipeline(BasePipeline):
                 )
                 sentry_sdk.capture_exception(err)
 
+        self._ep_aws_waf_token = run_each_with_waf_token(
+            iterable=self._release_ids,
+            func=scrape_release,
+            current_waf_token=self._ep_aws_waf_token,
+            solve_waf_challenge=solve_ep_aws_waf_challenge,
+            sleep=config.TOKEN_RENEWAL_SLEEP,
+        )
         writer.flush()
 
     def _analyze_vote_position_counts(self) -> None:

@@ -24,10 +24,6 @@ class NoWorkingUrlError(ScrapingError):
     pass
 
 
-class WAFChallengeError(ScrapingError):
-    pass
-
-
 RequestCache = Cache[str, Response | None]
 
 
@@ -66,20 +62,6 @@ def get_url(
                 )
                 # Retry in case it's just a temporary issue
                 continue
-
-            if response.headers.get("x-amzn-waf-action") == "challenge":
-                log.error(
-                    "Encountered AWS WAF JavaScript challenge",
-                    url=url,
-                    retry=retry,
-                    max_retries=max_retries,
-                    status=response.status_code,
-                    took=response.elapsed.total_seconds(),
-                    aws_waf_token=aws_waf_token,
-                )
-                raise WAFChallengeError(
-                    "The request failed because the server responded with a WAF JS challenge."
-                )
 
             log.info(
                 "URL request succeeded",
