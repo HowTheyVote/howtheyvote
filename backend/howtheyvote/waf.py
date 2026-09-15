@@ -5,6 +5,7 @@ from typing import Any, cast
 
 import requests
 import sentry_sdk
+from requests import Response
 from structlog import get_logger
 
 from . import config
@@ -65,6 +66,13 @@ class WAFChallengeError(Exception):
     pass
 
 
+def check_for_waf_challenge(response: Response, **kwargs: Any) -> None:
+    if response.headers.get("x-amzn-waf-action") == "challenge":
+        raise WAFChallengeError(
+            "The request failed because the server responded with a WAF JS challenge."
+        )
+
+
 class BrowserTLSAdapter(requests.adapters.HTTPAdapter):
     """A custom requests HTTP adapter automatically injects a custom TLS context to be
     used for all connections."""
@@ -98,6 +106,7 @@ def get_session(aws_waf_token: str | None = None) -> requests.Session:
 
     session = requests.Session()
     session.mount("https://", BrowserTLSAdapter(ctx))
+    session.hooks["response"].append(check_for_waf_challenge)
 
     session.headers.update(FIREFOX_HEADERS)
 

@@ -2,7 +2,21 @@ from unittest.mock import call
 
 import pytest
 
-from howtheyvote.waf import WAFChallengeError, run_each_with_waf_token
+from howtheyvote.waf import (
+    WAFChallengeError,
+    check_for_waf_challenge,
+    run_each_with_waf_token,
+)
+
+
+def test_check_for_waf_challenge(mocker):
+    response = mocker.Mock(headers={"x-amzn-waf-action": "challenge"})
+
+    with pytest.raises(WAFChallengeError):
+        check_for_waf_challenge(response)
+
+    response.headers = {}
+    check_for_waf_challenge(response)
 
 
 def test_run_each_with_waf_token(mocker):
