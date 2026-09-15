@@ -18,11 +18,13 @@ from ..scrapers import (
     MemberInfoScraper,
     MembersScraper,
     ScrapingError,
-    WAFChallengeError,
 )
 from ..sharepics import generate_member_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_member
-from ..waf import run_each_with_waf_token, solve_ep_aws_waf_challenge
+from ..waf import (
+    run_each_with_waf_token,
+    solve_ep_aws_waf_challenge,
+)
 from .common import BasePipeline
 
 log = get_logger(__name__)

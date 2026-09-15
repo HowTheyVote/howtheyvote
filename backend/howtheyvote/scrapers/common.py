@@ -11,7 +11,7 @@ from structlog import get_logger
 
 from .. import config
 from ..models import BaseWithId, Fragment
-from ..waf import get_session
+from ..waf import WAFChallengeError, get_session
 
 log = get_logger(__name__)
 
@@ -21,10 +21,6 @@ class ScrapingError(Exception):
 
 
 class NoWorkingUrlError(ScrapingError):
-    pass
-
-
-class WAFChallengeError(ScrapingError):
     pass
 
 

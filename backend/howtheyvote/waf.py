@@ -9,7 +9,6 @@ from structlog import get_logger
 
 from . import config
 from .cdp import Client
-from .scrapers.exceptions import WAFChallengeError
 
 log = get_logger(__name__)
 
@@ -55,6 +54,14 @@ FIREFOX_HEADERS = {
 
 
 class WAFTokenError(Exception):
+    """Raised when solving the WAF challenge to retrieve a new WAF token fails."""
+
+    pass
+
+
+class WAFChallengeError(Exception):
+    """Raised when the server responds with a WAF challenge."""
+
     pass
 
 

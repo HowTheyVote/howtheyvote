@@ -2,8 +2,7 @@ from unittest.mock import call
 
 import pytest
 
-from howtheyvote.scrapers.exceptions import WAFChallengeError
-from howtheyvote.waf import run_each_with_waf_token
+from howtheyvote.waf import WAFChallengeError, run_each_with_waf_token
 
 
 def test_run_each_with_waf_token(mocker):
