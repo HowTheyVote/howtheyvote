@@ -217,6 +217,75 @@ def test_search_query_handle_query(votes):
     assert results[0].id == 2
 
 
+def test_search_query_handle_britihs_vs_american(db_session, search_index):
+    votes = [
+        Vote(
+            id=182483,
+            timestamp=datetime.datetime(2025, 12, 16),
+            title="Incentivising defence-related investments in the EU budget to implement the ReArm Europe Plan",
+            is_main=True,
+        ),
+        Vote(
+            id=166228,
+            timestamp=datetime.datetime(2024, 3, 12),
+            title="Council decision inviting Member States to ratify the Violence and Harassment Convention, 2019 (No 190) of the International Labour Organization",
+            is_main=True,
+        ),
+        Vote(
+            id=150459,
+            timestamp=datetime.datetime(2022, 11, 23),
+            title="Recognising the Russian Federation as a state sponsor of terrorism",
+            is_main=True,
+        ),
+        Vote(
+            id=162985,
+            timestamp=datetime.datetime(2024, 1, 15),
+            title="Current and future challenges regarding cross-border cooperation with neighbouring countries",
+            is_main=True,
+        ),
+    ]
+
+    db_session.add_all(votes)
+    db_session.commit()
+    index_search(Vote, votes)
+
+    # defense vs. defence
+    response = SearchQuery(Vote).query("defence").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 182483
+
+    response = SearchQuery(Vote).query("defense").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 182483
+
+    # organization vs. organisation
+    response = SearchQuery(Vote).query("organization").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 166228
+
+    response = SearchQuery(Vote).query("organisation").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 166228
+
+    # recognizing vs. recognising
+    response = SearchQuery(Vote).query("recognizing").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 150459
+
+    response = SearchQuery(Vote).query("recognising").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 150459
+
+    # neighboring vs. neighbouring
+    response = SearchQuery(Vote).query("neighboring").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 162985
+
+    response = SearchQuery(Vote).query("neighbouring").handle()
+    assert response["total"] == 1
+    assert response["results"][0].id == 162985
+
+
 def test_search_query_handle_normalization(db_session, search_index):
     vote = Vote(
         id=1,
