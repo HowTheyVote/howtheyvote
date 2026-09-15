@@ -1,4 +1,5 @@
 import enum
+import itertools
 import pathlib
 import shutil
 from abc import ABC, abstractmethod
@@ -21,6 +22,7 @@ from xapian import (
 
 from . import config
 from .models import BaseWithId, Committee, Country, Topic, Vote
+from .scowl import list_spelling_variations
 
 log = get_logger(__name__)
 
@@ -297,15 +299,19 @@ def clear_synonyms(index: WritableDatabase) -> None:
 
 
 def reload_synonyms() -> None:
-    pairs = []
+    # Spelling variations from the English Spelling Database (SCOWL)
+    spelling_variations = list_spelling_variations(max_level=6)
 
+    # Custom synonysm
     if config.SEARCH_SYNONYMS:
-        pairs = [pair.split(":") for pair in config.SEARCH_SYNONYMS.split("|") if pair]
+        custom = [pair.split(":") for pair in config.SEARCH_SYNONYMS.split("|") if pair]
+    else:
+        custom = []
 
     with get_index(Vote, AccessType.WRITE) as index:
         clear_synonyms(index)
 
-        for term, synonym in pairs:
+        for term, synonym in itertools.chain(spelling_variations, custom):
             add_synonym(index, term, synonym)
 
 
