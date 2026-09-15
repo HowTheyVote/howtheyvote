@@ -1,18 +1,16 @@
 import datetime
 from dataclasses import dataclass
-from typing import TypedDict
+from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.types import TypeDecorator
 from structlog import get_logger
 
 from ..files import member_photo_url, member_sharepic_url
 from .common import BaseWithId
 from .country import Country, CountryType
 from .group import Group
-from .types import ListType
+from .types import DataclassType, ListType
 
 log = get_logger(__name__)
 
@@ -25,14 +23,7 @@ class GroupMembership:
     end_date: datetime.date | None
 
 
-class SerializedGroupMembership(TypedDict):
-    term: int
-    group: str
-    start_date: str
-    end_date: str | None
-
-
-def serialize_group_membership(group_membership: GroupMembership) -> SerializedGroupMembership:
+def serialize_group_membership(group_membership: GroupMembership) -> dict[str, Any]:
     return {
         "term": group_membership.term,
         "start_date": group_membership.start_date.isoformat(),
@@ -43,9 +34,7 @@ def serialize_group_membership(group_membership: GroupMembership) -> SerializedG
     }
 
 
-def deserialize_group_membership(
-    group_membership: SerializedGroupMembership,
-) -> GroupMembership:
+def deserialize_group_membership(group_membership: dict[str, Any]) -> GroupMembership:
     end_date = group_membership.get("end_date")
 
     return GroupMembership(
@@ -56,25 +45,10 @@ def deserialize_group_membership(
     )
 
 
-class GroupMembershipType(TypeDecorator[GroupMembership]):
-    impl = sa.JSON
-    cache_ok = True
-
-    def process_bind_param(
-        self, value: GroupMembership | None, dialect: Dialect
-    ) -> SerializedGroupMembership | None:
-        if not value:
-            return None
-
-        return serialize_group_membership(value)
-
-    def process_result_value(
-        self, value: SerializedGroupMembership | None, dialect: Dialect
-    ) -> GroupMembership | None:
-        if not value:
-            return None
-
-        return deserialize_group_membership(value)
+GroupMembershipType = DataclassType(
+    serialize_group_membership,
+    deserialize_group_membership,
+)
 
 
 class Member(BaseWithId):
@@ -85,7 +59,7 @@ class Member(BaseWithId):
     last_name: Mapped[str] = mapped_column(sa.Unicode)
     country: Mapped[Country] = mapped_column(CountryType)
     group_memberships: Mapped[list[GroupMembership]] = mapped_column(
-        ListType(GroupMembershipType())
+        ListType(GroupMembershipType)
     )
     date_of_birth: Mapped[datetime.date | None] = mapped_column(sa.Date)
     terms: Mapped[list[int]] = mapped_column(sa.JSON, default=[])

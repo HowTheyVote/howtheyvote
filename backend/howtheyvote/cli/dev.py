@@ -132,7 +132,7 @@ def load_eurovoc() -> None:
     container = DataclassContainer(
         dataclass=EurovocConcept,
         file_path=DATA_DIR.joinpath("eurovoc.json"),
-        key_attr="id",
+        key=lambda concept: concept.id,
     )
 
     for result in results:
@@ -256,7 +256,7 @@ def load_countries() -> None:
     container = DataclassContainer(
         dataclass=Country,
         file_path=DATA_DIR.joinpath("countries.json"),
-        key_attr="code",
+        key=lambda country: country.code,
     )
 
     for result in results:
@@ -322,7 +322,7 @@ def load_committees() -> None:
     committees = DataclassContainer(
         dataclass=Committee,
         file_path=DATA_DIR.joinpath("committees.json"),
-        key_attr="code",
+        key=lambda committee: committee.code,
     )
 
     for result in results:
@@ -417,7 +417,7 @@ def load_groups() -> None:
     groups = DataclassContainer(
         dataclass=Group,
         file_path=DATA_DIR.joinpath("groups.json"),
-        key_attr="code",
+        key=lambda group: group.code,
     )
 
     for result in results:
@@ -512,7 +512,7 @@ def load_oeil_subjects(file: TextIO) -> None:
     subjects = DataclassContainer(
         dataclass=OEILSubject,
         file_path=DATA_DIR.joinpath("oeil_subjects.json"),
-        key_attr="code",
+        key=lambda subject: subject.code,
     )
 
     dialect = csv.Sniffer().sniff(file.read(), delimiters=",;")

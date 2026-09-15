@@ -316,6 +316,21 @@ class AmendmentAuthorVoteRow(TypedDict):
     """Committee code, if applicable."""
 
 
+class AmendmentURLRow(TypedDict):
+    """URLs of amendments linked to a vote."""
+
+    vote_id: int
+    """Vote ID"""
+
+    amendment_number: int
+    """Amendment number."""
+
+    url: str
+    """Links to PDF documents containing the text of the amendments. The linked documents
+    may contain multiple amendments, not just the amendments the vote was about.
+    This field is only available for votes starting in 2024."""
+
+
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
@@ -353,6 +368,13 @@ class Export:
             outdir=self.outdir,
             name="votes",
             primary_key="id",
+        )
+
+        self.amendment_urls = Table(
+            row_type=AmendmentURLRow,
+            outdir=self.outdir,
+            name="amendment_urls",
+            primary_key=["vote_id", "amendment_number"],
         )
 
         self.member_votes = Table(
@@ -445,6 +467,7 @@ class Export:
                 self.committees,
                 self.responsible_committee_votes,
                 self.amendment_authors,
+                self.amendment_urls,
             ]
         )
         self.export_members()
@@ -552,6 +575,7 @@ class Export:
 
         with (
             self.votes.open() as votes,
+            self.amendment_urls.open() as amendment_urls,
             self.member_votes.open() as member_votes,
             self.eurovoc_concept_votes.open() as eurovoc_concept_votes,
             self.oeil_subject_votes.open() as oeil_subject_votes,
@@ -599,6 +623,15 @@ class Export:
                         "texts_adopted_reference": vote.texts_adopted_reference,
                     }
                 )
+
+                for amendment_url in vote.amendment_urls or []:
+                    amendment_urls.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "amendment_number": amendment_url.amendment_number,
+                            "url": amendment_url.url,
+                        }
+                    )
 
                 for eurovoc_concept in vote.eurovoc_concepts:
                     eurovoc_concept_votes.write_row(

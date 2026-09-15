@@ -4,6 +4,7 @@ import pytest
 
 from howtheyvote.models import (
     AmendmentAuthorType,
+    AmendmentURL,
     Fragment,
     MemberVote,
     ProcedureStage,
@@ -586,7 +587,11 @@ def test_odp_document_scraper(responses):
         body=load_fixture("scrapers/data/votes/odp-document_rc-10-2025-0249.json"),
     )
 
-    scraper = ODPDocumentScraper(vote_id=176309, reference="RC-B10-0249/2025")
+    scraper = ODPDocumentScraper(
+        vote_id=176309,
+        reference="RC-B10-0249/2025",
+        amendment_number=None,
+    )
     fragment = scraper.run()
 
     assert fragment.data == {
@@ -604,6 +609,7 @@ def test_odp_document_scraper(responses):
             "RUS",
             "UKR",
         },
+        "amendment_urls": None,
     }
 
 
@@ -613,10 +619,118 @@ def test_odp_document_scraper_no_procedure_reference(responses):
         body=load_fixture("scrapers/data/votes/odp-document_rc-9-2021-0068.json"),
     )
 
-    scraper = ODPDocumentScraper(vote_id=127182, reference="RC-B9-0068/2021")
+    scraper = ODPDocumentScraper(
+        vote_id=127182,
+        reference="RC-B9-0068/2021",
+        amendment_number=None,
+    )
     fragment = scraper.run()
 
     assert fragment.data["odp_procedure_reference"] is None
+
+
+def test_odp_document_scraper_amendment_url(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-10-2026-0106?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_a-10-2026-0106.json"),
+    )
+
+    scraper = ODPDocumentScraper(
+        vote_id=194048,
+        reference="A10-0106/2026",
+        amendment_number="2",
+    )
+    fragment = scraper.run()
+
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=2,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-001-006/A-10-2026-0106-AM-001-006_en.pdf",
+        )
+    ]
+
+    scraper = ODPDocumentScraper(
+        vote_id=194053,
+        reference="A10-0106/2026",
+        amendment_number="42",
+    )
+    fragment = scraper.run()
+
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=42,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-041-050/A-10-2026-0106-AM-041-050_en.pdf",
+        ),
+    ]
+
+
+def test_odp_document_scraper_multiple_amendment_urls(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-10-2026-0175?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_a-10-2026-0175.json"),
+    )
+
+    scraper = ODPDocumentScraper(
+        vote_id=194048,
+        reference="A10-0175/2026",
+        amendment_number="17= 25=",
+    )
+    fragment = scraper.run()
+
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=17,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0175-AM-017-024/A-10-2026-0175-AM-017-024_en.pdf",
+        ),
+        AmendmentURL(
+            amendment_number=25,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0175-AM-025-025/A-10-2026-0175-AM-025-025_en.pdf",
+        ),
+    ]
+
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-10-2026-0048?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_a-10-2026-0048.json"),
+    )
+
+    scraper = ODPDocumentScraper(
+        vote_id=194442,
+        reference="A10-0048/2026",
+        amendment_number="2 = 3 =",
+    )
+    fragment = scraper.run()
+
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=2,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0048-AM-002-002/A-10-2026-0048-AM-002-002_en.pdf",
+        ),
+        AmendmentURL(
+            amendment_number=3,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0048-AM-003-003/A-10-2026-0048-AM-003-003_en.pdf",
+        ),
+    ]
+
+
+def test_odp_document_scraper_amendment_urls_corresponding_part(responses):
+    responses.get(
+        "https://data.europarl.europa.eu/api/v2/plenary-documents/A-9-2023-0284?format=application/ld+json",
+        body=load_fixture("scrapers/data/votes/odp-document_a-9-2023-0284.json"),
+    )
+
+    scraper = ODPDocumentScraper(
+        vote_id=168698,
+        reference="A9-0284/2023",
+        amendment_number="56CP1",
+    )
+    fragment = scraper.run()
+
+    assert fragment.data["amendment_urls"] == [
+        AmendmentURL(
+            amendment_number=56,
+            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-9-2023-0284-AM-056-056/A-9-2023-0284-AM-056-056_en.pdf",
+        ),
+    ]
 
 
 def test_odp_procedure_scraper(responses):

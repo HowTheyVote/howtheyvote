@@ -168,6 +168,7 @@ def odp_documents() -> None:
                 doc_scraper = ODPDocumentScraper(
                     vote_id=vote.id,
                     reference=vote.reference,
+                    amendment_number=vote.amendment_number,
                     request_cache=cache,
                 )
                 writer.add(doc_scraper.run())

@@ -488,6 +488,11 @@ export type MemberVotesQueryResponse = SearchQueryResponse & {
     results: Array<BaseVoteWithMemberPosition>;
 };
 
+export type AmendmentUrl = {
+    amendment_number: number;
+    url: string;
+};
+
 export type RelatedVote = {
     /**
      * ID as published in the official roll-call vote results
@@ -525,6 +530,12 @@ export type RelatedVote = {
      * This field is only available for votes starting in 2024
      */
     amendment_authors?: Array<AmendmentAuthor>;
+    /**
+     * Links to PDF documents containing the text of the amendments. The linked documents
+     * may contain multiple amendments, not just the amendments the vote was about.
+     * This field is only available for votes starting in 2024.
+     */
+    amendment_urls?: Array<AmendmentUrl>;
     /**
      * Vote result. This field is only available for votes starting in 2024.
      */

@@ -1,9 +1,66 @@
+from collections.abc import Callable
 from typing import Any, TypeVar
 
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
 from sqlalchemy.sql import ColumnElement
 from sqlalchemy.types import Concatenable, Indexable, TypeDecorator, TypeEngine
+
+from ..data import DataclassContainer, DeserializableDataclass
+
+
+class DataclassReferenceType[T: DeserializableDataclass](TypeDecorator[T]):
+    """A string column type that stores a dataclass container’s key."""
+
+    impl = sa.Unicode
+    cache_ok = True
+
+    def __init__(self, container: DataclassContainer[T]):
+        super().__init__()
+        self.container = container
+
+    def process_bind_param(self, value: T | None, dialect: Dialect) -> str | None:
+        if value is None:
+            return None
+
+        return self.container.key(value)
+
+    def process_result_value(self, value: str | None, dialect: Dialect) -> T | None:
+        if value is None:
+            return None
+
+        return self.container.get(value)
+
+
+class DataclassType[T](TypeDecorator[T]):
+    """A JSON column type for dataclasses with custom serialization."""
+
+    impl = sa.JSON
+    cache_ok = True
+
+    def __init__(
+        self,
+        serialize: Callable[[T], dict[str, Any]],
+        deserialize: Callable[[dict[str, Any]], T],
+    ):
+        super().__init__()
+        self.serialize = serialize
+        self.deserialize = deserialize
+
+    def process_bind_param(
+        self,
+        value: T | None,
+        dialect: Dialect,
+    ) -> dict[str, Any] | None:
+        return self.serialize(value) if value is not None else None
+
+    def process_result_value(
+        self,
+        value: dict[str, Any] | None,
+        dialect: Dialect,
+    ) -> T | None:
+        return self.deserialize(value) if value is not None else None
+
 
 ItemType = TypeVar("ItemType", bound=TypeEngine[Any])
 
