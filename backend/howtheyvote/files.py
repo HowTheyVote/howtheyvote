@@ -1,10 +1,10 @@
 from pathlib import Path
 
-import requests
 from PIL import Image
 from structlog import get_logger
 
 from . import config
+from .waf import get_session
 
 log = get_logger(__name__)
 
@@ -45,17 +45,22 @@ def vote_sharepic_url(vote_id: int) -> str:
     return f"/files/votes/sharepic-{vote_id}.png"
 
 
-def download_file(url: str, path: str | Path) -> Path | None:
+def download_file(
+    url: str,
+    path: str | Path,
+    aws_waf_token: str | None = None,
+) -> Path | None:
     # Ensure that the download path is inside the files directory
     path = file_path(path)
     ensure_parent(path)
 
-    with requests.get(url, stream=True, timeout=config.REQUEST_TIMEOUT) as res:
-        res.raise_for_status()
+    with get_session(aws_waf_token) as session:
+        with session.get(url, stream=True, timeout=config.REQUEST_TIMEOUT) as res:
+            res.raise_for_status()
 
-        with open(path, "wb") as f:
-            for chunk in res.iter_content():
-                f.write(chunk)
+            with open(path, "wb") as f:
+                for chunk in res.iter_content():
+                    f.write(chunk)
 
     return path
 

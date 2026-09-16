@@ -1,9 +1,11 @@
 import ssl
 import time
+from collections.abc import Callable, Iterable
 from typing import Any, cast
 
 import requests
 import sentry_sdk
+from requests import Response
 from structlog import get_logger
 
 from . import config
@@ -53,7 +55,22 @@ FIREFOX_HEADERS = {
 
 
 class WAFTokenError(Exception):
+    """Raised when solving the WAF challenge to retrieve a new WAF token fails."""
+
     pass
+
+
+class WAFChallengeError(Exception):
+    """Raised when the server responds with a WAF challenge."""
+
+    pass
+
+
+def check_for_waf_challenge(response: Response, **kwargs: Any) -> None:
+    if response.headers.get("x-amzn-waf-action") == "challenge":
+        raise WAFChallengeError(
+            "The request failed because the server responded with a WAF JS challenge."
+        )
 
 
 class BrowserTLSAdapter(requests.adapters.HTTPAdapter):
@@ -89,6 +106,7 @@ def get_session(aws_waf_token: str | None = None) -> requests.Session:
 
     session = requests.Session()
     session.mount("https://", BrowserTLSAdapter(ctx))
+    session.hooks["response"].append(check_for_waf_challenge)
 
     session.headers.update(FIREFOX_HEADERS)
 
@@ -172,3 +190,25 @@ def solve_aws_waf_challenge(url: str, timeout: int = 60) -> str:
         },
     )
     raise WAFTokenError("Failed to obtain an AWS WAF token.")
+
+
+def run_each_with_waf_token[Item](
+    iterable: Iterable[Item],
+    func: Callable[[Item, str], None],
+    current_waf_token: str,
+    solve_waf_challenge: Callable[[], str],
+    sleep: int,
+) -> str:
+    """Run `func` for each item in `iterable`. If `func` raises a `WAFChallengeError`, fetch a
+    new WAF token and retry once."""
+    waf_token = current_waf_token
+
+    for item in iterable:
+        try:
+            func(item, waf_token)
+        except WAFChallengeError:
+            time.sleep(sleep)
+            waf_token = solve_waf_challenge()
+            func(item, waf_token)
+
+    return waf_token

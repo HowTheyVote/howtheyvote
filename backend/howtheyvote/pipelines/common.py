@@ -13,6 +13,7 @@ from ..models import PipelineStatus, Vote
 from ..pushover import send_notification
 from ..scrapers import ScrapingError
 from ..sharepics import generate_vote_sharepic
+from ..waf import WAFChallengeError
 
 log = get_logger(__name__)
 
@@ -52,7 +53,7 @@ class BasePipeline(ABC):
             status = PipelineStatus.DATA_UNAVAILABLE
         except DataUnchanged:
             status = PipelineStatus.DATA_UNCHANGED
-        except ScrapingError as exc:
+        except (ScrapingError, WAFChallengeError) as exc:
             exception = exc
             status = PipelineStatus.FAILURE
             self._log.exception("Failed running pipeline")

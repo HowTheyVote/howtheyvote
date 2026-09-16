@@ -23,12 +23,14 @@ class PressReleasesIndexScraper(BeautifulSoupScraper):
         session_start_date: datetime.date | None = None,
         page: int = 0,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
         super().__init__(
             session_start_date=session_start_date,
             language=language,
             page=page,
             request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
         )
         self.session_start_date = session_start_date
         self.language = language
@@ -146,8 +148,13 @@ class PressReleaseScraper(BeautifulSoupScraper):
         self,
         release_id: str,
         request_cache: RequestCache | None = None,
+        aws_waf_token: str | None = None,
     ):
-        super().__init__(release_id=release_id, request_cache=request_cache)
+        super().__init__(
+            release_id=release_id,
+            request_cache=request_cache,
+            aws_waf_token=aws_waf_token,
+        )
         self.release_id = release_id
 
     def _url(self) -> str:
