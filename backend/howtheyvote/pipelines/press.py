@@ -56,7 +56,7 @@ class PressPipeline(BasePipeline):
     def _scrape_press_releases_rss(self) -> None:
         log.info("Fetching press releases from RSS", date=self.date)
         writer = BulkWriter()
-        scraper = PressReleasesRSSScraper()
+        scraper = PressReleasesRSSScraper(aws_waf_token=self._ep_aws_waf_token)
         writer.add(scraper.run())
         writer.flush()
         self._release_ids.update(writer.get_touched())
