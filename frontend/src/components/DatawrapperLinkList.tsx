@@ -13,10 +13,10 @@ const COLORS = {
 };
 
 const LABELS = {
-  FOR: "For",
-  AGAINST: "Against",
-  ABSTENTION: "Abstention",
-  DID_NOT_VOTE: "Didn’t vote",
+  FOR: "for",
+  AGAINST: "against",
+  ABSTENTION: "abstention",
+  DID_NOT_VOTE: "didn’t vote",
 };
 
 type EmbedType = "members" | "groups" | "countries";
@@ -304,10 +304,10 @@ function populateConfigForMembers(
         customColor: true,
         customColorBy: "Vote",
         customColorText: {
-          For: COLORS.FOR,
-          Against: COLORS.AGAINST,
-          Abstention: COLORS.ABSTENTION,
-          "Didn’t vote": COLORS.DID_NOT_VOTE,
+          [LABELS.FOR]: COLORS.FOR,
+          [LABELS.AGAINST]: COLORS.AGAINST,
+          [LABELS.ABSTENTION]: COLORS.ABSTENTION,
+          [LABELS.DID_NOT_VOTE]: COLORS.DID_NOT_VOTE,
         },
       },
     },
