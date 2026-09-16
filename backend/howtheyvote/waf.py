@@ -207,6 +207,7 @@ def run_each_with_waf_token[Item](
         try:
             func(item, waf_token)
         except WAFChallengeError:
+            log.info("WAFChallengeError raised, trying to obtain new WAF token.", sleep=sleep)
             time.sleep(sleep)
             waf_token = solve_waf_challenge()
             func(item, waf_token)
