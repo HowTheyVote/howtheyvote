@@ -1,0 +1,26 @@
+.data-products {
+  display: grid;
+  gap: var(--space);
+}
+
+@media screen and (min-width: 720px) {
+  .data-products {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.data-products__product {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  padding: var(--space-xs);
+
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--gray-light);
+  box-shadow: var(--shadow);
+}
+
+.data-products__action {
+  margin-block-start: auto;
+  font-weight: 500;
+}
