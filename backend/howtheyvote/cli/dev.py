@@ -543,7 +543,11 @@ def load_national_parties() -> None:
     retrieved_parties.load()
 
     all_parties_response = requests.get(
-        "https://data.europarl.europa.eu/api/v2/corporate-bodies?body-classification=NATIONAL_POLITICAL_GROUP&format=application/ld+json&offset=0",
+        "https://data.europarl.europa.eu/api/v2/corporate-bodies",
+        params={
+            "body-classification": "NATIONAL_POLITICAL_GROUP",
+            "format": "application/ld+json",
+        },
         timeout=60,
     ).json()
     all_parties = all_parties_response["data"]
@@ -555,10 +559,8 @@ def load_national_parties() -> None:
     party_identifier_to_scrape = [
         party["identifier"]
         for party in all_parties
-        if (
-          party["identifier"] not in retrieved_parties or
-          retrieved_parties[party["identifier"]].end_date is None
-        )
+        if (retrieved := retrieved_parties.get(party["identifier"])) is None
+        or retrieved.end_date is None
     ]
     log.info(
         f"Scraping data for {len(party_identifier_to_scrape)} "

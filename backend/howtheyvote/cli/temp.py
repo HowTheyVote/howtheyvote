@@ -31,7 +31,7 @@ from ..scrapers import (
     VOTListScraper,
 )
 from ..sharepics import generate_vote_sharepic
-from ..store import Aggregator, BulkWriter, index_records, map_member, map_press_release
+from ..store import Aggregator, BulkWriter, index_records, map_press_release
 
 log = get_logger(__name__)
 
@@ -394,5 +394,3 @@ def parties() -> None:
             writer.add(scraper.run())
 
         writer.flush()
-
-

@@ -128,7 +128,7 @@ class Member(BaseWithId):
         if isinstance(date, datetime.datetime):
             date = date.date()
 
-        for national_party_membership in self.national_party_memberships:
+        for national_party_membership in self.national_party_memberships or []:
             if national_party_membership.start_date <= date and (
                 not national_party_membership.end_date
                 or national_party_membership.end_date >= date

@@ -43,7 +43,9 @@ def show(member_id: int) -> ResponseReturnValue:
         return abort(404)
 
     group = member.group_at(today) or member.group_memberships[-1].group
-    national_party = member.national_party_at(today) or member.national_party_memberships[-1].party
+    national_party = (
+        member.national_party_at(today) or member.national_party_memberships[-1].party
+    )
 
     return jsonify(
         {
