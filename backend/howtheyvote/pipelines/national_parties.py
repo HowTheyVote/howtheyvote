@@ -1,6 +1,6 @@
-import requests
-
 from typing import Any
+
+import requests
 
 from ..data import DATA_DIR, DataclassContainer
 from ..models import NationalParty

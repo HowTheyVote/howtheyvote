@@ -17,6 +17,7 @@ from ..scrapers import (
     MemberGroupsScraper,
     MemberInfoScraper,
     MembersScraper,
+    ODPMemberScraper,
     ScrapingError,
 )
 from ..sharepics import generate_member_sharepic
@@ -40,6 +41,7 @@ class MembersPipeline(BasePipeline):
     def _run(self) -> None:
         self._ep_aws_waf_token = solve_ep_aws_waf_challenge()
         self._scrape_members()
+        self._scrape_national_member_parties()
         self._scrape_member_groups()
         self._scrape_member_infos()
         self._index_members()
@@ -55,6 +57,15 @@ class MembersPipeline(BasePipeline):
         writer.flush()
 
         self._member_ids = writer.get_touched()
+
+    def _scrape_national_member_parties(self) -> None:
+        writer = BulkWriter()
+
+        for member in self._members():
+            scraper = ODPMemberScraper(web_id=member.id)
+            writer.add(scraper.run())
+
+        writer.flush()
 
     def _scrape_member_groups(self) -> None:
         writer = BulkWriter()
