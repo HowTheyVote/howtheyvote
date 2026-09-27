@@ -396,8 +396,3 @@ def parties() -> None:
         writer.flush()
 
 
-@temp.command()
-def aggregate_parties() -> None:
-    aggregator = Aggregator(Member)
-    members_to_aggregate = aggregator.mapped_records(map_func=map_member)
-    index_records(Member, members_to_aggregate)

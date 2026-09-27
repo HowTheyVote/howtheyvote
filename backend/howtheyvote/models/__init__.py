@@ -59,7 +59,6 @@ __all__ = [
     "OEILSubjectType",
     "NationalParty",
     "NationalPartyMembership",
-    "NationalPartyType",
     "Topic",
     "TopicType",
     "OEILSummary",

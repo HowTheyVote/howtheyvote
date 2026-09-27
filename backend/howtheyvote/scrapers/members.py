@@ -256,11 +256,11 @@ class MemberGroupsScraper(BeautifulSoupScraper):
 
 class ODPMemberScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/meps"
+    REQUEST_TIMEOUT = 60
 
     def __init__(self, web_id: int, request_cache: RequestCache | None = None):
         super().__init__(web_id=web_id, request_cache=request_cache)
         self.web_id = web_id
-        self.REQUEST_TIMEOUT = 60
 
     def _url(self) -> str:
         return f"{self.BASE_URL}/{self.web_id}?format=application/ld+json"

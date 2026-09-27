@@ -547,7 +547,7 @@ def load_national_parties() -> None:
         timeout=60,
     ).json()
     all_parties = all_parties_response["data"]
-    print(f"Got data for {len(all_parties)} national parties from ODP")  # noqa: T201
+    log.info(f"Got data for {len(all_parties)} national parties from ODP")
 
     # We need to retrieve info for parties that we do not yet have locally.
     # As we do not know for sure how renamings are handled by the ODP,
@@ -555,10 +555,12 @@ def load_national_parties() -> None:
     party_identifier_to_scrape = [
         party["identifier"]
         for party in all_parties
-        if (retrieved := retrieved_parties.get(party["identifier"])) is None
-        or retrieved.end_date is None
+        if (
+          party["identifier"] not in retrieved_parties or
+          retrieved_parties[party["identifier"]].end_date is None
+        )
     ]
-    print(  # noqa: T201
+    log.info(
         f"Scraping data for {len(party_identifier_to_scrape)} "
         "parties which are new or still active."
     )

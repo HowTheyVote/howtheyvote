@@ -82,7 +82,7 @@ class NationalPartyDict(TypedDict):
     """A national party in one of the EU member states"""
 
     id: Annotated[str, "123"]
-    """Unique identified for the party as used by the ODP for this organization"""
+    """Unique identifier for the party as used by the EP Open Data Portal"""
 
     short_label: Annotated[str, "SPD"]
 

@@ -26,16 +26,19 @@ type ItemProps = {
 };
 
 function Item({ member, position }: ItemProps) {
-  console.log(member);
   const subtitle = (
     <>
       <abbr title={member.group?.label}>{member.group?.short_label}</abbr>
       {" · "}
       {member.country.label}
-      {member.national_party && " · "}
-      <abbr title={member.national_party?.label}>
-        {member.national_party?.short_label}
-      </abbr>
+      {member.national_party && (
+        <>
+          {" · "}
+          <abbr title={member.national_party.label}>
+            {member.national_party.short_label}
+          </abbr>
+        </>
+      )}
     </>
   );
 
