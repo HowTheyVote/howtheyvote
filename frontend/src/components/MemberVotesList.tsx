@@ -33,7 +33,7 @@ function Item({ member, position }: ItemProps) {
       {" · "}
       {member.country.label}
       {member.national_party && " · "}
-      {member.national_party && member.national_party?.label}
+      <abbr title={member.national_party?.label}>{member.national_party?.short_label}</abbr>
     </>
   );
 
