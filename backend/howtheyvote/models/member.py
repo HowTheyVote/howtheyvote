@@ -10,7 +10,6 @@ from ..files import member_photo_url, member_sharepic_url
 from .common import BaseWithId
 from .country import Country, CountryType
 from .group import Group
-
 from .national_party import NationalParty
 from .types import DataclassType, ListType
 
@@ -42,6 +41,7 @@ def serialize_group_membership(group_membership: GroupMembership) -> dict[str, A
         "group": group_membership.group.code,
     }
 
+
 def deserialize_group_membership(
     group_membership: dict[str, Any],
 ) -> GroupMembership:
@@ -54,10 +54,12 @@ def deserialize_group_membership(
         group=Group[group_membership["group"]],
     )
 
+
 GroupMembershipType = DataclassType(
     serialize_group_membership,
     deserialize_group_membership,
 )
+
 
 def serialize_national_party_membership(
     party_membership: NationalPartyMembership,
@@ -69,6 +71,7 @@ def serialize_national_party_membership(
         if party_membership.end_date
         else None,
     }
+
 
 def deserialize_national_party_membership(
     national_party_membership: dict[str, Any],
