@@ -24,12 +24,6 @@ class GroupMembership:
     start_date: datetime.date
     end_date: datetime.date | None
 
-class SerializedGroupMembership(TypedDict):
-    term: int
-    group: str
-    start_date: str
-    end_date: str | None
-
 
 @dataclass
 class NationalPartyMembership:
@@ -38,13 +32,7 @@ class NationalPartyMembership:
     end_date: datetime.date | None
 
 
-class SerializedNationalPartyMembership(TypedDict):
-    party: str
-    start_date: str
-    end_date: str | None
-
-
-def serialize_group_membership(group_membership: GroupMembership) -> SerializedGroupMembership:
+def serialize_group_membership(group_membership: GroupMembership) -> dict[str, Any]:
     return {
         "term": group_membership.term,
         "start_date": group_membership.start_date.isoformat(),
@@ -54,21 +42,8 @@ def serialize_group_membership(group_membership: GroupMembership) -> SerializedG
         "group": group_membership.group.code,
     }
 
-
-def serialize_national_party_membership(
-    party_membership: NationalPartyMembership,
-) -> SerializedNationalPartyMembership:
-    return {
-        "party": party_membership.party.id,
-        "start_date": party_membership.start_date.isoformat(),
-        "end_date": party_membership.end_date.isoformat()
-        if party_membership.end_date
-        else None,
-    }
-
-
 def deserialize_group_membership(
-    group_membership: SerializedGroupMembership,
+    group_membership: dict[str, Any],
 ) -> GroupMembership:
     end_date = group_membership.get("end_date")
 
@@ -79,13 +54,24 @@ def deserialize_group_membership(
         group=Group[group_membership["group"]],
     )
 
-
 GroupMembershipType = DataclassType(
     serialize_group_membership,
     deserialize_group_membership,
 )
+
+def serialize_national_party_membership(
+    party_membership: NationalPartyMembership,
+) -> dict[str, Any]:
+    return {
+        "party": party_membership.party.id,
+        "start_date": party_membership.start_date.isoformat(),
+        "end_date": party_membership.end_date.isoformat()
+        if party_membership.end_date
+        else None,
+    }
+
 def deserialize_national_party_membership(
-    national_party_membership: SerializedNationalPartyMembership,
+    national_party_membership: dict[str, Any],
 ) -> NationalPartyMembership:
     end_date = national_party_membership.get("end_date")
 
@@ -96,46 +82,10 @@ def deserialize_national_party_membership(
     )
 
 
-class NationalPartyMembershipType(TypeDecorator[NationalPartyMembership]):
-    impl = sa.JSON
-    cache_ok = True
-
-    def process_bind_param(
-        self, value: NationalPartyMembership | None, dialect: Dialect
-    ) -> SerializedNationalPartyMembership | None:
-        if not value:
-            return None
-
-        return serialize_national_party_membership(value)
-
-    def process_result_value(
-        self, value: SerializedNationalPartyMembership | None, dialect: Dialect
-    ) -> NationalPartyMembership | None:
-        if not value:
-            return None
-
-        return deserialize_national_party_membership(value)
-
-
-class GroupMembershipType(TypeDecorator[GroupMembership]):
-    impl = sa.JSON
-    cache_ok = True
-
-    def process_bind_param(
-        self, value: GroupMembership | None, dialect: Dialect
-    ) -> SerializedGroupMembership | None:
-        if not value:
-            return None
-
-        return serialize_group_membership(value)
-
-    def process_result_value(
-        self, value: SerializedGroupMembership | None, dialect: Dialect
-    ) -> GroupMembership | None:
-        if not value:
-            return None
-
-        return deserialize_group_membership(value)
+NationalPartyMembershipType = DataclassType(
+    serialize_national_party_membership,
+    deserialize_national_party_membership,
+)
 
 
 class Member(BaseWithId):
@@ -149,7 +99,7 @@ class Member(BaseWithId):
         ListType(GroupMembershipType)
     )
     national_party_memberships: Mapped[list[NationalPartyMembership]] = mapped_column(
-        ListType(NationalPartyMembershipType())
+        ListType(NationalPartyMembershipType)
     )
     date_of_birth: Mapped[datetime.date | None] = mapped_column(sa.Date)
     terms: Mapped[list[int]] = mapped_column(sa.JSON, default=[])

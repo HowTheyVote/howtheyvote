@@ -538,7 +538,7 @@ def load_national_parties() -> None:
     retrieved_parties = DataclassContainer(
         dataclass=NationalParty,
         file_path=DATA_DIR.joinpath("national_parties.json"),
-        key_attr="id",
+        key=lambda national_party: national_party.id,
     )
     retrieved_parties.load()
 

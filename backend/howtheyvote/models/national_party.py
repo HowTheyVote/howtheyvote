@@ -36,6 +36,6 @@ class NationalParty(DeserializableDataclass, metaclass=NationalPartyMeta):
 national_parties = DataclassContainer(
     dataclass=NationalParty,
     file_path=DATA_DIR.joinpath("national_parties.json"),
-    key_attr="id",
+    key= lambda national_party: national_party.id,
 )
 national_parties.load()
