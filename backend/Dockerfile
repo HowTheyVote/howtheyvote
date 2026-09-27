@@ -1,9 +1,10 @@
 # Update this build arg whenever updating the Python base image
 ARG PYTHON_VERSION=3.14
 ARG XAPIAN_VERSION=2.0.0
+ARG ESDB_VERSION=2
 
 # Base images aren't parameterized because that breaks Dependabot updates
-FROM python:3.14-alpine3.24 AS builder
+FROM python:3.14-alpine3.24 AS xapian-builder
 
 ARG XAPIAN_VERSION
 
@@ -41,16 +42,32 @@ RUN wget -q https://oligarchy.co.uk/xapian/${XAPIAN_VERSION}/xapian-bindings-${X
     && cd /build \
     && rm -rf xapian-bindings-${XAPIAN_VERSION} xapian-bindings-${XAPIAN_VERSION}.tar.xz
 
+FROM python:3.14-alpine3.24 AS esdb-builder
+
+ARG ESDB_VERSION
+
+RUN apk add --no-cache make unzip
+
+RUN wget -q https://github.com/en-wl/wordlist/archive/refs/heads/v${ESDB_VERSION}.zip -O /tmp/wordlist.zip \
+    && unzip /tmp/wordlist.zip -d /build \
+    && cd /build/wordlist-${ESDB_VERSION} \
+    && python3 ./combine.py create-db scowl.db
+
 FROM python:3.14-alpine3.24
 
 ARG PYTHON_VERSION
+ARG ESDB_VERSION
 
 RUN apk add --no-cache libstdc++ bash less make sqlite tmux
 
-# Copy Xapian and the Python bindings from the builder stage
-COPY --from=builder /usr/local/lib/libxapian.so* /usr/local/lib/
-COPY --from=builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian
-COPY --from=builder /usr/local/share/xapian-core/stopwords/english.list /usr/local/share/xapian-core/stopwords/english.list
+# Copy ESDB database
+RUN mkdir -p /usr/local/share/esdb
+COPY --from=esdb-builder /build/wordlist-${ESDB_VERSION}/scowl.db /usr/local/share/esdb/scowl.db
+
+# Copy Xapian and the Python bindings from the Xapian builder stage
+COPY --from=xapian-builder /usr/local/lib/libxapian.so* /usr/local/lib/
+COPY --from=xapian-builder /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian /usr/local/lib/python${PYTHON_VERSION}/site-packages/xapian
+COPY --from=xapian-builder /usr/local/share/xapian-core/stopwords/english.list /usr/local/share/xapian-core/stopwords/english.list
 RUN ldconfig /usr/local/lib
 
 # Make Python Xapian package accessible

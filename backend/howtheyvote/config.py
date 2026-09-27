@@ -11,6 +11,7 @@ CADDY_PRIVATE_URL = env.get("HTV_CADDY_PRIVATE_URL", "")
 DATABASE_URI = env.get(
     "HTV_BACKEND_DATABASE_URI", "sqlite:////howtheyvote/database/database.sqlite3"
 )
+SCOWL_DATABASE_URI = "sqlite:////usr/local/share/esdb/scowl.db"
 
 # File storage
 FILES_DIR = env.get("HTV_BACKEND_FILES_DIR", "/howtheyvote/files")
