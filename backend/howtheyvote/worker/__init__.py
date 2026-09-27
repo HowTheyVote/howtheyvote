@@ -13,7 +13,6 @@ from ..files import file_path
 from ..models import PipelineRun, PipelineStatus, PlenarySession
 from ..pipelines import (
     MembersPipeline,
-    ODPNationalPartiesPipeline,
     OEILSummariesPipeline,
     PipelineResult,
     PressPipeline,
@@ -127,12 +126,6 @@ def sessions_handler() -> PipelineResult:
     return pipeline.run()
 
 
-def national_parties_handler() -> PipelineResult:
-    """Fetches information about national parties from the ODP."""
-    pipeline = ODPNationalPartiesPipeline()
-    return pipeline.run()
-
-
 def members_handler() -> PipelineResult:
     """Fetches information about all members of the current term."""
     pipeline = MembersPipeline(term=config.CURRENT_TERM)
@@ -175,16 +168,6 @@ def get_worker() -> Worker:
         name=SessionsPipeline.__name__,
         weekdays={Weekday.MON},
         hours={4},
-        tz=config.TIMEZONE,
-    )
-
-    # Mon at 04:15
-    worker.schedule_pipeline(
-        national_parties_handler,
-        name=ODPNationalPartiesPipeline.__name__,
-        weekdays={Weekday.MON},
-        hours={4},
-        minutes={15},
         tz=config.TIMEZONE,
     )
 

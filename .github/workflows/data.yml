@@ -48,6 +48,9 @@ jobs:
         run: docker exec data htv dev load-eurovoc
 
       - name: Update political groups
+        run: docker exec data htv dev load-national-parties
+
+      - name: Update political groups
         run: docker exec data htv dev load-groups
 
       - name: Stop Docker container
