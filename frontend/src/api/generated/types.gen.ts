@@ -110,7 +110,7 @@ export type Group = {
  */
 export type NationalParty = {
     /**
-     * Unique identified for the party as used by the ODP for this organization
+     * Unique identifier for the party as used by the EP Open Data Portal
      */
     id: string;
     short_label: string;
