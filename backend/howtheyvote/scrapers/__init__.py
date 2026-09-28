@@ -1,6 +1,5 @@
 from .common import NoWorkingUrlError, RequestCache, ScrapingError
 from .members import MemberGroupsScraper, MemberInfoScraper, MembersScraper, ODPMemberScraper
-from .national_parties import ODPNationalPartyScraper
 from .oeil_summaries import (
     OEILSummaryIDScraper,
     OEILSummaryScraper,

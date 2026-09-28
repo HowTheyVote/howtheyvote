@@ -1,6 +1,7 @@
 import csv
 import datetime
 from typing import Any, NotRequired, TextIO, TypedDict
+from time import sleep
 
 import click
 import requests
@@ -8,7 +9,6 @@ from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
 from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
-from ..scrapers import ODPNationalPartyScraper
 
 log = get_logger(__name__)
 
@@ -531,6 +531,32 @@ def load_oeil_subjects(file: TextIO) -> None:
 
     subjects.save()
 
+def _load_national_party_info(id: int) -> NationalParty:
+    BASE_URL = "https://data.europarl.europa.eu/api/v2/corporate-bodies"
+    party_url = f"{BASE_URL}/{id}?format=application/ld+json"
+
+    log.info(f"Loading party information for party with id {id}")
+    party_response = requests.get(
+            party_url,
+            timeout=60,
+        ).json()
+
+    content = party_response["data"][0]
+
+    time_period = content["temporal"]
+    start_date = time_period["startDate"]
+    end_date = time_period.get("endDate")
+
+    country_code = content["represents"][0].rsplit("/", 1)[-1]
+
+    return NationalParty(
+        str(id),
+        content["label"],
+        content["prefLabel"]["en"],
+        start_date,
+        end_date,
+        country_code,
+    )
 
 @dev.command()
 def load_national_parties() -> None:
@@ -568,7 +594,10 @@ def load_national_parties() -> None:
     )
     for identifier in party_identifier_to_scrape:
         try:
-            party_info = ODPNationalPartyScraper(id=identifier).run()
+            party_info = _load_national_party_info(id=identifier)
+            # TODO: This should instead properly respect any 429 status codes.
+            # See: https://github.com/HowTheyVote/howtheyvote/issues/1561
+            sleep(1)
             retrieved_parties.add(party_info)
         finally:
             retrieved_parties.save()
