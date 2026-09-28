@@ -115,6 +115,32 @@ class GroupMembershipRow(TypedDict):
     """End date. If empty, the MEP the membership is still active."""
 
 
+class NationalPartyRow(TypedDict):
+    id: str
+
+    label: str
+
+    short_label: str
+
+    start_date: str
+
+    end_date: str
+
+    country_code: str
+
+
+class NationalPartyMembershipRow(TypedDict):
+    member_id: int
+
+    national_party_id: str
+
+    national_party_short_label: str
+
+    start_date: datetime.date
+
+    end_date: datetime.date | None
+
+
 class VoteRow(TypedDict):
     """Each row represents a roll-call vote in plenary."""
 
@@ -207,6 +233,8 @@ class MemberVoteRow(TypedDict):
     group_code: str | None
     """Group code. This references the political group that the MEP was part of on the day
     of the vote. This is not necessarily the MEP’s current political group."""
+
+    national_party_short_label: str | None
 
 
 class EurovocConceptRow(TypedDict):
@@ -363,6 +391,20 @@ class Export:
             primary_key=["member_id", "group_code", "start_date", "end_date"],
         )
 
+        self.national_parties = Table(
+            row_type=NationalPartyRow,
+            outdir=self.outdir,
+            name="national_parties",
+            primary_key="id",
+        )
+
+        self.national_party_memberships = Table(
+            row_type=NationalPartyMembershipRow,
+            outdir=self.outdir,
+            name="national_party_memberships",
+            primary_key=["member_id", "party_id"],
+        )
+
         self.votes = Table(
             row_type=VoteRow,
             outdir=self.outdir,
@@ -456,6 +498,7 @@ class Export:
                 self.countries,
                 self.groups,
                 self.group_memberships,
+                self.national_party_memberships,
                 self.votes,
                 self.member_votes,
                 self.eurovoc_concepts,
@@ -505,6 +548,7 @@ class Export:
     def export_members(self) -> None:
         log.info("Exporting members")
 
+        exported_national_party_ids = set()
         exported_group_codes = set()
         exported_country_codes = set()
 
@@ -512,7 +556,9 @@ class Export:
             self.members.open() as members,
             self.countries.open() as countries,
             self.groups.open() as groups,
+            self.national_parties.open() as national_parties,
             self.group_memberships.open() as group_memberships,
+            self.national_party_memberships.open() as national_party_memberships,
         ):
             query = select(Member).order_by(Member.id)
             result = Session.scalars(query)
@@ -544,6 +590,32 @@ class Export:
                             "code": member.country.code,
                             "iso_alpha_2": member.country.iso_alpha_2,
                             "label": member.country.label,
+                        }
+                    )
+                print(member.id)
+                for npm in sorted(
+                    member.national_party_memberships, key=lambda npm: npm.start_date
+                ):
+                    if npm.party.id not in exported_national_party_ids:
+                        exported_national_party_ids.add(npm.party.id)
+                        national_parties.write_row(
+                            {
+                                "id": npm.party.id,
+                                "label": npm.party.label,
+                                "short_label": npm.party.short_label,
+                                "start_date": npm.party.start_date,
+                                "end_date": npm.party.start_date,
+                                "country_code": npm.party.country_code,
+                            }
+                        )
+
+                    national_party_memberships.write_row(
+                        {
+                            "member_id": member.id,
+                            "national_party_id": npm.party.id,
+                            "national_party_short_label": npm.party.short_label,
+                            "start_date": npm.start_date,
+                            "end_date": npm.end_date,
                         }
                     )
 
@@ -684,6 +756,7 @@ class Export:
                 for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]
                     group = member.group_at(vote.timestamp)
+                    national_party = member.national_party_at(vote.timestamp)
 
                     member_votes.write_row(
                         {
@@ -694,6 +767,9 @@ class Export:
                             # this is super handy to calculate stats by group/country.
                             "country_code": member.country.code,
                             "group_code": group.code if group else None,
+                            "national_party_short_label": national_party.short_label
+                            if national_party
+                            else None,
                         }
                     )
 
