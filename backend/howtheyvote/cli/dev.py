@@ -1,7 +1,7 @@
 import csv
 import datetime
-from typing import Any, NotRequired, TextIO, TypedDict
 from time import sleep
+from typing import Any, NotRequired, TextIO, TypedDict
 
 import click
 import requests
@@ -531,15 +531,16 @@ def load_oeil_subjects(file: TextIO) -> None:
 
     subjects.save()
 
+
 def _load_national_party_info(id: int) -> NationalParty:
-    BASE_URL = "https://data.europarl.europa.eu/api/v2/corporate-bodies"
-    party_url = f"{BASE_URL}/{id}?format=application/ld+json"
+    base_url = "https://data.europarl.europa.eu/api/v2/corporate-bodies"
+    party_url = f"{base_url}/{id}?format=application/ld+json"
 
     log.info(f"Loading party information for party with id {id}")
     party_response = requests.get(
-            party_url,
-            timeout=60,
-        ).json()
+        party_url,
+        timeout=60,
+    ).json()
 
     content = party_response["data"][0]
 
@@ -557,6 +558,7 @@ def _load_national_party_info(id: int) -> NationalParty:
         end_date,
         country_code,
     )
+
 
 @dev.command()
 def load_national_parties() -> None:

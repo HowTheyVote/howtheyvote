@@ -47,7 +47,7 @@ jobs:
       - name: Update EuroVoc concepts
         run: docker exec data htv dev load-eurovoc
 
-      - name: Update political groups
+      - name: Update national parties
         run: docker exec data htv dev load-national-parties
 
       - name: Update political groups
