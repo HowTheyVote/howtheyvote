@@ -29,7 +29,7 @@ export default function MemberSharepic({ member }: MemberSharepicProps) {
         <Stack space="xxs">
           <p>
             <strong>
-              {member.country.label} · {member.group?.short_label}
+              {member.group?.short_label} · {member.country.label}
               {member.national_party &&
                 ` · ${member.national_party.short_label}`}
             </strong>
