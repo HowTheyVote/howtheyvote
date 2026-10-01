@@ -3,10 +3,8 @@
     "code": "ALDE",
     "official_label": "Group of the Alliance of Liberals and Democrats for Europe",
     "label": "Alliance of Liberals and Democrats for Europe",
-    "short_label": "Alliance of Liberals and Democrats for Europe",
-    "alt_labels": [
-      "ALDE"
-    ],
+    "short_label": "ALDE",
+    "alt_labels": [],
     "start_date": "2004-07-20",
     "end_date": "2019-06-11"
   },
@@ -200,9 +198,8 @@
     "code": "EFD",
     "official_label": "Europe of freedom and direct democracy Group",
     "label": "Europe of freedom and direct democracy",
-    "short_label": "Europe of freedom and direct democracy",
+    "short_label": "EFDD",
     "alt_labels": [
-      "EFDD",
       "Europe of freedom and democracy Group"
     ],
     "start_date": "2014-07-01",
@@ -232,10 +229,8 @@
     "code": "ENF",
     "official_label": "Europe of Nations and Freedom",
     "label": "Europe of Nations and Freedom",
-    "short_label": "Europe of Nations and Freedom",
-    "alt_labels": [
-      "ENF"
-    ],
+    "short_label": "ENF",
+    "alt_labels": [],
     "start_date": "2015-06-15",
     "end_date": "2019-07-01"
   },
@@ -277,10 +272,9 @@
     "code": "EPP_2009_0",
     "official_label": "Group of the European People\u2019s Party (Christian Democrats)",
     "label": "European People\u2019s Party (Christian Democrats)",
-    "short_label": "European People\u2019s Party (Christian Democrats)",
+    "short_label": "PPE",
     "alt_labels": [
-      "European People\u2019s Party",
-      "PPE"
+      "European People\u2019s Party"
     ],
     "start_date": "2009-07-14",
     "end_date": "2019-07-01"
@@ -362,10 +356,9 @@
     "code": "GUE_NGL_1995_0",
     "official_label": "Confederal Group of the European United Left \u2013 Nordic Green Left",
     "label": "Confederal Group of the European United Left \u2013 Nordic Green Left",
-    "short_label": "Confederal Group of the European United Left \u2013 Nordic Green Left",
+    "short_label": "GUE/NGL",
     "alt_labels": [
-      "European United Left \u2013 Nordic Green Left",
-      "GUE/NGL"
+      "European United Left \u2013 Nordic Green Left"
     ],
     "start_date": "1995-01-06",
     "end_date": "2020-12-31"
@@ -374,10 +367,8 @@
     "code": "ID",
     "official_label": "Identity and Democracy Group",
     "label": "Identity and Democracy",
-    "short_label": "Identity and Democracy",
-    "alt_labels": [
-      "ID"
-    ],
+    "short_label": "ID",
+    "alt_labels": [],
     "start_date": "2019-07-02",
     "end_date": "2024-07-07"
   },

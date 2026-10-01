@@ -339,7 +339,7 @@
     "code": "ENVI_2004_0",
     "official_label": "Committee on the Environment, Public Health and Food Safety",
     "label": "Environment, Public Health and Food Safety",
-    "abbreviation": "ENVI_2004_0",
+    "abbreviation": "ENVI",
     "start_date": "2004-07-20",
     "end_date": "2025-01-19"
   },
@@ -707,7 +707,7 @@
     "code": "SEDE_2004_0",
     "official_label": "Subcommittee on Security and Defence",
     "label": "Subcommittee on Security and Defence",
-    "abbreviation": "SEDE_2004_0",
+    "abbreviation": "SEDE",
     "start_date": "2004-07-20",
     "end_date": "2025-01-19"
   },
@@ -731,7 +731,7 @@
     "code": "TAX2",
     "official_label": "Special Committee on Tax Rulings and Other Measures Similar in Nature or Effect (TAXE 2)",
     "label": "Special Committee on Tax Rulings and Other Measures Similar in Nature or Effect (TAXE 2)",
-    "abbreviation": "TAX2",
+    "abbreviation": "TAXE 2",
     "start_date": "2015-12-02",
     "end_date": "2016-08-02"
   },
