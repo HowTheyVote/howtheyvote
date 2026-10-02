@@ -592,10 +592,13 @@ class Export:
                             "label": member.country.label,
                         }
                     )
-                print(member.id)
                 for npm in sorted(
                     member.national_party_memberships, key=lambda npm: npm.start_date
                 ):
+                    # Older memberships are excluded from the export,
+                    # as our data in general starts with term 9.
+                    if npm.start_date < datetime.date(2019, 7, 1):
+                        continue
                     if npm.party.id not in exported_national_party_ids:
                         exported_national_party_ids.add(npm.party.id)
                         national_parties.write_row(
@@ -604,7 +607,7 @@ class Export:
                                 "label": npm.party.label,
                                 "short_label": npm.party.short_label,
                                 "start_date": npm.party.start_date,
-                                "end_date": npm.party.start_date,
+                                "end_date": npm.party.end_date,
                                 "country_code": npm.party.country_code,
                             }
                         )
