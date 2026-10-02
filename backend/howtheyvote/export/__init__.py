@@ -124,7 +124,7 @@ class NationalPartyRow(TypedDict):
 
     start_date: str
 
-    end_date: str
+    end_date: str | None
 
     country_code: str
 

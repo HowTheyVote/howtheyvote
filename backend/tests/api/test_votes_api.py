@@ -989,9 +989,9 @@ def test_votes_api_csv(records, api):
     assert res.headers["Content-Type"] == "text/csv"
 
     expected = (
-        "position,member.id,member.first_name,member.last_name,member.country.code,member.country.label,member.country.iso_alpha_2,member.group.code,member.group.label,member.group.short_label\r\n"
-        "VotePosition.FOR,1,John,Doe,FRA,France,FR,GUE_NGL,The Left in the European Parliament,The Left\r\n"
-        "VotePosition.AGAINST,2,Jane,Smith,DEU,Germany,DE,EPP,European People’s Party,EPP\r\n"
+        "position,member.id,member.first_name,member.last_name,member.country.code,member.country.label,member.country.iso_alpha_2,member.national_party.id,member.national_party.label,member.national_party.short_label,member.group.code,member.group.label,member.group.short_label\r\n"
+        "VotePosition.FOR,1,John,Doe,FRA,France,FR,1496,Parti socialiste,PS,GUE_NGL,The Left in the European Parliament,The Left\r\n"
+        "VotePosition.AGAINST,2,Jane,Smith,DEU,Germany,DE,6771,Christlich Demokratische Union Deutschlands,CDU,EPP,European People’s Party,EPP\r\n"
     )
 
     assert res.text == expected

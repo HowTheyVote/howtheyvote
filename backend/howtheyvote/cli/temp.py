@@ -13,7 +13,7 @@ from ..analysis import (
     VoteGroupsAnalyzer,
 )
 from ..db import Session
-from ..files import vote_sharepic_path, member_sharepic_path
+from ..files import member_sharepic_path, vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
 from ..pipelines import OEILSummariesPipeline
 from ..query import member_active_at, member_has_term
@@ -30,7 +30,7 @@ from ..scrapers import (
     ScrapingError,
     VOTListScraper,
 )
-from ..sharepics import generate_vote_sharepic, generate_member_sharepic
+from ..sharepics import generate_member_sharepic, generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_press_release
 
 log = get_logger(__name__)
@@ -63,6 +63,7 @@ def vote_sharepics(date: datetime.datetime) -> None:
         path = vote_sharepic_path(vote.id)
         path.write_bytes(image)
 
+
 @temp.command()
 @click.option("--term", type=int, required=True)
 def member_sharepics(term: int) -> None:
@@ -80,6 +81,7 @@ def member_sharepics(term: int) -> None:
 
         path = member_sharepic_path(member.id)
         path.write_bytes(image)
+
 
 @temp.command()
 def procedures() -> None:
