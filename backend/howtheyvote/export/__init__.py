@@ -116,29 +116,52 @@ class GroupMembershipRow(TypedDict):
 
 
 class NationalPartyRow(TypedDict):
+    """Each row represents a national party that an MEP belongs to.
+    For each parliamentary term, each national party is listed as a separate entity.
+    This is how the EP Open Data Portal lists the national parties, and we reuse this data."""
+
     id: str
+    """ID of the national party as listed in the EP corporate bodies list"""
 
     label: str
+    """The official name of the party"""
 
     short_label: str
+    """The short label/abbreviation of the party"""
 
     start_date: str
+    """When the party was founded (if founded during a term),
+    otherwise start of the relevant term."""
 
     end_date: str | None
+    """When the party ceased to exist or the relevant term ended. Empty if ongoing."""
 
     country_code: str
+    """Country code from the home country of the party."""
 
 
 class NationalPartyMembershipRow(TypedDict):
+    """Each row represents a membership of an MEP in a national party.
+
+    MEPs can change their national party during the term, i.e., each MEP is part of one or
+    more political groups over the course of a term."""
+
     member_id: int
+    """Member ID"""
 
     national_party_id: str
+    """National Party ID"""
 
     national_party_short_label: str
+    """The abbreviation of the party for convenience"""
 
     start_date: datetime.date
+    """Start of the membership.
+    Either when an MEP became a member of the party or start of the term."""
 
     end_date: datetime.date | None
+    """End of the membership if MEP left or term ended.
+    Empty as long as membership is active."""
 
 
 class VoteRow(TypedDict):
@@ -235,6 +258,8 @@ class MemberVoteRow(TypedDict):
     of the vote. This is not necessarily the MEP’s current political group."""
 
     national_party_short_label: str | None
+    """Short label of the national party that the MEP was part of on the day of the vote.
+    This is not necessarily the MEP's current national party."""
 
 
 class EurovocConceptRow(TypedDict):
