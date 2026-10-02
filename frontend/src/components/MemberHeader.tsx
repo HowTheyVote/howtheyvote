@@ -21,8 +21,9 @@ export default function MemberHeader({ member, size }: MemberHeaderProps) {
             {member.full_name}
           </h1>
           <p>
-            {member.country.label}
             {member.group && ` · ${member.group.label}`}
+            {member.country.label}
+            {member.national_party && ` · ${member.national_party.label}`}
           </p>
         </div>
       </Wrapper>

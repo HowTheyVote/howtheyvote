@@ -1,5 +1,6 @@
 import csv
 import datetime
+from time import sleep
 from typing import Any, NotRequired, TextIO, TypedDict
 
 import click
@@ -7,7 +8,7 @@ import requests
 from structlog import get_logger
 
 from ..data import DATA_DIR, DataclassContainer
-from ..models import Committee, Country, EurovocConcept, Group, OEILSubject
+from ..models import Committee, Country, EurovocConcept, Group, NationalParty, OEILSubject
 
 log = get_logger(__name__)
 
@@ -529,6 +530,79 @@ def load_oeil_subjects(file: TextIO) -> None:
         )
 
     subjects.save()
+
+
+def _load_national_party_info(id: int) -> NationalParty:
+    base_url = "https://data.europarl.europa.eu/api/v2/corporate-bodies"
+    party_url = f"{base_url}/{id}?format=application/ld+json"
+
+    log.info(f"Loading party information for party with id {id}")
+    party_response = requests.get(
+        party_url,
+        timeout=60,
+    ).json()
+
+    content = party_response["data"][0]
+
+    time_period = content["temporal"]
+    start_date = time_period["startDate"]
+    end_date = time_period.get("endDate")
+
+    country_code = content["represents"][0].rsplit("/", 1)[-1]
+
+    return NationalParty(
+        str(id),
+        content["label"],
+        content["prefLabel"]["en"],
+        start_date,
+        end_date,
+        country_code,
+    )
+
+
+@dev.command()
+def load_national_parties() -> None:
+    """Loads a list of national parties as published by the EP Open Data Portal."""
+    retrieved_parties = DataclassContainer(
+        dataclass=NationalParty,
+        file_path=DATA_DIR.joinpath("national_parties.json"),
+        key=lambda national_party: national_party.id,
+    )
+    retrieved_parties.load()
+
+    all_parties_response = requests.get(
+        "https://data.europarl.europa.eu/api/v2/corporate-bodies",
+        params={
+            "body-classification": "NATIONAL_POLITICAL_GROUP",
+            "format": "application/ld+json",
+        },
+        timeout=60,
+    ).json()
+    all_parties = all_parties_response["data"]
+    log.info(f"Got data for {len(all_parties)} national parties from ODP")
+
+    # We need to retrieve info for parties that we do not yet have locally.
+    # As we do not know for sure how renamings are handled by the ODP,
+    # also rescrape info for active parties.
+    party_identifier_to_scrape = [
+        party["identifier"]
+        for party in all_parties
+        if (retrieved := retrieved_parties.get(party["identifier"])) is None
+        or retrieved.end_date is None
+    ]
+    log.info(
+        f"Scraping data for {len(party_identifier_to_scrape)} "
+        "parties which are new or still active."
+    )
+    for identifier in party_identifier_to_scrape:
+        try:
+            party_info = _load_national_party_info(id=identifier)
+            # TODO: This should instead properly respect any 429 status codes.
+            # See: https://github.com/HowTheyVote/howtheyvote/issues/1561
+            sleep(1)
+            retrieved_parties.add(party_info)
+        finally:
+            retrieved_parties.save()
 
 
 def exec_sparql_query(endpoint: str, query: str) -> Any:

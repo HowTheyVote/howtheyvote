@@ -1,5 +1,5 @@
 from .common import NoWorkingUrlError, RequestCache, ScrapingError
-from .members import MemberGroupsScraper, MemberInfoScraper, MembersScraper
+from .members import MemberGroupsScraper, MemberInfoScraper, MembersScraper, ODPMemberScraper
 from .oeil_summaries import (
     OEILSummaryIDScraper,
     OEILSummaryScraper,
@@ -31,6 +31,8 @@ __all__ = [
     "ODPSessionScraper",
     "ODPDocumentScraper",
     "ODPProcedureScraper",
+    "ODPMemberScraper",
+    "ODPNationalPartyScraper",
     "ProcedureScraper",
     "RCVListScraper",
     "RCVListEnglishScraper",

@@ -13,14 +13,15 @@ from ..analysis import (
     VoteGroupsAnalyzer,
 )
 from ..db import Session
-from ..files import vote_sharepic_path
+from ..files import member_sharepic_path, vote_sharepic_path
 from ..models import Fragment, Member, PlenarySession, PressRelease, Vote
 from ..pipelines import OEILSummariesPipeline
-from ..query import member_active_at
+from ..query import member_active_at, member_has_term
 from ..scrapers import (
     DocumentScraper,
     NoWorkingUrlError,
     ODPDocumentScraper,
+    ODPMemberScraper,
     ODPProcedureScraper,
     PressReleaseScraper,
     ProcedureScraper,
@@ -29,7 +30,7 @@ from ..scrapers import (
     ScrapingError,
     VOTListScraper,
 )
-from ..sharepics import generate_vote_sharepic
+from ..sharepics import generate_member_sharepic, generate_vote_sharepic
 from ..store import Aggregator, BulkWriter, index_records, map_press_release
 
 log = get_logger(__name__)
@@ -43,7 +44,7 @@ def temp() -> None:
 
 @temp.command()
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), default=None)
-def sharepics(date: datetime.datetime) -> None:
+def vote_sharepics(date: datetime.datetime) -> None:
     """Generate share pictures for all votes, or votes held on --date when specified."""
     query = select(Vote)
 
@@ -60,6 +61,25 @@ def sharepics(date: datetime.datetime) -> None:
             continue
 
         path = vote_sharepic_path(vote.id)
+        path.write_bytes(image)
+
+
+@temp.command()
+@click.option("--term", type=int, required=True)
+def member_sharepics(term: int) -> None:
+    """Generate share pictures for all members of a given term."""
+    query = select(Member).where(member_has_term(term))
+
+    members = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+
+    for member in members:
+        try:
+            image = generate_member_sharepic(member.id)
+        except Exception:
+            log.info("Failed generating sharepic", member_id=member.id)
+            continue
+
+        path = member_sharepic_path(member.id)
         path.write_bytes(image)
 
 
@@ -377,4 +397,19 @@ def press_releases() -> None:
             Session.execute(select(Vote).where(func.date(Vote.timestamp) == date)).scalars()
         )
         writer.add(PressReleaseAnalyzer(votes, releases).run())
+        writer.flush()
+
+
+@temp.command()
+def parties() -> None:
+    """Load national party memberships."""
+    writer = BulkWriter()
+
+    members = Session.execute(select(Member), execution_options={"yield_per": 20}).scalars()
+
+    for partition in members.partitions():
+        for member in partition:
+            scraper = ODPMemberScraper(web_id=member.id)
+            writer.add(scraper.run())
+
         writer.flush()

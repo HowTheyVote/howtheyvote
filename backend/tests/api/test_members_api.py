@@ -69,6 +69,7 @@ def test_members_api_show(api, db_session):
             "label": "The Left in the European Parliament",
             "short_label": "The Left",
         },
+        "national_party": None,
         "photo_url": "/files/members/1.jpg",
         "thumb_url": "/files/members/1-104.jpg",
         "sharepic_url": "/files/members/sharepic-1.png",
