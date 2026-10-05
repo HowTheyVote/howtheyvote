@@ -132,10 +132,7 @@ def test_export_members(db_session, tmp_path):
 
     party_memberships_csv = tmp_path.joinpath("national_party_memberships.csv")
 
-    expected = (
-        "member_id,national_party_id,national_party_short_label,start_date,end_date\n"
-        "123,6771,CDU,2022-01-01,\n"
-    )
+    expected = "member_id,national_party_id,start_date,end_date\n123,6771,2022-01-01,\n"
 
     assert party_memberships_csv.read_text() == expected
 
@@ -244,7 +241,7 @@ def test_export_votes(db_session, tmp_path):
     member_votes_csv = tmp_path.joinpath("member_votes.csv")
     member_votes_meta = tmp_path.joinpath("member_votes.csv-metadata.json")
 
-    expected = "vote_id,member_id,position,country_code,group_code,national_party_short_label\n123456,123,FOR,DEU,EPP,CDU\n"
+    expected = "vote_id,member_id,position,country_code,group_code,group_short_label,national_party_id,national_party_short_label\n123456,123,FOR,DEU,EPP,EPP,6771,CDU\n"
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
@@ -398,9 +395,9 @@ def test_export_votes_country_group(db_session, tmp_path):
     member_votes_csv = tmp_path.joinpath("member_votes.csv")
 
     expected = (
-        "vote_id,member_id,position,country_code,group_code,national_party_short_label\n"
-        "123456,123,FOR,DEU,EPP,CDU\n"
-        "654321,123,FOR,DEU,RENEW,FDP\n"
+        "vote_id,member_id,position,country_code,group_code,group_short_label,national_party_id,national_party_short_label\n"
+        "123456,123,FOR,DEU,EPP,EPP,6771,CDU\n"
+        "654321,123,FOR,DEU,RENEW,Renew,5198,FDP\n"
     )
 
     assert member_votes_csv.read_text() == expected

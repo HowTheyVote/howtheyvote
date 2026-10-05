@@ -152,9 +152,6 @@ class NationalPartyMembershipRow(TypedDict):
     national_party_id: str
     """National Party ID"""
 
-    national_party_short_label: str
-    """The abbreviation of the party for convenience"""
-
     start_date: datetime.date
     """Start of the membership.
     Either when an MEP became a member of the party or start of the term."""
@@ -256,6 +253,14 @@ class MemberVoteRow(TypedDict):
     group_code: str | None
     """Group code. This references the political group that the MEP was part of on the day
     of the vote. This is not necessarily the MEP’s current political group."""
+
+    group_short_label: str | None
+    """Short label of the political group that the MEP was part of on the day
+    of the vote. This is not necessarily the MEP’s current political group."""
+
+    national_party_id: str | None
+    """National party ID. This references the national party that the MEP was part of on
+    the day of the vote. This is not necessarily the MEP’s current political group."""
 
     national_party_short_label: str | None
     """Short label of the national party that the MEP was part of on the day of the vote.
@@ -641,7 +646,6 @@ class Export:
                         {
                             "member_id": member.id,
                             "national_party_id": npm.party.id,
-                            "national_party_short_label": npm.party.short_label,
                             "start_date": npm.start_date,
                             "end_date": npm.end_date,
                         }
@@ -795,6 +799,8 @@ class Export:
                             # this is super handy to calculate stats by group/country.
                             "country_code": member.country.code,
                             "group_code": group.code if group else None,
+                            "group_short_label": group.short_label if group else None,
+                            "national_party_id": national_party.id if national_party else None,
                             "national_party_short_label": national_party.short_label
                             if national_party
                             else None,
