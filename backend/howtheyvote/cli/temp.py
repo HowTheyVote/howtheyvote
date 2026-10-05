@@ -19,6 +19,7 @@ from ..pipelines import OEILSummariesPipeline
 from ..query import member_active_at, member_has_term
 from ..scrapers import (
     DocumentScraper,
+    MissingODPMembershipOrganizationError,
     NoWorkingUrlError,
     ODPDocumentScraper,
     ODPMemberScraper,
@@ -409,7 +410,13 @@ def parties() -> None:
 
     for partition in members.partitions():
         for member in partition:
-            scraper = ODPMemberScraper(web_id=member.id)
-            writer.add(scraper.run())
+            try:
+                scraper = ODPMemberScraper(web_id=member.id)
+                writer.add(scraper.run())
+            except MissingODPMembershipOrganizationError:
+                log.exception(
+                    "Party-membership without organization key found.",
+                    member_id=member.id,
+                )
 
         writer.flush()

@@ -13,10 +13,12 @@ from ..files import (
     member_sharepic_path,
 )
 from ..models import Member
+from ..pushover import send_notification
 from ..scrapers import (
     MemberGroupsScraper,
     MemberInfoScraper,
     MembersScraper,
+    MissingODPMembershipOrganizationError,
     ODPMemberScraper,
     ScrapingError,
 )
@@ -62,9 +64,20 @@ class MembersPipeline(BasePipeline):
         writer = BulkWriter()
 
         for member in self._members():
-            scraper = ODPMemberScraper(web_id=member.id)
-            writer.add(scraper.run())
-
+            try:
+                scraper = ODPMemberScraper(web_id=member.id)
+                writer.add(scraper.run())
+            except MissingODPMembershipOrganizationError as err:
+                send_notification(
+                    title="Party-membership without organization key found.",
+                    message=f"For MEP ID {member.id}",
+                )
+                log.exception(
+                    "Party-membership without organization key found.",
+                    member_id=member.id,
+                    term=self.term,
+                )
+                sentry_sdk.capture_exception(err)
         writer.flush()
 
     def _scrape_member_groups(self) -> None:

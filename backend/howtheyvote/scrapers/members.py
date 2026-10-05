@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup, Tag
 from structlog import get_logger
 
 from ..models import Country, Fragment, Group, Member
-from ..pushover import send_notification
 from .common import BeautifulSoupScraper, JSONScraper, RequestCache, ScrapingError
 from .helpers import parse_full_name
 
@@ -254,6 +253,10 @@ class MemberGroupsScraper(BeautifulSoupScraper):
         return start.date(), end.date()
 
 
+class MissingODPMembershipOrganizationError(ScrapingError):
+    pass
+
+
 class ODPMemberScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/meps"
     REQUEST_TIMEOUT = 60
@@ -274,11 +277,7 @@ class ODPMemberScraper(JSONScraper):
             if ms.get("membershipClassification") == "def/ep-entities/NATIONAL_POLITICAL_GROUP"
         ]
 
-        party_memberships = [
-            party_membership
-            for np in national_parties
-            if (party_membership := self._party_membership(np)) is not None
-        ]
+        party_memberships = [self._party_membership(np) for np in national_parties]
 
         return self._fragment(
             model=Member,
@@ -287,7 +286,7 @@ class ODPMemberScraper(JSONScraper):
             data={"national_party_memberships": party_memberships},
         )
 
-    def _party_membership(self, membership: dict[str, Any]) -> dict[str, Any] | None:
+    def _party_membership(self, membership: dict[str, Any]) -> dict[str, Any]:
         time_period = membership.get("memberDuring")
         if time_period is None:
             raise ScrapingError("Invalid National Party Date from ODP.")
@@ -299,14 +298,11 @@ class ODPMemberScraper(JSONScraper):
         )
 
         # In some cases we have active memberships for which the organization is not known.
-        # We do not store them, but inform us to possibly inquire about them.
+        # We do not store them.
         if membership.get("organization") is None:
-            send_notification(
-                title="Party-membership without organization key found.",
-                message=f"For MEP ID {self.web_id}",
-                url=self._url(),
+            raise MissingODPMembershipOrganizationError(
+                f"Missing organization for MEP {self.web_id}"
             )
-            return None
 
         party_id = membership["organization"].split("/", 1)[1]
 
