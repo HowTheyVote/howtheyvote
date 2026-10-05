@@ -57,3 +57,9 @@ class DataclassContainer[T: DeserializableDataclass]:
 
     def __iter__(self) -> Iterator[T]:
         return iter(self.index.values())
+
+    def __getitem__(self, key: str) -> T:
+        return self.index[key.lower()]
+
+    def __contains__(self, key: str) -> bool:
+        return key in self.index

@@ -587,8 +587,10 @@ def load_national_parties() -> None:
     party_identifier_to_scrape = [
         party["identifier"]
         for party in all_parties
-        if (retrieved := retrieved_parties.get(party["identifier"])) is None
-        or retrieved.end_date is None
+        if (
+            party["identifier"] not in retrieved_parties
+            or retrieved_parties[party["identifier"]].end_date is None
+        )
     ]
     log.info(
         f"Scraping data for {len(party_identifier_to_scrape)} "
