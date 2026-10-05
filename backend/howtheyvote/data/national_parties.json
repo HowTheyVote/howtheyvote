@@ -13177,7 +13177,7 @@
   },
   {
     "id": "6850",
-    "short_label": "BSW",
+    "short_label": "B\u00fcndnis Sahra",
     "label": "B\u00fcndnis Sahra Wagenknecht \u2013 Vernunft und Gerechtigkeit",
     "start_date": "2024-07-16",
     "end_date": null,
@@ -14994,7 +14994,7 @@
   {
     "id": "8001",
     "short_label": "PRO",
-    "label": "Progressief Nederland",
+    "label": "Netherlands - PRO Europa",
     "start_date": "2026-06-13",
     "end_date": null,
     "country_code": "NLD"
@@ -15014,6 +15014,14 @@
     "start_date": "2026-07-12",
     "end_date": null,
     "country_code": "POL"
+  },
+  {
+    "id": "8006",
+    "short_label": "BSW",
+    "label": "B\u00fcndnis Soziale Gerechtigkeit und Wirtschaftliche Vernunft",
+    "start_date": "2026-10-01",
+    "end_date": null,
+    "country_code": "DEU"
   },
   {
     "id": "802",
