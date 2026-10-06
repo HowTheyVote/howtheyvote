@@ -528,6 +528,7 @@ class Export:
                 self.countries,
                 self.groups,
                 self.group_memberships,
+                self.national_parties,
                 self.national_party_memberships,
                 self.votes,
                 self.member_votes,
