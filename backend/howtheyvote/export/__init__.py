@@ -260,7 +260,7 @@ class MemberVoteRow(TypedDict):
 
     national_party_id: str | None
     """National party ID. This references the national party that the MEP was part of on
-    the day of the vote. This is not necessarily the MEP’s current political group."""
+    the day of the vote. This is not necessarily the MEP’s current national party."""
 
     national_party_short_label: str | None
     """Short label of the national party that the MEP was part of on the day of the vote.
@@ -365,7 +365,7 @@ class AmendmentAuthorVoteRow(TypedDict):
     """Vote ID"""
 
     author_type: str
-    """Either `GROUP, `COMMITTEE`, `MEMBERS`, `ORALLY`, `ORIGINAL_TEXT`, or `RAPPORTEUR`"""
+    """Either `GROUP`, `COMMITTEE`, `MEMBERS`, `ORALLY`, `ORIGINAL_TEXT`, or `RAPPORTEUR`"""
 
     group_code: str
     """Group code, if applicable."""
