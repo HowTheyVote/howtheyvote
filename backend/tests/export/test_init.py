@@ -13,6 +13,8 @@ from howtheyvote.models import (
     GroupMembership,
     Member,
     MemberVote,
+    NationalParty,
+    NationalPartyMembership,
     OEILSubject,
     ProcedureStage,
     Vote,
@@ -60,6 +62,20 @@ def test_export_members(db_session, tmp_path):
                 end_date=None,
             ),
         ],
+        national_party_memberships=[
+            NationalPartyMembership(
+                start_date=datetime.date(2022, 1, 1),
+                end_date=None,
+                party=NationalParty(
+                    id="6771",
+                    short_label="CDU",
+                    label="Christlich Demokratische Union Deutschlands",
+                    start_date=datetime.date(2024, 7, 16),
+                    end_date=None,
+                    country_code="DEU",
+                ),
+            )
+        ],
     )
     db_session.add(member)
     db_session.commit()
@@ -105,6 +121,21 @@ def test_export_members(db_session, tmp_path):
     assert group_memberships_csv.read_text() == expected
     assert group_memberships_meta.is_file()
 
+    parties_csv = tmp_path.joinpath("national_parties.csv")
+
+    expected = (
+        "id,label,short_label,start_date,end_date,country_code\n"
+        "6771,Christlich Demokratische Union Deutschlands,CDU,2024-07-16,,DEU\n"
+    )
+
+    assert parties_csv.read_text() == expected
+
+    party_memberships_csv = tmp_path.joinpath("national_party_memberships.csv")
+
+    expected = "member_id,national_party_id,start_date,end_date\n123,6771,2022-01-01,\n"
+
+    assert party_memberships_csv.read_text() == expected
+
 
 def test_export_votes(db_session, tmp_path):
     member = Member(
@@ -120,6 +151,20 @@ def test_export_votes(db_session, tmp_path):
                 start_date=datetime.date(2024, 1, 1),
                 end_date=None,
             ),
+        ],
+        national_party_memberships=[
+            NationalPartyMembership(
+                start_date=datetime.date(2022, 1, 1),
+                end_date=None,
+                party=NationalParty(
+                    id="6771",
+                    short_label="CDU",
+                    label="Christlich Demokratische Union Deutschlands",
+                    start_date=datetime.date(2024, 7, 16),
+                    end_date=None,
+                    country_code="DEU",
+                ),
+            )
         ],
     )
 
@@ -196,7 +241,7 @@ def test_export_votes(db_session, tmp_path):
     member_votes_csv = tmp_path.joinpath("member_votes.csv")
     member_votes_meta = tmp_path.joinpath("member_votes.csv-metadata.json")
 
-    expected = "vote_id,member_id,position,country_code,group_code\n123456,123,FOR,DEU,EPP\n"
+    expected = "vote_id,member_id,position,country_code,group_code,group_short_label,national_party_id,national_party_short_label\n123456,123,FOR,DEU,EPP,EPP,6771,CDU\n"
 
     assert member_votes_csv.read_text() == expected
     assert member_votes_meta.is_file()
@@ -289,6 +334,32 @@ def test_export_votes_country_group(db_session, tmp_path):
                 end_date=None,
             ),
         ],
+        national_party_memberships=[
+            NationalPartyMembership(
+                start_date=datetime.date(2022, 1, 1),
+                end_date=datetime.date(2024, 1, 31),
+                party=NationalParty(
+                    id="6771",
+                    short_label="CDU",
+                    label="Christlich Demokratische Union Deutschlands",
+                    start_date=datetime.date(2019, 7, 2),
+                    end_date=datetime.date(2024, 7, 15),
+                    country_code="DEU",
+                ),
+            ),
+            NationalPartyMembership(
+                start_date=datetime.date(2024, 2, 1),
+                end_date=None,
+                party=NationalParty(
+                    id="5198",
+                    short_label="FDP",
+                    label="Freie Demokratische Partei",
+                    start_date=datetime.date(2019, 7, 2),
+                    end_date=datetime.date(2024, 7, 15),
+                    country_code="DEU",
+                ),
+            ),
+        ],
     )
 
     one = Vote(
@@ -324,9 +395,9 @@ def test_export_votes_country_group(db_session, tmp_path):
     member_votes_csv = tmp_path.joinpath("member_votes.csv")
 
     expected = (
-        "vote_id,member_id,position,country_code,group_code\n"
-        "123456,123,FOR,DEU,EPP\n"
-        "654321,123,FOR,DEU,RENEW\n"
+        "vote_id,member_id,position,country_code,group_code,group_short_label,national_party_id,national_party_short_label\n"
+        "123456,123,FOR,DEU,EPP,EPP,6771,CDU\n"
+        "654321,123,FOR,DEU,RENEW,Renew,5198,FDP\n"
     )
 
     assert member_votes_csv.read_text() == expected

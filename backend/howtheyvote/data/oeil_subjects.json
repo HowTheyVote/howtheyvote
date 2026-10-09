@@ -2270,6 +2270,16 @@
     "parent_code": "8.70"
   },
   {
+    "code": "9",
+    "label": "Other topics",
+    "parent_code": ""
+  },
+  {
+    "code": "9.10",
+    "label": "Moral and spiritual leadership, religious figures",
+    "parent_code": "9"
+  },
+  {
     "code": "Total",
     "label": "",
     "parent_code": ""

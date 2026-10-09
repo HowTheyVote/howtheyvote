@@ -10,6 +10,7 @@ from ..files import member_photo_url, member_sharepic_url
 from .common import BaseWithId
 from .country import Country, CountryType
 from .group import Group
+from .national_party import NationalParty
 from .types import DataclassType, ListType
 
 log = get_logger(__name__)
@@ -19,6 +20,13 @@ log = get_logger(__name__)
 class GroupMembership:
     term: int
     group: Group
+    start_date: datetime.date
+    end_date: datetime.date | None
+
+
+@dataclass
+class NationalPartyMembership:
+    party: NationalParty
     start_date: datetime.date
     end_date: datetime.date | None
 
@@ -34,7 +42,9 @@ def serialize_group_membership(group_membership: GroupMembership) -> dict[str, A
     }
 
 
-def deserialize_group_membership(group_membership: dict[str, Any]) -> GroupMembership:
+def deserialize_group_membership(
+    group_membership: dict[str, Any],
+) -> GroupMembership:
     end_date = group_membership.get("end_date")
 
     return GroupMembership(
@@ -51,6 +61,36 @@ GroupMembershipType = DataclassType(
 )
 
 
+def serialize_national_party_membership(
+    party_membership: NationalPartyMembership,
+) -> dict[str, Any]:
+    return {
+        "party": party_membership.party.id,
+        "start_date": party_membership.start_date.isoformat(),
+        "end_date": party_membership.end_date.isoformat()
+        if party_membership.end_date
+        else None,
+    }
+
+
+def deserialize_national_party_membership(
+    national_party_membership: dict[str, Any],
+) -> NationalPartyMembership:
+    end_date = national_party_membership.get("end_date")
+
+    return NationalPartyMembership(
+        start_date=datetime.date.fromisoformat(national_party_membership["start_date"]),
+        end_date=datetime.date.fromisoformat(end_date) if end_date else None,
+        party=NationalParty[national_party_membership["party"]],
+    )
+
+
+NationalPartyMembershipType = DataclassType(
+    serialize_national_party_membership,
+    deserialize_national_party_membership,
+)
+
+
 class Member(BaseWithId):
     __tablename__ = "members"
 
@@ -60,6 +100,9 @@ class Member(BaseWithId):
     country: Mapped[Country] = mapped_column(CountryType)
     group_memberships: Mapped[list[GroupMembership]] = mapped_column(
         ListType(GroupMembershipType)
+    )
+    national_party_memberships: Mapped[list[NationalPartyMembership]] = mapped_column(
+        ListType(NationalPartyMembershipType)
     )
     date_of_birth: Mapped[datetime.date | None] = mapped_column(sa.Date)
     terms: Mapped[list[int]] = mapped_column(sa.JSON, default=[])
@@ -76,6 +119,21 @@ class Member(BaseWithId):
                 not group_membership.end_date or group_membership.end_date >= date
             ):
                 return group_membership.group
+
+        return None
+
+    def national_party_at(
+        self, date: datetime.date | datetime.datetime
+    ) -> NationalParty | None:
+        if isinstance(date, datetime.datetime):
+            date = date.date()
+
+        for national_party_membership in self.national_party_memberships or []:
+            if national_party_membership.start_date <= date and (
+                not national_party_membership.end_date
+                or national_party_membership.end_date >= date
+            ):
+                return national_party_membership.party
 
         return None
 

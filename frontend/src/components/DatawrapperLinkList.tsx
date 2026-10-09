@@ -223,7 +223,7 @@ function populateConfigForMembers(
 
   const metadata: Record<string, object> = {};
 
-  // Hide a bunch of columns that aren’t relevant for the visualization
+  // Hide all data columns as we visualize only derived ones below
   metadata.data = {
     "column-format": {
       position: {
@@ -256,6 +256,15 @@ function populateConfigForMembers(
       "member.country.iso_alpha_2": {
         ignore: true,
       },
+      "member.national_party.id": {
+        ignore: true,
+      },
+      "member.national_party.label": {
+        ignore: true,
+      },
+      "member.national_party.short_label": {
+        ignore: true,
+      },
     },
   };
 
@@ -273,7 +282,7 @@ function populateConfigForMembers(
         name: "MEP",
         formula: `CONCAT(
           '<b>', memberfirst_name, ' ', memberlast_name, '</b><br />',
-          '<span style="opacity:0.75">', membergroupshort_label, ' · ', membercountrylabel, '</span>'
+          '<span style="opacity:0.75">', membergroupshort_label, ' · ', membercountrylabel, ' · ', membernational_partyshort_label,'</span>'
         )`,
       },
       {

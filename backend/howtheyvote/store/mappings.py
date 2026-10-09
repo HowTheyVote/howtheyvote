@@ -17,6 +17,7 @@ from ..models import (
     deserialize_amendment_url,
     deserialize_group_membership,
     deserialize_member_vote,
+    deserialize_national_party_membership,
 )
 from .aggregator import CompositeRecord
 
@@ -31,6 +32,9 @@ def map_member(record: CompositeRecord) -> Member:
         date_of_birth=record.get("date_of_birth", type=datetime.date.fromisoformat),
         terms=record.getlist("term"),
         group_memberships=record.chain("group_memberships", type=deserialize_group_membership),
+        national_party_memberships=record.chain(
+            "national_party_memberships", type=deserialize_national_party_membership
+        ),
         email=record.get("email"),
         facebook=record.get("facebook"),
         twitter=record.get("twitter"),
