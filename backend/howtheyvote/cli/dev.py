@@ -506,6 +506,7 @@ def _extract_oeil_subjects(parent: str, facets: list[dict[str, Any]]) -> list[OE
         match = re.match(r"^(?P<code>\d+(?:\.\d+)*)\s+(?P<label>.*)$", facet["value"])
 
         if facet["value"] == "":
+            # This is the "All subjects" option
             continue
 
         if match is None:
@@ -520,10 +521,10 @@ def _extract_oeil_subjects(parent: str, facets: list[dict[str, Any]]) -> list[OE
         subjects.append(subject)
 
         if facet["type"] == "group":
+            # Subjects are returned by the OEIL as a tree structure, but we store them as a
+            # flat list, so we walk the tree recursively to flatten it.
             children = facet["children"]
-
-            if isinstance(children, list):
-                subjects.extend(_extract_oeil_subjects(subject.code, children))
+            subjects.extend(_extract_oeil_subjects(subject.code, children))
 
     return subjects
 
@@ -537,10 +538,7 @@ def load_oeil_subjects() -> None:
         key=lambda subject: subject.code,
     )
 
-    response = requests.get(
-        "https://oeil.europarl.europa.eu/oeil/en/search/facets",
-        timeout=60,
-    )
+    response = requests.get("https://oeil.europarl.europa.eu/oeil/en/search/facets")
     response.raise_for_status()
     facets = response.json()
 

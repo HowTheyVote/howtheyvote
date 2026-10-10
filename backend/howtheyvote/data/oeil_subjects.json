@@ -475,6 +475,11 @@
     "parent_code": "3.15"
   },
   {
+    "code": "3.15.18",
+    "label": "European Maritime, Fisheries and Aquaculture Fund (EMFAF)",
+    "parent_code": "3.15"
+  },
+  {
     "code": "3.20",
     "label": "Transport policy in general",
     "parent_code": "3"
@@ -1631,7 +1636,7 @@
   },
   {
     "code": "6.40.05.08",
-    "label": "Relations with Turkey",
+    "label": "Relations with T\u00fcrkiye",
     "parent_code": "6.40.05"
   },
   {
@@ -2150,26 +2155,6 @@
     "parent_code": "8.70.03"
   },
   {
-    "code": "8.70.03.16",
-    "label": "2026 discharge",
-    "parent_code": "8.70.03"
-  },
-  {
-    "code": "8.70.03.17",
-    "label": "2027 discharge",
-    "parent_code": "8.70.03"
-  },
-  {
-    "code": "8.70.03.18",
-    "label": "2028 discharge",
-    "parent_code": "8.70.03"
-  },
-  {
-    "code": "8.70.03.19",
-    "label": "2029 discharge",
-    "parent_code": "8.70.03"
-  },
-  {
     "code": "8.70.04",
     "label": "Protecting financial interests of the EU against fraud",
     "parent_code": "8.70"
@@ -2177,21 +2162,6 @@
   {
     "code": "8.70.40",
     "label": "Basic budgetary texts",
-    "parent_code": "8.70"
-  },
-  {
-    "code": "8.70.44",
-    "label": "2030 budget",
-    "parent_code": "8.70"
-  },
-  {
-    "code": "8.70.45",
-    "label": "2029 budget",
-    "parent_code": "8.70"
-  },
-  {
-    "code": "8.70.46",
-    "label": "2028 budget",
     "parent_code": "8.70"
   },
   {
@@ -2278,10 +2248,5 @@
     "code": "9.10",
     "label": "Moral and spiritual leadership, religious figures",
     "parent_code": "9"
-  },
-  {
-    "code": "Total",
-    "label": "",
-    "parent_code": ""
   }
 ]
