@@ -1,7 +1,7 @@
-import csv
 import datetime
+import re
 from time import sleep
-from typing import Any, NotRequired, TextIO, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 import click
 import requests
@@ -499,35 +499,56 @@ def _load_alt_labels(group_code: str) -> set[str]:
     return set(r["label"]["value"] for r in results)
 
 
-@dev.command()
-@click.argument("file", type=click.File("r"))
-def load_oeil_subjects(file: TextIO) -> None:
-    """Loads a list of procedure subjects as used by the Legislative Observatory. A
-    list of all subjects is provided as a PDF file on the OEIL website[^1]. Alternatively,
-    an Excel version can be requested by contacting the OEIL webmaster. Convert the list
-    to a CSV file with the columns "Code", "Parent", "Description", then run this command
-    to load it into HowTheyVote.
+def _extract_oeil_subjects(parent: str, facets: list[dict[str, Any]]) -> list[OEILSubject]:
+    subjects: list[OEILSubject] = []
 
-    [^1]: https://oeil.europarl.europa.eu/oeil/en/find-out-more#widget5
-    """
+    for facet in facets:
+        match = re.match(r"^(?P<code>\d+(?:\.\d+)*)\s+(?P<label>.*)$", facet["value"])
+
+        if facet["value"] == "":
+            continue
+
+        if match is None:
+            raise Exception(f"Invalid facet value: {facet['value']}")
+
+        subject = OEILSubject(
+            code=match.group("code"),
+            label=match.group("label"),
+            parent_code=parent,
+        )
+
+        subjects.append(subject)
+
+        if facet["type"] == "group":
+            children = facet["children"]
+
+            if isinstance(children, list):
+                subjects.extend(_extract_oeil_subjects(subject.code, children))
+
+    return subjects
+
+
+@dev.command()
+def load_oeil_subjects() -> None:
+    """Loads a list of procedure subjects as used by the Legislative Observatory."""
     subjects = DataclassContainer(
         dataclass=OEILSubject,
         file_path=DATA_DIR.joinpath("oeil_subjects.json"),
         key=lambda subject: subject.code,
     )
 
-    dialect = csv.Sniffer().sniff(file.read(), delimiters=",;")
-    file.seek(0)
-    reader = csv.DictReader(file, dialect=dialect)
+    response = requests.get(
+        "https://oeil.europarl.europa.eu/oeil/en/search/facets",
+        timeout=60,
+    )
+    response.raise_for_status()
+    facets = response.json()
 
-    for row in reader:
-        subjects.add(
-            OEILSubject(
-                code=row["Code"],
-                label=row["Description"],
-                parent_code=row["Parent"],
-            )
-        )
+    field = next(field for field in facets["fields"] if field.get("name") == "subject")
+    values = field["availableValues"]
+
+    for subject in _extract_oeil_subjects("", values):
+        subjects.add(subject)
 
     subjects.save()
 
