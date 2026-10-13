@@ -66,6 +66,13 @@
   height: 100%;
 }
 
+.card__subtitle {
+  margin-block-start: var(--space-xxs);
+  color: var(--color-text-light);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
 .card__meta {
   display: flex;
   flex-wrap: wrap;
