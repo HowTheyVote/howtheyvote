@@ -68,6 +68,7 @@
 
 .card__subtitle {
   color: var(--color-text-light);
+  overflow-wrap: anywhere;
 }
 
 .card__meta {
