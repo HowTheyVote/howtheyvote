@@ -190,8 +190,8 @@ export const VotePage: Page<Vote> = ({ data }) => {
               <p>
                 We provide raw voting data for this vote that you can use for
                 data analysis, visualizations, or research. Read more about{" "}
-                <a href="/about#license">our data license</a> or download data
-                in <a href={csvUrl}>CSV format</a> or{" "}
+                <a href="/data#license">our data license</a> or download data in{" "}
+                <a href={csvUrl}>CSV format</a> or{" "}
                 <a href={jsonUrl}>JSON format</a>.
               </p>
             </Wrapper>

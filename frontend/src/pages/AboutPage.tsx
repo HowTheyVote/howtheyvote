@@ -35,7 +35,6 @@ export const AboutPage: Page<Statistics> = ({ data }) => {
               <PageNavItem href="#general">General</PageNavItem>
               <PageNavItem href="#methodology">Methodology</PageNavItem>
               <PageNavItem href="#data">Use the data</PageNavItem>
-              <PageNavItem href="#license">License</PageNavItem>
               <PageNavItem href="#related-work">Related work</PageNavItem>
               <PageNavItem href="#funding">Funding & sponsors</PageNavItem>
             </PageNav>
@@ -60,7 +59,6 @@ export const AboutPage: Page<Statistics> = ({ data }) => {
                 <GeneralSection />
                 <MethodologySection />
                 <ReuseSection />
-                <LicenseSection />
                 <RelatedSection />
                 <FundingSection />
                 <ContactSection />
@@ -260,12 +258,12 @@ function ReuseSection() {
       </h2>
       <Disclosure title="I’m a journalist, researcher, or activist. Can I use your data?">
         <p>
-          Yes! We provide access to the HowTheyVote.eu data under an open
-          license. If you use data published by HowTheyVote.eu please make sure
-          you’ve read the <a href="#license">license terms</a> and provide
-          proper attribution. If you publish your work, we'd appreciate if you
-          could share a copy or link with us! We are always curious to see how
-          others use voting data.
+          Yes! We provide the HowTheyVote.eu data under an open license. Our{" "}
+          <a href="/data">Open Data page</a> explains how to get access. Please
+          read the <a href="/data#license">license terms</a> and provide proper
+          attribution. If you publish your work, we’d appreciate if you could
+          share a copy or link with us! We are always curious to see how others
+          use voting data.
         </p>
       </Disclosure>
       <Disclosure title="How should I cite HowTheyVote.eu?">
@@ -273,7 +271,8 @@ function ReuseSection() {
           You can cite HowTheyVote.eu in the same way you would cite any other
           online resource or dataset. If you use data published by
           HowTheyVote.eu please make sure you’ve read the{" "}
-          <a href="#license">license terms</a> and provide proper attribution.
+          <a href="/data#license">license terms</a> and provide proper
+          attribution.
         </p>
       </Disclosure>
       <Disclosure title="How can I download the data?">
@@ -281,53 +280,20 @@ function ReuseSection() {
           We currently provide multiple different ways to download data from
           HowTheyVote.eu. Data for individual votes can be downloaded in JSON
           and CSV formats using the links on vote pages on HowTheyVote.eu. We
-          also provide an <a href="/developers">experimental API</a>. A
-          regularly updated export of our dataset can also be found on{" "}
-          <a href="https://github.com/howTheyVote/data">GitHub</a>.
+          also provide an API and bulk downloads. Our{" "}
+          <a href="/data">Open Data page</a> explains the different options to
+          access the data.
         </p>
       </Disclosure>
       <Disclosure title="Can I download all available data at once?">
         <p>
           Yes, we publish a weekly updated export of our dataset and
-          documentation of the data schema on{" "}
-          <a href="https://github.com/howTheyVote/data">GitHub</a>. If you have
-          any feedback or questions, please contact us using the email address
-          below.
+          documentation of the data schema. Our{" "}
+          <a href="/data">Open Data page</a> explains how to get access. If you
+          have any feedback or questions, please contact us using the email
+          address below.
         </p>
       </Disclosure>
-    </div>
-  );
-}
-
-function LicenseSection() {
-  return (
-    <div class="prose">
-      <h3 id="license" class="delta">
-        License
-      </h3>
-      <p>
-        The voting data made available via downloads and the HowTheyVote.eu API
-        is made available under the{" "}
-        <a href="http://opendatacommons.org/licenses/odbl/1.0/">
-          Open Database License
-        </a>
-        . Any rights in individual contents of the database are licensed under
-        the{" "}
-        <a href="http://opendatacommons.org/licenses/dbcl/1.0/">
-          Database Contents License
-        </a>
-        , unless otherwise noted.
-      </p>
-      <p>
-        In particular, photos (including thumbnails) of MEPs and vote summaries
-        are <strong>not</strong> covered by the Database Contents License. These
-        contents are sourced from the official website of the European
-        Parliament. Please refer to the respective{" "}
-        <a href="https://www.europarl.europa.eu/legal-notice/en/">
-          copyright notice
-        </a>
-        .
-      </p>
     </div>
   );
 }
