@@ -134,7 +134,15 @@ export const OpenDataPage: Page = () => {
                       it as well? We’d love to hear from you!
                     </p>
                   </Stack>
-                  <Showcase />
+
+                  <h3 class="gamma">Research</h3>
+                  <Showcase category="research" />
+
+                  <h3 class="gamma">Journalism</h3>
+                  <Showcase category="journalism" />
+
+                  <h3 class="gamma">NGOs</h3>
+                  <Showcase category="nonprofit" />
                 </Stack>
               </Stack>
             </Wrapper>

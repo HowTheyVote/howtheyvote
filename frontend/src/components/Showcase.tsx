@@ -2,10 +2,14 @@ import showcase from "../data/showcase.json";
 import Card from "./Card";
 import Stack from "./Stack";
 
-function Showcase() {
+type ShowcaseProps = {
+  category: "research" | "journalism" | "nonprofit";
+};
+
+function Showcase({ category }: ShowcaseProps) {
   return (
     <Stack space="sm">
-      {showcase.map(({ url, title, author, description }) => (
+      {showcase[category].map(({ url, title, author, description }) => (
         <Card
           title={title}
           subtitle={author}
