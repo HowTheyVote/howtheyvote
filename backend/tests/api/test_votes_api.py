@@ -622,6 +622,16 @@ def test_votes_api_index_search_diacritics(db_session, search_index, api):
     assert res.json["results"][0]["id"] == 1
 
 
+def test_votes_api_index_page_overflow(db_session, search_index, api):
+    res = api.get("/api/votes", query_string={"page": 1})
+    assert res.status_code == 200
+    assert res.json["page"] == 1
+
+    res = api.get("/api/votes", query_string={"page": 1028936044})
+    assert res.status_code == 200
+    assert res.json["page"] == 1
+
+
 def test_votes_api_member_votes_index(records, api):
     res = api.get("/api/members/1/votes")
     assert len(res.json["results"]) == 1

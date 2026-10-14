@@ -84,6 +84,7 @@ class SearchQueryResponse[T: BaseWithId](QueryResponse[T]):
 
 class Query[T: BaseWithId](ABC):
     MAX_PAGE_SIZE = 200
+    MAX_PAGE = 1000
     DEFAULT_PAGE_SIZE = 20
     DEFAULT_SORT_FIELD = "date"
     DEFAULT_SORT_ORDER = Order.DESC
@@ -113,7 +114,7 @@ class Query[T: BaseWithId](ABC):
         return query
 
     def get_page(self) -> int:
-        if self._page is None:
+        if self._page is None or self._page > self.MAX_PAGE:
             return 1
 
         return max(1, self._page)
