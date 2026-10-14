@@ -645,7 +645,7 @@ def test_odp_document_scraper_amendment_url(responses):
     assert fragment.data["amendment_urls"] == [
         AmendmentURL(
             amendment_number=2,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-001-006/A-10-2026-0106-AM-001-006_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-10-2026-0106-AM-001-006_EN.pdf",
         )
     ]
 
@@ -659,7 +659,7 @@ def test_odp_document_scraper_amendment_url(responses):
     assert fragment.data["amendment_urls"] == [
         AmendmentURL(
             amendment_number=42,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0106-AM-041-050/A-10-2026-0106-AM-041-050_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-10-2026-0106-AM-041-050_EN.pdf",
         ),
     ]
 
@@ -680,11 +680,11 @@ def test_odp_document_scraper_multiple_amendment_urls(responses):
     assert fragment.data["amendment_urls"] == [
         AmendmentURL(
             amendment_number=17,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0175-AM-017-024/A-10-2026-0175-AM-017-024_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-10-2026-0175-AM-017-024_EN.pdf",
         ),
         AmendmentURL(
             amendment_number=25,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0175-AM-025-025/A-10-2026-0175-AM-025-025_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-10-2026-0175-AM-025-025_EN.pdf",
         ),
     ]
 
@@ -703,11 +703,11 @@ def test_odp_document_scraper_multiple_amendment_urls(responses):
     assert fragment.data["amendment_urls"] == [
         AmendmentURL(
             amendment_number=2,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0048-AM-002-002/A-10-2026-0048-AM-002-002_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-10-2026-0048-AM-002-002_EN.pdf",
         ),
         AmendmentURL(
             amendment_number=3,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-10-2026-0048-AM-003-003/A-10-2026-0048-AM-003-003_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-10-2026-0048-AM-003-003_EN.pdf",
         ),
     ]
 
@@ -728,7 +728,7 @@ def test_odp_document_scraper_amendment_urls_corresponding_part(responses):
     assert fragment.data["amendment_urls"] == [
         AmendmentURL(
             amendment_number=56,
-            url="https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd/A-9-2023-0284-AM-056-056/A-9-2023-0284-AM-056-056_en.pdf",
+            url="https://europarl.europa.eu/doceo/document/A-9-2023-0284-AM-056-056_EN.pdf",
         ),
     ]
 

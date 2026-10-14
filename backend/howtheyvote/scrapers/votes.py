@@ -645,7 +645,7 @@ class ODPDocumentScraper(JSONScraper):
     BASE_URL = "https://data.europarl.europa.eu/api/v2/plenary-documents"
     EUROVOC_URL_REGEX = re.compile(r"^http://eurovoc\.europa\.eu/([^/]+)$")
     PROCEDURE_ID_REGEX = re.compile(r"^eli/dl/proc/([^/]+)$")
-    AMENDMENTS_BASE_URL = "https://data.europarl.europa.eu/distribution/reds_iPlRp_Amd"
+    AMENDMENTS_BASE_URL = "https://europarl.europa.eu/doceo/document"
 
     def __init__(
         self,
@@ -757,10 +757,7 @@ class ODPDocumentScraper(JSONScraper):
                 amendment_urls.append(
                     AmendmentURL(
                         amendment_number=amendment_number,
-                        url=(
-                            f"{self.AMENDMENTS_BASE_URL}/{amendment_list_id}/"
-                            f"{amendment_list_id}_en.pdf"
-                        ),
+                        url=f"{self.AMENDMENTS_BASE_URL}/{amendment_list_id}_EN.pdf",
                     ),
                 )
                 break
