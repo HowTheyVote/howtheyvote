@@ -13,6 +13,7 @@ type CardProps = {
   thumb?: ComponentChildren;
   action?: ComponentChildren;
   clickable?: boolean;
+  external?: boolean;
   className?: ComponentChildren;
 };
 
@@ -25,13 +26,20 @@ export default function Card({
   thumb,
   action,
   clickable = true,
+  external = false,
   className,
 }: CardProps) {
   return (
     <article class={`${bem("card", { clickable })} ${className || ""}`}>
       <div class="card__text">
         <h2 class="card__title">
-          <a href={link}>{title}</a>
+          <a
+            href={link}
+            target={external ? "_blank" : undefined}
+            rel={external ? "noreferrer noopener" : undefined}
+          >
+            {title}
+          </a>
         </h2>
         {subtitle && <div class="card__subtitle">{subtitle}</div>}
         {meta && <div class="card__meta">{meta}</div>}

@@ -12,6 +12,7 @@ function Showcase() {
           description={description}
           link={url}
           clickable={false}
+          external={true}
         />
       ))}
     </Stack>

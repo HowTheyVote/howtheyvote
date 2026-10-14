@@ -11,6 +11,7 @@ function Tutorials() {
           link={url}
           description={description}
           clickable={false}
+          external={true}
         />
       ))}
     </Stack>
