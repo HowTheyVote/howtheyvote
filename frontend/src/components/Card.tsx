@@ -7,7 +7,9 @@ import "./Card.css";
 type CardProps = {
   title: ComponentChildren;
   link: string;
+  subtitle?: ComponentChildren;
   meta?: ComponentChildren;
+  description?: ComponentChildren;
   thumb?: ComponentChildren;
   action?: ComponentChildren;
   clickable?: boolean;
@@ -16,8 +18,10 @@ type CardProps = {
 
 export default function Card({
   title,
+  subtitle,
   link,
   meta,
+  description,
   thumb,
   action,
   clickable = true,
@@ -29,7 +33,9 @@ export default function Card({
         <h2 class="card__title">
           <a href={link}>{title}</a>
         </h2>
+        {subtitle && <div class="card__subtitle">{subtitle}</div>}
         {meta && <div class="card__meta">{meta}</div>}
+        {description && <p class="card__description">{description}</p>}
       </div>
       {thumb && <div class="card__thumb">{thumb}</div>}
       {action && <div class="card__action">{action}</div>}

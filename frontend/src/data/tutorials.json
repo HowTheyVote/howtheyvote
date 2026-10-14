@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Finding close votes on amendments",
+    "description": "Learn how to identify amendments that were adopted or rejected with a very close majority.",
+    "url": "https://howtheyvote.github.io/tutorials/lab/index.html?path=close_amendment_votes.ipynb"
+  },
+  {
+    "title": "Which countries have been the focus of parliamentary discussions?",
+    "description": "Analyze how current geopolitical events are reflected in European Parliament votes.",
+    "url": "https://howtheyvote.github.io/tutorials/lab/index.html?path=country_trends.ipynb"
+  },
+  {
+    "title": "Who votes more often with the right?",
+    "description": "Learn how to fact-check a claim about which political groups vote with the right-wing groups most often.",
+    "url": "https://howtheyvote.github.io/tutorials/lab/index.html?path=co_voting.ipynb"
+  }
+]
