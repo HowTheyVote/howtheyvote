@@ -83,6 +83,11 @@ class ProcedureStage(Enum):
     OLP_THIRD_READING = "OLP_THIRD_READING"
 
 
+class MajorityType(Enum):
+    MAJORITY_OF_VOTES_CAST = "MAJORITY_OF_VOTES_CAST"
+    MAJORITY_OF_COMPONENT_MEMBERS = "MAJORITY_OF_COMPONENT_MEMBERS"
+
+
 class AmendmentAuthorType(Enum):
     GROUP = "GROUP"
     COMMITTEE = "COMMITTEE"
@@ -269,6 +274,7 @@ class Vote(BaseWithId):
     procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     odp_procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
+    majority_type: Mapped[MajorityType | None] = mapped_column(sa.Enum(MajorityType))
     amendment_subject: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_number: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_authors: Mapped[list[AmendmentAuthor] | None] = mapped_column(
