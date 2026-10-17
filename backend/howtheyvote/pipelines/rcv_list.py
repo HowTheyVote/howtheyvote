@@ -50,6 +50,7 @@ class RCVListPipeline(BasePipeline):
         date: datetime.date,
         last_run_checksum: str | None = None,
         use_legacy_doceo_sources: bool = False,
+        skip_share_pics: bool = False,
     ):
         super().__init__(
             term=term,
@@ -60,6 +61,7 @@ class RCVListPipeline(BasePipeline):
         self.date = date
         self.last_run_checksum = last_run_checksum
         self.use_legacy_doceo_sources = use_legacy_doceo_sources
+        self.skip_share_pics = skip_share_pics
         self.checksum: str | None = None
         self._vote_ids: set[str] = set()
         self._main_vote_ids: set[str] = set()
@@ -95,7 +97,8 @@ class RCVListPipeline(BasePipeline):
         # Share pictures have to be generated after the votes are indexed. Otherwise,
         # rendering the share pictures fails as data about new votes hasn’t yet been
         # written to the database.
-        generate_vote_sharepics(self._votes())
+        if not self.skip_share_pics:
+            generate_vote_sharepics(self._votes())
 
     def _scrape_rcv_list(self) -> None:
         log.info("Fetching active members", date=self.date)

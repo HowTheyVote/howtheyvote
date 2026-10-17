@@ -87,10 +87,12 @@ def all(
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
 @click.option("--use-legacy-doceo-sources", is_flag=True)
+@click.option("--skip-share-pics", is_flag=True)
 def rcv_list(
     term: int,
     date: datetime.datetime,
     use_legacy_doceo_sources: bool = False,
+    skip_share_pics: bool = False,
 ) -> None:
     """Run the RCV list pipeline for a given day. This scrapes the list of roll-call votes
     for the given day as well as additional sources for related legislative procedures or
@@ -99,6 +101,7 @@ def rcv_list(
         term=term,
         date=date.date(),
         use_legacy_doceo_sources=use_legacy_doceo_sources,
+        skip_share_pics=skip_share_pics,
     )
     pipeline.run()
 
@@ -106,10 +109,11 @@ def rcv_list(
 @pipeline.command()
 @click.option("--term", type=int, required=True)
 @click.option("--date", type=click.DateTime(formats=["%Y-%m-%d"]), required=True)
-def vot_list(term: int, date: datetime.datetime) -> None:
+@click.option("--skip-share-pics", is_flag=True)
+def vot_list(term: int, date: datetime.datetime, skip_share_pics: bool = False) -> None:
     """Run the VOT list pipeline for a given day. This scrapes the list of vote results
     for the given day."""
-    pipeline = VOTListPipeline(term=term, date=date.date())
+    pipeline = VOTListPipeline(term=term, date=date.date(), skip_share_pics=skip_share_pics)
     pipeline.run()
 
 
