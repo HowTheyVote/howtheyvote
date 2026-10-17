@@ -4,6 +4,7 @@ from ..models import (
     Committee,
     Country,
     EurovocConcept,
+    MajorityType,
     Member,
     OEILSubject,
     OEILSummary,
@@ -79,6 +80,10 @@ def map_vote(record: CompositeRecord) -> Vote:
         procedure_stage=record.get(
             key="procedure_stage",
             type=lambda x: ProcedureStage[x] if x else None,
+        ),
+        majority_type=record.get(
+            key="majority_type",
+            type=lambda x: MajorityType[x] if x else None,
         ),
         amendment_subject=record.get("amendment_subject"),
         amendment_number=record.get("amendment_number"),
