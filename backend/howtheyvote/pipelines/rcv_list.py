@@ -85,17 +85,17 @@ class RCVListPipeline(BasePipeline):
         self._analyze_vote_groups()
         self._index_votes()
 
-        # Share pictures have to be generated after the votes are indexed. Otherwise,
-        # rendering the share pictures fails as data about new votes hasn’t yet been
-        # written to the database.
-        generate_vote_sharepics(self._votes())
-
-        # Send Pushover notification
+        # Send Pushover notification as soon as votes are available online
         send_notification(
             title=f"Scraped RCV list for {self.date.strftime('%a, %b %-d')}",
             message=f"{len(self._vote_ids)} votes ({len(self._main_vote_ids)} main votes)",
             url=frontend_url("votes"),
         )
+
+        # Share pictures have to be generated after the votes are indexed. Otherwise,
+        # rendering the share pictures fails as data about new votes hasn’t yet been
+        # written to the database.
+        generate_vote_sharepics(self._votes())
 
     def _scrape_rcv_list(self) -> None:
         log.info("Fetching active members", date=self.date)
