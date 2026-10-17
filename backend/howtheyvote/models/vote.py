@@ -13,7 +13,7 @@ from .committee import Committee, CommitteeType
 from .common import BaseWithId
 from .country import Country, CountryType
 from .eurovoc import EurovocConcept, EurovocConceptType
-from .group import Group
+from .group import Group, GroupType
 from .oeil_subject import OEILSubject, OEILSubjectType
 from .topic import Topic, TopicType
 from .types import DataclassType, ListType
@@ -275,6 +275,9 @@ class Vote(BaseWithId):
     odp_procedure_reference: Mapped[str | None] = mapped_column(sa.Unicode)
     procedure_stage: Mapped[ProcedureStage | None] = mapped_column(sa.Enum(ProcedureStage))
     majority_type: Mapped[MajorityType | None] = mapped_column(sa.Enum(MajorityType))
+    groups_required_for_majority: Mapped[list[list[Group]] | None] = mapped_column(
+        ListType(ListType(GroupType))
+    )
     amendment_subject: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_number: Mapped[str | None] = mapped_column(sa.Unicode)
     amendment_authors: Mapped[list[AmendmentAuthor] | None] = mapped_column(
