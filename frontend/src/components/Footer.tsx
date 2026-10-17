@@ -48,7 +48,10 @@ export default function Footer({ style, copyright }: FooterProps) {
           </a>
         </li>
         <li>
-          <a href="/about#license">License</a>
+          <a href="/data">Open Data</a>
+        </li>
+        <li>
+          <a href="/data#license">License</a>
         </li>
         <li>
           <a href="/imprint">Imprint & Privacy</a>

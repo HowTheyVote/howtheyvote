@@ -24,6 +24,7 @@ import {
   MemberSharepicPage,
   loader as memberSharepicLoader,
 } from "./pages/MemberSharepicPage";
+import { OpenDataPage } from "./pages/OpenDataPage";
 import { SearchPage, loader as searchLoader } from "./pages/SearchPage";
 import { VotePage, loader as voteLoader } from "./pages/VotePage";
 import {
@@ -61,6 +62,7 @@ app.registerPage(
 );
 app.registerPage(["/developers", "/developers/*"], DevelopersPage);
 app.registerPage("/imprint", ImprintPage);
+app.registerPage("/data", OpenDataPage);
 app.registerPage("/about", AboutPage, aboutLoader);
 
 // Redirect vote shortlinks (e.g. howtheyvote.eu/162190)

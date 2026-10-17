@@ -66,6 +66,10 @@
   height: 100%;
 }
 
+.card__subtitle {
+  color: var(--color-text-light);
+}
+
 .card__meta {
   display: flex;
   flex-wrap: wrap;
@@ -73,4 +77,8 @@
   margin-block-start: var(--space-xxs);
   color: var(--color-text-light);
   font-size: var(--text-sm);
+}
+
+.card__description {
+  margin-block-start: var(--space-xxs);
 }

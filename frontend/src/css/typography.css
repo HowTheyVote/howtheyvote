@@ -54,6 +54,13 @@ strong {
   margin-top: var(--space-xxs);
 }
 
+.prose blockquote {
+  padding: var(--space-xs);
+  background-color: var(--gray-lightest);
+  border: 1px solid var(--gray-light);
+  border-radius: var(--border-radius-sm);
+}
+
 .prose > * + * {
   margin-top: var(--space-xs);
 }
