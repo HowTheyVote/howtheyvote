@@ -732,6 +732,11 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     if sort_field:
         query = query.sort(field=sort_field, order=sort_order)
 
+    # Main votes
+    include_only_main = request.args.get("include_only_main", type=_as_bool, default=True)
+    if include_only_main:
+        query = query.filter("is_main", "=", True)
+
     # Filters
     query = query.filter("date", "=", request.args.get("date", type=date.fromisoformat))
     query = query.filter("date", ">=", request.args.get("date[gte]", type=date.fromisoformat))
@@ -756,6 +761,10 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
         query = query.facet(field)
 
     return query
+
+
+def _as_bool(value: str) -> bool:
+    return True if value == "true" else False
 
 
 def _as_country(code: str) -> Country:

@@ -90,7 +90,7 @@ def index_search[T: BaseWithId](
         return
 
     votes = cast(Iterable[Vote], records)
-    filtered_votes = [vote for vote in votes if vote.is_main and vote.display_title]
+    filtered_votes = [vote for vote in votes if vote.display_title]
 
     if not filtered_votes:
         log.warning("Skipping indexing to search index as list of records is empty")
@@ -198,6 +198,10 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
 
     for keyword in vote.keywords:
         index_text(keyword, "keywords")
+
+    # Store `is_main` as boolean term for filtering
+    term = boolean_term("is_main", vote.is_main)
+    doc.add_boolean_term(term)
 
     # Store date in slot for ranking and range filters
     date = serialize_sortable_value(vote.date)

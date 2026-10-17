@@ -62,6 +62,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "oeil_summary": "XS",
     "topics": "XT",
     "keywords": "XK",
+    "is_main": "XIM",
 }
 
 
@@ -88,6 +89,17 @@ class StringType(Type[str]):
 
     def get_label(self, value: str) -> str:
         return value
+
+
+class BoolType(Type[bool]):
+    def serialize_value(self, value: bool) -> str:
+        return str(int(value))
+
+    def deserialize_value(self, value: str) -> bool:
+        return bool(int(value))
+
+    def get_label(self, value: bool) -> str:
+        return "true" if value else "false"
 
 
 class IntegerType(Type[int]):
@@ -149,6 +161,7 @@ class TopicType(Type[Topic]):
 
 
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
+    "is_main": BoolType(),
     "date": DateType(),
     "geo_areas": CountryType(),
     "responsible_committees": CommitteeType(),
