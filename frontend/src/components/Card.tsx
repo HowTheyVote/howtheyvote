@@ -12,6 +12,7 @@ type CardProps = {
   description?: ComponentChildren;
   thumb?: ComponentChildren;
   action?: ComponentChildren;
+  headingLevel?: "h2" | "h3" | "h4";
   clickable?: boolean;
   external?: boolean;
   className?: ComponentChildren;
@@ -25,14 +26,17 @@ export default function Card({
   description,
   thumb,
   action,
+  headingLevel = "h2",
   clickable = true,
   external = false,
   className,
 }: CardProps) {
+  const Heading = headingLevel;
+
   return (
     <article class={`${bem("card", { clickable })} ${className || ""}`}>
       <div class="card__text">
-        <h2 class="card__title">
+        <Heading class="card__title">
           <a
             href={link}
             target={external ? "_blank" : undefined}
@@ -40,7 +44,7 @@ export default function Card({
           >
             {title}
           </a>
-        </h2>
+        </Heading>
         {subtitle && <div class="card__subtitle">{subtitle}</div>}
         {meta && <div class="card__meta">{meta}</div>}
         {description && <p class="card__description">{description}</p>}

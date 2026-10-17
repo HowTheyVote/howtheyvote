@@ -10,6 +10,7 @@ function Tutorials() {
           title={title}
           link={url}
           description={description}
+          headingLevel="h3"
           clickable={false}
           external={true}
         />

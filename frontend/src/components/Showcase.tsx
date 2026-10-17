@@ -15,6 +15,7 @@ function Showcase({ category }: ShowcaseProps) {
           subtitle={author}
           description={description}
           link={url}
+          headingLevel="h4"
           clickable={false}
           external={true}
         />
