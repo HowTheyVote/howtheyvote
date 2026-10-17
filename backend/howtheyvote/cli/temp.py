@@ -7,6 +7,7 @@ from structlog import get_logger
 
 from ..analysis import (
     MainVoteAnalyzer,
+    MajorityAnalyzer,
     PressReleaseAnalyzer,
     PressReleaseVotePositionCountsAnalyzer,
     TopicsAnalyzer,
@@ -292,6 +293,19 @@ def topics() -> None:
     for partition in votes.partitions():
         for vote in partition:
             writer.add(TopicsAnalyzer(vote).run())
+        writer.flush()
+
+
+@temp.command()
+def majorities() -> None:
+    """Add topics to votes."""
+    query = select(Vote)
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            writer.add(MajorityAnalyzer(vote).run())
         writer.flush()
 
 

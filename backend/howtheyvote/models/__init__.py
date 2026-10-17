@@ -77,6 +77,7 @@ __all__ = [
     "MemberVote",
     "DocumentType",
     "ProcedureStage",
+    "MajorityType",
     "ProcedureType",
     "MajorityType",
     "Vote",

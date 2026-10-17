@@ -86,6 +86,7 @@ class ProcedureStage(Enum):
 class MajorityType(Enum):
     MAJORITY_OF_VOTES_CAST = "MAJORITY_OF_VOTES_CAST"
     MAJORITY_OF_COMPONENT_MEMBERS = "MAJORITY_OF_COMPONENT_MEMBERS"
+    CENSURE_MAJORITY = "CENSURE_MAJORITY"
 
 
 class AmendmentAuthorType(Enum):

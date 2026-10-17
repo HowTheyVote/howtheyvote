@@ -4,8 +4,18 @@ from collections.abc import Iterable, Iterator
 
 from unidecode import unidecode
 
-from ..helpers import make_key
-from ..models import Fragment, OEILSubject, OEILSummary, PressRelease, Topic, Vote
+from ..helpers import make_key, parse_procedure_reference
+from ..models import (
+    Fragment,
+    MajorityType,
+    OEILSubject,
+    OEILSummary,
+    PressRelease,
+    ProcedureStage,
+    ProcedureType,
+    Topic,
+    Vote,
+)
 from ..vote_stats import count_vote_positions
 
 
@@ -358,4 +368,49 @@ class TopicsAnalyzer:
             source_name=type(self).__name__,
             group_key=self.vote.id,
             data={"topics": [topic.code for topic in topics]},
+        )
+
+
+class MajorityAnalyzer:
+    def __init__(self, vote: Vote):
+        self.vote = vote
+
+    def run(self) -> Fragment | None:
+        parsed_procedure_reference = (
+            parse_procedure_reference(self.vote.procedure_reference)
+            if self.vote.procedure_reference
+            else None
+        )
+        majority_type = None
+
+        if parsed_procedure_reference and (
+            parsed_procedure_reference["type"]
+            in [
+                ProcedureType.RSP,
+                ProcedureType.INI,
+            ]
+        ):
+            majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if self.vote.procedure_stage == ProcedureStage.OLP_FIRST_READING:
+            majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if self.vote.procedure_stage == ProcedureStage.OLP_SECOND_READING:
+            majority_type = MajorityType.MAJORITY_OF_COMPONENT_MEMBERS
+
+        if self.vote.procedure_stage == ProcedureStage.OLP_THIRD_READING:
+            majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if self.vote.display_title == "Motion of censure on the Commission" and (
+            parsed_procedure_reference
+            and parsed_procedure_reference["type"] == ProcedureType.INS
+        ):
+            majority_type = MajorityType.CENSURE_MAJORITY
+
+        return Fragment(
+            model="Vote",
+            source_id=self.vote.id,
+            source_name=type(self).__name__,
+            group_key=self.vote.id,
+            data={"majority_type": majority_type},
         )
