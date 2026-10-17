@@ -25,10 +25,11 @@ log = get_logger(__name__)
 
 
 class VOTListPipeline(BasePipeline):
-    def __init__(self, term: int, date: datetime.date):
+    def __init__(self, term: int, date: datetime.date, skip_share_pics: bool = False):
         super().__init__(term=term, date=date)
         self.term = term
         self.date = date
+        self.skip_share_pics: bool = skip_share_pics
         self._vote_ids: set[str] = set()
         self._request_cache: RequestCache = LRUCache(maxsize=25)
 
@@ -46,7 +47,8 @@ class VOTListPipeline(BasePipeline):
         self._analyze_vote_groups()
         self._index_votes()
 
-        generate_vote_sharepics(self._votes())
+        if not self.skip_share_pics:
+            generate_vote_sharepics(self._votes())
 
     def _scrape_vot_list(self) -> None:
         self._log.info("Scraping VOT list")
