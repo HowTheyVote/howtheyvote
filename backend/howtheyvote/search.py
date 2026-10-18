@@ -163,6 +163,7 @@ class TopicType(Type[Topic]):
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "is_main": BoolType(),
     "date": DateType(),
+    "month": StringType(),
     "geo_areas": CountryType(),
     "responsible_committees": CommitteeType(),
     "reference": StringType(),
@@ -191,6 +192,7 @@ FIELD_TO_SLOT_MAPPING = {
     "geo_areas": 2,
     "responsible_committees": 3,
     "topics": 4,
+    "month": 5,
 }
 
 # Some document fields are more important than others. The following factors are applied

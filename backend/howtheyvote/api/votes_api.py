@@ -213,6 +213,7 @@ def index() -> ResponseReturnValue:
                             - geo_areas
                             - responsible_committees
                             - topics
+                            - month
         responses:
             '200':
                 description: Ok
@@ -754,7 +755,7 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     # Facets
     facets = request.args.getlist(
         "facets",
-        type=one_of("geo_areas", "responsible_committees", "topics"),
+        type=one_of("geo_areas", "responsible_committees", "topics", "month"),
     )
 
     for field in facets:
