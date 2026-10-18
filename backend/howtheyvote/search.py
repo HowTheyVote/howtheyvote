@@ -21,7 +21,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country, Topic, Vote
+from .models import BaseWithId, Committee, Country, Group, Topic, Vote
 from .scowl import list_spelling_variations
 
 log = get_logger(__name__)
@@ -63,6 +63,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "topics": "XT",
     "keywords": "XK",
     "is_main": "XIM",
+    "groups_required_for_majority": "XGRM",
 }
 
 
@@ -160,6 +161,17 @@ class TopicType(Type[Topic]):
         return value.label
 
 
+class GroupsType(Type[frozenset[Group]]):
+    def serialize_value(self, value: frozenset[Group]) -> str:
+        return "+".join(group.code for group in sorted(value, key=lambda g: g.code))
+
+    def deserialize_value(self, value: str) -> frozenset[Group]:
+        return frozenset([Group[code] for code in sorted(value.split("+"))])
+
+    def get_label(self, value: frozenset[Group]) -> str:
+        return ", ".join(sorted(group.short_label for group in value))
+
+
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "is_main": BoolType(),
     "date": DateType(),
@@ -171,6 +183,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "member_id": IntegerType(),
     "topics": TopicType(),
     "keywords": StringType(),
+    "groups_required_for_majority": GroupsType(),
 }
 
 

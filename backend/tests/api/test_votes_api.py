@@ -373,6 +373,87 @@ def test_votes_api_index_filters(db_session, search_index, api):
     assert res.json["total"] == 3
 
 
+def test_votes_api_index_filter_groups_required_for_majority(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        is_main=True,
+        groups_required_for_majority=[
+            [Group["EPP"]],
+            [Group["ECR"]],
+            [Group["RENEW"]],
+            [Group["PFE"], Group["ESN"]],
+        ],
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote Two",
+        is_main=True,
+        groups_required_for_majority=[
+            [Group["EPP"]],
+            [Group["SD"]],
+            [Group["RENEW"]],
+        ],
+    )
+
+    # Vote for which we couldn’t determine majority threshold
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        is_main=True,
+    )
+
+    db_session.add_all([one, two, three])
+    db_session.commit()
+    index_search(Vote, [one, two, three])
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "EPP"},
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 2
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "SD"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "ECR"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "PFE+ESN"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "ESN+PFE"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "ESN"},
+    )
+    assert res.json["total"] == 0
+
+
 def test_votes_api_index_search(db_session, search_index, api):
     one = Vote(
         id=1,
