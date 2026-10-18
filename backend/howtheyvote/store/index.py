@@ -236,6 +236,11 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
         term = boolean_term("topics", topic)
         doc.add_boolean_term(term)
 
+    if vote.groups_required_for_majority:
+        for groups in vote.groups_required_for_majority:
+            term = boolean_term("groups_required_for_majority", groups)
+            doc.add_boolean_term(term)
+
     # Store categorical values in slots to compute facets. Slots can only store a single
     # value, so we have to serialize the list first.
     # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html

@@ -34,6 +34,7 @@ from ..models import (
     Committee,
     Country,
     Fragment,
+    Group,
     Member,
     OEILSummary,
     PressRelease,
@@ -752,6 +753,12 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     topics = request.args.getlist("topics", type=_as_topic)
     query = query.filter("topics", "in", topics)
 
+    groups_required_for_majority = request.args.getlist(
+        "groups_required_for_majority",
+        type=_as_groups,
+    )
+    query = query.filter("groups_required_for_majority", "in", groups_required_for_majority)
+
     # Facets
     facets = request.args.getlist(
         "facets",
@@ -785,6 +792,13 @@ def _as_committee(code: str) -> Committee:
 def _as_topic(code: str) -> Topic:
     try:
         return Topic[code]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_groups(codes: str) -> list[Group]:
+    try:
+        return [Group[code] for code in codes.split("+")]
     except KeyError as exc:
         raise ValueError() from exc
 
