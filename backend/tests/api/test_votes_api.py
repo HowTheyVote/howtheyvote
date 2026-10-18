@@ -610,6 +610,34 @@ def test_votes_api_index_facets(db_session, search_index, api):
     }
 
 
+def test_votes_api_index_facets_month(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+    index_search(Vote, [one, two])
+
+    res = api.get("/api/votes", query_string={"facets": "month"})
+    assert res.json["facets"] == {
+        "month": [
+            {"value": "2024-01", "label": "2024-01", "short_label": None, "count": 1},
+            {"value": "2024-07", "label": "2024-07", "short_label": None, "count": 1},
+        ],
+    }
+
+
 def test_votes_api_index_search_special_chars(db_session, search_index, api):
     vote = Vote(
         id=1,

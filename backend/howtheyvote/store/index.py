@@ -235,6 +235,7 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     for topic in vote.topics:
         term = boolean_term("topics", topic)
         doc.add_boolean_term(term)
+
     # Store categorical values in slots to compute facets. Slots can only store a single
     # value, so we have to serialize the list first.
     # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html
@@ -256,6 +257,10 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     doc.add_value(
         field_to_slot("topics"),
         serialize_list([serialize_value("topics", topic) for topic in vote.topics]),
+    )
+    doc.add_value(
+        field_to_slot("month"),
+        serialize_value("month", vote.date.strftime("%Y-%m")),
     )
 
     # Index MEP IDs as boolean terms so we can filter votes for display on MEP profile pages
