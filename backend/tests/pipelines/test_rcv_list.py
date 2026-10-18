@@ -70,7 +70,7 @@ def test_run_source_not_available(responses, db_session, mocker):
 
 
 @pytest.mark.always_mock_requests
-def test_run(responses, db_session, member, plenary_session, mocker):
+def test_run(responses, db_session, search_index, member, plenary_session, mocker):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-RCV_FR.xml",
         body=load_fixture("pipelines/data/rcv-list_pv-9-2024-04-24-rcv-fr-noon.xml"),
@@ -179,7 +179,7 @@ def test_run_data_unchanged(responses, db_session, member, plenary_session, mock
 
 
 @pytest.mark.always_mock_requests
-def test_run_legacy(responses, db_session, member, plenary_session, mocker):
+def test_run_legacy(responses, db_session, search_index, member, plenary_session, mocker):
     responses.get(
         "https://www.europarl.europa.eu/doceo/document/PV-9-2024-04-24-RCV_FR.xml",
         body=load_fixture("pipelines/data/rcv-list_pv-9-2024-04-24-rcv-fr-noon.xml"),
