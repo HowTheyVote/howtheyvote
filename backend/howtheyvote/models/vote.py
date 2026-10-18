@@ -255,6 +255,12 @@ SAMemberVoteType = DataclassType(
 )
 
 
+def deserialize_groups_required_for_majority(
+    groups_required: list[list[dict[str, Any]]],
+) -> list[list[Group]]:
+    return [[Group[group["code"]] for group in coalition] for coalition in groups_required]
+
+
 class VotePositionCounts(TypedDict):
     FOR: int
     AGAINST: int

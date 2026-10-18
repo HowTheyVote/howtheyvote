@@ -10,6 +10,7 @@ from ..analysis import (
     MajorityAnalyzer,
     PressReleaseAnalyzer,
     PressReleaseVotePositionCountsAnalyzer,
+    RequiredGroupsAnalyzer,
     TopicsAnalyzer,
     VoteGroupsAnalyzer,
 )
@@ -298,7 +299,7 @@ def topics() -> None:
 
 @temp.command()
 def majorities() -> None:
-    """Add topics to votes."""
+    """Add majorities to votes."""
     query = select(Vote)
     votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
     writer = BulkWriter()
@@ -306,6 +307,18 @@ def majorities() -> None:
     for partition in votes.partitions():
         for vote in partition:
             writer.add(MajorityAnalyzer(vote).run())
+        writer.flush()
+
+
+@temp.command()
+def required_groups() -> None:
+    query = select(Vote)
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            writer.add(RequiredGroupsAnalyzer(vote).run())
         writer.flush()
 
 
