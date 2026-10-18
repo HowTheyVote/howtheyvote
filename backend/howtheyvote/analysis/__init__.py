@@ -5,6 +5,7 @@ from .votes import (
     MajorityAnalyzer,
     OEILSummaryAnalyzer,
     PressReleaseAnalyzer,
+    RequiredGroupsAnalyzer,
     TopicsAnalyzer,
     VoteGroupsAnalyzer,
 )
@@ -18,4 +19,5 @@ __all__ = [
     "PressReleaseVotePositionCountsAnalyzer",
     "OEILSummaryVotePositionCountsAnalyzer",
     "OEILSummaryAnalyzer",
+    "RequiredGroupsAnalyzer",
 ]

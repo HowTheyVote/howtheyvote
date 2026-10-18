@@ -1,13 +1,19 @@
 import datetime
+import re
 from collections import defaultdict
 from collections.abc import Iterable, Iterator
+from itertools import combinations
 
+from sqlalchemy import select
 from unidecode import unidecode
 
+from ..db import Session
 from ..helpers import make_key, parse_procedure_reference
 from ..models import (
     Fragment,
+    Group,
     MajorityType,
+    Member,
     OEILSubject,
     OEILSummary,
     PressRelease,
@@ -15,8 +21,9 @@ from ..models import (
     ProcedureType,
     Topic,
     Vote,
+    VoteResult,
 )
-from ..vote_stats import count_vote_positions
+from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 
 
 class VoteGroupsAnalyzer:
@@ -413,4 +420,114 @@ class MajorityAnalyzer:
             source_name=type(self).__name__,
             group_key=self.vote.id,
             data={"majority_type": majority_type},
+        )
+
+
+MembersById = dict[int, Member]
+
+
+def _load_members(vote: Vote) -> Iterable[Member]:
+    member_ids = [mv.web_id for mv in vote.member_votes]
+    stmt = select(Member).where(Member.id.in_(member_ids))
+    return Session.execute(stmt).scalars()
+
+
+class RequiredGroupsAnalyzer:
+    # Inclusive, so reaching this number passes.
+    # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
+    MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD = 361
+
+    def __init__(self, vote: Vote):
+        self.vote = vote
+
+    def run(self) -> Fragment | None:
+        # Only treat votes where we got the result from an official source for now
+        if not self.vote.result:
+            return None
+        # Only consider adopted votes, as not passing is the default,
+        # nearly all of the time, passing is interesting.
+        if self.vote.result != VoteResult.ADOPTED:
+            return None
+
+        # TODO: Supporting more majorities would be nice,
+        # but should not be the priority for now
+        if self.vote.majority_type not in [
+            MajorityType.MAJORITY_OF_VOTES_CAST,
+            MajorityType.MAJORITY_OF_COMPONENT_MEMBERS,
+        ]:
+            return None
+
+        members = _load_members(self.vote)
+        members_by_id: MembersById = {m.id: m for m in members}
+
+        group_stats = count_vote_positions_by_group(
+            member_votes=self.vote.member_votes,
+            group_by=lambda mv: members_by_id[mv.web_id].group_at(self.vote.timestamp),
+        )
+
+        group_votes_in_favor = {
+            group.code: stats["FOR"]
+            for group, stats in group_stats.items()
+            if group is not None and group.code != "NI" and stats["FOR"] > 0
+        }
+
+        total_vote_results = count_vote_positions(self.vote.member_votes)
+        count_for = total_vote_results["FOR"]
+        count_against = total_vote_results["AGAINST"]
+
+        # TODO: Is this good enough?
+        is_split_vote = self.vote.description and bool(
+            re.search(r"/\d$", self.vote.description)
+        )
+
+        # See 196(2) RoP -> tied split votes are adopted
+        if (is_split_vote and count_for < count_against) or (
+            not is_split_vote and count_for <= count_against
+        ):
+            raise ValueError(f"Illogical vote result for vote:  {self.vote.id}")
+
+        group_names = list(group_votes_in_favor)
+        minimum_required_groups: list[frozenset[str]] = []
+
+        for size in range(1, len(group_names) + 1):
+            for combination in combinations(group_names, size):
+                candidate_groups = frozenset(combination)
+
+                if any(
+                    existing.issubset(candidate_groups) for existing in minimum_required_groups
+                ):
+                    continue
+
+                switched_votes = sum(group_votes_in_favor[group] for group in candidate_groups)
+
+                if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
+                    if count_for - switched_votes <= count_against + switched_votes:
+                        minimum_required_groups.append(candidate_groups)
+
+                if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
+                    if (
+                        count_for - switched_votes
+                        < self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
+                    ):
+                        minimum_required_groups.append(candidate_groups)
+
+        # Sort both the groups inside of the sets and the sets itself.
+        # Ensures that output in fragment is stable across multiple runs.
+        required_groups: list[list[Group]] = [
+            [Group[group_name] for group_name in sorted(required_set)]
+            for required_set in sorted(
+                minimum_required_groups,
+                key=lambda required_set: (
+                    len(required_set),
+                    tuple(sorted(required_set)),
+                ),
+            )
+        ]
+
+        return Fragment(
+            model="Vote",
+            source_id=self.vote.id,
+            source_name=type(self).__name__,
+            group_key=self.vote.id,
+            data={"groups_required_for_majority": required_groups},
         )

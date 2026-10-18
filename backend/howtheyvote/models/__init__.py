@@ -40,6 +40,7 @@ from .vote import (
     VoteResultType,
     deserialize_amendment_author,
     deserialize_amendment_url,
+    deserialize_groups_required_for_majority,
     deserialize_member_vote,
     serialize_amendment_author,
     serialize_member_vote,
@@ -100,4 +101,5 @@ __all__ = [
     "deserialize_amendment_url",
     "deserialize_national_party_membership",
     "serialize_national_party_membership",
+    "deserialize_groups_required_for_majority",
 ]
