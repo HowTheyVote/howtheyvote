@@ -5,6 +5,7 @@ from typing import Any
 from unidecode import unidecode
 
 from ..data import DATA_DIR, DataclassContainer, DeserializableDataclass
+from .types import DataclassReferenceType
 
 
 class GroupMeta(type):
@@ -90,3 +91,6 @@ def _normalize_label(label: str) -> str:
     normalized = normalized.removeprefix("group of the ")
     normalized = normalized.removesuffix(" group")
     return normalized
+
+
+GroupType = DataclassReferenceType[Group](groups)
