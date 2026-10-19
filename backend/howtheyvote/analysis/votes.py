@@ -500,6 +500,16 @@ class RequiredGroupsAnalyzer:
                 switched_votes = sum(group_votes_in_favor[group] for group in candidate_groups)
 
                 if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
+                    if (
+                        is_split_vote
+                        and count_for - switched_votes < count_against + switched_votes
+                    ) or (
+                        not is_split_vote
+                        and count_for - switched_votes <= count_against + switched_votes
+                    ):
+                        minimum_required_groups.append(candidate_groups)
+
+                if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
                     if count_for - switched_votes <= count_against + switched_votes:
                         minimum_required_groups.append(candidate_groups)
 
