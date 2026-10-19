@@ -11,7 +11,6 @@ from ..db import Session
 from ..helpers import make_key, parse_procedure_reference
 from ..models import (
     Fragment,
-    Group,
     MajorityType,
     Member,
     OEILSubject,
@@ -513,14 +512,11 @@ class RequiredGroupsAnalyzer:
 
         # Sort both the groups inside of the sets and the sets itself.
         # Ensures that output in fragment is stable across multiple runs.
-        required_groups: list[list[Group]] = [
-            [Group[group_name] for group_name in sorted(required_set)]
+        required_groups: list[list[str]] = [
+            sorted(required_set)
             for required_set in sorted(
                 minimum_required_groups,
-                key=lambda required_set: (
-                    len(required_set),
-                    tuple(sorted(required_set)),
-                ),
+                key=lambda groups: (len(groups), tuple(sorted(groups))),
             )
         ]
 
