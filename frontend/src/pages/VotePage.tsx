@@ -12,6 +12,7 @@ import PageNavItem from "../components/PageNavItem";
 import Sources from "../components/Sources";
 import Stack from "../components/Stack";
 import VoteHeader from "../components/VoteHeader";
+import VotePositionLegend from "../components/VotePositionLegend";
 import VoteResultChart from "../components/VoteResultChart";
 import VoteTabs from "../components/VoteTabs";
 import Wrapper from "../components/Wrapper";
@@ -135,7 +136,12 @@ export const VotePage: Page<Vote> = ({ data }) => {
         <Stack space="lg">
           <div id="result" className="px mt--lg">
             <Wrapper>
-              {data.stats && <VoteResultChart stats={data.stats.total} />}
+              {data.stats && (
+                <>
+                  <VoteResultChart stats={data.stats.total} />
+                  <VotePositionLegend />
+                </>
+              )}
             </Wrapper>
           </div>
           <div className="px">
