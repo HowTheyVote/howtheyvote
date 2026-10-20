@@ -456,34 +456,34 @@ class RequiredGroupsAnalyzer:
         members = _load_members(self.vote)
         members_by_id: MembersById = {m.id: m for m in members}
 
-        group_stats = count_vote_positions_by_group(
+        vote_positions_by_group = count_vote_positions_by_group(
             member_votes=self.vote.member_votes,
             group_by=lambda mv: members_by_id[mv.web_id].group_at(self.vote.timestamp),
         )
 
         group_votes_in_favor = {
             group.code: stats["FOR"]
-            for group, stats in group_stats.items()
+            for group, stats in vote_positions_by_group.items()
             if group is not None and group.code != "NI" and stats["FOR"] > 0
         }
 
-        total_vote_results = count_vote_positions(self.vote.member_votes)
-        count_for = total_vote_results["FOR"]
-        count_against = total_vote_results["AGAINST"]
+        vote_positions = count_vote_positions(self.vote.member_votes)
+        votes_in_favor = vote_positions["FOR"]
+        votes_against = vote_positions["AGAINST"]
 
         is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
 
         # See 196(2) RoP -> tied split votes are adopted
-        if (is_split_vote and count_for < count_against) or (
-            not is_split_vote and count_for <= count_against
+        if (is_split_vote and votes_in_favor < votes_against) or (
+            not is_split_vote and votes_in_favor <= votes_against
         ):
             raise ValueError(f"Illogical vote result for vote:  {self.vote.id}")
 
-        group_names = list(group_votes_in_favor)
+        group_codes = list(group_votes_in_favor)
         minimum_required_groups: list[frozenset[str]] = []
 
-        for size in range(1, len(group_names) + 1):
-            for combination in combinations(group_names, size):
+        for size in range(1, len(group_codes) + 1):
+            for combination in combinations(group_codes, size):
                 candidate_groups = frozenset(combination)
 
                 if any(
@@ -496,16 +496,16 @@ class RequiredGroupsAnalyzer:
                 if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
                     if (
                         is_split_vote
-                        and count_for - switched_votes < count_against + switched_votes
+                        and votes_in_favor - switched_votes < votes_against + switched_votes
                     ) or (
                         not is_split_vote
-                        and count_for - switched_votes <= count_against + switched_votes
+                        and votes_in_favor - switched_votes <= votes_against + switched_votes
                     ):
                         minimum_required_groups.append(candidate_groups)
 
                 if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
                     if (
-                        count_for - switched_votes
+                        votes_in_favor - switched_votes
                         < self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
                     ):
                         minimum_required_groups.append(candidate_groups)
