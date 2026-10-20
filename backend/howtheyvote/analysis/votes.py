@@ -473,12 +473,6 @@ class RequiredGroupsAnalyzer:
 
         is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
 
-        # See 196(2) RoP -> tied split votes are adopted
-        if (is_split_vote and votes_in_favor < votes_against) or (
-            not is_split_vote and votes_in_favor <= votes_against
-        ):
-            raise ValueError(f"Illogical vote result for vote:  {self.vote.id}")
-
         group_codes = list(group_votes_in_favor)
         minimum_required_groups: list[frozenset[str]] = []
 
@@ -494,6 +488,7 @@ class RequiredGroupsAnalyzer:
                 switched_votes = sum(group_votes_in_favor[group] for group in candidate_groups)
 
                 if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
+                    # See 196(2) RoP -> tied split votes are adopted
                     if (
                         is_split_vote
                         and votes_in_favor - switched_votes < votes_against + switched_votes
