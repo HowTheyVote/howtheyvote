@@ -408,7 +408,7 @@ class MajorityAnalyzer:
             self.vote.display_title == "Motion of censure on the Commission"
             and parsed_procedure_reference["type"] == ProcedureType.INS
         ):
-            majority_type = MajorityType.CENSURE_MAJORITY
+            majority_type = MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS
 
         return Fragment(
             model="Vote",
