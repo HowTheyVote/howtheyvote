@@ -503,10 +503,6 @@ class RequiredGroupsAnalyzer:
                     ):
                         minimum_required_groups.append(candidate_groups)
 
-                if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
-                    if count_for - switched_votes <= count_against + switched_votes:
-                        minimum_required_groups.append(candidate_groups)
-
                 if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
                     if (
                         count_for - switched_votes
