@@ -224,6 +224,10 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
         term = boolean_term("procedure_reference", vote.procedure_reference)
         doc.add_boolean_term(term)
 
+    if vote.result:
+        term = boolean_term("result", vote.result)
+        doc.add_boolean_term(term)
+
     for geo_area in vote.geo_areas:
         term = boolean_term("geo_areas", geo_area)
         doc.add_boolean_term(term)
