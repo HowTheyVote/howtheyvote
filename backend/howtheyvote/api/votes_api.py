@@ -762,7 +762,13 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     # Facets
     facets = request.args.getlist(
         "facets",
-        type=one_of("geo_areas", "responsible_committees", "topics", "month"),
+        type=one_of(
+            "geo_areas",
+            "responsible_committees",
+            "topics",
+            "month",
+            "groups_required_for_majority",
+        ),
     )
 
     for field in facets:

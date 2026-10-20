@@ -206,6 +206,7 @@ FIELD_TO_SLOT_MAPPING = {
     "responsible_committees": 3,
     "topics": 4,
     "month": 5,
+    "groups_required_for_majority": 6,
 }
 
 # Some document fields are more important than others. The following factors are applied

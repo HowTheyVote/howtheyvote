@@ -268,6 +268,17 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
         serialize_value("month", vote.date.strftime("%Y-%m")),
     )
 
+    if vote.groups_required_for_majority:
+        doc.add_value(
+            field_to_slot("groups_required_for_majority"),
+            serialize_list(
+                [
+                    serialize_value("groups_required_for_majority", groups)
+                    for groups in vote.groups_required_for_majority
+                ]
+            ),
+        )
+
     # Index MEP IDs as boolean terms so we can filter votes for display on MEP profile pages
     for member_vote in vote.member_votes:
         term = boolean_term("member_id", member_vote.web_id)
