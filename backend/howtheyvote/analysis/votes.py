@@ -1,5 +1,4 @@
 import datetime
-import re
 from collections import defaultdict
 from collections.abc import Iterable, Iterator
 from itertools import combinations
@@ -387,15 +386,13 @@ class MajorityAnalyzer:
             if self.vote.procedure_reference
             else None
         )
-        majority_type = None
+        if not parsed_procedure_reference:
+            return None
 
-        if parsed_procedure_reference and (
-            parsed_procedure_reference["type"]
-            in [
-                ProcedureType.RSP,
-                ProcedureType.INI,
-            ]
-        ):
+        if parsed_procedure_reference["type"] in [
+            ProcedureType.RSP,
+            ProcedureType.INI,
+        ]:
             majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
 
         if self.vote.procedure_stage == ProcedureStage.OLP_FIRST_READING:
@@ -407,8 +404,8 @@ class MajorityAnalyzer:
         if self.vote.procedure_stage == ProcedureStage.OLP_THIRD_READING:
             majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
 
-        if self.vote.display_title == "Motion of censure on the Commission" and (
-            parsed_procedure_reference
+        if (
+            self.vote.display_title == "Motion of censure on the Commission"
             and parsed_procedure_reference["type"] == ProcedureType.INS
         ):
             majority_type = MajorityType.CENSURE_MAJORITY
@@ -474,10 +471,7 @@ class RequiredGroupsAnalyzer:
         count_for = total_vote_results["FOR"]
         count_against = total_vote_results["AGAINST"]
 
-        # TODO: Is this good enough?
-        is_split_vote = self.vote.description and bool(
-            re.search(r"/\d$", self.vote.description)
-        )
+        is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
 
         # See 196(2) RoP -> tied split votes are adopted
         if (is_split_vote and count_for < count_against) or (
