@@ -21,7 +21,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country, Group, Topic, Vote
+from .models import BaseWithId, Committee, Country, Group, Topic, Vote, VoteResult
 from .scowl import list_spelling_variations
 
 log = get_logger(__name__)
@@ -64,6 +64,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "keywords": "XK",
     "is_main": "XIM",
     "groups_required_for_majority": "XGRM",
+    "result": "XVR",
 }
 
 
@@ -172,6 +173,21 @@ class GroupsType(Type[frozenset[Group]]):
         return ", ".join(sorted(group.short_label for group in value))
 
 
+class EnumType[T: enum.Enum](Type[T]):
+    def __init__(self, enum_type: type[T]):
+        super().__init__()
+        self.enum_type = enum_type
+
+    def serialize_value(self, value: T) -> str:
+        return str(value.value)
+
+    def deserialize_value(self, value: str) -> T:
+        return self.enum_type(value)
+
+    def get_label(self, value: T) -> str:
+        return str(value.value)
+
+
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "is_main": BoolType(),
     "date": DateType(),
@@ -184,6 +200,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "topics": TopicType(),
     "keywords": StringType(),
     "groups_required_for_majority": GroupsType(),
+    "result": EnumType(VoteResult),
 }
 
 

@@ -40,6 +40,7 @@ from ..models import (
     PressRelease,
     Topic,
     Vote,
+    VoteResult,
 )
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
@@ -199,6 +200,15 @@ def index() -> ResponseReturnValue:
                     type: array
                     items:
                         type: string
+            -
+                in: query
+                name: result
+                description: Only return results with the given result.
+                schema:
+                    type: string
+                    enum:
+                        - adopted
+                        - rejected
             -
                 in: query
                 name: facets
@@ -759,6 +769,8 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     )
     query = query.filter("groups_required_for_majority", "in", groups_required_for_majority)
 
+    query = query.filter("result", "=", request.args.get("result", type=_as_result))
+
     # Facets
     facets = request.args.getlist(
         "facets",
@@ -805,6 +817,13 @@ def _as_topic(code: str) -> Topic:
 def _as_groups(codes: str) -> list[Group]:
     try:
         return [Group[code] for code in codes.split("+")]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_result(result: str) -> VoteResult:
+    try:
+        return VoteResult[result.upper()]
     except KeyError as exc:
         raise ValueError() from exc
 
