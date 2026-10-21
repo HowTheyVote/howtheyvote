@@ -36,7 +36,7 @@ SEARCH_INDEX_DIR = env.get("HTV_SEARCH_INDEX_DIR", "/howtheyvote/index")
 # Number of documents that are at least checked for every search query. A higher
 # number results in better estimates of the total result count, but also increases
 # query processing time. See: https://trac.xapian.org/wiki/FAQ/MoreAccurateEstimates
-SEARCH_CHECK_AT_LEAST = 1_000
+SEARCH_CHECK_AT_LEAST = 50_000
 
 # Setting `SEARCH_CHECK_AT_LEAST` to a high value can lead to longer query processing
 # times. Search results will be returned after `SEARCH_TIME_LIMIT` seconds, even if
