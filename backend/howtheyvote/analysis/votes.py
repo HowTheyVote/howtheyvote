@@ -389,6 +389,8 @@ class MajorityAnalyzer:
         if not parsed_procedure_reference:
             return None
 
+        majority_type = None
+
         if parsed_procedure_reference["type"] in [
             ProcedureType.RSP,
             ProcedureType.INI,
