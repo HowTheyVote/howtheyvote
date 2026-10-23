@@ -21,7 +21,7 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country, Topic, Vote
+from .models import BaseWithId, Committee, Country, Group, Topic, Vote, VoteResult
 from .scowl import list_spelling_variations
 
 log = get_logger(__name__)
@@ -62,6 +62,9 @@ FIELD_TO_PREFIX_MAPPING = {
     "oeil_summary": "XS",
     "topics": "XT",
     "keywords": "XK",
+    "is_main": "XIM",
+    "groups_required_for_majority": "XGRM",
+    "result": "XVR",
 }
 
 
@@ -88,6 +91,17 @@ class StringType(Type[str]):
 
     def get_label(self, value: str) -> str:
         return value
+
+
+class BoolType(Type[bool]):
+    def serialize_value(self, value: bool) -> str:
+        return str(int(value))
+
+    def deserialize_value(self, value: str) -> bool:
+        return bool(int(value))
+
+    def get_label(self, value: bool) -> str:
+        return "true" if value else "false"
 
 
 class IntegerType(Type[int]):
@@ -148,8 +162,36 @@ class TopicType(Type[Topic]):
         return value.label
 
 
+class GroupsType(Type[frozenset[Group]]):
+    def serialize_value(self, value: frozenset[Group]) -> str:
+        return "+".join(group.code for group in sorted(value, key=lambda g: g.code))
+
+    def deserialize_value(self, value: str) -> frozenset[Group]:
+        return frozenset([Group[code] for code in sorted(value.split("+"))])
+
+    def get_label(self, value: frozenset[Group]) -> str:
+        return ", ".join(sorted(group.short_label for group in value))
+
+
+class EnumType[T: enum.Enum](Type[T]):
+    def __init__(self, enum_type: type[T]):
+        super().__init__()
+        self.enum_type = enum_type
+
+    def serialize_value(self, value: T) -> str:
+        return str(value.value)
+
+    def deserialize_value(self, value: str) -> T:
+        return self.enum_type(value)
+
+    def get_label(self, value: T) -> str:
+        return str(value.value)
+
+
 FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
+    "is_main": BoolType(),
     "date": DateType(),
+    "month": StringType(),
     "geo_areas": CountryType(),
     "responsible_committees": CommitteeType(),
     "reference": StringType(),
@@ -157,6 +199,8 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "member_id": IntegerType(),
     "topics": TopicType(),
     "keywords": StringType(),
+    "groups_required_for_majority": GroupsType(),
+    "result": EnumType(VoteResult),
 }
 
 
@@ -178,6 +222,8 @@ FIELD_TO_SLOT_MAPPING = {
     "geo_areas": 2,
     "responsible_committees": 3,
     "topics": 4,
+    "month": 5,
+    "groups_required_for_majority": 6,
 }
 
 # Some document fields are more important than others. The following factors are applied

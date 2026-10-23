@@ -90,7 +90,7 @@ def index_search[T: BaseWithId](
         return
 
     votes = cast(Iterable[Vote], records)
-    filtered_votes = [vote for vote in votes if vote.is_main and vote.display_title]
+    filtered_votes = [vote for vote in votes if vote.display_title]
 
     if not filtered_votes:
         log.warning("Skipping indexing to search index as list of records is empty")
@@ -199,6 +199,10 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     for keyword in vote.keywords:
         index_text(keyword, "keywords")
 
+    # Store `is_main` as boolean term for filtering
+    term = boolean_term("is_main", vote.is_main)
+    doc.add_boolean_term(term)
+
     # Store date in slot for ranking and range filters
     date = serialize_sortable_value(vote.date)
     doc.add_value(field_to_slot("date"), date)
@@ -220,6 +224,10 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
         term = boolean_term("procedure_reference", vote.procedure_reference)
         doc.add_boolean_term(term)
 
+    if vote.result:
+        term = boolean_term("result", vote.result)
+        doc.add_boolean_term(term)
+
     for geo_area in vote.geo_areas:
         term = boolean_term("geo_areas", geo_area)
         doc.add_boolean_term(term)
@@ -231,6 +239,12 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
     for topic in vote.topics:
         term = boolean_term("topics", topic)
         doc.add_boolean_term(term)
+
+    if vote.groups_required_for_majority:
+        for groups in vote.groups_required_for_majority:
+            term = boolean_term("groups_required_for_majority", groups)
+            doc.add_boolean_term(term)
+
     # Store categorical values in slots to compute facets. Slots can only store a single
     # value, so we have to serialize the list first.
     # https://lists.tartarus.org/pipermail/xapian-discuss/2011-June/008264.html
@@ -253,6 +267,21 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
         field_to_slot("topics"),
         serialize_list([serialize_value("topics", topic) for topic in vote.topics]),
     )
+    doc.add_value(
+        field_to_slot("month"),
+        serialize_value("month", vote.date.strftime("%Y-%m")),
+    )
+
+    if vote.groups_required_for_majority:
+        doc.add_value(
+            field_to_slot("groups_required_for_majority"),
+            serialize_list(
+                [
+                    serialize_value("groups_required_for_majority", groups)
+                    for groups in vote.groups_required_for_majority
+                ]
+            ),
+        )
 
     # Index MEP IDs as boolean terms so we can filter votes for display on MEP profile pages
     for member_vote in vote.member_votes:
