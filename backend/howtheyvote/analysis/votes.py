@@ -381,36 +381,10 @@ class MajorityAnalyzer:
         self.vote = vote
 
     def run(self) -> Fragment | None:
-        parsed_procedure_reference = (
-            parse_procedure_reference(self.vote.procedure_reference)
-            if self.vote.procedure_reference
-            else None
-        )
-        if not parsed_procedure_reference:
+        majority_type = self._majority_type()
+
+        if not majority_type:
             return None
-
-        majority_type = None
-
-        if parsed_procedure_reference["type"] in [
-            ProcedureType.RSP,
-            ProcedureType.INI,
-        ]:
-            majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
-
-        if self.vote.procedure_stage == ProcedureStage.OLP_FIRST_READING:
-            majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
-
-        if self.vote.procedure_stage == ProcedureStage.OLP_SECOND_READING:
-            majority_type = MajorityType.MAJORITY_OF_COMPONENT_MEMBERS
-
-        if self.vote.procedure_stage == ProcedureStage.OLP_THIRD_READING:
-            majority_type = MajorityType.MAJORITY_OF_VOTES_CAST
-
-        if (
-            self.vote.display_title == "Motion of censure on the Commission"
-            and parsed_procedure_reference["type"] == ProcedureType.INS
-        ):
-            majority_type = MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS
 
         return Fragment(
             model="Vote",
@@ -419,6 +393,35 @@ class MajorityAnalyzer:
             group_key=self.vote.id,
             data={"majority_type": majority_type},
         )
+
+    def _majority_type(self) -> MajorityType | None:
+        if not self.vote.procedure_reference:
+            return None
+
+        procedure_reference = parse_procedure_reference(self.vote.procedure_reference)
+        procedure_type = procedure_reference["type"]
+        procedure_stage = self.vote.procedure_stage
+
+        if procedure_type in (ProcedureType.RSP, ProcedureType.INI):
+            return MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if procedure_type == ProcedureType.COD:
+            if procedure_stage == ProcedureStage.OLP_FIRST_READING:
+                return MajorityType.MAJORITY_OF_VOTES_CAST
+
+            if procedure_stage == ProcedureStage.OLP_SECOND_READING:
+                return MajorityType.MAJORITY_OF_COMPONENT_MEMBERS
+
+            if procedure_stage == ProcedureStage.OLP_THIRD_READING:
+                return MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if (
+            procedure_type == ProcedureType.INS
+            and self.vote.display_title == "Motion of censure on the Commission"
+        ):
+            return MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS
+
+        return None
 
 
 MembersById = dict[int, Member]
