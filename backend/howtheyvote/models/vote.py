@@ -86,6 +86,9 @@ class ProcedureStage(Enum):
 class MajorityType(Enum):
     MAJORITY_OF_VOTES_CAST = "MAJORITY_OF_VOTES_CAST"
     MAJORITY_OF_COMPONENT_MEMBERS = "MAJORITY_OF_COMPONENT_MEMBERS"
+    TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS = (
+        "TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS"
+    )
 
 
 class AmendmentAuthorType(Enum):
@@ -252,6 +255,12 @@ SAMemberVoteType = DataclassType(
     serialize_member_vote,
     deserialize_member_vote,
 )
+
+
+def deserialize_groups_required_for_majority(
+    groups_required: list[list[str]],
+) -> list[list[Group]]:
+    return [[Group[group_code] for group_code in coalition] for coalition in groups_required]
 
 
 class VotePositionCounts(TypedDict):
