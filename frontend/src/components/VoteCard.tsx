@@ -24,6 +24,7 @@ export default function VoteCard({ vote, thumb }: VoteCardProps) {
   return (
     <Card
       title={vote.display_title}
+      subtitle={vote.description?.trim()}
       link={`/votes/${vote.id}`}
       meta={meta}
       thumb={thumb}

@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { useId } from "preact/hooks";
 
 import { bem } from "../lib/bem";
 
@@ -32,6 +33,7 @@ export default function Card({
   className,
 }: CardProps) {
   const Heading = headingLevel;
+  const subtitleId = useId();
 
   return (
     <article class={`${bem("card", { clickable })} ${className || ""}`}>
@@ -41,11 +43,16 @@ export default function Card({
             href={link}
             target={external ? "_blank" : undefined}
             rel={external ? "noreferrer noopener" : undefined}
+            aria-describedby={subtitle ? subtitleId : undefined}
           >
             {title}
           </a>
         </Heading>
-        {subtitle && <div class="card__subtitle">{subtitle}</div>}
+        {subtitle && (
+          <div id={subtitleId} class="card__subtitle">
+            {subtitle}
+          </div>
+        )}
         {meta && <div class="card__meta">{meta}</div>}
         {description && <p class="card__description">{description}</p>}
       </div>
