@@ -504,6 +504,7 @@ class RequiredGroupsAnalyzer:
 
         is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
 
+        # See RoP 194(3) -> disregard abstentions
         if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
             # See 196(2) RoP -> tied split votes are adopted
             if (is_split_vote and votes_in_favor < votes_against) or (
@@ -511,6 +512,7 @@ class RequiredGroupsAnalyzer:
             ):
                 return True
 
+        # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
         if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
             if votes_in_favor < self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD:
                 return True
