@@ -476,8 +476,6 @@ class RequiredGroupsAnalyzer:
         votes_in_favor = vote_positions["FOR"]
         votes_against = vote_positions["AGAINST"]
 
-        is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
-
         group_codes = list(group_votes_in_favor)
         minimum_required_groups: list[frozenset[str]] = []
 
@@ -492,23 +490,10 @@ class RequiredGroupsAnalyzer:
 
                 switched_votes = sum(group_votes_in_favor[group] for group in candidate_groups)
 
-                if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
-                    # See 196(2) RoP -> tied split votes are adopted
-                    if (
-                        is_split_vote
-                        and votes_in_favor - switched_votes < votes_against + switched_votes
-                    ) or (
-                        not is_split_vote
-                        and votes_in_favor - switched_votes <= votes_against + switched_votes
-                    ):
-                        minimum_required_groups.append(candidate_groups)
-
-                if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
-                    if (
-                        votes_in_favor - switched_votes
-                        < self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
-                    ):
-                        minimum_required_groups.append(candidate_groups)
+                if self._has_majority(
+                    votes_in_favor - switched_votes, votes_against + switched_votes
+                ):
+                    minimum_required_groups.append(candidate_groups)
 
         # Sort both the groups inside of the sets and the sets itself.
         # Ensures that output in fragment is stable across multiple runs.
@@ -527,3 +512,20 @@ class RequiredGroupsAnalyzer:
             group_key=self.vote.id,
             data={"groups_required_for_majority": required_groups},
         )
+
+    def _has_majority(self, votes_in_favor: int, votes_against: int) -> bool:
+
+        is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
+
+        if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
+            # See 196(2) RoP -> tied split votes are adopted
+            if (is_split_vote and votes_in_favor < votes_against) or (
+                not is_split_vote and votes_in_favor <= votes_against
+            ):
+                return True
+
+        if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
+            if votes_in_favor < self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD:
+                return True
+
+        return False
