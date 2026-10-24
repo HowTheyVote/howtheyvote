@@ -312,13 +312,16 @@ def majorities() -> None:
 
 @temp.command()
 def required_groups() -> None:
-    query = select(Vote)
-    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    query_votes = select(Vote)
+    votes = Session.execute(query_votes, execution_options={"yield_per": 500}).scalars()
     writer = BulkWriter()
+
+    query_members = select(Member)
+    members_by_id = {m.id: m for m in Session.execute(query_members).scalars()}
 
     for partition in votes.partitions():
         for vote in partition:
-            writer.add(RequiredGroupsAnalyzer(vote).run())
+            writer.add(RequiredGroupsAnalyzer(vote, members_by_id).run())
         writer.flush()
 
 

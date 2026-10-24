@@ -3,10 +3,8 @@ from collections import defaultdict
 from collections.abc import Iterable, Iterator
 from itertools import combinations
 
-from sqlalchemy import select
 from unidecode import unidecode
 
-from ..db import Session
 from ..helpers import make_key, parse_procedure_reference
 from ..models import (
     Fragment,
@@ -424,22 +422,14 @@ class MajorityAnalyzer:
         return None
 
 
-MembersById = dict[int, Member]
-
-
-def _load_members(vote: Vote) -> Iterable[Member]:
-    member_ids = [mv.web_id for mv in vote.member_votes]
-    stmt = select(Member).where(Member.id.in_(member_ids))
-    return Session.execute(stmt).scalars()
-
-
 class RequiredGroupsAnalyzer:
     # Inclusive, so reaching this number passes.
     # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
     MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD = 361
 
-    def __init__(self, vote: Vote):
+    def __init__(self, vote: Vote, members_by_id: dict[int, Member]):
         self.vote = vote
+        self.members_by_id = members_by_id
 
     def run(self) -> Fragment | None:
         # Only treat votes where we got the result from an official source for now
@@ -458,12 +448,9 @@ class RequiredGroupsAnalyzer:
         ]:
             return None
 
-        members = _load_members(self.vote)
-        members_by_id: MembersById = {m.id: m for m in members}
-
         vote_positions_by_group = count_vote_positions_by_group(
             member_votes=self.vote.member_votes,
-            group_by=lambda mv: members_by_id[mv.web_id].group_at(self.vote.timestamp),
+            group_by=lambda mv: self.members_by_id[mv.web_id].group_at(self.vote.timestamp),
         )
 
         group_votes_in_favor = {
