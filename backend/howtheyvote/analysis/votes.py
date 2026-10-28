@@ -477,7 +477,7 @@ class RequiredGroupsAnalyzer:
 
                 switched_votes = sum(group_votes_in_favor[group] for group in candidate_groups)
 
-                if self._has_majority(
+                if not self._has_majority(
                     votes_in_favor - switched_votes, votes_against + switched_votes
                 ):
                     minimum_required_groups.append(candidate_groups)
@@ -507,14 +507,13 @@ class RequiredGroupsAnalyzer:
         # See RoP 194(3) -> disregard abstentions
         if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
             # See 196(2) RoP -> tied split votes are adopted
-            if (is_split_vote and votes_in_favor < votes_against) or (
-                not is_split_vote and votes_in_favor <= votes_against
-            ):
-                return True
+            if is_split_vote:
+                return votes_in_favor >= votes_against
+            else:
+                return votes_in_favor > votes_against
 
         # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
         if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
-            if votes_in_favor < self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD:
-                return True
+            return votes_in_favor >= self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
 
-        return False
+        raise ValueError(f"Unsupported MajorityType: {self.vote.majority_type}")
