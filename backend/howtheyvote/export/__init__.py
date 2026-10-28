@@ -877,7 +877,9 @@ class Export:
         log.info("Exporting EuroVoc concepts")
 
         with self.eurovoc_concepts.open() as eurovoc_concepts:
-            exp = func.json_each(Vote.eurovoc_concepts).table_valued("value")
+            exp = func.json_each(Vote.eurovoc_concepts).table_valued(
+                "value", joins_implicitly=True
+            )
             query = (
                 select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
             )
@@ -895,7 +897,9 @@ class Export:
         log.info("Exporting OEIL subjects")
 
         with self.oeil_subjects.open() as oeil_subjects:
-            exp = func.json_each(Vote.oeil_subjects).table_valued("value")
+            exp = func.json_each(Vote.oeil_subjects).table_valued(
+                "value", joins_implicitly=True
+            )
             query = (
                 select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
             )
@@ -913,7 +917,7 @@ class Export:
         log.info("Exporting geographic areas")
 
         with self.geo_areas.open() as geo_areas:
-            exp = func.json_each(Vote.geo_areas).table_valued("value")
+            exp = func.json_each(Vote.geo_areas).table_valued("value", joins_implicitly=True)
             query = (
                 select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
             )
@@ -937,7 +941,9 @@ class Export:
         log.info("Exporting committees")
 
         with self.committees.open() as committees:
-            exp = func.json_each(Vote.responsible_committees).table_valued("value")
+            exp = func.json_each(Vote.responsible_committees).table_valued(
+                "value", joins_implicitly=True
+            )
             query = (
                 select(func.distinct(exp.c.value)).select_from(Vote, exp).order_by(exp.c.value)
             )
