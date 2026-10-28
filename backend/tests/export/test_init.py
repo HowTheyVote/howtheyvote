@@ -11,6 +11,7 @@ from howtheyvote.models import (
     EurovocConcept,
     Group,
     GroupMembership,
+    MajorityType,
     Member,
     MemberVote,
     NationalParty,
@@ -34,6 +35,7 @@ def test_readme(db_session, tmp_path):
     assert re.search(r"^## Tables$", readme, re.MULTILINE)
     assert re.search(r"^### members.csv$", readme, re.MULTILINE)
     assert re.search(r"^### votes.csv$", readme, re.MULTILINE)
+    assert re.search(r"^### groups_required_for_majority.csv$", readme, re.MULTILINE)
     assert re.search(r"^### amendment_urls.csv$", readme, re.MULTILINE)
 
 
@@ -175,6 +177,8 @@ def test_export_votes(db_session, tmp_path):
         procedure_title="Lorem Ipsum",
         procedure_reference="2025/1234(COD)",
         procedure_stage=ProcedureStage.OLP_FIRST_READING,
+        majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
+        groups_required_for_majority=[[Group["EPP"], Group["SD"]]],
         member_votes=[
             MemberVote(
                 web_id=123,
@@ -219,12 +223,22 @@ def test_export_votes(db_session, tmp_path):
     votes_meta = tmp_path.joinpath("votes.csv-metadata.json")
 
     expected = (
-        "id,timestamp,display_title,reference,description,amendment_subject,amendment_number,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,count_for,count_against,count_abstention,count_did_not_vote,result,texts_adopted_reference\n"
-        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,1,0,0,0,ADOPTED,P10_TA(2025)0123\n"
+        "id,timestamp,display_title,reference,description,amendment_subject,amendment_number,is_main,procedure_reference,procedure_title,procedure_type,procedure_stage,majority_type,count_for,count_against,count_abstention,count_did_not_vote,result,texts_adopted_reference\n"
+        "123456,2024-01-01 00:00:00,Lorem Ipsum,,,,,False,2025/1234(COD),Lorem Ipsum,COD,OLP_FIRST_READING,MAJORITY_OF_VOTES_CAST,1,0,0,0,ADOPTED,P10_TA(2025)0123\n"
     )
 
     assert votes_csv.read_text() == expected
     assert votes_meta.is_file()
+
+    groups_required_for_majority_csv = tmp_path.joinpath("groups_required_for_majority.csv")
+    groups_required_for_majority_meta = tmp_path.joinpath(
+        "groups_required_for_majority.csv-metadata.json"
+    )
+
+    expected = "vote_id,group_codes\n123456,EPP+SD\n"
+
+    assert groups_required_for_majority_csv.read_text() == expected
+    assert groups_required_for_majority_meta.is_file()
 
     amendment_urls_csv = tmp_path.joinpath("amendment_urls.csv")
     amendment_urls_meta = tmp_path.joinpath("amendment_urls.csv-metadata.json")

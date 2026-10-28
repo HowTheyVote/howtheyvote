@@ -10,6 +10,7 @@ from ..models import (
     DocumentType,
     EurovocConcept,
     Group,
+    MajorityType,
     Member,
     NationalParty,
     OEILSubject,
@@ -543,6 +544,28 @@ class VoteDict(BaseVoteDict):
     procedure: ProcedureDict | None
     """Information about the legislative procedure to which this vote belongs"""
 
+    majority_type: MajorityType | None
+    """Type of majority required for this vote to pass. Only available for votes starting in
+    2024 and held as part of one of the following procedure types:
+
+    * Ordinary Legislative Procedure (COD)
+    * Own-Initiative Procedure (INI)
+    * Resolutions on topical subjects (RSP)
+
+    The majority is also available for votes on motions of censure against the Commission.
+
+    We follow the naming used in the Rules of Procedure:
+
+    * `MAJORITY_OF_VOTES_CAST`: Requires more votes for than against, ignoring abstentions and
+      MEPs that did not vote.
+    * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of votes cast, including
+      abstentions and MEPs that did not vote. For the 10th legislative term, this means 361
+      MEPs have to vote for.
+    * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of all MEPs in Parliament to
+      vote in favor, including abstentions and MEPs that did not vote. For the 10th legislative
+      term, this means 361 MEPs have to vote in favor.
+    """
+
     snippet: SnippetDict | None
     """A short snippet with information about the vote. This is usually extracted
     from a European Parliament press release or the Legislative Observatory."""
@@ -552,6 +575,23 @@ class VoteDict(BaseVoteDict):
 
     stats: VoteStatsDict
     """Statistics about this vote"""
+
+    groups_required_for_majority: list[list[GroupDict]]
+    """Each item is a combination of political groups required for a majority in a
+    vote. That is, the vote would not have passed if the MEPs of the groups that voted in
+    favor would have voted against.
+
+    We calculate this information based on the majority type of a vote. It is currently only
+    available for votes starting in 2024 and held as part of one of the following procedure
+    types:
+
+    * Ordinary Legislative Procedure (COD)
+    * Own-initiative Procedure (INI)
+    * Resolutions on topical subjects (RSP)
+
+    We list only the minimal combinations of group that are required for a majority. For
+    example, if the ECR are required for the majority to hold, that implies that any
+    combination of the ECR with another group is also required, but we only list ECR."""
 
     member_votes: list[MemberVoteDict]
     """List of MEPs and their vote positions"""

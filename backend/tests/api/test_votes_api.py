@@ -10,6 +10,7 @@ from howtheyvote.models import (
     Fragment,
     Group,
     GroupMembership,
+    MajorityType,
     Member,
     MemberVote,
     NationalParty,
@@ -115,6 +116,8 @@ def records(db_session, search_index):
             ),
         ],
         result=VoteResult.ADOPTED,
+        majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
+        groups_required_for_majority=[[Group["EPP"], Group["GUE_NGL"]]],
         oeil_subjects=[OEILSubject["2.10.01"]],
         responsible_committees=[Committee["IMCO"]],
     )
@@ -990,6 +993,21 @@ def test_votes_api_show(records, db_session, api):
             },
         ],
         "result": "ADOPTED",
+        "majority_type": "MAJORITY_OF_VOTES_CAST",
+        "groups_required_for_majority": [
+            [
+                {
+                    "code": "EPP",
+                    "label": "European People’s Party",
+                    "short_label": "EPP",
+                },
+                {
+                    "code": "GUE_NGL",
+                    "label": "The Left in the European Parliament",
+                    "short_label": "The Left",
+                },
+            ],
+        ],
         "geo_areas": [],
         "eurovoc_concepts": [],
         "oeil_subjects": [

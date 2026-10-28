@@ -109,5 +109,5 @@ def test_get_normalized_docstring():
         Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
         montes, nascetur ridiculus mus."""
 
-    expected = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.\n\nAenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
+    expected = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.\nAenean commodo ligula eget dolor.\n\nAenean massa. Cum sociis natoque penatibus et magnis dis parturient\nmontes, nascetur ridiculus mus."
     assert get_normalized_docstring(TestClass) == expected
