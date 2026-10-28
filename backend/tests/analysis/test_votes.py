@@ -777,7 +777,7 @@ def test_required_groups_analyzer_treats_tied_split_vote_as_adopted():
         timestamp=timestamp,
         result=VoteResult.ADOPTED,
         majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
-        amendment_number="$",
+        amendment_number="§",
         member_votes=member_votes,
     )
 

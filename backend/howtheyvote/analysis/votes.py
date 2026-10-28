@@ -502,7 +502,7 @@ class RequiredGroupsAnalyzer:
 
     def _has_majority(self, votes_in_favor: int, votes_against: int) -> bool:
 
-        is_split_vote = self.vote.amendment_number and self.vote.amendment_number == "$"
+        is_split_vote = self.vote.amendment_number == "§"
 
         # See RoP 194(3) -> disregard abstentions
         if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
