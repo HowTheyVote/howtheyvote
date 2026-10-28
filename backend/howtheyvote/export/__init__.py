@@ -214,13 +214,13 @@ class VoteRow(TypedDict):
 
     majority_type: str | None
     """Type of majority required for this vote to pass. Only available for votes starting in
-    2024 and held as part of to one of the following procedure types:
+    2024 and held as part of one of the following procedure types:
 
     * Ordinary Legislative Procedure (COD)
     * Own-Initiative Procedure (INI)
     * Resolutions on topical subjects (RSP)
 
-    The majority is available for votes on motions of censure against the Commission.
+    The majority is also available for votes on motions of censure against the Commission.
 
     We follow the naming used in the Rules of Procedure:
 
@@ -229,9 +229,9 @@ class VoteRow(TypedDict):
     * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of votes cast, including
       abstentions and MEPs that did not vote. For the 10th legislative term, this means 361
       MEPs have to vote for.
-    * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of  all MEPs in Parliament to
-      vote in favor,including abstentions and MEPs that did not vote.
-      For the 10th legislative term, this means 361 MEPs have to vote in favor."""
+    * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of all MEPs in Parliament to
+      vote in favor, including abstentions and MEPs that did not vote. For the 10th legislative
+      term, this means 361 MEPs have to vote in favor."""
 
     count_for: int
     """Number of MEPs who voted in favor"""
@@ -416,7 +416,8 @@ class GroupsRequiredForMajorityRow(TypedDict):
     favor would have voted against.
 
     We calculate this information based on the majority type of a vote. It is currently only
-    available for starting in 2024 and related to one of the following procedure types:
+    available for votes starting in 2024 and held as part of one of the following procedure
+    types:
 
     * Ordinary Legislative Procedure (COD)
     * Own-initiative Procedure (INI)
