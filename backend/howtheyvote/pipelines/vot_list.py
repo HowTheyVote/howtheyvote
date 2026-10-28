@@ -6,10 +6,10 @@ from cachetools import LRUCache
 from sqlalchemy import select
 from structlog import get_logger
 
-from ..analysis import VoteGroupsAnalyzer
+from ..analysis import MajorityAnalyzer, RequiredGroupsAnalyzer, VoteGroupsAnalyzer
 from ..db import Session
-from ..models import PlenarySession, Vote
-from ..query import session_is_current_at
+from ..models import Member, PlenarySession, Vote
+from ..query import member_active_at, session_is_current_at
 from ..scrapers import (
     NoWorkingUrlError,
     ODPDocumentScraper,
@@ -37,6 +37,8 @@ class VOTListPipeline(BasePipeline):
         self._aws_waf_token = solve_ep_aws_waf_challenge()
 
         self._scrape_vot_list()
+        self._analyze_majorities()
+        self._analyze_required_groups()
 
         # The `ODPDocumentScraper` retrieves amendment URLs for votes. We need to know
         # the amendment numbers to retrieve amendment URLs, and we only have the
@@ -120,6 +122,30 @@ class VOTListPipeline(BasePipeline):
             votes=self._votes(),
         )
         writer.add(analyzer.run())
+        writer.flush()
+
+    def _analyze_majorities(self) -> None:
+        self._log.info("Running necessary majority analysis")
+        writer = BulkWriter()
+        for vote in self._votes():
+            analyzer = MajorityAnalyzer(
+                vote=vote,
+            )
+            writer.add(analyzer.run())
+        writer.flush()
+
+    def _analyze_required_groups(self) -> None:
+        log.info("Fetching active members", date=self.date)
+        query = select(Member).where(member_active_at(self.date))
+        members = Session.execute(query).scalars()
+
+        members_by_id = {m.id: m for m in members}
+
+        log.info("Analyze groups required for passing", date=self.date)
+        writer = BulkWriter()
+        for vote in self._votes():
+            analyzer = RequiredGroupsAnalyzer(vote=vote, members_by_id=members_by_id)
+            writer.add(analyzer.run())
         writer.flush()
 
     def _index_votes(self) -> None:

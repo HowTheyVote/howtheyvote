@@ -7,8 +7,10 @@ from structlog import get_logger
 
 from ..analysis import (
     MainVoteAnalyzer,
+    MajorityAnalyzer,
     PressReleaseAnalyzer,
     PressReleaseVotePositionCountsAnalyzer,
+    RequiredGroupsAnalyzer,
     TopicsAnalyzer,
     VoteGroupsAnalyzer,
 )
@@ -292,6 +294,34 @@ def topics() -> None:
     for partition in votes.partitions():
         for vote in partition:
             writer.add(TopicsAnalyzer(vote).run())
+        writer.flush()
+
+
+@temp.command()
+def majorities() -> None:
+    """Add majorities to votes."""
+    query = select(Vote)
+    votes = Session.execute(query, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    for partition in votes.partitions():
+        for vote in partition:
+            writer.add(MajorityAnalyzer(vote).run())
+        writer.flush()
+
+
+@temp.command()
+def required_groups() -> None:
+    query_votes = select(Vote)
+    votes = Session.execute(query_votes, execution_options={"yield_per": 500}).scalars()
+    writer = BulkWriter()
+
+    query_members = select(Member)
+    members_by_id = {m.id: m for m in Session.execute(query_members).scalars()}
+
+    for partition in votes.partitions():
+        for vote in partition:
+            writer.add(RequiredGroupsAnalyzer(vote, members_by_id).run())
         writer.flush()
 
 

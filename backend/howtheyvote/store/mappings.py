@@ -4,6 +4,7 @@ from ..models import (
     Committee,
     Country,
     EurovocConcept,
+    MajorityType,
     Member,
     OEILSubject,
     OEILSummary,
@@ -16,6 +17,7 @@ from ..models import (
     deserialize_amendment_author,
     deserialize_amendment_url,
     deserialize_group_membership,
+    deserialize_groups_required_for_majority,
     deserialize_member_vote,
     deserialize_national_party_membership,
 )
@@ -79,6 +81,13 @@ def map_vote(record: CompositeRecord) -> Vote:
         procedure_stage=record.get(
             key="procedure_stage",
             type=lambda x: ProcedureStage[x] if x else None,
+        ),
+        majority_type=record.get(
+            key="majority_type",
+            type=lambda x: MajorityType[x] if x else None,
+        ),
+        groups_required_for_majority=record.get(
+            key="groups_required_for_majority", type=deserialize_groups_required_for_majority
         ),
         amendment_subject=record.get("amendment_subject"),
         amendment_number=record.get("amendment_number"),

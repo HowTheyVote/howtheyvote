@@ -1,12 +1,25 @@
 import datetime
 from collections import defaultdict
 from collections.abc import Iterable, Iterator
+from itertools import combinations
 
 from unidecode import unidecode
 
-from ..helpers import make_key
-from ..models import Fragment, OEILSubject, OEILSummary, PressRelease, Topic, Vote
-from ..vote_stats import count_vote_positions
+from ..helpers import make_key, parse_procedure_reference
+from ..models import (
+    Fragment,
+    MajorityType,
+    Member,
+    OEILSubject,
+    OEILSummary,
+    PressRelease,
+    ProcedureStage,
+    ProcedureType,
+    Topic,
+    Vote,
+    VoteResult,
+)
+from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 
 
 class VoteGroupsAnalyzer:
@@ -359,3 +372,148 @@ class TopicsAnalyzer:
             group_key=self.vote.id,
             data={"topics": [topic.code for topic in topics]},
         )
+
+
+class MajorityAnalyzer:
+    def __init__(self, vote: Vote):
+        self.vote = vote
+
+    def run(self) -> Fragment | None:
+        majority_type = self._majority_type()
+
+        if not majority_type:
+            return None
+
+        return Fragment(
+            model="Vote",
+            source_id=self.vote.id,
+            source_name=type(self).__name__,
+            group_key=self.vote.id,
+            data={"majority_type": majority_type},
+        )
+
+    def _majority_type(self) -> MajorityType | None:
+        if not self.vote.procedure_reference:
+            return None
+
+        procedure_reference = parse_procedure_reference(self.vote.procedure_reference)
+        procedure_type = procedure_reference["type"]
+        procedure_stage = self.vote.procedure_stage
+
+        if procedure_type in (ProcedureType.RSP, ProcedureType.INI):
+            return MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if procedure_type == ProcedureType.COD:
+            if procedure_stage == ProcedureStage.OLP_FIRST_READING:
+                return MajorityType.MAJORITY_OF_VOTES_CAST
+
+            if procedure_stage == ProcedureStage.OLP_SECOND_READING:
+                return MajorityType.MAJORITY_OF_COMPONENT_MEMBERS
+
+            if procedure_stage == ProcedureStage.OLP_THIRD_READING:
+                return MajorityType.MAJORITY_OF_VOTES_CAST
+
+        if (
+            procedure_type == ProcedureType.INS
+            and self.vote.display_title == "Motion of censure on the Commission"
+        ):
+            return MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS
+
+        return None
+
+
+class RequiredGroupsAnalyzer:
+    # Inclusive, so reaching this number passes.
+    # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
+    MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD = 361
+
+    def __init__(self, vote: Vote, members_by_id: dict[int, Member]):
+        self.vote = vote
+        self.members_by_id = members_by_id
+
+    def run(self) -> Fragment | None:
+        # Only treat votes where we got the result from an official source for now
+        if not self.vote.result:
+            return None
+        # Only consider adopted votes, as not passing is the default,
+        # nearly all of the time, passing is interesting.
+        if self.vote.result != VoteResult.ADOPTED:
+            return None
+
+        # TODO: Supporting more majorities would be nice,
+        # but should not be the priority for now
+        if self.vote.majority_type not in [
+            MajorityType.MAJORITY_OF_VOTES_CAST,
+            MajorityType.MAJORITY_OF_COMPONENT_MEMBERS,
+        ]:
+            return None
+
+        vote_positions_by_group = count_vote_positions_by_group(
+            member_votes=self.vote.member_votes,
+            group_by=lambda mv: self.members_by_id[mv.web_id].group_at(self.vote.timestamp),
+        )
+
+        group_votes_in_favor = {
+            group.code: stats["FOR"]
+            for group, stats in vote_positions_by_group.items()
+            if group is not None and group.code != "NI" and stats["FOR"] > 0
+        }
+
+        vote_positions = count_vote_positions(self.vote.member_votes)
+        votes_in_favor = vote_positions["FOR"]
+        votes_against = vote_positions["AGAINST"]
+
+        group_codes = list(group_votes_in_favor)
+        minimum_required_groups: list[frozenset[str]] = []
+
+        for size in range(1, len(group_codes) + 1):
+            for combination in combinations(group_codes, size):
+                candidate_groups = frozenset(combination)
+
+                if any(
+                    existing.issubset(candidate_groups) for existing in minimum_required_groups
+                ):
+                    continue
+
+                switched_votes = sum(group_votes_in_favor[group] for group in candidate_groups)
+
+                if not self._has_majority(
+                    votes_in_favor - switched_votes, votes_against + switched_votes
+                ):
+                    minimum_required_groups.append(candidate_groups)
+
+        # Sort both the groups inside of the sets and the sets itself.
+        # Ensures that output in fragment is stable across multiple runs.
+        required_groups: list[list[str]] = [
+            sorted(required_set)
+            for required_set in sorted(
+                minimum_required_groups,
+                key=lambda groups: (len(groups), tuple(sorted(groups))),
+            )
+        ]
+
+        return Fragment(
+            model="Vote",
+            source_id=self.vote.id,
+            source_name=type(self).__name__,
+            group_key=self.vote.id,
+            data={"groups_required_for_majority": required_groups},
+        )
+
+    def _has_majority(self, votes_in_favor: int, votes_against: int) -> bool:
+
+        is_split_vote = self.vote.amendment_number == "§"
+
+        # See RoP 194(3) -> disregard abstentions
+        if self.vote.majority_type == MajorityType.MAJORITY_OF_VOTES_CAST:
+            # See 196(2) RoP -> tied split votes are adopted
+            if is_split_vote:
+                return votes_in_favor >= votes_against
+            else:
+                return votes_in_favor > votes_against
+
+        # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
+        if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
+            return votes_in_favor >= self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
+
+        raise ValueError(f"Unsupported MajorityType: {self.vote.majority_type}")

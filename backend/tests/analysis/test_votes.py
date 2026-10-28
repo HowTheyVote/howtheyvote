@@ -4,15 +4,21 @@ from howtheyvote.analysis.votes import (
     MainVoteAnalyzer,
     OEILSummaryAnalyzer,
     PressReleaseAnalyzer,
+    RequiredGroupsAnalyzer,
     VoteGroupsAnalyzer,
 )
 from howtheyvote.models import (
     Fragment,
+    Group,
+    GroupMembership,
+    MajorityType,
+    Member,
     MemberVote,
     OEILSummary,
     PressRelease,
     Vote,
     VotePosition,
+    VoteResult,
 )
 
 from ..helpers import record_to_dict
@@ -693,3 +699,114 @@ def test_oeil_summary_analyzer_multiple_votes_only_one_mentioned():
 
     assert len(fragments) == 1
     assert record_to_dict(fragments[0]) == record_to_dict(expected[0])
+
+
+def _make_grouped_member_votes(
+    timestamp: datetime.datetime,
+    *groups: tuple[str | None, VotePosition, int],
+) -> tuple[list[MemberVote], dict[int, Member]]:
+    member_votes = []
+    members_by_id = {}
+    member_id = 0
+
+    for group_code, position, count in groups:
+        for _ in range(count):
+            member_id += 1
+            group_membership = GroupMembership(
+                term=10,
+                group=Group[group_code],
+                start_date=timestamp.date(),
+                end_date=None,
+            )
+
+            member_votes.append(MemberVote(web_id=member_id, position=position))
+            members_by_id[member_id] = Member(
+                id=member_id,
+                group_memberships=[group_membership],
+            )
+
+    return member_votes, members_by_id
+
+
+def test_required_groups_analyzer_finds_minimum_coalitions_in_stable_order():
+    timestamp = datetime.datetime(2026, 1, 1)
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 4),
+        ("SD", VotePosition.FOR, 3),
+        ("RENEW", VotePosition.FOR, 3),
+    )
+    vote = Vote(
+        id=1,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
+        member_votes=member_votes,
+    )
+
+    fragment = RequiredGroupsAnalyzer(vote, members_by_id).run()
+
+    assert fragment is not None
+    assert fragment.data == {
+        "groups_required_for_majority": [
+            ["EPP", "RENEW"],
+            ["EPP", "SD"],
+            ["RENEW", "SD"],
+        ]
+    }
+
+
+def test_required_groups_analyzer_treats_tied_split_vote_as_adopted():
+    timestamp = datetime.datetime(2026, 1, 1)
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 1),
+        ("SD", VotePosition.FOR, 4),
+        ("ECR", VotePosition.AGAINST, 3),
+    )
+
+    ordinary_vote = Vote(
+        id=1,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
+        member_votes=member_votes,
+    )
+    split_vote = Vote(
+        id=2,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
+        amendment_number="§",
+        member_votes=member_votes,
+    )
+
+    ordinary_fragment = RequiredGroupsAnalyzer(ordinary_vote, members_by_id).run()
+    split_fragment = RequiredGroupsAnalyzer(split_vote, members_by_id).run()
+
+    assert ordinary_fragment is not None
+    assert split_fragment is not None
+    assert ordinary_fragment.data == {"groups_required_for_majority": [["EPP"], ["SD"]]}
+    assert split_fragment.data == {"groups_required_for_majority": [["SD"]]}
+
+
+def test_required_groups_analyzer_component_majority():
+    timestamp = datetime.datetime(2026, 1, 1)
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 2),
+        ("SD", VotePosition.FOR, 1),
+        ("RENEW", VotePosition.FOR, 360),
+    )
+    vote = Vote(
+        id=1,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.MAJORITY_OF_COMPONENT_MEMBERS,
+        member_votes=member_votes,
+    )
+
+    fragment = RequiredGroupsAnalyzer(vote, members_by_id).run()
+
+    assert fragment is not None
+    assert fragment.data == {"groups_required_for_majority": [["RENEW"], ["EPP", "SD"]]}
