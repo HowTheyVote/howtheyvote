@@ -6,7 +6,7 @@
   "author": "Till Prochaska <mail@tillprochaska.de>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "@sentry/node": "^10.72.0",
+    "@sentry/node": "^11.4.0",
     "@tinyhttp/app": "^2.4.0",
     "isbot": "^5.2.2",
     "mmdb-lib": "^3.0.3",
