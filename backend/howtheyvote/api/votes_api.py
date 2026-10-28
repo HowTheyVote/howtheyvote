@@ -506,9 +506,14 @@ def show(vote_id: int) -> ResponseReturnValue:
         **base_vote,
         "document": document,
         "procedure": procedure,
+        "majority_type": vote.majority_type,
         "snippet": snippet,
         "sharepic_url": vote.sharepic_url,
         "stats": stats,
+        "groups_required_for_majority": [
+            [serialize_group(group) for group in groups]
+            for groups in vote.groups_required_for_majority or []
+        ],
         "member_votes": member_votes,
         "sources": sources,
         "links": links,
