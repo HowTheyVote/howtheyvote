@@ -212,6 +212,24 @@ class VoteRow(TypedDict):
     `OLP_SECOND_READING`, `OLP_THIRD_READING`.This field is only available for votes starting
     in 2024 and if the vote is part of an Ordinary Legislative Procedure."""
 
+    majority_type: str | None
+    """Type of majority required for this vote to pass. Only available for votes starting in
+    2024 and related to one of the following procedure types:
+
+    * Ordinary Legislative Procedure (COD)
+    * Own-Initiative Procedure (INI)
+    * Resolutions on topical subjects (RSP)
+
+    We follow the naming used in the Rules of Procedure:
+
+    * `MAJORITY_OF_VOTES_CAST`: Requires more votes for than against, ignoring abstentions and
+      MEPs that did not vote.
+    * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of votes cast, including
+      abstentions and MEPs that did not vote. For the 10th legislative term, this means 361
+      MEPs have to vote for.
+    * `TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS`: Requires two-thirds of
+      votes cast as well as more than half of all MEPs."""
+
     count_for: int
     """Number of MEPs who voted in favor"""
 
@@ -389,6 +407,30 @@ class AmendmentURLRow(TypedDict):
     This field is only available for votes starting in 2024."""
 
 
+class GroupsRequiredForMajorityRow(TypedDict):
+    """Each row represents a combination of political groups required for a majority in a
+    vote. That is, the vote would not have passed if the MEPs of the groups that voted in
+    favor would have voted against.
+
+    We calculate this information based on the majority type of a vote. The majority type is
+    currently only available for starting in 2024 and related to one of the following procedure
+    types:
+
+    * Ordinary Legislative Procedure (COD)
+    * Own-initiative Procedure (INI)
+    * Resolutions on topical subjects (RSP)
+
+    We list only the minimal combinations of group that are required for a majority. For
+    example, if the ECR are required for the majority to hold, that implies that any
+    combination of the ECR with another group is also required, but we only list ECR."""
+
+    vote_id: int
+    """Vote ID"""
+
+    group_codes: str
+    """Political group codes, concatenated with a `+`."""
+
+
 class Export:
     def __init__(self, outdir: pathlib.Path):
         self.outdir = outdir
@@ -519,6 +561,13 @@ class Export:
             primary_key=["vote_id", "author_type", "group_code", "committee_code"],
         )
 
+        self.groups_required_for_majority = Table(
+            row_type=GroupsRequiredForMajorityRow,
+            outdir=self.outdir,
+            name="groups_required_for_majority",
+            primary_key=["vote_id", "group_codes"],
+        )
+
     def run(self) -> None:
         self.fetch_members()
         self.write_export_timestamp()
@@ -542,6 +591,7 @@ class Export:
                 self.responsible_committee_votes,
                 self.amendment_authors,
                 self.amendment_urls,
+                self.groups_required_for_majority,
             ]
         )
         self.export_members()
@@ -687,6 +737,7 @@ class Export:
             self.geo_area_votes.open() as geo_area_votes,
             self.responsible_committee_votes.open() as responsible_committee_votes,
             self.amendment_authors.open() as amendment_author_votes,
+            self.groups_required_for_majority.open() as groups_required_for_majority,
         ):
             query = select(Vote).order_by(Vote.id).execution_options(yield_per=500)
             result = Session.scalars(query)
@@ -719,6 +770,9 @@ class Export:
                         ),
                         "procedure_stage": (
                             vote.procedure_stage.value if vote.procedure_stage else None
+                        ),
+                        "majority_type": (
+                            vote.majority_type.value if vote.majority_type else None
                         ),
                         "count_for": position_counts["FOR"],
                         "count_against": position_counts["AGAINST"],
@@ -785,6 +839,14 @@ class Export:
                                 else "",
                             }
                         )
+
+                for groups in vote.groups_required_for_majority or []:
+                    groups_required_for_majority.write_row(
+                        {
+                            "vote_id": vote.id,
+                            "group_codes": "+".join(group.code for group in groups),
+                        }
+                    )
 
                 for member_vote in sorted(vote.member_votes, key=lambda mv: mv.web_id):
                     member = self.members_by_id[member_vote.web_id]
