@@ -11,7 +11,7 @@ import StatsCard from "../components/StatsCard";
 import Wrapper from "../components/Wrapper";
 import fundersUrl from "../images/funders.png";
 import { formatDate, formatNumber } from "../lib/dates";
-import { getErrorReportFormUrl } from "../lib/links";
+import { getErrorReportFormUrl, getSearchFeedbackFormUrl } from "../lib/links";
 import type { Loader, Page } from "../lib/server";
 
 export const loader: Loader<Statistics> = async () => {
@@ -137,6 +137,25 @@ function GeneralSection() {
           "Against", and "Abstention" are options that the MEP actively chose at
           the time of the vote.
         </p>
+      </Disclosure>
+      <Disclosure title="Why do some search results not match my search terms?">
+        In addition to vote titles, search on HowTheyVote.eu uses information
+        from multiple official sources, such as press releases and other
+        editorial content published by EU institutions. You can find these in
+        the "More information" section on every vote page. Official vote titles
+        often differ from the terms people actually use to search for them, so
+        we sometimes add keywords manually. For example, the "Chat Control" vote
+        is officially titled "Temporary derogation from the ePrivacy directive",
+        but most people search for "chat control". If your search returns
+        results that seem unrelated, you can help us improve search quality by{" "}
+        <a
+          href={getSearchFeedbackFormUrl("")}
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          providing feedback
+        </a>
+        .
       </Disclosure>
       <Disclosure title="Where can I find the results of non-roll-call votes?">
         <p>
