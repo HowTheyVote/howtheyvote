@@ -191,6 +191,39 @@ def test_votes_api_index(db_session, search_index, api):
     assert res.json["results"][0]["display_title"] == "Vote One"
 
 
+def test_votes_api_index_main_votes(db_session, search_index, api):
+    main_vote = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        is_main=True,
+        title="Main vote",
+    )
+
+    non_main_vote = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        is_main=False,
+        title="Non-main vote",
+    )
+
+    db_session.add_all([main_vote, non_main_vote])
+    db_session.commit()
+    index_search(Vote, [main_vote, non_main_vote])
+
+    res = api.get("/api/votes")
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes?include_only_main=true")
+    assert len(res.json["results"]) == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get("/api/votes?include_only_main=false")
+    assert len(res.json["results"]) == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 2
+
+
 def test_votes_api_index_empty_title(db_session, search_index, api):
     empty_title = Vote(
         id=1,
@@ -338,6 +371,87 @@ def test_votes_api_index_filters(db_session, search_index, api):
     # Ignores invalid filter values
     res = api.get("/api/votes", query_string={"geo_areas": "FOO"})
     assert res.json["total"] == 3
+
+
+def test_votes_api_index_filter_groups_required_for_majority(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        is_main=True,
+        groups_required_for_majority=[
+            [Group["EPP"]],
+            [Group["ECR"]],
+            [Group["RENEW"]],
+            [Group["PFE"], Group["ESN"]],
+        ],
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote Two",
+        is_main=True,
+        groups_required_for_majority=[
+            [Group["EPP"]],
+            [Group["SD"]],
+            [Group["RENEW"]],
+        ],
+    )
+
+    # Vote for which we couldn’t determine majority threshold
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        is_main=True,
+    )
+
+    db_session.add_all([one, two, three])
+    db_session.commit()
+    index_search(Vote, [one, two, three])
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "EPP"},
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 1
+    assert res.json["results"][1]["id"] == 2
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "SD"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "ECR"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "PFE+ESN"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "ESN+PFE"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 1
+
+    res = api.get(
+        "/api/votes",
+        query_string={"groups_required_for_majority": "ESN"},
+    )
+    assert res.json["total"] == 0
 
 
 def test_votes_api_index_search(db_session, search_index, api):
@@ -573,6 +687,34 @@ def test_votes_api_index_facets(db_session, search_index, api):
                 "short_label": "IMCO",
                 "count": 1,
             },
+        ],
+    }
+
+
+def test_votes_api_index_facets_month(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        is_main=True,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 7, 1, 0, 0, 0),
+        title="Vote Two",
+        is_main=True,
+    )
+
+    db_session.add_all([one, two])
+    db_session.commit()
+    index_search(Vote, [one, two])
+
+    res = api.get("/api/votes", query_string={"facets": "month"})
+    assert res.json["facets"] == {
+        "month": [
+            {"value": "2024-01", "label": "2024-01", "short_label": None, "count": 1},
+            {"value": "2024-07", "label": "2024-07", "short_label": None, "count": 1},
         ],
     }
 

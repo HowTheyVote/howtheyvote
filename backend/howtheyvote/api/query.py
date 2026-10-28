@@ -24,6 +24,7 @@ from xapian import (
     Query as XapianQuery,
 )
 
+from .. import config
 from ..db import Session
 from ..models import BaseWithId
 from ..models.types import ListType
@@ -375,6 +376,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
             enquire = Enquire(index)
             enquire.set_query(query)
             enquire.set_weighting_scheme(self._xapian_bm25_weight())
+            enquire.set_time_limit(config.SEARCH_TIME_LIMIT)
 
             sort = self.get_sort()
             if sort:
@@ -391,7 +393,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
                 enquire.set_sort_by_relevance_then_value(slot, reverse)
 
             # Fetch one extra result to check if there is a next page
-            mset = enquire.get_mset(offset, limit + 1)
+            mset = enquire.get_mset(offset, limit + 1, config.SEARCH_CHECK_AT_LEAST)
 
         # Based on the IDs fetched from the search index, fetch full records
         # from the database
@@ -478,7 +480,7 @@ class SearchQuery[T: BaseWithId](Query[T]):
             # This means that facet options and facet option counts might still be slightly
             # inaccurate, but this is unlikely to be relevant given the small number of
             # documents in our index.
-            enquire.get_mset(0, 0, 10_000)
+            enquire.get_mset(0, 0, config.SEARCH_CHECK_AT_LEAST)
 
         options: list[FacetOption] = []
         option_values: set[Any] = set()

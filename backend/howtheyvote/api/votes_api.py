@@ -34,11 +34,13 @@ from ..models import (
     Committee,
     Country,
     Fragment,
+    Group,
     Member,
     OEILSummary,
     PressRelease,
     Topic,
     Vote,
+    VoteResult,
 )
 from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
@@ -200,6 +202,15 @@ def index() -> ResponseReturnValue:
                         type: string
             -
                 in: query
+                name: result
+                description: Only return results with the given result.
+                schema:
+                    type: string
+                    enum:
+                        - adopted
+                        - rejected
+            -
+                in: query
                 name: facets
                 description: |
                     Return facet options for the given fields. Can be set multiple times.
@@ -213,6 +224,7 @@ def index() -> ResponseReturnValue:
                             - geo_areas
                             - responsible_committees
                             - topics
+                            - month
         responses:
             '200':
                 description: Ok
@@ -732,6 +744,11 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     if sort_field:
         query = query.sort(field=sort_field, order=sort_order)
 
+    # Main votes
+    include_only_main = request.args.get("include_only_main", type=_as_bool, default=True)
+    if include_only_main:
+        query = query.filter("is_main", "=", True)
+
     # Filters
     query = query.filter("date", "=", request.args.get("date", type=date.fromisoformat))
     query = query.filter("date", ">=", request.args.get("date[gte]", type=date.fromisoformat))
@@ -746,16 +763,34 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     topics = request.args.getlist("topics", type=_as_topic)
     query = query.filter("topics", "in", topics)
 
+    groups_required_for_majority = request.args.getlist(
+        "groups_required_for_majority",
+        type=_as_groups,
+    )
+    query = query.filter("groups_required_for_majority", "in", groups_required_for_majority)
+
+    query = query.filter("result", "=", request.args.get("result", type=_as_result))
+
     # Facets
     facets = request.args.getlist(
         "facets",
-        type=one_of("geo_areas", "responsible_committees", "topics"),
+        type=one_of(
+            "geo_areas",
+            "responsible_committees",
+            "topics",
+            "month",
+            "groups_required_for_majority",
+        ),
     )
 
     for field in facets:
         query = query.facet(field)
 
     return query
+
+
+def _as_bool(value: str) -> bool:
+    return True if value == "true" else False
 
 
 def _as_country(code: str) -> Country:
@@ -775,6 +810,20 @@ def _as_committee(code: str) -> Committee:
 def _as_topic(code: str) -> Topic:
     try:
         return Topic[code]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_groups(codes: str) -> list[Group]:
+    try:
+        return [Group[code] for code in codes.split("+")]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_result(result: str) -> VoteResult:
+    try:
+        return VoteResult[result.upper()]
     except KeyError as exc:
         raise ValueError() from exc
 
