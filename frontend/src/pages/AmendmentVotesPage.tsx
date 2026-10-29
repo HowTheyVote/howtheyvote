@@ -8,7 +8,6 @@ import Stack from "../components/Stack";
 import VoteCards from "../components/VoteCards";
 import Wrapper from "../components/Wrapper";
 import { HTTPException } from "../lib/http";
-import { Island } from "../lib/islands";
 import type { Loader, Page, Request } from "../lib/server";
 
 export const loader: Loader<Vote> = async (request: Request) => {
@@ -47,9 +46,7 @@ export const AmendmentVotesPage: Page<Vote> = ({ data }) => {
             <Wrapper>
               <VoteCards votes={data.related}>
                 {({ vote }: { vote: (typeof data.related)[number] }) => (
-                  <Island>
-                    <AmendmentVoteCard vote={vote} />
-                  </Island>
+                  <AmendmentVoteCard vote={vote} />
                 )}
               </VoteCards>
             </Wrapper>

@@ -17,6 +17,16 @@ function TestComponent({ initialValue = 0 }: { initialValue?: number }) {
 }
 
 describe("hydrateIslands", () => {
+  it("renders inline islands as spans", () => {
+    document.body.innerHTML = renderToString(
+      <Island inline>
+        <TestComponent />
+      </Island>,
+    );
+
+    assert.strictEqual(document.body.firstElementChild?.tagName, "SPAN");
+  });
+
   it("hydrates islands", async () => {
     // Simulate server rendered component
     document.body.innerHTML = renderToString(
