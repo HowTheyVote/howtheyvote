@@ -504,6 +504,17 @@ def show(vote_id: int) -> ResponseReturnValue:
 
     data: VoteDict = {
         **base_vote,
+        "amendment_urls": (
+            [
+                {
+                    "amendment_number": amendment_url.amendment_number,
+                    "url": amendment_url.url,
+                }
+                for amendment_url in vote.amendment_urls
+            ]
+            if vote.amendment_urls is not None
+            else None
+        ),
         "document": document,
         "procedure": procedure,
         "majority_type": vote.majority_type,

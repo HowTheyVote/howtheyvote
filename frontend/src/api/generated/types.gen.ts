@@ -243,6 +243,12 @@ export type PlenarySessionsQueryResponse = QueryResponse & {
 
 export type Vote = BaseVote & {
     /**
+     * Links to PDF documents containing the text of the amendments. The linked documents
+     * may contain multiple amendments, not just the amendments the vote was about.
+     * This field is only available for votes starting in 2024.
+     */
+    amendment_urls?: Array<AmendmentUrl>;
+    /**
      * Information about the report or resolution this vote is about
      */
     document?: Document;
@@ -641,10 +647,14 @@ export type GetVotesData = {
          */
         responsible_committees?: Array<string>;
         /**
+         * Only return results with the given result.
+         */
+        result?: 'adopted' | 'rejected';
+        /**
          * Return facet options for the given fields. Can be set multiple times.
          *
          */
-        facets?: Array<'geo_areas' | 'responsible_committees' | 'topics'>;
+        facets?: Array<'geo_areas' | 'responsible_committees' | 'topics' | 'month'>;
     };
     url: '/api/votes';
 };
