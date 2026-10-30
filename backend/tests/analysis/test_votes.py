@@ -158,6 +158,20 @@ def test_main_vote_analyzer_description():
     )
     assert record_to_dict(analyzer.run()) == record_to_dict(expected)
 
+    analyzer = MainVoteAnalyzer(
+        vote_id=4,
+        description="Accord provisoire (Proposition de la Commission - non modifiée)",
+        title="Lorem ipsum",
+    )
+    expected = Fragment(
+        model="Vote",
+        source_id=4,
+        source_name="MainVoteAnalyzer",
+        group_key=4,
+        data={"is_main": True},
+    )
+    assert record_to_dict(analyzer.run()) == record_to_dict(expected)
+
 
 def test_main_vote_analyzer_title():
     analyzer = MainVoteAnalyzer(
