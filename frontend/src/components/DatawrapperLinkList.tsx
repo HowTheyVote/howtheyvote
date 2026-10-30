@@ -271,33 +271,37 @@ function populateConfigForMembers(
   // Makes use of Datawrapper’s formula syntax [1] and Markdown support [2]
   // [1]: https://academy.datawrapper.de/article/249-calculations-in-added-columns-and-tooltips
   // [2]: https://academy.datawrapper.de/article/248-how-to-insert-images#tables
-  metadata.describe = {
-    "computed-columns": [
-      {
-        name: "Photo",
-        formula:
-          "CONCAT('<span style=\"display:block;width:41px;height:52px\">![', memberfirst_name, '](', 'https://howtheyvote.eu/api/static/members/', memberid, '-104.jpg)</span>')",
-      },
-      {
-        name: "MEP",
-        formula: `CONCAT(
-          '<b>', memberfirst_name, ' ', memberlast_name, '</b><br />',
-          '<span style="opacity:0.75">', membergroupshort_label, ' · ', membercountrylabel, ' · ', membernational_partyshort_label,'</span>'
-        )`,
-      },
-      {
-        name: "Vote",
-        formula: `CONCAT(
-          "<b style='background:currentColor; padding:1px 4px;'><span style='color:white'>",
-          IF(position == "VotePosition.FOR", "${LABELS.FOR}", ""),
-          IF(position == "VotePosition.AGAINST", "${LABELS.AGAINST}", ""),
-          IF(position == "VotePosition.ABSTENTION", "${LABELS.ABSTENTION}", ""),
-          IF(position == "VotePosition.DID_NOT_VOTE", "${LABELS.DID_NOT_VOTE}", ""),
-          "</span></b>"
-        )`,
-      },
-    ],
-  };
+
+  // Uncommented for now, because the Cloudflare WAF blocks templates using formulars, probably
+  // due to similarity with SQL injection attacks.
+
+  // metadata.describe = {
+  //   "computed-columns": [
+  //     {
+  //       name: "Photo",
+  //       formula:
+  //         "CONCAT('<span style=\"display:block;width:41px;height:52px\">![', memberfirst_name, '](', 'https://howtheyvote.eu/api/static/members/', memberid, '-104.jpg)</span>')",
+  //     },
+  //     {
+  //       name: "MEP",
+  //       formula: `CONCAT(
+  //         '<b>', memberfirst_name, ' ', memberlast_name, '</b><br />',
+  //         '<span style="opacity:0.75">', membergroupshort_label, ' · ', membercountrylabel, ' · ', membernational_partyshort_label,'</span>'
+  //       )`,
+  //     },
+  //     {
+  //       name: "Vote",
+  //       formula: `CONCAT(
+  //         "<b style='background:currentColor; padding:1px 4px;'><span style='color:white'>",
+  //         IF(position == "VotePosition.FOR", "${LABELS.FOR}", ""),
+  //         IF(position == "VotePosition.AGAINST", "${LABELS.AGAINST}", ""),
+  //         IF(position == "VotePosition.ABSTENTION", "${LABELS.ABSTENTION}", ""),
+  //         IF(position == "VotePosition.DID_NOT_VOTE", "${LABELS.DID_NOT_VOTE}", ""),
+  //         "</span></b>"
+  //       )`,
+  //     },
+  //   ],
+  // };
 
   metadata.visualize = {
     columns: {
