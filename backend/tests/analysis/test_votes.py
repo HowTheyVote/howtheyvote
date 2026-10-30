@@ -810,3 +810,142 @@ def test_required_groups_analyzer_component_majority():
 
     assert fragment is not None
     assert fragment.data == {"groups_required_for_majority": [["RENEW"], ["EPP", "SD"]]}
+
+
+def test_required_groups_analyzer_two_thirds_votes_cast_and_majority_of_component_members_majority_calc():
+    vote = Vote(
+        majority_type=MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS,
+    )
+    analyzer = RequiredGroupsAnalyzer(vote, members_by_id={})
+
+    # Majority of component members and two-thirds - MAJORITY
+    assert analyzer._has_majority(votes_in_favor=361, votes_against=180)
+    # Majority if component members but not two-thirds - NO MAJORITY
+    assert not analyzer._has_majority(votes_in_favor=361, votes_against=181)
+    #
+    # No majority of component members but two thirds - NO MAJORITY
+    assert not analyzer._has_majority(votes_in_favor=360, votes_against=180)
+
+
+def test_required_groups_analyzer_two_thirds_votes_cast_and_majority_of_component_members():
+    timestamp = datetime.datetime(2026, 1, 1)
+    # 653 Votes
+    # 436 FOR required to pass 2/3 => majority of component members reached as well
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 200),
+        ("ESN", VotePosition.FOR, 22),
+        ("SD", VotePosition.FOR, 100),
+        ("RENEW", VotePosition.FOR, 114),
+        ("ECR", VotePosition.FOR, 5),  # not required for 2/3
+        ("PFE", VotePosition.AGAINST, 212),
+    )
+    vote = Vote(
+        id=1,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS,
+        member_votes=member_votes,
+    )
+
+    fragment = RequiredGroupsAnalyzer(vote, members_by_id).run()
+
+    assert fragment is not None
+    assert fragment.data == {
+        "groups_required_for_majority": [["EPP"], ["ESN"], ["RENEW"], ["SD"]]
+    }
+
+    ### CASE 1: One Group can be flipped, component members threshold implicitly reached ###
+    # 653 Votes
+    # 436 FOR required to pass 2/3 => majority of component members reached as well
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 200),
+        ("ESN", VotePosition.FOR, 22),
+        ("SD", VotePosition.FOR, 100),
+        ("RENEW", VotePosition.FOR, 114),
+        ("ECR", VotePosition.FOR, 5),  # not required for 2/3
+        ("PFE", VotePosition.AGAINST, 212),
+    )
+    vote = Vote(
+        id=1,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS,
+        member_votes=member_votes,
+    )
+
+    fragment = RequiredGroupsAnalyzer(vote, members_by_id).run()
+
+    assert fragment is not None
+    assert fragment.data == {
+        "groups_required_for_majority": [["EPP"], ["ESN"], ["RENEW"], ["SD"]]
+    }
+
+    ### CASE 2: No group can be flipped, due to component members threshold ###
+    # 400 Votes
+    # 267 FOR required to pass 2/3 => majority of component members not necessarily reached
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 100),
+        ("ESN", VotePosition.FOR, 67),
+        ("SD", VotePosition.FOR, 193),
+        (
+            "RENEW",
+            VotePosition.FOR,
+            20,
+        ),  # flipping would still suffice for 2/3 but not majority of component members
+        ("PFE", VotePosition.AGAINST, 20),
+    )
+    vote = Vote(
+        id=2,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS,
+        member_votes=member_votes,
+    )
+
+    fragment = RequiredGroupsAnalyzer(vote, members_by_id).run()
+
+    assert fragment is not None
+    assert fragment.data == {
+        "groups_required_for_majority": [["EPP"], ["ESN"], ["RENEW"], ["SD"]]
+    }
+
+    ### CASE 3: No single group can change outcome ###
+    # 500 Votes
+    # 334 FOR required to pass 2/3 => majority of component members not necessarily reached
+    # but flipping a single group will always lead to 400/100 => both thresholds reached
+    member_votes, members_by_id = _make_grouped_member_votes(
+        timestamp,
+        ("EPP", VotePosition.FOR, 100),
+        ("ESN", VotePosition.FOR, 100),
+        ("SD", VotePosition.FOR, 100),
+        ("RENEW", VotePosition.FOR, 100),
+        ("PFE", VotePosition.FOR, 100),
+    )
+    vote = Vote(
+        id=2,
+        timestamp=timestamp,
+        result=VoteResult.ADOPTED,
+        majority_type=MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS,
+        member_votes=member_votes,
+    )
+
+    fragment = RequiredGroupsAnalyzer(vote, members_by_id).run()
+
+    assert fragment is not None
+    assert fragment.data == {
+        "groups_required_for_majority": [
+            ["EPP", "ESN"],
+            ["EPP", "PFE"],
+            ["EPP", "RENEW"],
+            ["EPP", "SD"],
+            ["ESN", "PFE"],
+            ["ESN", "RENEW"],
+            ["ESN", "SD"],
+            ["PFE", "RENEW"],
+            ["PFE", "SD"],
+            ["RENEW", "SD"],
+        ]
+    }
