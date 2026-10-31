@@ -203,8 +203,8 @@ class MemberGroupsScraper(BeautifulSoupScraper):
         }
 
     def _group(self, tag: Tag, date: date) -> str:
-        text = "".join(tag.find_all(string=True, recursive=False))
-        text = text.removeprefix(" : ")
+        text = "".join(tag.find_all(string=True, recursive=False)).strip()
+        text = text.removeprefix(": ")
 
         positions = [
             "President",
