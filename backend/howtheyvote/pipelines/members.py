@@ -63,7 +63,7 @@ class MembersPipeline(BasePipeline):
     def _scrape_national_member_parties(self) -> None:
         writer = BulkWriter()
 
-        for member in self._members():
+        def scrape_member_party(member: Member, waf_token: str) -> None:
             try:
                 scraper = ODPMemberScraper(web_id=member.id)
                 writer.add(scraper.run())
@@ -78,6 +78,22 @@ class MembersPipeline(BasePipeline):
                     term=self.term,
                 )
                 sentry_sdk.capture_exception(err)
+            except ScrapingError as err:
+                log.exception(
+                    "Failed scraping member national parties",
+                    member_id=member.id,
+                    term=self.term,
+                )
+                sentry_sdk.capture_exception(err)
+
+        self._ep_aws_waf_token = run_each_with_waf_token(
+            iterable=self._members(),
+            func=scrape_member_party,
+            current_waf_token=self._ep_aws_waf_token,
+            solve_waf_challenge=solve_ep_aws_waf_challenge,
+            sleep=config.TOKEN_RENEWAL_SLEEP,
+        )
+
         writer.flush()
 
     def _scrape_member_groups(self) -> None:
