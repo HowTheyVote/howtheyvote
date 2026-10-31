@@ -440,14 +440,6 @@ class RequiredGroupsAnalyzer:
         if self.vote.result != VoteResult.ADOPTED:
             return None
 
-        # TODO: Supporting more majorities would be nice,
-        # but should not be the priority for now
-        if self.vote.majority_type not in [
-            MajorityType.MAJORITY_OF_VOTES_CAST,
-            MajorityType.MAJORITY_OF_COMPONENT_MEMBERS,
-        ]:
-            return None
-
         vote_positions_by_group = count_vote_positions_by_group(
             member_votes=self.vote.member_votes,
             group_by=lambda mv: self.members_by_id[mv.web_id].group_at(self.vote.timestamp),
@@ -515,5 +507,17 @@ class RequiredGroupsAnalyzer:
         # See https://www.europarl.europa.eu/telastatic/cmsdata/304031/OLP%20Handbook_September%202025_EN.pdf, Box 7 # noqa: E501
         if self.vote.majority_type == MajorityType.MAJORITY_OF_COMPONENT_MEMBERS:
             return votes_in_favor >= self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
+
+        # See e.g., Rule 131 RoP, Art 234 TFEU
+        if (
+            self.vote.majority_type
+            == MajorityType.TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS
+        ):
+            two_thirds_votes_cast = votes_in_favor >= votes_against * 2
+            majority_of_component_members = (
+                votes_in_favor >= self.MAJORITY_OF_COMPONENT_MEMBERS_THRESHOLD
+            )
+
+            return two_thirds_votes_cast and majority_of_component_members
 
         raise ValueError(f"Unsupported MajorityType: {self.vote.majority_type}")
