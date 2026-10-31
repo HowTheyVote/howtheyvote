@@ -129,10 +129,14 @@ def press(date: datetime.datetime, rss: bool = False) -> None:
 
 @pipeline.command()
 @click.option("--term", type=int, required=True)
-def members(term: int) -> None:
+@click.option("--member-id", "member_ids", type=int, multiple=True)
+def members(term: int, member_ids: tuple[int, ...]) -> None:
     """Run the members pipeline for a given term. This scrapes a complete lists of all
     current and past members as well as additional information about them."""
-    pipeline = MembersPipeline(term=term)
+    pipeline = MembersPipeline(
+        term=term,
+        member_ids=member_ids,
+    )
     pipeline.run()
 
 

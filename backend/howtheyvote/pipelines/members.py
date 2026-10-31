@@ -1,5 +1,5 @@
 import time
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 
 import sentry_sdk
 from structlog import get_logger
@@ -35,9 +35,10 @@ log = get_logger(__name__)
 
 
 class MembersPipeline(BasePipeline):
-    def __init__(self, term: int):
+    def __init__(self, term: int, member_ids: Iterable[int] = tuple()):
         super().__init__(term=term)
         self.term = term
+        self._member_ids_filter = set(member_ids)
         self._member_ids: set[str] = set()
 
     def _run(self) -> None:
@@ -87,7 +88,7 @@ class MembersPipeline(BasePipeline):
                 sentry_sdk.capture_exception(err)
 
         self._ep_aws_waf_token = run_each_with_waf_token(
-            iterable=self._members(),
+            iterable=self._filtered_members(),
             func=scrape_member_party,
             current_waf_token=self._ep_aws_waf_token,
             solve_waf_challenge=solve_ep_aws_waf_challenge,
@@ -116,7 +117,7 @@ class MembersPipeline(BasePipeline):
                 sentry_sdk.capture_exception(err)
 
         self._ep_aws_waf_token = run_each_with_waf_token(
-            iterable=self._members(),
+            iterable=self._filtered_members(),
             func=scrape_member_groups,
             current_waf_token=self._ep_aws_waf_token,
             solve_waf_challenge=solve_ep_aws_waf_challenge,
@@ -143,7 +144,7 @@ class MembersPipeline(BasePipeline):
                 sentry_sdk.capture_exception(err)
 
         self._ep_aws_waf_token = run_each_with_waf_token(
-            iterable=self._members(),
+            iterable=self._filtered_members(),
             func=scrape_member_info,
             current_waf_token=self._ep_aws_waf_token,
             solve_waf_challenge=solve_ep_aws_waf_challenge,
@@ -181,7 +182,7 @@ class MembersPipeline(BasePipeline):
             time.sleep(config.REQUEST_SLEEP)
 
         self._ep_aws_waf_token = run_each_with_waf_token(
-            iterable=self._members(),
+            iterable=self._filtered_members(),
             func=download_member_photo,
             current_waf_token=self._ep_aws_waf_token,
             solve_waf_challenge=solve_ep_aws_waf_challenge,
@@ -189,7 +190,7 @@ class MembersPipeline(BasePipeline):
         )
 
     def _generate_sharepics(self) -> None:
-        for member in self._members():
+        for member in self._filtered_members():
             log.info("Generating member sharepic.", member_id=member.id)
 
             try:
@@ -204,6 +205,12 @@ class MembersPipeline(BasePipeline):
     def _index_members(self) -> None:
         log.info("Indexing members", term=self.term)
         index_records(Member, self._members())
+
+    def _filtered_members(self) -> Iterator[Member]:
+        if not self._member_ids_filter:
+            return self._members()
+
+        return (m for m in self._members() if int(m.id) in self._member_ids_filter)
 
     def _members(self) -> Iterator[Member]:
         aggregator = Aggregator(Member)
