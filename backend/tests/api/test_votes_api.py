@@ -457,6 +457,53 @@ def test_votes_api_index_filter_groups_required_for_majority(db_session, search_
     assert res.json["total"] == 0
 
 
+def test_votes_api_index_filter_majority_type(db_session, search_index, api):
+    one = Vote(
+        id=1,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote One",
+        is_main=True,
+        majority_type=None,
+    )
+
+    two = Vote(
+        id=2,
+        timestamp=datetime.datetime(2024, 1, 1, 0, 0, 0),
+        title="Vote Two",
+        is_main=True,
+        majority_type=MajorityType.MAJORITY_OF_VOTES_CAST,
+    )
+
+    three = Vote(
+        id=3,
+        timestamp=datetime.datetime(2023, 1, 1, 0, 0, 0),
+        title="Vote Three",
+        is_main=True,
+        majority_type=MajorityType.MAJORITY_OF_COMPONENT_MEMBERS,
+    )
+
+    db_session.add_all([one, two, three])
+    db_session.commit()
+    index_search(Vote, [one, two, three])
+
+    res = api.get(
+        "/api/votes",
+        query_string={"majority_type": "majority_of_votes_cast"},
+    )
+    assert res.json["total"] == 1
+    assert res.json["results"][0]["id"] == 2
+
+    res = api.get(
+        "/api/votes",
+        query_string={
+            "majority_type": ["majority_of_votes_cast", "majority_of_component_members"]
+        },
+    )
+    assert res.json["total"] == 2
+    assert res.json["results"][0]["id"] == 2
+    assert res.json["results"][1]["id"] == 3
+
+
 def test_votes_api_index_search(db_session, search_index, api):
     one = Vote(
         id=1,
