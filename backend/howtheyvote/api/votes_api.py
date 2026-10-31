@@ -596,7 +596,7 @@ def show_csv_meps(vote_id: int) -> ResponseReturnValue:
             row["datawrapper_photo"] = (
                 f'<span style="display:block;width:41px;height:52px">'
                 f"![{row['member.first_name']}]"
-                f"(https://howtheyvote.eu/api/static/members/{row['member.id']}-104.jpg)"
+                f"(https://howtheyvote.eu/files/members/{row['member.id']}-104.jpg)"
                 "</span>"
             )
 
