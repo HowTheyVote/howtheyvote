@@ -35,6 +35,7 @@ from ..models import (
     Country,
     Fragment,
     Group,
+    MajorityType,
     Member,
     OEILSummary,
     PressRelease,
@@ -201,6 +202,16 @@ def index() -> ResponseReturnValue:
                     type: array
                     items:
                         type: string
+            -
+                in: query
+                name: majority_type
+                description: Majority type
+                schema:
+                    type: string
+                    enum:
+                        - majority_of_votes_cast
+                        - majority_of_component_members
+                        - two_thirds_of_votes_cast_and_majority_of_component_members
             -
                 in: query
                 name: result
@@ -821,6 +832,9 @@ def _query_from_request(request: Request) -> SearchQuery[Vote]:
     query = query.filter("groups_required_for_majority", "in", groups_required_for_majority)
 
     query = query.filter("result", "=", request.args.get("result", type=_as_result))
+    query = query.filter(
+        "majority_type", "in", request.args.getlist("majority_type", type=_as_majority_type)
+    )
 
     # Facets
     facets = request.args.getlist(
@@ -875,6 +889,13 @@ def _as_groups(codes: str) -> list[Group]:
 def _as_result(result: str) -> VoteResult:
     try:
         return VoteResult[result.upper()]
+    except KeyError as exc:
+        raise ValueError() from exc
+
+
+def _as_majority_type(majority_type: str) -> MajorityType:
+    try:
+        return MajorityType[majority_type.upper()]
     except KeyError as exc:
         raise ValueError() from exc
 

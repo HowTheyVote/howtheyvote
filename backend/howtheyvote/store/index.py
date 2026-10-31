@@ -240,6 +240,10 @@ def _serialize_vote(vote: Vote, index: WritableDatabase) -> Document:
         term = boolean_term("topics", topic)
         doc.add_boolean_term(term)
 
+    if vote.majority_type:
+        term = boolean_term("majority_type", vote.majority_type)
+        doc.add_boolean_term(term)
+
     if vote.groups_required_for_majority:
         for groups in vote.groups_required_for_majority:
             term = boolean_term("groups_required_for_majority", groups)
