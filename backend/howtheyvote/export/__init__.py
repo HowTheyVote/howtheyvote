@@ -423,6 +423,9 @@ class GroupsRequiredForMajorityRow(TypedDict):
     * Own-initiative Procedure (INI)
     * Resolutions on topical subjects (RSP)
 
+    The required groups are also available for votes on motions of censure against the
+    Commission.
+
     We list only the minimal combinations of group that are required for a majority. For
     example, if the ECR are required for the majority to hold, that implies that any
     combination of the ECR with another group is also required, but we only list ECR."""
