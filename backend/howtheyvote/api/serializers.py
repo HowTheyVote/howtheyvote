@@ -538,6 +538,11 @@ class SnippetDict(TypedDict):
 
 
 class VoteDict(BaseVoteDict):
+    amendment_urls: list[AmendmentURLDict] | None
+    """Links to PDF documents containing the text of the amendments. The linked documents
+    may contain multiple amendments, not just the amendments the vote was about.
+    This field is only available for votes starting in 2024."""
+
     document: DocumentDict | None
     """Information about the report or resolution this vote is about"""
 
