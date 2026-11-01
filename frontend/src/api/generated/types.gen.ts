@@ -118,7 +118,8 @@ export type NationalParty = {
 };
 
 /**
- * Country or territory published in the list of countries and territories by the Publications Office of the European Union.
+ * Country or territory published in the list of countries and territories by the
+ * Publications Office of the European Union.
  */
 export type Country = {
     /**
@@ -173,7 +174,8 @@ export type Document = {
 };
 
 /**
- * A topic (policy area) a vote is concerned with. Expect topics and their names to change in the future as we improve this feature.
+ * A topic (policy area) a vote is concerned with.
+ * Expect topics and their names to change in the future as we improve this feature.
  */
 export type Topic = {
     /**
@@ -251,6 +253,28 @@ export type Vote = BaseVote & {
      */
     procedure?: Procedure;
     /**
+     * Type of majority required for this vote to pass. Only available for votes starting in
+     * 2024 and held as part of one of the following procedure types:
+     *
+     * * Ordinary Legislative Procedure (COD)
+     * * Own-Initiative Procedure (INI)
+     * * Resolutions on topical subjects (RSP)
+     *
+     * The majority is also available for votes on motions of censure against the Commission.
+     *
+     * We follow the naming used in the Rules of Procedure:
+     *
+     * * `MAJORITY_OF_VOTES_CAST`: Requires more votes for than against, ignoring abstentions and
+     * MEPs that did not vote.
+     * * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of votes cast, including
+     * abstentions and MEPs that did not vote. For the 10th legislative term, this means 361
+     * MEPs have to vote for.
+     * * `MAJORITY_OF_COMPONENT_MEMBERS`: Requires more than half of all MEPs in Parliament to
+     * vote in favor, including abstentions and MEPs that did not vote. For the 10th legislative
+     * term, this means 361 MEPs have to vote in favor.
+     */
+    majority_type?: 'MAJORITY_OF_VOTES_CAST' | 'MAJORITY_OF_COMPONENT_MEMBERS' | 'TWO_THIRDS_OF_VOTES_CAST_AND_MAJORITY_OF_COMPONENT_MEMBERS';
+    /**
      * A short snippet with information about the vote. This is usually extracted
      * from a European Parliament press release or the Legislative Observatory.
      */
@@ -263,6 +287,27 @@ export type Vote = BaseVote & {
      * Statistics about this vote
      */
     stats: VoteStats;
+    /**
+     * Each item is a combination of political groups required for a majority in a
+     * vote. That is, the vote would not have passed if the MEPs of the groups that voted in
+     * favor would have voted against.
+     *
+     * We calculate this information based on the majority type of a vote. It is currently only
+     * available for votes starting in 2024 and held as part of one of the following procedure
+     * types:
+     *
+     * * Ordinary Legislative Procedure (COD)
+     * * Own-initiative Procedure (INI)
+     * * Resolutions on topical subjects (RSP)
+     *
+     * The required groups are also available for votes on motions of censure against the
+     * Commission.
+     *
+     * We list only the minimal combinations of group that are required for a majority. For
+     * example, if the ECR are required for the majority to hold, that implies that any
+     * combination of the ECR with another group is also required, but we only list ECR.
+     */
+    groups_required_for_majority: Array<Array<Group>>;
     /**
      * List of MEPs and their vote positions
      */
@@ -641,10 +686,18 @@ export type GetVotesData = {
          */
         responsible_committees?: Array<string>;
         /**
+         * Majority type
+         */
+        majority_type?: 'majority_of_votes_cast' | 'majority_of_component_members' | 'two_thirds_of_votes_cast_and_majority_of_component_members';
+        /**
+         * Only return results with the given result.
+         */
+        result?: 'adopted' | 'rejected';
+        /**
          * Return facet options for the given fields. Can be set multiple times.
          *
          */
-        facets?: Array<'geo_areas' | 'responsible_committees' | 'topics'>;
+        facets?: Array<'geo_areas' | 'responsible_committees' | 'topics' | 'month'>;
     };
     url: '/api/votes';
 };
