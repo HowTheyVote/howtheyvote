@@ -408,6 +408,9 @@ class MajorityAnalyzer:
                 return MajorityType.MAJORITY_OF_VOTES_CAST
 
             if procedure_stage == ProcedureStage.OLP_SECOND_READING:
+                # See RoP 170
+                if self.vote.description and "d'urgence" in self.vote.description:
+                    return MajorityType.MAJORITY_OF_VOTES_CAST
                 return MajorityType.MAJORITY_OF_COMPONENT_MEMBERS
 
             if procedure_stage == ProcedureStage.OLP_THIRD_READING:
