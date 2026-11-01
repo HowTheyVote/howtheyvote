@@ -16,15 +16,15 @@
     "sirv": "^3.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
+    "@biomejs/biome": "^2.6.4",
     "@hey-api/openapi-ts": "^0.97.0",
-    "@testing-library/preact": "^3.2.4",
-    "@testing-library/user-event": "^14.6.7",
+    "@testing-library/preact": "^3.2.6",
+    "@testing-library/user-event": "^14.6.8",
     "@types/jsdom": "^30.0.0",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.6",
     "esbuild": "^0.28.2",
-    "jsdom": "^30.1.1",
+    "jsdom": "^30.1.3",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
