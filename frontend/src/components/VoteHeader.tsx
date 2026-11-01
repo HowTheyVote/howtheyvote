@@ -46,16 +46,20 @@ export default function VoteHeader({ vote, showSnippet }: VoteHeaderProps) {
                 <>
                   {" · "}
                   {vote.amendment_subject}
-                  {" - "}
-                  {vote.amendment_urls?.length === 1 ? (
-                    <Island inline>
-                      <AmendmentLink
-                        amendmentNumber={vote.amendment_number}
-                        url={vote.amendment_urls[0].url}
-                      />
-                    </Island>
-                  ) : (
-                    <>Am {vote.amendment_number}</>
+                  {vote.amendment_number !== "§" && (
+                    <>
+                      {" - "}
+                      {vote.amendment_urls?.length === 1 ? (
+                        <Island inline>
+                          <AmendmentLink
+                            amendmentNumber={vote.amendment_number}
+                            url={vote.amendment_urls[0].url}
+                          />
+                        </Island>
+                      ) : (
+                        <>Am {vote.amendment_number}</>
+                      )}
+                    </>
                   )}
                 </>
               ) : (
