@@ -435,6 +435,12 @@ class RequiredGroupsAnalyzer:
         # Only treat votes where we got the result from an official source for now
         if not self.vote.result:
             return None
+
+        # Only consider votes with a known majority type as it is needed to compute the
+        # majority threshold
+        if not self.vote.majority_type:
+            return None
+
         # Only consider adopted votes, as not passing is the default,
         # nearly all of the time, passing is interesting.
         if self.vote.result != VoteResult.ADOPTED:
