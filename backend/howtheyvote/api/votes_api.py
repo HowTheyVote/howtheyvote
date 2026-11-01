@@ -31,6 +31,7 @@ from ..links import (
     press_release_url,
 )
 from ..models import (
+    AmendmentURL,
     Committee,
     Country,
     Fragment,
@@ -46,6 +47,7 @@ from ..query import fragments_for_records
 from ..vote_stats import count_vote_positions, count_vote_positions_by_group
 from .query import Order, SearchQuery
 from .serializers import (
+    AmendmentURLDict,
     DocumentDict,
     LinkDict,
     MemberVoteDict,
@@ -504,17 +506,7 @@ def show(vote_id: int) -> ResponseReturnValue:
 
     data: VoteDict = {
         **base_vote,
-        "amendment_urls": (
-            [
-                {
-                    "amendment_number": amendment_url.amendment_number,
-                    "url": amendment_url.url,
-                }
-                for amendment_url in vote.amendment_urls
-            ]
-            if vote.amendment_urls is not None
-            else None
-        ),
+        "amendment_urls": _format_amendment_urls(vote.amendment_urls),
         "document": document,
         "procedure": procedure,
         "majority_type": vote.majority_type,
@@ -918,22 +910,28 @@ def _format_related(votes: Iterable[Vote]) -> list[RelatedVoteDict]:
                 "amendment_subject": vote.amendment_subject,
                 "amendment_number": vote.amendment_number,
                 "amendment_authors": authors,
-                "amendment_urls": (
-                    [
-                        {
-                            "amendment_number": amendment_url.amendment_number,
-                            "url": amendment_url.url,
-                        }
-                        for amendment_url in vote.amendment_urls
-                    ]
-                    if vote.amendment_urls is not None
-                    else None
-                ),
+                "amendment_urls": _format_amendment_urls(vote.amendment_urls),
                 "result": vote.result,
             }
         )
 
     return formatted
+
+
+def _format_amendment_urls(
+    amendment_urls: list[AmendmentURL] | None,
+) -> list[AmendmentURLDict] | None:
+    return (
+        [
+            {
+                "amendment_number": amendment_url.amendment_number,
+                "url": amendment_url.url,
+            }
+            for amendment_url in amendment_urls
+        ]
+        if amendment_urls is not None
+        else None
+    )
 
 
 def _format_sources(fragments: Iterable[Fragment]) -> list[SourceDict]:
