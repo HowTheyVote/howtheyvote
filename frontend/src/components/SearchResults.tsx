@@ -11,6 +11,7 @@ import Stack from "./Stack";
 import Thumb from "./Thumb";
 import VoteCard from "./VoteCard";
 import VoteCards from "./VoteCards";
+import VotePositionLegend from "./VotePositionLegend";
 
 type SearchResultsProps = {
   url: URL;
@@ -58,6 +59,10 @@ function SearchResults({ url, data, thumb }: SearchResultsProps) {
 
       {data.total === 0 && (
         <SearchFeedback title="No results found." query={searchQuery.q} />
+      )}
+
+      {thumb === "position" && data.results.length > 0 && (
+        <VotePositionLegend />
       )}
 
       {data.results.length > 0 && (
