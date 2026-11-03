@@ -2,6 +2,7 @@ import datetime
 
 from howtheyvote.analysis.votes import (
     MainVoteAnalyzer,
+    MajorityAnalyzer,
     OEILSummaryAnalyzer,
     PressReleaseAnalyzer,
     RequiredGroupsAnalyzer,
@@ -16,6 +17,7 @@ from howtheyvote.models import (
     MemberVote,
     OEILSummary,
     PressRelease,
+    ProcedureStage,
     Vote,
     VotePosition,
     VoteResult,
@@ -699,6 +701,23 @@ def test_oeil_summary_analyzer_multiple_votes_only_one_mentioned():
 
     assert len(fragments) == 1
     assert record_to_dict(fragments[0]) == record_to_dict(expected[0])
+
+
+def test_majority_analyzer_handles_urgent_procedure_in_second_reading():
+    vote = Vote(
+        id="149084",
+        is_main=True,
+        timestamp=datetime.datetime(2026, 1, 22, 0, 0, 0),
+        procedure_reference="2025/0429(COD)",
+        procedure_stage=ProcedureStage.OLP_SECOND_READING,
+        description="Demande de décision d'urgence",
+    )
+
+    analyzer = MajorityAnalyzer(vote)
+    fragment = analyzer.run()
+
+    assert fragment is not None
+    assert fragment.data == {"majority_type": MajorityType.MAJORITY_OF_VOTES_CAST}
 
 
 def _make_grouped_member_votes(
