@@ -36,7 +36,7 @@ export const OpenDataPage: Page = () => {
                       Data
                     </h2>
                     <p>
-                      We make our data avaialble in multiple ways to suit
+                      We make our data available in multiple ways to suit
                       different use cases – whether you want to conduct a
                       large-scale data analysis or are interested in the results
                       of individual votes.
