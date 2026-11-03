@@ -40,6 +40,7 @@ from ..models import (
     PressRelease,
     Topic,
     Vote,
+    VotePosition,
     VoteResult,
 )
 from ..query import fragments_for_records
@@ -568,10 +569,55 @@ def show_csv_meps(vote_id: int) -> ResponseReturnValue:
         "member.group.short_label",
     ]
 
+    rows = [dict(subset_dict(flatten_dict(mv), fieldnames)) for mv in member_votes]
+
+    if "datawrapper" in request.args:
+        # This is a workaround. We’re using the CSV endpoint in our Datawrapper templates. The
+        # templates used to defined computed formulas, but the Cloudflare WAF in front of
+        # Datawrapper has started blocking them. Until that’s fixed, we precompute these
+        # columns and add them directly to the CSV.
+
+        fieldnames.extend(
+            [
+                "datawrapper_photo",
+                "datawrapper_member",
+                "datawrapper_vote",
+            ]
+        )
+
+        labels = {
+            VotePosition.FOR: "for",
+            VotePosition.AGAINST: "against",
+            VotePosition.ABSTENTION: "abstention",
+            VotePosition.DID_NOT_VOTE: "didn’t vote",
+        }
+
+        for row in rows:
+            row["datawrapper_photo"] = (
+                f'<span style="display:block;width:41px;height:52px">'
+                f"![{row['member.first_name']}]"
+                f"(https://howtheyvote.eu/files/members/{row['member.id']}-104.jpg)"
+                "</span>"
+            )
+
+            row["datawrapper_member"] = (
+                f"<b>{row['member.first_name']} {row['member.last_name']}</b><br />"
+                f'<span style="opacity:0.75">'
+                f"{row['member.group.short_label']} · "
+                f"{row['member.country.label']} · "
+                f"{row['member.national_party.short_label']}"
+                "</span>"
+            )
+
+            row["datawrapper_vote"] = (
+                "<b style='background:currentColor; padding:1px 4px;'>"
+                f"<span style='color:white'>{labels[row['position']]}</span></b>"
+            )
+
     io = StringIO()
     writer = csv.DictWriter(io, fieldnames=fieldnames)
     writer.writeheader()
-    writer.writerows(subset_dict(flatten_dict(mv), fieldnames) for mv in member_votes)
+    writer.writerows(rows)
 
     return Response(
         io.getvalue(),
