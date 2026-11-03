@@ -21,7 +21,16 @@ from xapian import (
 )
 
 from . import config
-from .models import BaseWithId, Committee, Country, Group, Topic, Vote, VoteResult
+from .models import (
+    BaseWithId,
+    Committee,
+    Country,
+    Group,
+    MajorityType,
+    Topic,
+    Vote,
+    VoteResult,
+)
 from .scowl import list_spelling_variations
 
 log = get_logger(__name__)
@@ -63,6 +72,7 @@ FIELD_TO_PREFIX_MAPPING = {
     "topics": "XT",
     "keywords": "XK",
     "is_main": "XIM",
+    "majority_type": "XMT",
     "groups_required_for_majority": "XGRM",
     "result": "XVR",
 }
@@ -199,6 +209,7 @@ FIELD_TO_TYPE_MAPPING: dict[str, Type[Any]] = {
     "member_id": IntegerType(),
     "topics": TopicType(),
     "keywords": StringType(),
+    "majority_type": EnumType(MajorityType),
     "groups_required_for_majority": GroupsType(),
     "result": EnumType(VoteResult),
 }
