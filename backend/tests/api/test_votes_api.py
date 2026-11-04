@@ -102,6 +102,12 @@ def records(db_session, search_index):
         amendment_number=1,
         amendment_subject="$",
         amendment_authors=[AmendmentAuthorOriginalText()],
+        amendment_urls=[
+            AmendmentURL(
+                amendment_number=1,
+                url="https://example.com/amendment-1.pdf",
+            )
+        ],
         reference="A10-1234/2025",
         procedure_reference="1234/2025(COD)",
         is_main=True,
@@ -860,6 +866,12 @@ def test_votes_api_show(records, db_session, api):
                 "committee": None,
             }
         ],
+        "amendment_urls": [
+            {
+                "amendment_number": 1,
+                "url": "https://example.com/amendment-1.pdf",
+            }
+        ],
         "document": {
             "type": "A",
             "reference": "A10-1234/2025",
@@ -1037,6 +1049,11 @@ def test_votes_api_show(records, db_session, api):
                 "title": "Report or resolution",
                 "description": "Original text of the report or resolution as tabled. The text may be different from the adopted text if MEPs have adopted amendments.",
                 "url": "https://www.europarl.europa.eu/doceo/document/A-10-2025-1234_EN.html",
+            },
+            {
+                "title": "Amendment 1",
+                "description": "Text of the amendment voted on. The linked document may also contain other amendments.",
+                "url": "https://example.com/amendment-1.pdf",
             },
             {
                 "title": "Legislative Observatory",

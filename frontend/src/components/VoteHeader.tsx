@@ -3,6 +3,7 @@ import { PUBLIC_URL } from "../config";
 import { formatDate } from "../lib/dates";
 import { Island } from "../lib/islands";
 import { getSnippetFeedbackFormUrl } from "../lib/links";
+import AmendmentLink from "./AmendmentLink";
 import ShareButton from "./ShareButton";
 import Stack from "./Stack";
 import Wrapper from "./Wrapper";
@@ -41,7 +42,29 @@ export default function VoteHeader({ vote, showSnippet }: VoteHeaderProps) {
                   </a>
                 </>
               )}
-              {vote.description && ` · ${vote.description}`}
+              {vote.amendment_subject && vote.amendment_number ? (
+                <>
+                  {" · "}
+                  {vote.amendment_subject}
+                  {vote.amendment_number !== "§" && (
+                    <>
+                      {" - "}
+                      {vote.amendment_urls?.length === 1 ? (
+                        <Island inline>
+                          <AmendmentLink
+                            amendmentNumber={vote.amendment_number}
+                            url={vote.amendment_urls[0].url}
+                          />
+                        </Island>
+                      ) : (
+                        <>Am {vote.amendment_number}</>
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
+                vote.description && <> · {vote.description}</>
+              )}
             </strong>
           </p>
           {showSnippet && vote.snippet && (

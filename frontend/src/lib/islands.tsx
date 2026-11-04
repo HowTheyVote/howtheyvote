@@ -7,9 +7,10 @@ import {
 
 type IslandProps = {
   children: ComponentChildren;
+  inline?: boolean;
 };
 
-export function Island({ children }: IslandProps) {
+export function Island({ children, inline = false }: IslandProps) {
   const childArr = toChildArray(children);
 
   if (childArr.length !== 1) {
@@ -26,15 +27,16 @@ export function Island({ children }: IslandProps) {
 
   const component = child.type.name;
   const props = JSON.stringify(child.props);
+  const Wrapper = inline ? "span" : "div";
 
   return (
-    <div
+    <Wrapper
       style="display:contents"
       data-island-component={component}
       data-island-props={props}
     >
       {children}
-    </div>
+    </Wrapper>
   );
 }
 
