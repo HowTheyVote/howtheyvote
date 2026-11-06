@@ -8,11 +8,12 @@ import Showcase from "../components/Showcase";
 import Stack from "../components/Stack";
 import Tutorials from "../components/Tutorials";
 import Wrapper from "../components/Wrapper";
+import metaImageUrl from "../images/sharepic-open-data.png";
 import type { Page } from "../lib/server";
 
 export const OpenDataPage: Page = () => {
   return (
-    <App title={"Open Data"}>
+    <App title={"Open Data"} head={<MetaTags />}>
       <BaseLayout>
         <Stack space="lg">
           <div>
@@ -152,3 +153,22 @@ export const OpenDataPage: Page = () => {
     </App>
   );
 };
+
+function MetaTags() {
+  return (
+    <>
+      <meta
+        name="description"
+        content="Learn about the HowTheyVote.eu data set, how you can use it, and how others are already using it."
+      />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="HowTheyVote.eu" />
+      <meta property="og:title" content="HowTheyVote.eu - Open Data" />
+      <meta property="og:image" content={metaImageUrl} />
+      <meta
+        property="og:image:alt"
+        content="A photo of the hemicycle in the European Parliament building in Strasbourg, with text overlay: “Open Data HowTheyVote.eu. Find out how the Members of the European Parliament vote.”"
+      />
+    </>
+  );
+}
