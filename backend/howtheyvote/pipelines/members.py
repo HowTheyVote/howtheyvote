@@ -79,6 +79,14 @@ class MembersPipeline(BasePipeline):
                     term=self.term,
                 )
                 sentry_sdk.capture_exception(err)
+            except ScrapingError as err:
+                log.exception(
+                    "Failed scraping national party memberships",
+                    member_id=member.id,
+                    term=self.term,
+                )
+                sentry_sdk.capture_exception(err)
+
         writer.flush()
 
     def _scrape_member_groups(self) -> None:
