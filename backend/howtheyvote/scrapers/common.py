@@ -121,9 +121,18 @@ class BaseScraper[T](ABC):
         self._request_cache = request_cache
         self._aws_waf_token = aws_waf_token
         self._log = log.bind(scraper=type(self).__name__, **kwargs)
+        self._args = kwargs
 
     def run(self) -> Any:
         self._log.info("Running scraper")
+        sentry_sdk.metrics.count(
+            "scraper_runs",
+            1,
+            attributes={
+                "scraper": type(self).__name__,
+                **self._args,
+            },
+        )
         self.response = self._fetch()
         doc = self._parse(self.response)
         return self._extract_data(doc)
