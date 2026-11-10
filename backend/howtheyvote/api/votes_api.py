@@ -205,7 +205,7 @@ def index() -> ResponseReturnValue:
             -
                 in: query
                 name: majority_type
-                description: Majority type
+                description: Filter votes by the majority relevant for their adoption.
                 schema:
                     type: string
                     enum:
