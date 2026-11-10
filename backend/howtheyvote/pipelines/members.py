@@ -70,11 +70,11 @@ class MembersPipeline(BasePipeline):
                 writer.add(scraper.run())
             except MissingODPMembershipOrganizationError as err:
                 send_notification(
-                    title="Party-membership without organization key found.",
+                    title="Party membership without organization key found.",
                     message=f"For MEP ID {member.id}",
                 )
                 log.exception(
-                    "Party-membership without organization key found.",
+                    "Party membership without organization key found.",
                     member_id=member.id,
                     term=self.term,
                 )
