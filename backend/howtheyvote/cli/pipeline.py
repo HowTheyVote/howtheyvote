@@ -14,6 +14,7 @@ from ..pipelines import (
     SessionsPipeline,
     VOTListPipeline,
 )
+from ..sentry import init_sentry
 
 log = get_logger(__name__)
 
@@ -21,7 +22,7 @@ log = get_logger(__name__)
 @click.group()
 def pipeline() -> None:
     """Run a data pipeline."""
-    pass
+    init_sentry("cli")
 
 
 @pipeline.command()

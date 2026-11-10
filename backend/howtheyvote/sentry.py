@@ -4,7 +4,7 @@ import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 
-def init_sentry(component: Literal["backend", "worker"]) -> None:
+def init_sentry(component: Literal["backend", "worker", "cli"]) -> None:
     sentry_sdk.init(
         enable_logs=True,
         send_default_pii=False,
