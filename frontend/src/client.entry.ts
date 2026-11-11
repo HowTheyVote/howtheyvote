@@ -1,4 +1,4 @@
-import AmendmentVoteCard from "./components/AmendmentVoteCard";
+import AmendmentLink from "./components/AmendmentLink";
 import CountryStatsList from "./components/CountryStatsList";
 import DatawrapperLinkList from "./components/DatawrapperLinkList";
 import Eyes from "./components/Eyes";
@@ -11,7 +11,7 @@ import VoteTabs from "./components/VoteTabs";
 import { hydrateIslands } from "./lib/islands";
 
 hydrateIslands([
-  AmendmentVoteCard,
+  AmendmentLink,
   MemberVotesList,
   GroupStatsList,
   CountryStatsList,

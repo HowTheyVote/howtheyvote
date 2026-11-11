@@ -1,8 +1,8 @@
 import type { RelatedVote } from "../api";
+import { Island } from "../lib/islands";
+import AmendmentLink from "./AmendmentLink";
 import Card from "./Card";
-import Icon from "./Icon";
 import Thumb from "./Thumb";
-
 import "./AmendmentVoteCard.css";
 
 type AmendmentVoteCardProps = {
@@ -74,21 +74,14 @@ export default function AmendmentVoteCard({ vote }: AmendmentVoteCardProps) {
         vote.amendment_urls &&
         vote.amendment_urls.length > 0 &&
         vote.amendment_urls.map(({ amendment_number, url }) => (
-          <a
-            key={amendment_number}
-            class="amendment-vote-card__action"
-            href={url}
-            target="_blank"
-            rel="noreferrer noopener"
-            onClick={() =>
-              window.alert(
-                `The linked document may contain other amendments in addition to amendment ${amendment_number}. Please make sure you read the correct amendment.`,
-              )
-            }
-          >
-            <Icon name="external-link" />
-            Am {amendment_number}
-          </a>
+          <Island inline key={amendment_number}>
+            <AmendmentLink
+              amendmentNumber={amendment_number}
+              className="amendment-vote-card__action"
+              showIcon
+              url={url}
+            />
+          </Island>
         ))
       }
     />
