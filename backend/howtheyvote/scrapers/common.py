@@ -2,8 +2,10 @@ import html
 import time
 from abc import ABC, abstractmethod
 from typing import Any
+from urllib.parse import urlparse
 
 import requests
+import sentry_sdk
 from bs4 import BeautifulSoup
 from cachetools import Cache
 from requests import RequestException, Response
@@ -47,6 +49,25 @@ def get_url(
         try:
             with get_session(aws_waf_token) as session:
                 response = session.get(url, timeout=timeout)
+                attributes = {
+                    "url": url,
+                    "host": urlparse(url).hostname,
+                    "user_agent": response.request.headers.get("User-Agent"),
+                    "retry": retry,
+                    "max_retries": max_retries,
+                    "status": response.status_code,
+                }
+                sentry_sdk.metrics.count(
+                    "outbound_requests_sent",
+                    1,
+                    attributes=attributes,
+                )
+                sentry_sdk.metrics.distribution(
+                    "outbound_request_duration",
+                    response.elapsed.total_seconds(),
+                    unit="seconds",
+                    attributes=attributes,
+                )
 
             # Very basic request throttling with exponential backoff for retries
             time.sleep(config.REQUEST_SLEEP * (2**retry))
@@ -100,9 +121,18 @@ class BaseScraper[T](ABC):
         self._request_cache = request_cache
         self._aws_waf_token = aws_waf_token
         self._log = log.bind(scraper=type(self).__name__, **kwargs)
+        self._args = kwargs
 
     def run(self) -> Any:
         self._log.info("Running scraper")
+        sentry_sdk.metrics.count(
+            "scraper_runs",
+            1,
+            attributes={
+                "scraper": type(self).__name__,
+                **self._args,
+            },
+        )
         self.response = self._fetch()
         doc = self._parse(self.response)
         return self._extract_data(doc)

@@ -33,14 +33,14 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
   if (!request.isBot && normalizedQuery) {
     log.info({
       msg: "Handling search request",
-      normalizedQuery,
-      rawQuery,
+      normalized_query: normalizedQuery,
+      raw_query: rawQuery,
     });
 
     Sentry.metrics.count("searches", 1, {
       attributes: {
-        normalizedQuery,
-        rawQuery,
+        normalized_query: normalizedQuery,
+        raw_query: rawQuery,
       },
     });
   }
@@ -60,14 +60,14 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
   if (!request.isBot && data.results.length === 0) {
     log.info({
       msg: "Search without results",
-      normalizedQuery,
-      rawQuery,
+      normalized_query: normalizedQuery,
+      raw_query: rawQuery,
     });
 
     Sentry.metrics.count("searches_no_results", 1, {
       attributes: {
-        normalizedQuery,
-        rawQuery,
+        normalized_query: normalizedQuery,
+        raw_query: rawQuery,
       },
     });
   }
@@ -78,18 +78,18 @@ export const loader: Loader<SearchPageData> = async (request: Request) => {
 
     log.info({
       msg: "Search with corrected spelling",
-      normalizedQuery,
-      rawQuery,
-      normalizedCorrectedQuery,
-      rawCorrectedQuery,
+      normalized_query: normalizedQuery,
+      raw_query: rawQuery,
+      normalized_corrected_query: normalizedCorrectedQuery,
+      raw_corrected_query: rawCorrectedQuery,
     });
 
     Sentry.metrics.count("searches_corrected_spelling", 1, {
       attributes: {
-        normalizedQuery,
-        rawQuery,
-        normalizedCorrectedQuery,
-        rawCorrectedQuery,
+        normalized_query: normalizedQuery,
+        raw_query: rawQuery,
+        normalized_corrected_query: normalizedCorrectedQuery,
+        raw_corrected_query: rawCorrectedQuery,
       },
     });
   }

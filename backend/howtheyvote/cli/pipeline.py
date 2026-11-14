@@ -14,6 +14,7 @@ from ..pipelines import (
     SessionsPipeline,
     VOTListPipeline,
 )
+from ..sentry import init_sentry
 
 log = get_logger(__name__)
 
@@ -21,7 +22,7 @@ log = get_logger(__name__)
 @click.group()
 def pipeline() -> None:
     """Run a data pipeline."""
-    pass
+    init_sentry("cli")
 
 
 @pipeline.command()
@@ -129,10 +130,16 @@ def press(date: datetime.datetime, rss: bool = False) -> None:
 
 @pipeline.command()
 @click.option("--term", type=int, required=True)
-def members(term: int) -> None:
-    """Run the members pipeline for a given term. This scrapes a complete lists of all
-    current and past members as well as additional information about them."""
-    pipeline = MembersPipeline(term=term)
+@click.option("--member-id", "member_ids", type=int, multiple=True)
+def members(term: int, member_ids: tuple[int, ...]) -> None:
+    """Run the members pipeline for a given term. By default,
+    this scrapes a complete lists of all current and past members
+    as well as additional information about them.
+    Use --member-id to only scrape specific members and their information."""
+    pipeline = MembersPipeline(
+        term=term,
+        member_ids=member_ids,
+    )
     pipeline.run()
 
 

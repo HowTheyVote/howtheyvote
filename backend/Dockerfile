@@ -96,4 +96,4 @@ ENV TZ=UTC
 ENV ALEMBIC_CONFIG=./howtheyvote/alembic/alembic.ini
 ENV PATH="/howtheyvote/backend/.venv/bin:$PATH"
 
-CMD ["gunicorn", "-b", "[::]:5000", "--workers=5", "--forwarded-allow-ips=*", "howtheyvote.wsgi:app"]
+CMD ["gunicorn", "-b", "[::]:5000", "--workers=5", "--forwarded-allow-ips=*", "--limit-request-line=8190", "howtheyvote.wsgi:app"]
