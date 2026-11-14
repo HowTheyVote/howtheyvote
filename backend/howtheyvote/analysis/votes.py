@@ -1,4 +1,5 @@
 import datetime
+import re
 from collections import defaultdict
 from collections.abc import Iterable, Iterator
 from itertools import combinations
@@ -129,8 +130,8 @@ class MainVoteAnalyzer:
             return False
 
         description = unidecode(self.description).lower()
-        parts = description.split(" - ")
-
+        # Split on -, but only if its not surrounded by brackets
+        parts = re.split(r" - (?![^()]*\))", description)
         if any([part in self.MAIN_DESCRIPTIONS for part in parts]):
             return True
 
