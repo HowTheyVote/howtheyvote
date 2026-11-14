@@ -131,8 +131,10 @@ def press(date: datetime.datetime, rss: bool = False) -> None:
 @click.option("--term", type=int, required=True)
 @click.option("--member-id", "member_ids", type=int, multiple=True)
 def members(term: int, member_ids: tuple[int, ...]) -> None:
-    """Run the members pipeline for a given term. This scrapes a complete lists of all
-    current and past members as well as additional information about them."""
+    """Run the members pipeline for a given term. By default,
+    this scrapes a complete lists of all current and past members
+    as well as additional information about them.
+    Use --member-id to only scrape specific members and their information."""
     pipeline = MembersPipeline(
         term=term,
         member_ids=member_ids,
